@@ -1,0 +1,174 @@
+# Stable Pay: Full Platform Architecture with Reown AppKit Integration (Multi-Chain)
+
+## Objective
+
+To integrate Reown.com AppKit into Stable Pay to support:
+
+* Token Swapping to USDC
+* Automatic Transfer of USDC to a Developer-controlled Custody Wallet
+* INR Bank Withdrawals
+* Multi-chain Support (as per Reown supported chains)
+* Clean UI/UX, Secure Smart Contracts, and KYC-enabled fiat withdrawal
+
+---
+
+## 🌐 Supported Chains (via Reown)
+
+| Chain      | Token Standard | Supported Operations                     |
+| ---------- | -------------- | ---------------------------------------- |
+| Ethereum   | ERC-20         | Swap, Wallet Connect, Buy, Send, Receive |
+| Polygon    | ERC-20         | Swap, Wallet Connect, Buy, Send, Receive |
+| Solana     | SPL            | Swap, Wallet Connect, Buy, Send, Receive |
+| BNB Chain  | BEP-20         | Swap, Wallet Connect, Buy, Send, Receive |
+| Base       | ERC-20         | Swap, Wallet Connect, Buy, Send, Receive |
+| Avalanche  | ARC-20         | Swap, Wallet Connect, Buy, Send, Receive |
+| Arbitrum   | ERC-20         | Swap, Wallet Connect, Buy, Send, Receive |
+| Optimism   | ERC-20         | Swap, Wallet Connect, Buy, Send, Receive |
+| zkSync Era | ERC-20         | Swap, Wallet Connect, Buy, Send, Receive |
+
+---
+
+## 🧩 Modules Breakdown
+
+### 1. Wallet Management
+
+**Tool**: Reown WalletKit
+
+* Wallet creation (custodial or self-custodial)
+* Wallet connection (via WalletConnect, MetaMask, Phantom)
+* Multi-chain support
+* Maps wallet to KYC profile
+
+### 2. Token Swap to USDC
+
+**Tool**: Reown SwapKit (Jupiter for Solana, 1inch for EVM chains)
+
+* User selects token & network
+* Selects output as USDC (on same chain)
+* Real-time preview (DEX rates aggregated)
+* Slippage control
+* Transaction confirmation via Reown wallet interface
+* USDC received in user's wallet
+
+### 3. Auto-Send USDC to Custody Wallet
+
+**Tool**: Reown SendKit + SDK
+
+* Post-swap hook triggers `sendUSDCToCustody()`
+* Sends USDC to developer-owned wallet (per-chain address)
+* Includes metadata: `user_id`, `wallet_address`, `amount`, `origin_chain`
+* Custody wallets are registered per chain
+
+### 4. KYC Verification
+
+**Tool**: Onfido/Digilocker via backend
+
+* Required before initiating INR withdrawals
+* Aadhaar, PAN, Selfie + Liveness
+* KYC mapped to wallet address
+* Status stored off-chain (or on-chain for ZK enablement)
+
+### 5. INR Withdrawal Engine
+
+**Flow**:
+
+* Backend monitors custody wallet for incoming USDC
+* Triggers withdrawal eligibility for the user
+* RazorpayX/Cashfree API used for INR payout
+* Status tracking: pending > processed > settled
+* Logs stored in user dashboard with blockchain tx + bank tx ID
+
+### 6. Smart Contracts (Per Chain)
+
+* Swap execution via Reown-integrated contracts
+* `TokenConversionManager` contract emits logs
+* `WithdrawalManager` enforces limits, cooldown, logs
+* Emergency `pause()`, `reentrancyGuard`, slippageCheck()
+
+---
+
+## 🔐 Security Architecture
+
+| Feature            | Description                                                 |
+| ------------------ | ----------------------------------------------------------- |
+| KYC Enforcement    | Required for fiat withdrawal                                |
+| Reentrancy Guard   | All contracts follow OpenZeppelin standards                 |
+| Auto-Send Control  | User must opt-in to automatic USDC send to custody wallet   |
+| Token Whitelisting | Only verified tokens from registry are allowed for swaps    |
+| Cooldown & Limits  | Max 3 tx/day, 50,000 INR/day, 12 hr cooldown timer          |
+| Audit Readiness    | Contracts are ready for third-party security audits         |
+| Webhook Watchers   | Uses Helius/QuickNode to monitor Solana and EVM USDC inflow |
+
+---
+
+## 🧑‍💻 User Flow (All Chains)
+
+### End-to-End (Cross-Chain Compatible)
+
+1. **Connect/Create Wallet** (via WalletKit)
+2. **Select Chain** (e.g., Solana, Polygon)
+3. **Swap Token → USDC** using SwapKit
+4. **Auto-Send Prompt** → Approve to send USDC to custody wallet
+5. **KYC Verification** → Submit Aadhaar, PAN, Selfie
+6. **INR Withdrawal** → Input amount, bank details
+7. **Receive INR** in T+0 or T+1 banking window
+
+---
+
+## 🗺 Project Sitemap
+
+```
+/
+├── Home
+│   └── Overview / Features
+├── Connect Wallet
+│   ├── WalletKit Connect
+│   ├── Network Selector
+├── Convert (Swap)
+│   ├── Token Selector
+│   ├── Slippage Input
+│   ├── Reown SwapKit Preview
+│   └── Confirm Swap
+├── Auto-Send Confirmation
+│   └── Metadata, USDC transfer to custody
+├── KYC
+│   ├── Aadhaar + PAN Upload
+│   ├── Selfie Capture
+│   └── Status: Pending / Verified
+├── Withdraw
+│   ├── Bank Details Form
+│   ├── INR Estimation
+│   └── Confirm Withdrawal
+├── Dashboard
+│   ├── Activity Log
+│   ├── Tx Hash + INR Status
+│   └── KYC Badge / Tier Limit Info
+├── Support
+│   └── Help, FAQ, Contact
+```
+
+---
+
+## 📦 Optional Future Modules
+
+### 1. On-Ramp via Reown BuyKit
+
+* Enable credit card and local fiat on-ramp to buy USDC directly
+* Integrate Apple Pay, Google Pay, Visa/MasterCard
+
+### 2. Referral & Loyalty Rewards
+
+* Invite-based referral tracking with rewards in USDC
+* Tiered benefits for high-frequency users
+
+### 3. ZK KYC Integration
+
+* Use Semaphore or Polygon ID for Zero-Knowledge KYC
+* Privacy-preserving compliance via anonymous proofs
+
+### 4. Reown Gasless SDK
+
+* Sponsor user gas fees for onboarding, swapping & withdrawal
+* Boost UX for first-time or small-amount users
+
+---
