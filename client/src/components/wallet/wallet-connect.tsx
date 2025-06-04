@@ -3,14 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react';
-import { Wallet, ChevronDown, ExternalLink, Copy, CheckCircle } from "lucide-react";
+import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { Wallet, ChevronDown, Copy } from "lucide-react";
 
 export function WalletConnect() {
   const { open } = useAppKit();
-  const { address, isConnected, caipAddress } = useAppKitAccount();
-  const { chainId, caipNetwork } = useAppKitNetwork();
-  const { walletProvider } = useAppKitProvider();
+  const { address, isConnected } = useAppKitAccount();
+  const { chainId } = useAppKitNetwork();
   const { toast } = useToast();
   const [userCreated, setUserCreated] = useState(false);
   const [balance, setBalance] = useState<string>('0.00');
