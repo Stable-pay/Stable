@@ -2,91 +2,96 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { Wallet, ChevronDown } from "lucide-react";
 
 export function WalletConnect() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
+  const { open } = useAppKit();
+  const { address, isConnected } = useAppKitAccount();
+  const { chainId } = useAppKitNetwork();
   const { toast } = useToast();
+  const [userCreated, setUserCreated] = useState(false);
 
-  // Mock wallet connection - in production, integrate with Reown AppKit
-  const connectWallet = async () => {
-    setIsConnecting(true);
-    
-    try {
-      // Simulate wallet connection delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock wallet address
-      const mockAddress = "0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F8";
-      setWalletAddress(mockAddress);
-      setIsConnected(true);
-      
-      // Create or get user
-      await apiRequest("POST", "/api/users", {
-        walletAddress: mockAddress,
-        kycStatus: "pending",
-        kycTier: 1
-      });
-      
-      toast({
-        title: "Wallet Connected",
-        description: "Successfully connected to your wallet",
-      });
-    } catch (error) {
-      toast({
-        title: "Connection Failed",
-        description: "Failed to connect wallet. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsConnecting(false);
+  // Create user when wallet connects
+  useEffect(() => {
+    const createUser = async () => {
+      if (isConnected && address && !userCreated) {
+        try {
+          await apiRequest("POST", "/api/users", {
+            walletAddress: address,
+            kycStatus: "pending",
+            kycTier: 1
+          });
+          setUserCreated(true);
+          toast({
+            title: "Wallet Connected",
+            description: "Successfully connected to Stable Pay",
+          });
+        } catch (error) {
+          console.error("Failed to create user:", error);
+        }
+      }
+    };
+
+    createUser();
+  }, [isConnected, address, userCreated, toast]);
+
+  // Reset user creation state when disconnected
+  useEffect(() => {
+    if (!isConnected) {
+      setUserCreated(false);
     }
-  };
-
-  const disconnectWallet = () => {
-    setIsConnected(false);
-    setWalletAddress("");
-    toast({
-      title: "Wallet Disconnected",
-      description: "Your wallet has been disconnected",
-    });
-  };
+  }, [isConnected]);
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
+  const handleConnect = () => {
+    open();
+  };
+
+  const handleAccountClick = () => {
+    open({ view: 'Account' });
+  };
+
+  const handleNetworkClick = () => {
+    open({ view: 'Networks' });
+  };
+
+  if (!isConnected) {
+    return (
+      <Button
+        onClick={handleConnect}
+        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 font-medium"
+        size="lg"
+      >
+        <Wallet className="h-4 w-4 mr-2" />
+        Connect Wallet
+      </Button>
+    );
+  }
+
   return (
-    <div>
-      {!isConnected ? (
-        <Button
-          onClick={connectWallet}
-          disabled={isConnecting}
-          className="bg-primary hover:bg-indigo-700"
-        >
-          {isConnecting ? (
-            <>
-              <i className="fas fa-spinner fa-spin mr-2"></i>
-              Connecting...
-            </>
-          ) : (
-            <>
-              <i className="fas fa-wallet mr-2"></i>
-              Connect Wallet
-            </>
-          )}
-        </Button>
-      ) : (
-        <Button
-          variant="secondary"
-          onClick={disconnectWallet}
-          className="bg-secondary hover:bg-green-700 text-white"
-        >
-          <i className="fas fa-check-circle mr-2"></i>
-          {formatAddress(walletAddress)}
-        </Button>
-      )}
+    <div className="flex items-center space-x-2">
+      <Button
+        onClick={handleNetworkClick}
+        variant="outline"
+        size="sm"
+        className="border-gray-200 hover:border-primary hover:bg-primary/5 text-gray-700"
+      >
+        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+        {chainId ? `Chain ${chainId}` : 'Network'}
+        <ChevronDown className="h-3 w-3 ml-1" />
+      </Button>
+      
+      <Button
+        onClick={handleAccountClick}
+        className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 font-medium"
+      >
+        <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+        {address ? formatAddress(address) : 'Connected'}
+      </Button>
     </div>
   );
 }

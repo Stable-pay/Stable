@@ -11,6 +11,7 @@ import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
+import "./lib/reown";
 
 function Router() {
   return (
@@ -29,7 +30,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
           <Navbar />
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <Router />
