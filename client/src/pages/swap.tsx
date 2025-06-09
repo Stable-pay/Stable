@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { WorkingTokenSwap } from "@/components/swap/working-token-swap";
+import { ReownTokenSwap } from "@/components/swap/reown-token-swap";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
-import { useDirectWallet } from "@/hooks/use-direct-wallet";
+import { useWagmiWallet } from "@/hooks/use-wagmi-wallet";
+import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { ArrowUpDown, Shield, Zap, DollarSign, Wallet } from "lucide-react";
 
 export default function Swap() {
-  const { isConnected, address, connect } = useDirectWallet();
+  const { isConnected, address } = useWagmiWallet();
 
   if (!isConnected) {
     return (
@@ -18,10 +19,7 @@ export default function Swap() {
           <p className="text-gray-600 mb-6">
             Connect your wallet to swap tokens to USDC using live 1inch API integration
           </p>
-          <Button onClick={connect} size="lg" className="bg-blue-600 hover:bg-blue-700">
-            <Wallet className="h-5 w-5 mr-2" />
-            Connect Wallet
-          </Button>
+          <ReownWalletConnect />
         </div>
       </div>
     );
@@ -41,7 +39,7 @@ export default function Swap() {
       {/* Main Swap Interface */}
       <div className="grid lg:grid-cols-2 gap-8">
         <div>
-          <WorkingTokenSwap />
+          <ReownTokenSwap />
         </div>
         
         <div className="space-y-6">
