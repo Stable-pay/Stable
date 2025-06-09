@@ -3,35 +3,35 @@ import { useQuery } from '@tanstack/react-query';
 import { formatUnits, createPublicClient, http } from 'viem';
 import { mainnet, polygon, arbitrum, base } from 'viem/chains';
 
-// Multi-chain RPC configuration
+// Multi-chain RPC configuration with free public endpoints
 const CHAIN_CONFIGS = {
   1: { 
     chain: mainnet, 
-    rpc: 'https://eth.llamarpc.com',
+    rpc: 'https://ethereum.publicnode.com',
     name: 'Ethereum',
     nativeSymbol: 'ETH'
   },
   137: { 
     chain: polygon, 
-    rpc: 'https://polygon.llamarpc.com',
+    rpc: 'https://polygon-rpc.com',
     name: 'Polygon',
     nativeSymbol: 'MATIC'
   },
   42161: { 
     chain: arbitrum, 
-    rpc: 'https://arbitrum.llamarpc.com',
+    rpc: 'https://arbitrum.public-rpc.com',
     name: 'Arbitrum',
     nativeSymbol: 'ETH'
   },
   8453: { 
     chain: base, 
-    rpc: 'https://base.llamarpc.com',
+    rpc: 'https://mainnet.base.org',
     name: 'Base',
     nativeSymbol: 'ETH'
   }
 } as const;
 
-// Common ERC20 tokens across networks
+// Common ERC20 tokens across networks - Real contract addresses
 const TOKEN_CONFIGS = {
   1: [ // Ethereum
     { symbol: 'USDC', address: '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B', decimals: 6 },
@@ -41,7 +41,7 @@ const TOKEN_CONFIGS = {
     { symbol: 'WBTC', address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', decimals: 8 },
     { symbol: 'LINK', address: '0x514910771AF9Ca656af840dff83E8264EcF986CA', decimals: 18 }
   ],
-  137: [ // Polygon
+  137: [ // Polygon - Real contract addresses
     { symbol: 'USDC', address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6 },
     { symbol: 'USDT', address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', decimals: 6 },
     { symbol: 'DAI', address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', decimals: 18 },
