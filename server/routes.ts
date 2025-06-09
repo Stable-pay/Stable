@@ -25,6 +25,12 @@ const upload = multer({
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // WalletConnect domain verification
+  app.get("/.well-known/walletconnect.txt", (_req, res) => {
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('6dfca9af31141b1fb9220aa7db3eee37');
+  });
+  
   // User routes
   app.post("/api/users", async (req, res) => {
     try {
