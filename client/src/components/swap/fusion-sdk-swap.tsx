@@ -86,31 +86,18 @@ export function FusionSDKSwap() {
 
       setProgress(50);
 
-      // Get quote using 1inch Fusion API
+      // Get quote using backend proxy for 1inch Fusion API
       const networkId = getNetworkId(chainId);
-      const apiKey = import.meta.env.VITE_ONEINCH_API_KEY;
-      
-      if (!apiKey) {
-        throw new Error('1inch API key not configured');
-      }
-
-      const quoteUrl = `https://api.1inch.dev/fusion/quoter/v1.0/${networkId}/quote/receive`;
-      const quoteParams = {
+      const quoteParams = new URLSearchParams({
         fromTokenAddress,
         toTokenAddress,
         amount: amountInWei,
-        walletAddress: address,
-        enableEstimate: true
-      };
-
-      console.log('Getting 1inch Fusion quote:', quoteParams);
-      
-      const response = await fetch(`${quoteUrl}?${new URLSearchParams(quoteParams)}`, {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Accept': 'application/json'
-        }
+        walletAddress: address
       });
+
+      console.log('Getting 1inch Fusion quote via backend proxy:', quoteParams.toString());
+      
+      const response = await fetch(`/api/1inch/fusion/${networkId}/quote?${quoteParams}`);
 
       setProgress(80);
 
@@ -173,18 +160,13 @@ export function FusionSDKSwap() {
 
         console.log('Executing 1inch Fusion swap...');
         
-        // Submit the fusion order via API
+        // Submit the fusion order via backend proxy
         const networkId = getNetworkId(chainId);
-        const apiKey = import.meta.env.VITE_ONEINCH_API_KEY;
         
-        const submitUrl = `https://api.1inch.dev/fusion/relayer/v1.0/${networkId}/submit`;
-        
-        const response = await fetch(submitUrl, {
+        const response = await fetch(`/api/1inch/fusion/${networkId}/submit`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             order: quote.order,
@@ -235,13 +217,13 @@ export function FusionSDKSwap() {
   // Auto-quote when inputs change
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (selectedToken && swapAmount && parseFloat(swapAmount) > 0 && swapState.status === 'idle' && fusionSDK) {
+      if (selectedToken && swapAmount && parseFloat(swapAmount) > 0 && swapState.status === 'idle') {
         getSwapQuote();
       }
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [selectedToken, swapAmount, fusionSDK]);
+  }, [selectedToken, swapAmount]);
 
   if (!isConnected) {
     return (
