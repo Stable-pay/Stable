@@ -84,10 +84,16 @@ export default function AnimatedWithdraw() {
     }
   ]);
 
-  const [newBankAccount, setNewBankAccount] = useState({
+  const [newBankAccount, setNewBankAccount] = useState<{
+    accountNumber: string;
+    routingNumber: string;
+    accountType: 'checking' | 'savings';
+    bankName: string;
+    accountHolderName: string;
+  }>({
     accountNumber: '',
     routingNumber: '',
-    accountType: 'checking' as const,
+    accountType: 'checking',
     bankName: '',
     accountHolderName: ''
   });
@@ -656,7 +662,10 @@ export default function AnimatedWithdraw() {
                               <Label>Account Type</Label>
                               <Select 
                                 value={newBankAccount.accountType}
-                                onValueChange={(value: 'checking' | 'savings') => setNewBankAccount(prev => ({ ...prev, accountType: value }))}
+                                onValueChange={(value: 'checking' | 'savings') => setNewBankAccount(prev => ({ 
+                                  ...prev, 
+                                  accountType: value as 'checking' | 'savings'
+                                }))}
                               >
                                 <SelectTrigger className="border-gray-200 focus:border-[#6667AB]">
                                   <SelectValue />

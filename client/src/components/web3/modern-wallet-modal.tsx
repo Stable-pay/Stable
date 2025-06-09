@@ -1,91 +1,71 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { X, Wallet, Shield, Zap, Check, AlertCircle, ExternalLink } from 'lucide-react';
-import { Web3PulseLoader, Web3SpinLoader } from '@/components/animations/web3-loader';
-
-interface WalletOption {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  installed: boolean;
-  popular?: boolean;
-}
+import { 
+  Wallet, 
+  Smartphone, 
+  Globe, 
+  Shield, 
+  Zap, 
+  ArrowRight,
+  CheckCircle,
+  ExternalLink
+} from 'lucide-react';
+import { Web3SpinLoader } from '@/components/animations/web3-loader';
 
 interface ModernWalletModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConnect: (walletId: string) => void;
   isConnecting: boolean;
-  error?: string;
 }
 
-export function ModernWalletModal({ 
-  isOpen, 
-  onClose, 
-  onConnect, 
-  isConnecting, 
-  error 
-}: ModernWalletModalProps) {
-  const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
-  const [step, setStep] = useState<'select' | 'connecting' | 'success'>('select');
+const popularWallets = [
+  {
+    id: 'metamask',
+    name: 'MetaMask',
+    description: 'Most popular browser wallet',
+    icon: '🦊',
+    color: '#F6851B',
+    features: ['Browser Extension', 'Mobile App', 'Hardware Support']
+  },
+  {
+    id: 'walletconnect',
+    name: 'WalletConnect',
+    description: 'Connect any mobile wallet',
+    icon: '📱',
+    color: '#3B99FC',
+    features: ['QR Code', 'Mobile Wallets', 'Cross-Platform']
+  },
+  {
+    id: 'coinbase',
+    name: 'Coinbase Wallet',
+    description: 'Secure and easy to use',
+    icon: '🔵',
+    color: '#0052FF',
+    features: ['Built-in DeFi', 'NFT Support', 'Easy Onboarding']
+  },
+  {
+    id: 'trust',
+    name: 'Trust Wallet',
+    description: 'Multi-chain mobile wallet',
+    icon: '🛡️',
+    color: '#3375BB',
+    features: ['Mobile First', 'Multi-Chain', 'DApp Browser']
+  }
+];
 
-  const walletOptions: WalletOption[] = [
-    {
-      id: 'metamask',
-      name: 'MetaMask',
-      icon: '🦊',
-      description: 'Connect with MetaMask browser extension',
-      installed: typeof window !== 'undefined' && !!(window as any).ethereum,
-      popular: true
-    },
-    {
-      id: 'walletconnect',
-      name: 'WalletConnect',
-      icon: '🔗',
-      description: 'Connect with mobile wallet via QR code',
-      installed: true,
-      popular: true
-    },
-    {
-      id: 'coinbase',
-      name: 'Coinbase Wallet',
-      icon: '🔵',
-      description: 'Connect with Coinbase Wallet',
-      installed: true
-    },
-    {
-      id: 'injected',
-      name: 'Browser Wallet',
-      icon: '🌐',
-      description: 'Connect with any injected wallet',
-      installed: typeof window !== 'undefined' && !!(window as any).ethereum
-    }
-  ];
-
-  const handleWalletSelect = async (walletId: string) => {
-    setSelectedWallet(walletId);
-    setStep('connecting');
-    
-    try {
-      await onConnect(walletId);
-      setStep('success');
-      setTimeout(() => {
-        onClose();
-        setStep('select');
-      }, 2000);
-    } catch (err) {
-      setStep('select');
-    }
+export function ModernWalletModal({ isOpen, onClose, onConnect, isConnecting }: ModernWalletModalProps) {
+  const handleWalletClick = (walletId: string) => {
+    onConnect(walletId);
   };
 
   const modalVariants = {
     hidden: { 
       opacity: 0, 
-      scale: 0.8,
+      scale: 0.95,
       y: 20
     },
     visible: { 
@@ -99,7 +79,7 @@ export function ModernWalletModal({
     },
     exit: { 
       opacity: 0, 
-      scale: 0.8,
+      scale: 0.95,
       y: 20,
       transition: {
         duration: 0.2
@@ -107,209 +87,205 @@ export function ModernWalletModal({
     }
   };
 
-  const overlayVariants = {
+  const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 }
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
   };
 
-  if (!isOpen) return null;
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut"
+      }
+    }
+  };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        variants={overlayVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-      >
-        {/* Backdrop */}
-        <motion.div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={onClose}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        />
-
-        {/* Modal */}
-        <motion.div
-          className="relative w-full max-w-md"
-          variants={modalVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
-          <Card className="border-0 shadow-2xl bg-white overflow-hidden">
-            {/* Header */}
-            <CardHeader className="relative pb-6" style={{ backgroundColor: '#6667AB' }}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute top-4 right-4 text-white hover:bg-white/20"
-                onClick={onClose}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-              
-              <div className="text-center">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl bg-white/95 backdrop-blur-xl border-0 shadow-2xl">
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <DialogHeader className="text-center pb-6">
                 <motion.div
-                  className="mx-auto w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4"
+                  className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg"
+                  style={{ backgroundColor: '#6667AB' }}
                   animate={{ 
-                    scale: step === 'connecting' ? [1, 1.1, 1] : 1,
-                    rotate: step === 'connecting' ? [0, 5, -5, 0] : 0
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, -5, 0]
                   }}
-                  transition={{ 
-                    duration: 1, 
-                    repeat: step === 'connecting' ? Infinity : 0 
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
                   }}
                 >
-                  {step === 'success' ? (
-                    <Check className="h-8 w-8 text-white" />
-                  ) : (
-                    <Wallet className="h-8 w-8 text-white" />
-                  )}
+                  <Wallet className="h-8 w-8 text-white" />
                 </motion.div>
                 
-                <CardTitle className="text-2xl font-bold text-white mb-2">
-                  {step === 'select' && 'Connect Wallet'}
-                  {step === 'connecting' && 'Connecting...'}
-                  {step === 'success' && 'Connected!'}
-                </CardTitle>
-                
-                <p className="text-white/80">
-                  {step === 'select' && 'Choose your preferred wallet to connect'}
-                  {step === 'connecting' && `Connecting to ${walletOptions.find(w => w.id === selectedWallet)?.name}`}
-                  {step === 'success' && 'Your wallet has been connected successfully'}
+                <DialogTitle className="text-3xl font-bold mb-2" style={{ color: '#6667AB' }}>
+                  Connect Your Wallet
+                </DialogTitle>
+                <p className="text-gray-600 text-lg">
+                  Choose your preferred wallet to get started
                 </p>
-              </div>
-            </CardHeader>
+              </DialogHeader>
 
-            <CardContent className="p-6">
-              {step === 'select' && (
+              {isConnecting ? (
                 <motion.div
-                  className="space-y-3"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12"
                 >
-                  {/* Security Notice */}
-                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg mb-4">
-                    <Shield className="h-5 w-5 text-blue-600" />
-                    <div className="text-sm">
-                      <p className="font-medium text-blue-900">Secure Connection</p>
-                      <p className="text-blue-700">Your wallet stays secure and private</p>
-                    </div>
+                  <Web3SpinLoader size={60} color="#6667AB" />
+                  <h3 className="text-xl font-semibold mt-6 mb-2" style={{ color: '#6667AB' }}>
+                    Connecting Wallet
+                  </h3>
+                  <p className="text-gray-600">
+                    Please approve the connection in your wallet
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="space-y-4"
+                >
+                  {/* Popular Wallets */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {popularWallets.map((wallet, index) => (
+                      <motion.div
+                        key={wallet.id}
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Card 
+                          className="cursor-pointer border-2 border-gray-200 hover:border-[#6667AB] transition-all duration-300 hover:shadow-lg"
+                          onClick={() => handleWalletClick(wallet.id)}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-4">
+                                <div 
+                                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                                  style={{ backgroundColor: `${wallet.color}20` }}
+                                >
+                                  {wallet.icon}
+                                </div>
+                                <div>
+                                  <h3 className="font-semibold text-lg" style={{ color: '#6667AB' }}>
+                                    {wallet.name}
+                                  </h3>
+                                  <p className="text-gray-600 text-sm">
+                                    {wallet.description}
+                                  </p>
+                                </div>
+                              </div>
+                              <ArrowRight className="h-5 w-5 text-gray-400" />
+                            </div>
+                            
+                            <div className="flex flex-wrap gap-2">
+                              {wallet.features.map((feature, idx) => (
+                                <Badge 
+                                  key={idx}
+                                  variant="secondary" 
+                                  className="text-xs bg-gray-100 text-gray-700"
+                                >
+                                  {feature}
+                                </Badge>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
                   </div>
 
-                  {walletOptions.map((wallet) => (
-                    <motion.div
-                      key={wallet.id}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Button
-                        variant="outline"
-                        className="w-full h-auto p-4 justify-start border-gray-200 hover:border-[#6667AB] hover:bg-[#6667AB]/5"
-                        onClick={() => handleWalletSelect(wallet.id)}
-                        disabled={!wallet.installed}
-                      >
-                        <div className="flex items-center gap-4 w-full">
-                          <div className="text-2xl">{wallet.icon}</div>
-                          <div className="flex-1 text-left">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold">{wallet.name}</span>
-                              {wallet.popular && (
-                                <Badge className="bg-[#6667AB] text-white">Popular</Badge>
-                              )}
-                              {!wallet.installed && (
-                                <Badge variant="outline" className="text-gray-500">
-                                  Not Installed
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{wallet.description}</p>
-                          </div>
-                          {wallet.installed ? (
-                            <div className="w-2 h-2 bg-green-500 rounded-full" />
-                          ) : (
-                            <ExternalLink className="h-4 w-4 text-gray-400" />
-                          )}
-                        </div>
-                      </Button>
-                    </motion.div>
-                  ))}
-
-                  {/* Features */}
-                  <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-gray-100">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Zap className="h-4 w-4" style={{ color: '#6667AB' }} />
-                      <span>Gasless Swaps</span>
+                  {/* Security Info */}
+                  <motion.div
+                    variants={itemVariants}
+                    className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <Shield className="h-5 w-5" style={{ color: '#6667AB' }} />
+                      <h4 className="font-semibold" style={{ color: '#6667AB' }}>
+                        Your Security is Our Priority
+                      </h4>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span>End-to-end encryption</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span>No private key storage</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span>Open source protocol</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Help Section */}
+                  <motion.div
+                    variants={itemVariants}
+                    className="mt-6 text-center"
+                  >
+                    <p className="text-sm text-gray-500 mb-3">
+                      Don't have a wallet yet?
+                    </p>
+                    <Button
+                      variant="outline"
+                      className="border-[#6667AB] text-[#6667AB] hover:bg-[#6667AB] hover:text-white"
+                      onClick={() => window.open('https://metamask.io/', '_blank')}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Get MetaMask
+                    </Button>
+                  </motion.div>
+
+                  {/* Additional Features */}
+                  <motion.div
+                    variants={itemVariants}
+                    className="mt-6 grid grid-cols-3 gap-4 text-center text-sm text-gray-500"
+                  >
+                    <div className="flex flex-col items-center gap-1">
                       <Shield className="h-4 w-4" style={{ color: '#6667AB' }} />
                       <span>Secure</span>
                     </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {step === 'connecting' && (
-                <motion.div
-                  className="text-center py-8"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <Web3PulseLoader size={80} color="#6667AB" />
-                  <p className="text-gray-600 mt-4">
-                    Please confirm the connection in your wallet
-                  </p>
-                  {selectedWallet === 'walletconnect' && (
-                    <p className="text-sm text-gray-500 mt-2">
-                      Scan the QR code with your mobile wallet
-                    </p>
-                  )}
-                </motion.div>
-              )}
-
-              {step === 'success' && (
-                <motion.div
-                  className="text-center py-8"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <motion.div
-                    className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Check className="h-10 w-10 text-green-600" />
+                    <div className="flex flex-col items-center gap-1">
+                      <Zap className="h-4 w-4" style={{ color: '#6667AB' }} />
+                      <span>Fast</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <Globe className="h-4 w-4" style={{ color: '#6667AB' }} />
+                      <span>Global</span>
+                    </div>
                   </motion.div>
-                  <p className="text-gray-600">
-                    Wallet connected successfully! You can now start trading.
-                  </p>
                 </motion.div>
               )}
-
-              {error && (
-                <motion.div
-                  className="flex items-center gap-3 p-3 bg-red-50 rounded-lg border border-red-200"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <AlertCircle className="h-5 w-5 text-red-600" />
-                  <div className="text-sm">
-                    <p className="font-medium text-red-900">Connection Failed</p>
-                    <p className="text-red-700">{error}</p>
-                  </div>
-                </motion.div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </DialogContent>
+    </Dialog>
   );
 }
