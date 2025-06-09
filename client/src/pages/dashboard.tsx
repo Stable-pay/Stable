@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
+import { RealTokenSwap } from "@/components/swap/real-token-swap";
 import { useWalletConnection } from "@/hooks/use-wallet-connection";
 import { useRealWalletBalances, useRealPortfolioSummary } from "@/hooks/use-real-wallet-data";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network } from "lucide-react";
@@ -202,19 +203,8 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Multi-Chain Token Swap Interface */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5" />
-            <span>Token Swap to USDC</span>
-            <Badge className="bg-blue-100 text-blue-800">1inch API</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <MultiChainSwapInterface />
-        </CardContent>
-      </Card>
+      {/* Real Token Swap Interface */}
+      <RealTokenSwap />
 
       {/* USDC Collection Monitor - Live 1inch Integration */}
       <USDCCollectionMonitor />
