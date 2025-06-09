@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ComprehensiveTokenSwap } from "@/components/swap/comprehensive-token-swap";
+import { ZxTokenSwap } from "@/components/swap/zx-token-swap";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
 import { useWagmiWallet } from "@/hooks/use-wagmi-wallet";
 import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
@@ -17,7 +17,7 @@ export default function Swap() {
           <Wallet className="h-16 w-16 mx-auto mb-6 text-gray-400" />
           <h2 className="text-2xl font-bold mb-4">Connect Your Wallet</h2>
           <p className="text-gray-600 mb-6">
-            Connect your wallet to swap tokens to USDC using live 1inch API integration
+            Connect your wallet to swap tokens to USDC using 0x Protocol with gasless transactions
           </p>
           <ReownWalletConnect />
         </div>
@@ -31,7 +31,7 @@ export default function Swap() {
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-4">Token Swap to USDC</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Swap any token from your wallet to USDC using live 1inch API integration. 
+          Swap any token from your wallet to USDC using 0x Protocol with gasless transactions. 
           All USDC is automatically collected to developer wallets.
         </p>
       </div>
@@ -39,7 +39,7 @@ export default function Swap() {
       {/* Main Swap Interface */}
       <div className="grid lg:grid-cols-2 gap-8">
         <div>
-          <ComprehensiveTokenSwap />
+          <ZxTokenSwap />
         </div>
         
         <div className="space-y-6">
@@ -54,11 +54,15 @@ export default function Swap() {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm">Live 1inch API integration</span>
+                <span className="text-sm">0x Protocol integration</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm">Multi-chain support (Ethereum, Polygon, Arbitrum, Base)</span>
+                <span className="text-sm">Gasless transactions available</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-sm">Multi-chain support (Ethereum, Polygon, Arbitrum, Base, Optimism, Avalanche)</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -67,10 +71,6 @@ export default function Swap() {
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 <span className="text-sm">Real-time price quotes</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm">Transaction monitoring</span>
               </div>
             </CardContent>
           </Card>
@@ -87,10 +87,10 @@ export default function Swap() {
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <Badge className="bg-green-100 text-green-800">Live API</Badge>
-                  <span className="font-medium text-green-900">1inch Integration</span>
+                  <span className="font-medium text-green-900">0x Protocol</span>
                 </div>
                 <p className="text-sm text-green-700">
-                  Direct integration with 1inch DEX aggregator for best rates
+                  Direct integration with 0x Protocol for optimal rates and gasless transactions
                 </p>
               </div>
               
@@ -120,7 +120,7 @@ export default function Swap() {
               <h3 className="font-semibold text-blue-900">Live Blockchain Integration</h3>
               <p className="text-blue-700">
                 This platform connects directly to your wallet and blockchain networks to fetch real token balances 
-                and execute authentic swaps using your 1inch API key. No demo or mock data is used.
+                and execute authentic swaps using 0x Protocol. Gasless transactions available for supported tokens.
               </p>
             </div>
           </div>
