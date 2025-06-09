@@ -134,10 +134,32 @@ export function ModernTokenSwap() {
       })}`);
 
       if (!response.ok) {
-        throw new Error('Failed to get quote');
+        const errorData = await response.json();
+        
+        if (errorData.code === 'INSUFFICIENT_API_ACCESS') {
+          toast({
+            title: "API Access Required",
+            description: "The 0x Protocol API key needs to be upgraded to access swap endpoints. Please upgrade your plan at 0x.org/pricing",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        throw new Error(errorData.message || 'Failed to get quote');
       }
 
       const data = await response.json();
+      
+      // Handle case where we might have limited data
+      if (!data.buyAmount) {
+        toast({
+          title: "Limited Quote Access",
+          description: "Unable to get full swap quote. API key may need upgrade.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const buyAmountFormatted = formatUnits(BigInt(data.buyAmount), 6);
       const rate = parseFloat(buyAmountFormatted) / parseFloat(swapAmount);
 
@@ -145,7 +167,7 @@ export function ModernTokenSwap() {
         fromAmount: swapAmount,
         toAmount: buyAmountFormatted,
         rate,
-        gasEstimate: data.estimatedGas,
+        gasEstimate: data.estimatedGas || '150000',
         minimumReceived: (parseFloat(buyAmountFormatted) * 0.99).toFixed(6),
         isGasless: false,
         priceImpact: 0.5

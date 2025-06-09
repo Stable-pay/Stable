@@ -50,7 +50,7 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // 0x swap quote endpoint - using public price API
+  // 0x swap quote endpoint - API access limited feedback
   app.get("/api/0x/:chainId/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
@@ -61,81 +61,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Auto-convert to USDC if buyToken not specified
       const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
       
-      // Try public price endpoint first
-      const priceParams = new URLSearchParams({
+      // Test API access with current key
+      const testParams = new URLSearchParams({
         chainId: chainId as string,
         sellToken: sellToken as string,
         buyToken: targetBuyToken as string,
         sellAmount: sellAmount as string
       });
       
-      let response = await fetch(`${ZX_BASE_URL}/swap/v1/price?${priceParams}`, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log(`0x price response status: ${response.status}`);
-      
-      if (response.ok) {
-        const priceData = await response.json();
-        
-        // Convert price response to quote format
-        const quoteData = {
-          ...priceData,
-          to: '0x0000000000000000000000000000000000000000', // Placeholder
-          data: '0x', // Placeholder
-          value: '0',
-          gas: priceData.estimatedGas || '150000',
-          gasPrice: priceData.gasPrice || '20000000000',
-          allowanceTarget: '0x0000000000000000000000000000000000000000' // Placeholder
-        };
-        
-        console.log('0x price response preview:', JSON.stringify(quoteData).substring(0, 200));
-        res.json(quoteData);
-        return;
-      }
-      
-      // Fallback: try with API key for premium endpoints
-      const quoteParams = new URLSearchParams({
-        chainId: chainId as string,
-        sellToken: sellToken as string,
-        buyToken: targetBuyToken as string,
-        sellAmount: sellAmount as string,
-        takerAddress: takerAddress as string,
-        slippagePercentage: (slippagePercentage as string) || '0.01'
-      });
-      
-      response = await fetch(`${ZX_BASE_URL}/swap/v1/quote?${quoteParams}`, {
+      const response = await fetch(`${ZX_BASE_URL}/swap/v1/price?${testParams}`, {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
-          '0x-version': 'v2',
           'Content-Type': 'application/json'
         }
       });
       
-      console.log(`0x quote response status: ${response.status}`);
+      console.log(`0x API test response status: ${response.status}`);
+      
+      if (response.status === 403) {
+        // API key doesn't have required access
+        return res.status(403).json({
+          error: 'API access restricted',
+          message: 'The current 0x Protocol API key does not have access to swap endpoints. Please upgrade your API key plan to enable swapping functionality.',
+          code: 'INSUFFICIENT_API_ACCESS'
+        });
+      }
       
       if (!response.ok) {
         const error = await response.text();
-        console.error('0x quote error:', error);
-        
-        // Return error with helpful message
+        console.error('0x API error:', error);
         return res.status(response.status).json({ 
-          error: 'Unable to get swap quote. The API key may need upgraded access for quote endpoints.',
-          suggestion: 'Using price data for estimation only.'
+          error: 'API request failed',
+          details: error 
         });
       }
       
       const data = await response.json();
-      console.log('0x quote response preview:', JSON.stringify(data).substring(0, 200));
-      
+      console.log('0x response preview:', JSON.stringify(data).substring(0, 200));
       res.json(data);
+      
     } catch (error) {
       console.error('0x quote proxy error:', error);
-      res.status(500).json({ error: 'Failed to fetch quote from 0x API' });
+      res.status(500).json({ error: 'Failed to connect to 0x API' });
     }
   });
 
