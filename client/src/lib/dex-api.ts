@@ -1,4 +1,4 @@
-// Real DEX aggregator API integration for production swapping
+// 0x Protocol API service for token swapping and price data
 export interface SwapParams {
   fromToken: string;
   toToken: string;
@@ -6,6 +6,7 @@ export interface SwapParams {
   network: string;
   slippage: number;
   userAddress: string;
+  gasless?: boolean;
 }
 
 export interface SwapResponse {
@@ -26,6 +27,10 @@ export interface SwapResponse {
     gasLimit: string;
     gasPrice: string;
   };
+  gasless?: {
+    tradeHash: string;
+    permit2: any;
+  };
 }
 
 export interface TokenPrice {
@@ -36,183 +41,264 @@ export interface TokenPrice {
 }
 
 class DexApiService {
-  private readonly BASE_URL = 'https://api.1inch.io/v5.0';
+  private readonly BASE_URL = '/api/0x';
   private readonly COINGECKO_URL = 'https://api.coingecko.com/api/v3';
-  private readonly API_KEY = '1Fqf1TSnyq86janyEBVQ9wcd65Ml6yBf';
-  
+
+  // USDC addresses for each chain
+  private readonly USDC_ADDRESSES: Record<string, string> = {
+    'ethereum': '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B',
+    'polygon': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+    'arbitrum': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    'base': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    'optimism': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+    'avalanche': '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'
+  };
+
   async getTokenPrices(tokens: string[]): Promise<Record<string, TokenPrice>> {
     try {
-      // Real CoinGecko API integration for accurate prices
+      // Use CoinGecko for real-time pricing
       const tokenIds = tokens.map(token => this.getTokenId(token)).join(',');
       const response = await fetch(
         `${this.COINGECKO_URL}/simple/price?ids=${tokenIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`
       );
       
       if (!response.ok) {
-        throw new Error('Failed to fetch token prices');
+        console.log('CoinGecko API unavailable, using mock prices');
+        return this.getMockPrices(tokens);
       }
       
       const data = await response.json();
-      const result: Record<string, TokenPrice> = {};
+      const prices: Record<string, TokenPrice> = {};
       
       tokens.forEach(token => {
-        const id = this.getTokenId(token);
-        if (data[id]) {
-          result[token] = {
+        const tokenId = this.getTokenId(token);
+        const priceData = data[tokenId];
+        if (priceData) {
+          prices[token] = {
             symbol: token,
-            price: data[id].usd,
-            change24h: data[id].usd_24h_change || 0,
-            volume24h: data[id].usd_24h_vol || 0
+            price: priceData.usd || 0,
+            change24h: priceData.usd_24h_change || 0,
+            volume24h: priceData.usd_24h_vol || 0
           };
         }
       });
       
-      return result;
+      return prices;
     } catch (error) {
-      console.error('Failed to fetch real prices:', error);
-      // Fallback to realistic mock prices for development
+      console.error('Error fetching token prices:', error);
       return this.getMockPrices(tokens);
     }
   }
-  
+
   async getSwapQuote(params: SwapParams): Promise<SwapResponse> {
     try {
+      console.log('Getting 0x swap quote for:', params);
+      
       const chainId = this.getChainId(params.network);
-      
-      // Real 1inch API integration for accurate swap quotes
-      const queryParams = new URLSearchParams({
-        fromTokenAddress: params.fromToken,
-        toTokenAddress: params.toToken,
-        amount: params.amount,
-        fromAddress: params.userAddress,
-        slippage: params.slippage.toString(),
-        disableEstimate: 'false'
-      });
-      
-      const response = await fetch(
-        `${this.BASE_URL}/${chainId}/swap?${queryParams}`,
-        {
+      const sellToken = params.fromToken === 'native' ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : params.fromToken;
+      const buyToken = params.toToken || this.USDC_ADDRESSES[params.network.toLowerCase()];
+
+      if (params.gasless) {
+        // Use gasless API
+        const requestBody = {
+          sellToken,
+          buyToken,
+          sellAmount: params.amount,
+          takerAddress: params.userAddress
+        };
+
+        const response = await fetch(`${this.BASE_URL}/${chainId}/gasless-quote`, {
+          method: 'POST',
           headers: {
-            'Authorization': `Bearer ${this.API_KEY}`
-          }
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+          throw new Error('0x gasless API unavailable');
         }
-      );
-      
-      if (!response.ok) {
-        throw new Error('Failed to get swap quote');
+
+        const data = await response.json();
+        return this.formatGaslessResponse(data);
+      } else {
+        // Use regular swap API
+        const queryParams = new URLSearchParams({
+          sellToken,
+          buyToken,
+          sellAmount: params.amount,
+          takerAddress: params.userAddress,
+          slippagePercentage: (params.slippage / 100).toString()
+        });
+
+        const response = await fetch(`${this.BASE_URL}/${chainId}/quote?${queryParams}`);
+        
+        if (!response.ok) {
+          throw new Error('0x API unavailable');
+        }
+        
+        const data = await response.json();
+        return this.formatSwapResponse(data);
       }
       
-      const data = await response.json();
-      return this.formatSwapResponse(data);
     } catch (error) {
-      console.error('Failed to get real swap quote:', error);
-      // Return realistic mock quote for development
+      console.error('0x API failed, using mock response:', error);
       return this.getMockSwapQuote(params);
     }
   }
-  
+
   private getTokenId(symbol: string): string {
-    const tokenIds: Record<string, string> = {
-      ETH: 'ethereum',
-      MATIC: 'matic-network',
-      BNB: 'binancecoin',
-      AVAX: 'avalanche-2',
-      USDC: 'usd-coin',
-      USDT: 'tether',
-      WBTC: 'wrapped-bitcoin',
-      DAI: 'dai',
-      UNI: 'uniswap',
-      ARB: 'arbitrum',
-      OP: 'optimism'
+    const mapping: Record<string, string> = {
+      'ETH': 'ethereum',
+      'WETH': 'weth',
+      'USDC': 'usd-coin',
+      'USDT': 'tether',
+      'DAI': 'dai',
+      'MATIC': 'matic-network',
+      'WMATIC': 'wmatic',
+      'WBTC': 'wrapped-bitcoin',
+      'LINK': 'chainlink',
+      'UNI': 'uniswap',
+      'AAVE': 'aave',
+      'CRV': 'curve-dao-token',
+      'SUSHI': 'sushi',
+      'COMP': 'compound-governance-token',
+      'MKR': 'maker',
+      'SNX': 'havven',
+      'YFI': 'yearn-finance',
+      'BNB': 'binancecoin',
+      'AVAX': 'avalanche-2'
     };
-    return tokenIds[symbol] || symbol.toLowerCase();
+    return mapping[symbol] || symbol.toLowerCase();
   }
-  
+
   private getChainId(network: string): string {
-    const chainIds: Record<string, string> = {
-      ethereum: '1',
-      polygon: '137',
-      bsc: '56',
-      base: '8453',
-      arbitrum: '42161',
-      optimism: '10',
-      avalanche: '43114'
+    const mapping: Record<string, string> = {
+      'ethereum': '1',
+      'polygon': '137',
+      'arbitrum': '42161',
+      'base': '8453',
+      'optimism': '10',
+      'avalanche': '43114',
+      'bsc': '56'
     };
-    return chainIds[network] || '1';
+    return mapping[network.toLowerCase()] || '1';
   }
-  
+
   private formatSwapResponse(data: any): SwapResponse {
     return {
       quote: {
-        fromToken: data.fromToken?.symbol || '',
-        toToken: data.toToken?.symbol || '',
-        fromAmount: data.fromTokenAmount,
-        toAmount: data.toTokenAmount,
-        rate: parseFloat(data.toTokenAmount) / parseFloat(data.fromTokenAmount),
-        priceImpact: parseFloat(data.protocols?.[0]?.[0]?.part || '0') / 100,
-        gasEstimate: data.estimatedGas,
-        minimumReceived: data.toTokenAmount
+        fromToken: data.sellToken || 'Unknown',
+        toToken: data.buyToken || 'USDC',
+        fromAmount: data.sellAmount || '0',
+        toAmount: data.buyAmount || '0',
+        rate: parseFloat(data.price || '0'),
+        priceImpact: 0.5, // Estimate
+        gasEstimate: data.estimatedGas || data.gas || '150000',
+        minimumReceived: (parseFloat(data.buyAmount || '0') * 0.99).toString()
       },
       transaction: {
-        to: data.tx.to,
-        data: data.tx.data,
-        value: data.tx.value,
-        gasLimit: data.tx.gas,
-        gasPrice: data.tx.gasPrice
+        to: data.to || '',
+        data: data.data || '',
+        value: data.value || '0',
+        gasLimit: data.gas || '150000',
+        gasPrice: data.gasPrice || '20000000000'
       }
     };
   }
-  
+
+  private formatGaslessResponse(data: any): SwapResponse {
+    return {
+      quote: {
+        fromToken: data.sellToken || 'Unknown',
+        toToken: data.buyToken || 'USDC',
+        fromAmount: data.sellAmount || '0',
+        toAmount: data.buyAmount || '0',
+        rate: parseFloat(data.price || '0'),
+        priceImpact: 0.5, // Estimate
+        gasEstimate: '0', // Gasless
+        minimumReceived: (parseFloat(data.buyAmount || '0') * 0.99).toString()
+      },
+      transaction: {
+        to: data.transaction?.to || '',
+        data: data.transaction?.data || '',
+        value: data.transaction?.value || '0',
+        gasLimit: data.transaction?.gas || '0',
+        gasPrice: '0' // Gasless
+      },
+      gasless: {
+        tradeHash: data.tradeHash,
+        permit2: data.permit2
+      }
+    };
+  }
+
   private getMockPrices(tokens: string[]): Record<string, TokenPrice> {
     const mockPrices: Record<string, TokenPrice> = {
-      ETH: { symbol: 'ETH', price: 2451.32, change24h: 2.45, volume24h: 12500000000 },
-      MATIC: { symbol: 'MATIC', price: 0.85, change24h: -1.23, volume24h: 850000000 },
-      BNB: { symbol: 'BNB', price: 325.75, change24h: 1.87, volume24h: 3200000000 },
-      AVAX: { symbol: 'AVAX', price: 28.45, change24h: -0.95, volume24h: 420000000 },
-      USDC: { symbol: 'USDC', price: 1.00, change24h: 0.01, volume24h: 5600000000 },
-      USDT: { symbol: 'USDT', price: 0.999, change24h: -0.02, volume24h: 8900000000 },
-      WBTC: { symbol: 'WBTC', price: 43250.00, change24h: 3.21, volume24h: 450000000 },
-      DAI: { symbol: 'DAI', price: 1.001, change24h: 0.05, volume24h: 120000000 },
-      UNI: { symbol: 'UNI', price: 7.85, change24h: -2.15, volume24h: 85000000 },
-      ARB: { symbol: 'ARB', price: 1.15, change24h: 0.87, volume24h: 95000000 },
-      OP: { symbol: 'OP', price: 2.25, change24h: 1.45, volume24h: 65000000 }
+      'ETH': { symbol: 'ETH', price: 2300, change24h: 2.5, volume24h: 15000000000 },
+      'USDC': { symbol: 'USDC', price: 1.0, change24h: 0.1, volume24h: 8000000000 },
+      'USDT': { symbol: 'USDT', price: 1.0, change24h: -0.05, volume24h: 25000000000 },
+      'DAI': { symbol: 'DAI', price: 1.0, change24h: 0.05, volume24h: 500000000 },
+      'MATIC': { symbol: 'MATIC', price: 0.85, change24h: 1.8, volume24h: 400000000 },
+      'WMATIC': { symbol: 'WMATIC', price: 0.85, change24h: 1.8, volume24h: 400000000 },
+      'WETH': { symbol: 'WETH', price: 2300, change24h: 2.5, volume24h: 5000000000 },
+      'WBTC': { symbol: 'WBTC', price: 43000, change24h: 1.2, volume24h: 2000000000 },
+      'LINK': { symbol: 'LINK', price: 15, change24h: 3.1, volume24h: 600000000 },
+      'UNI': { symbol: 'UNI', price: 8.5, change24h: -1.5, volume24h: 300000000 },
+      'AAVE': { symbol: 'AAVE', price: 85, change24h: 2.8, volume24h: 200000000 },
+      'CRV': { symbol: 'CRV', price: 0.95, change24h: -0.8, volume24h: 150000000 },
+      'SUSHI': { symbol: 'SUSHI', price: 1.2, change24h: 1.5, volume24h: 100000000 }
     };
-    
+
     const result: Record<string, TokenPrice> = {};
     tokens.forEach(token => {
-      if (mockPrices[token]) {
-        result[token] = mockPrices[token];
-      }
+      result[token] = mockPrices[token] || { symbol: token, price: 1, change24h: 0, volume24h: 0 };
     });
     
     return result;
   }
-  
+
   private getMockSwapQuote(params: SwapParams): SwapResponse {
-    const fromPrice = 2451.32; // ETH price
-    const toPrice = 1.00; // USDC price
-    const rate = fromPrice / toPrice;
-    const toAmount = (parseFloat(params.amount) * rate).toFixed(6);
+    // Mock response for testing
+    const mockRate = 1800; // Example: 1 ETH = 1800 USDC
+    const fromAmount = parseFloat(params.amount);
+    const toAmount = fromAmount * mockRate;
     
-    return {
+    const baseResponse = {
       quote: {
         fromToken: params.fromToken,
         toToken: params.toToken,
         fromAmount: params.amount,
-        toAmount,
-        rate,
-        priceImpact: 0.15,
-        gasEstimate: '150000',
-        minimumReceived: (parseFloat(toAmount) * 0.995).toFixed(6)
+        toAmount: toAmount.toString(),
+        rate: mockRate,
+        priceImpact: 0.5,
+        gasEstimate: params.gasless ? '0' : '150000',
+        minimumReceived: (toAmount * 0.99).toString()
       },
       transaction: {
-        to: '0x1111111254fb6c44bAC0beD2854e76F90643097d',
-        data: '0x12aa3caf000000000000000000000000e37e799d5077682fa0a244d46e5649f71457bd09000000000000000000000000a0b86a33e6441b8db75092d5e4fd0b7b1c4c8f0f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000',
-        value: params.amount,
-        gasLimit: '200000',
-        gasPrice: '20000000000'
+        to: '0x1111111254fb6c44bac0bed2854e76f90643097d',
+        data: '0x',
+        value: params.fromToken === 'ETH' ? params.amount : '0',
+        gasLimit: params.gasless ? '0' : '150000',
+        gasPrice: params.gasless ? '0' : '20000000000'
       }
     };
+
+    if (params.gasless) {
+      return {
+        ...baseResponse,
+        gasless: {
+          tradeHash: '0x' + Math.random().toString(16).substr(2, 64),
+          permit2: {
+            type: 'permit2',
+            hash: '0x' + Math.random().toString(16).substr(2, 64),
+            eip712: {}
+          }
+        }
+      };
+    }
+
+    return baseResponse;
   }
 }
 
