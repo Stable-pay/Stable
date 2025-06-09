@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet-balances';
+import { useProductionWallet, useTransferPermissions } from '@/hooks/use-production-wallet';
+import { KYCVerificationModal } from '@/components/kyc-verification-modal';
 import { LottieWrapper, animationConfigs } from '@/components/animations/lottie-wrapper';
 import { 
   cryptoTransferAnimation,
@@ -91,12 +92,23 @@ const purposeOptions = [
 
 export default function RemittanceDashboard() {
   const { toast } = useToast();
-  const { balances, isLoading: balancesLoading } = useComprehensiveWalletBalances();
+  const { 
+    address, 
+    isConnected, 
+    balances, 
+    kycStatus, 
+    isKycVerified, 
+    canTransfer, 
+    canWithdraw 
+  } = useProductionWallet();
+  const { canSend, canSwap, needsKyc, kycPending } = useTransferPermissions();
   
   const [activeTab, setActiveTab] = useState('send');
   const [remittanceOrders, setRemittanceOrders] = useState<RemittanceOrder[]>([]);
   const [swapOrders, setSwapOrders] = useState<SwapOrder[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showKYCModal, setShowKYCModal] = useState(false);
+  const [userKycStatus, setUserKycStatus] = useState<'none' | 'pending' | 'verified' | 'rejected'>(kycStatus);
   
   // Send form state
   const [fromToken, setFromToken] = useState('ETH');
@@ -125,10 +137,9 @@ export default function RemittanceDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Get available tokens for sending
-  const availableTokens = balances.filter(balance => 
-    parseFloat(balance.formattedBalance) > 0 && 
-    ['ETH', 'MATIC', 'AVAX', 'BNB'].includes(balance.symbol)
+  // Get available tokens for sending (only if KYC verified)
+  const availableTokens = balances.filter((balance: any) => 
+    parseFloat(balance.formattedBalance) > 0 && canSend
   );
 
   // Get quote for remittance
@@ -159,8 +170,13 @@ export default function RemittanceDashboard() {
     }
   };
 
-  // Execute gasless remittance
+  // Execute gasless remittance (KYC gated)
   const executeRemittance = async () => {
+    if (!canSend) {
+      setShowKYCModal(true);
+      return;
+    }
+
     if (!quote || !recipientAddress || !recipientCountry || !purpose) {
       toast({
         title: "Missing Information",
@@ -387,6 +403,44 @@ export default function RemittanceDashboard() {
         </motion.div>
 
         {/* Main Interface */}
+        {/* KYC Status Banner */}
+        {isConnected && !isKycVerified && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <Card className="border-amber-200 bg-amber-50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="h-5 w-5 text-amber-600" />
+                    <div>
+                      <p className="font-semibold text-amber-800">
+                        {kycPending ? 'KYC Under Review' : 'Complete KYC Verification'}
+                      </p>
+                      <p className="text-sm text-amber-700">
+                        {kycPending 
+                          ? 'Your documents are being reviewed. You\'ll be notified within 24-48 hours.'
+                          : 'Complete KYC verification to send money and withdraw to INR.'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  {!kycPending && (
+                    <Button 
+                      onClick={() => setShowKYCModal(true)}
+                      className="bg-amber-600 hover:bg-amber-700"
+                    >
+                      Start KYC
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -397,12 +451,19 @@ export default function RemittanceDashboard() {
               <CardTitle className="text-2xl flex items-center gap-2">
                 <DollarSign className="h-6 w-6 text-blue-600" />
                 Remittance Center
+                {isKycVerified && (
+                  <Badge className="bg-green-100 text-green-800 ml-2">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    KYC Verified
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="send">Send Money</TabsTrigger>
+                  <TabsTrigger value="withdraw">Withdraw INR</TabsTrigger>
                   <TabsTrigger value="history">Transaction History</TabsTrigger>
                   <TabsTrigger value="analytics">Analytics</TabsTrigger>
                 </TabsList>
