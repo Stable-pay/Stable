@@ -9,6 +9,7 @@ import { VerificationMonitor } from "@/components/system/verification-monitor";
 import { DomainVerifier } from "@/components/reown/domain-verifier";
 import { VerificationGuide } from "@/components/reown/verification-guide";
 import { ProductionStatus } from "@/components/reown/production-status";
+import { ReadyStatus } from "@/components/deployment/ready-status";
 import { CheckCircle, Copy, ExternalLink, Settings, AlertTriangle, Info, Clock } from "lucide-react";
 
 export default function Setup() {
@@ -95,6 +96,9 @@ export default function Setup() {
 
       {/* Production Readiness Status */}
       <ProductionStatus />
+
+      {/* Deployment Status */}
+      <ReadyStatus />
 
       {/* Current Configuration */}
       <Card className="border-blue-200 bg-blue-50">
