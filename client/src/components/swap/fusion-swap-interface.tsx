@@ -82,8 +82,26 @@ export default function FusionSwapInterface() {
     }
   ]);
 
-  // Get available tokens from balances
-  const availableTokens = balances.filter(balance => parseFloat(balance.formattedBalance) > 0);
+  // Get available tokens from balances for current chain
+  const availableTokens = balances.filter(balance => 
+    balance.chainId === selectedChain && parseFloat(balance.formattedBalance) > 0
+  );
+
+  // Get all networks with tokens
+  const availableNetworks = Array.from(new Set(balances.map(b => b.chainId)))
+    .map(chainId => {
+      const networkBalances = balances.filter(b => b.chainId === chainId);
+      const networkName = networkBalances[0]?.chainName || 'Unknown';
+      return { chainId, name: networkName, tokenCount: networkBalances.length };
+    });
+
+  // Get all unique tokens across all chains for selection
+  const allTokens = balances.reduce((tokens, balance) => {
+    if (!tokens.find(t => t.symbol === balance.symbol && t.chainId === balance.chainId)) {
+      tokens.push(balance);
+    }
+    return tokens;
+  }, [] as typeof balances);
 
   // Get token balance
   const getTokenBalance = (symbol: string) => {
@@ -409,6 +427,22 @@ export default function FusionSwapInterface() {
                     </motion.div>
                   )}
 
+                  {/* Network Selector */}
+                  <div className="bg-blue-50 rounded-xl p-4 mb-4">
+                    <label className="text-sm font-medium text-gray-700 mb-2 block">Active Network</label>
+                    <select
+                      value={selectedChain}
+                      onChange={(e) => setSelectedChain(parseInt(e.target.value))}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      {availableNetworks.map(network => (
+                        <option key={network.chainId} value={network.chainId}>
+                          {network.name} ({network.tokenCount} tokens)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {/* Swap Button */}
                   <Button
                     onClick={handleSwap}
@@ -432,6 +466,60 @@ export default function FusionSwapInterface() {
                 </CardContent>
               </Card>
             </motion.div>
+
+            {/* Token Selector Modal */}
+            {showTokenSelector && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6"
+                onClick={() => setShowTokenSelector(null)}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-white rounded-xl max-w-md w-full max-h-96 overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="p-6 border-b border-gray-200">
+                    <h3 className="text-lg font-semibold">Select Token</h3>
+                    <p className="text-sm text-gray-600">Choose from {availableTokens.length} available tokens on {availableNetworks.find(n => n.chainId === selectedChain)?.name}</p>
+                  </div>
+                  <div className="p-4 max-h-80 overflow-y-auto">
+                    <div className="space-y-2">
+                      {availableTokens.map((token) => (
+                        <button
+                          key={`${token.chainId}-${token.address}`}
+                          onClick={() => {
+                            if (showTokenSelector === 'from') {
+                              setFromToken(token.symbol);
+                            } else {
+                              setToToken(token.symbol);
+                            }
+                            setShowTokenSelector(null);
+                          }}
+                          className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">{token.symbol.charAt(0)}</span>
+                            </div>
+                            <div className="text-left">
+                              <p className="font-medium">{token.symbol}</p>
+                              <p className="text-xs text-gray-600">{token.chainName}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-medium">{token.formattedBalance}</p>
+                            <p className="text-xs text-gray-600">Balance</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
           </div>
 
           {/* Sidebar */}

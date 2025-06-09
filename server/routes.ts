@@ -167,7 +167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tokens = allSupportedTokens[chainId as string] || [];
       
       // Return all supported tokens for the chain with realistic balances
-      const balances = tokens.map(token => ({
+      const tokenBalances = tokens.map(token => ({
         symbol: token.symbol,
         address: token.address,
         balance: '0', // Raw balance
@@ -178,7 +178,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isNative: token.isNative
       }));
 
-      res.json({ balances });
+      res.json({ balances: tokenBalances });
       
     } catch (error) {
       console.error('Wallet balance error:', error);
