@@ -22,6 +22,7 @@ function Router() {
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/setup" component={Setup} />
       <Route component={NotFound} />
     </Switch>
   );
