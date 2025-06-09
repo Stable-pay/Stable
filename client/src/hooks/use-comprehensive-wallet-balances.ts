@@ -1,4 +1,4 @@
-import { useAccount, useReadContracts, useBalance } from 'wagmi';
+import { useAccount, useBalance, useReadContract } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
 import { formatUnits } from 'viem';
 
@@ -105,16 +105,20 @@ const NETWORK_INFO = {
   43114: { name: 'Avalanche', nativeSymbol: 'AVAX', nativeDecimals: 18 }
 } as const;
 
-// ERC20 ABI for balance checking
-const ERC20_ABI = [
-  {
-    name: 'balanceOf',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [{ name: 'account', type: 'address' }],
-    outputs: [{ type: 'uint256' }]
-  }
-] as const;
+// RPC endpoints for each network
+const RPC_URLS = {
+  1: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  137: 'https://polygon-rpc.com',
+  42161: 'https://arb1.arbitrum.io/rpc',
+  8453: 'https://mainnet.base.org',
+  10: 'https://mainnet.optimism.io',
+  56: 'https://bsc-dataseed1.binance.org',
+  43114: 'https://api.avax.network/ext/bc/C/rpc'
+} as const;
+
+function getRpcUrl(chainId: number): string | null {
+  return RPC_URLS[chainId as keyof typeof RPC_URLS] || null;
+}
 
 export interface ComprehensiveTokenBalance {
   symbol: string;
@@ -137,44 +141,25 @@ export function useComprehensiveWalletBalances() {
     query: { enabled: !!address && isConnected }
   });
 
-  // Get token list for current network
-  const getCurrentNetworkTokens = () => {
-    if (!chainId || !COMPREHENSIVE_TOKENS[chainId as keyof typeof COMPREHENSIVE_TOKENS]) {
-      return [];
-    }
-    return COMPREHENSIVE_TOKENS[chainId as keyof typeof COMPREHENSIVE_TOKENS];
-  };
-
-  const currentTokens = getCurrentNetworkTokens();
-
-  // Prepare contracts for batch reading
-  const contracts = currentTokens.map(token => ({
-    address: token.address as `0x${string}`,
-    abi: ERC20_ABI,
-    functionName: 'balanceOf',
-    args: [address as `0x${string}`],
-    chainId: chainId
-  }));
-
-  // Read all token balances at once
-  const { data: tokenBalances, isLoading: isLoadingTokens } = useReadContracts({
-    contracts,
-    query: { 
-      enabled: !!address && isConnected && contracts.length > 0,
-      refetchInterval: 30000 // Refresh every 30 seconds
-    }
-  });
-
-  // Process and format the results
+  // Get individual token balances using sequential calls for reliability
   const { data: processedBalances = [], isLoading } = useQuery({
-    queryKey: ['comprehensiveBalances', address, chainId, tokenBalances?.length, nativeBalance?.value.toString()],
-    queryFn: (): ComprehensiveTokenBalance[] => {
+    queryKey: ['comprehensiveBalances', address, chainId, nativeBalance?.value.toString()],
+    queryFn: async (): Promise<ComprehensiveTokenBalance[]> => {
+      if (!address || !chainId || !isConnected) return [];
+
       const results: ComprehensiveTokenBalance[] = [];
+      const networkInfo = NETWORK_INFO[chainId as keyof typeof NETWORK_INFO];
+      
+      if (!networkInfo) return results;
+
+      console.log('Processing balances for chainId:', chainId, 'address:', address);
       
       // Add native token if has balance
-      if (nativeBalance && parseFloat(formatUnits(nativeBalance.value, nativeBalance.decimals)) > 0 && chainId) {
-        const networkInfo = NETWORK_INFO[chainId as keyof typeof NETWORK_INFO];
-        if (networkInfo) {
+      if (nativeBalance) {
+        const formattedNative = parseFloat(formatUnits(nativeBalance.value, nativeBalance.decimals));
+        console.log('Native balance formatted:', formattedNative);
+        
+        if (formattedNative > 0.000001) {
           results.push({
             symbol: networkInfo.nativeSymbol,
             address: 'native',
@@ -182,23 +167,50 @@ export function useComprehensiveWalletBalances() {
             decimals: networkInfo.nativeDecimals,
             chainId: chainId,
             chainName: networkInfo.name,
-            formattedBalance: parseFloat(formatUnits(nativeBalance.value, networkInfo.nativeDecimals)).toFixed(6),
+            formattedBalance: formattedNative.toFixed(6),
             isNative: true
           });
         }
       }
 
-      // Add ERC20 tokens with balances
-      if (tokenBalances && chainId) {
-        const networkInfo = NETWORK_INFO[chainId as keyof typeof NETWORK_INFO];
-        tokenBalances.forEach((result, index) => {
-          if (result.status === 'success' && result.result && networkInfo) {
-            const token = currentTokens[index];
-            const balance = result.result as bigint;
+      // Get token list for current network
+      const currentTokens = COMPREHENSIVE_TOKENS[chainId as keyof typeof COMPREHENSIVE_TOKENS] || [];
+      console.log('Checking tokens for network:', networkInfo.name, 'token count:', currentTokens.length);
+
+      // Check each token balance using direct RPC calls
+      for (const token of currentTokens) {
+        try {
+          // Use RPC endpoint for each network
+          const rpcUrl = getRpcUrl(chainId);
+          if (!rpcUrl) continue;
+
+          // ERC20 balanceOf call data
+          const balanceOfCallData = `0x70a08231000000000000000000000000${address.slice(2)}`;
+          
+          const response = await fetch(rpcUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'eth_call',
+              params: [{
+                to: token.address,
+                data: balanceOfCallData
+              }, 'latest'],
+              id: 1
+            })
+          });
+
+          const data = await response.json();
+          
+          if (data.result && data.result !== '0x') {
+            const balance = BigInt(data.result);
             const formatted = formatUnits(balance, token.decimals);
+            const formattedNum = parseFloat(formatted);
             
-            // Only include tokens with balance > 0
-            if (parseFloat(formatted) > 0) {
+            console.log(`${token.symbol}: balance=${balance.toString()}, formatted=${formatted}`);
+            
+            if (formattedNum > 0.000001) {
               results.push({
                 symbol: token.symbol,
                 address: token.address,
@@ -206,24 +218,27 @@ export function useComprehensiveWalletBalances() {
                 decimals: token.decimals,
                 chainId: chainId,
                 chainName: networkInfo.name,
-                formattedBalance: parseFloat(formatted).toFixed(6),
+                formattedBalance: formattedNum.toFixed(6),
                 isNative: false
               });
             }
           }
-        });
+        } catch (error) {
+          console.log(`Error checking balance for ${token.symbol}:`, error);
+        }
       }
 
-      // Sort by balance value (descending)
+      console.log('Final results:', results);
       return results.sort((a, b) => parseFloat(b.formattedBalance) - parseFloat(a.formattedBalance));
     },
-    enabled: !!address && isConnected,
-    staleTime: 15000 // Consider data stale after 15 seconds
+    enabled: !!address && isConnected && !!chainId,
+    staleTime: 30000,
+    refetchInterval: 60000 // Refresh every minute
   });
 
   return {
     balances: processedBalances,
-    isLoading: isLoading || isLoadingTokens,
+    isLoading,
     currentChainId: chainId,
     currentChainName: chainId ? NETWORK_INFO[chainId as keyof typeof NETWORK_INFO]?.name : 'Unknown',
     supportedNetworks: Object.values(NETWORK_INFO).map(n => n.name),
