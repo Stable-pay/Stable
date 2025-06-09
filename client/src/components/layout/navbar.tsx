@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { DirectWalletConnect } from "@/components/wallet/direct-wallet-connect";
+import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { Menu, X, ArrowUpDown, CreditCard, Shield, TrendingUp, Home } from "lucide-react";
 
 export function Navbar() {
@@ -68,7 +68,7 @@ export function Navbar() {
 
           {/* Wallet Section */}
           <div className="flex items-center space-x-3">
-            <DirectWalletConnect />
+            <ReownWalletConnect />
           </div>
 
           {/* Mobile Menu Toggle */}

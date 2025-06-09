@@ -1,65 +1,51 @@
 import { createAppKit } from '@reown/appkit/react'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { mainnet, polygon, bsc, base, avalanche, arbitrum, optimism } from '@reown/appkit/networks'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet, polygon, arbitrum, base } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // Production Reown project configuration
 const projectId = '421930fbeb871d753327b56943afe3ad'
 
 // Get current domain for proper configuration
-const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'https://stable-pay.app'
-const allowedOrigins = [
-  'https://stable-pay.app',
-  'https://stable-pay.replit.app',
-  'https://fc0fcb6c-8722-458b-9985-8a31854bcfb6-00-9b41tf5yjab1.spock.replit.dev'
-]
+const metadata = {
+  name: 'Stable Pay',
+  description: 'Multi-Chain USDC Platform with Live Token Swapping',
+  url: 'https://stable-pay.app',
+  icons: ['https://stable-pay.app/favicon.ico']
+}
 
-// Configure supported networks for multi-chain DeFi
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
-  mainnet,
-  polygon,
-  bsc,
-  base,
-  avalanche,
-  arbitrum,
-  optimism
-]
+// Configure supported networks for real blockchain integration
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, polygon, arbitrum, base]
 
-// Create EVM adapter with enhanced configuration
-const ethersAdapter = new EthersAdapter()
+// Create Wagmi adapter for real wallet connections
+const wagmiAdapter = new WagmiAdapter({
+  ssr: false,
+  projectId,
+  networks
+})
 
-// Create the AppKit instance with native swapping enabled
+// Create the AppKit instance for real wallet integration
 export const appKit = createAppKit({
-  adapters: [ethersAdapter],
+  adapters: [wagmiAdapter],
   projectId,
   networks,
-  metadata: {
-    name: 'Stable Pay',
-    description: 'Multi-Chain USDC Platform with Native Reown Swapping',
-    url: currentUrl,
-    icons: [`${currentUrl}/favicon.ico`]
-  },
+  metadata,
   features: {
     analytics: true,
-    email: true,
-    socials: ['google', 'x', 'github', 'discord'],
-    onramp: true,
+    email: false,
+    socials: [],
+    onramp: false,
     swaps: true,
-    history: true,
-    emailShowWallets: true
+    history: true
   },
   themeMode: 'light',
   themeVariables: {
-    '--w3m-font-family': 'Inter, system-ui, sans-serif',
     '--w3m-accent': '#3B82F6',
-    '--w3m-color-mix': '#3B82F6',
-    '--w3m-color-mix-strength': 20,
-    '--w3m-border-radius-master': '8px',
-    '--w3m-z-index': 2147483647
-  },
-  allowUnsupportedChain: false,
-  allWallets: 'SHOW'
+    '--w3m-border-radius-master': '8px'
+  }
 })
+
+export const wagmiConfig = wagmiAdapter.wagmiConfig
 
 // Export utilities for wallet operations
 export { projectId }
