@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { VerificationMonitor } from "@/components/system/verification-monitor";
 import { DomainVerifier } from "@/components/reown/domain-verifier";
+import { VerificationGuide } from "@/components/reown/verification-guide";
+import { ProductionStatus } from "@/components/reown/production-status";
 import { CheckCircle, Copy, ExternalLink, Settings, AlertTriangle, Info, Clock } from "lucide-react";
 
 export default function Setup() {
@@ -91,11 +93,8 @@ export default function Setup() {
         </p>
       </div>
 
-      {/* Domain Verification */}
-      <DomainVerifier />
-
-      {/* Real-time System Monitor */}
-      <VerificationMonitor />
+      {/* Production Readiness Status */}
+      <ProductionStatus />
 
       {/* Current Configuration */}
       <Card className="border-blue-200 bg-blue-50">
@@ -146,9 +145,12 @@ export default function Setup() {
         </CardContent>
       </Card>
 
+      {/* Detailed Configuration Guide */}
+      <VerificationGuide />
+
       {/* Setup Steps */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-gray-900">Configuration Steps</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Quick Configuration Steps</h2>
         
         {setupSteps.map((step, index) => {
           const IconComponent = step.icon;
