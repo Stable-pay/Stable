@@ -25,6 +25,65 @@ const upload = multer({
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // 1inch API proxy routes to fix CORS issues
+  app.get("/api/1inch/:chainId/quote", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const queryParams = new URLSearchParams(req.query as Record<string, string>);
+      
+      console.log(`1inch quote proxy request: ${chainId} - ${queryParams}`);
+      
+      const response = await fetch(`https://api.1inch.io/v5.0/${chainId}/quote?${queryParams}`, {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      console.log(`1inch quote response status: ${response.status}`);
+      
+      if (!response.ok) {
+        const error = await response.text();
+        console.error('1inch quote error:', error);
+        return res.status(response.status).json({ error });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error('1inch quote proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch quote from 1inch API' });
+    }
+  });
+
+  app.get("/api/1inch/:chainId/swap", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const queryParams = new URLSearchParams(req.query as Record<string, string>);
+      
+      console.log(`1inch swap proxy request: ${chainId} - ${queryParams}`);
+      
+      const response = await fetch(`https://api.1inch.io/v5.0/${chainId}/swap?${queryParams}`, {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      console.log(`1inch swap response status: ${response.status}`);
+      
+      if (!response.ok) {
+        const error = await response.text();
+        console.error('1inch swap error:', error);
+        return res.status(response.status).json({ error });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error('1inch swap proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch swap data from 1inch API' });
+    }
+  });
+  
   // WalletConnect domain verification
   app.get("/.well-known/walletconnect.txt", (_req, res) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');

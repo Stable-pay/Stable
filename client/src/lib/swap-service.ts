@@ -17,7 +17,7 @@ interface SwapResult {
 
 class SwapService {
   private readonly API_KEY = '1Fqf1TSnyq86janyEBVQ9wcd65Ml6yBf';
-  private readonly BASE_URL = 'https://api.1inch.io/v5.0';
+  private readonly BASE_URL = '/api/1inch';
 
   async swapTokenToUSDC(params: SwapToUSDCParams): Promise<SwapResult> {
     if (!isValidNetwork(params.network)) {

@@ -11,10 +11,10 @@ export function SwapTest() {
     setTestResult('Testing 1inch API...');
     
     try {
-      // Test simple quote for USDT to USDC on Polygon
-      const testUrl = 'https://api.1inch.io/v5.0/137/quote?fromTokenAddress=0xc2132D05D31c914a87C6611C10748AEb04B58e8F&toTokenAddress=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&amount=1000000';
+      // Test simple quote for USDT to USDC on Polygon via backend proxy
+      const testUrl = '/api/1inch/137/quote?fromTokenAddress=0xc2132D05D31c914a87C6611C10748AEb04B58e8F&toTokenAddress=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&amount=1000000';
       
-      console.log('Testing 1inch API with URL:', testUrl);
+      console.log('Testing 1inch API via backend proxy:', testUrl);
       
       const response = await fetch(testUrl, {
         headers: {
