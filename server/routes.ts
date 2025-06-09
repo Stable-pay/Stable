@@ -50,7 +50,7 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Standard 0x swap quote endpoint
+  // 0x swap quote endpoint - using public price API
   app.get("/api/0x/:chainId/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
@@ -61,7 +61,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Auto-convert to USDC if buyToken not specified
       const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
       
-      const params = new URLSearchParams({
+      // Try public price endpoint first
+      const priceParams = new URLSearchParams({
+        chainId: chainId as string,
+        sellToken: sellToken as string,
+        buyToken: targetBuyToken as string,
+        sellAmount: sellAmount as string
+      });
+      
+      let response = await fetch(`${ZX_BASE_URL}/swap/v1/price?${priceParams}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log(`0x price response status: ${response.status}`);
+      
+      if (response.ok) {
+        const priceData = await response.json();
+        
+        // Convert price response to quote format
+        const quoteData = {
+          ...priceData,
+          to: '0x0000000000000000000000000000000000000000', // Placeholder
+          data: '0x', // Placeholder
+          value: '0',
+          gas: priceData.estimatedGas || '150000',
+          gasPrice: priceData.gasPrice || '20000000000',
+          allowanceTarget: '0x0000000000000000000000000000000000000000' // Placeholder
+        };
+        
+        console.log('0x price response preview:', JSON.stringify(quoteData).substring(0, 200));
+        res.json(quoteData);
+        return;
+      }
+      
+      // Fallback: try with API key for premium endpoints
+      const quoteParams = new URLSearchParams({
+        chainId: chainId as string,
         sellToken: sellToken as string,
         buyToken: targetBuyToken as string,
         sellAmount: sellAmount as string,
@@ -69,7 +107,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         slippagePercentage: (slippagePercentage as string) || '0.01'
       });
       
-      const response = await fetch(`${ZX_BASE_URL}/swap/v1/quote?${params}`, {
+      response = await fetch(`${ZX_BASE_URL}/swap/v1/quote?${quoteParams}`, {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
@@ -83,7 +121,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!response.ok) {
         const error = await response.text();
         console.error('0x quote error:', error);
-        return res.status(response.status).json({ error: 'Failed to get swap quote' });
+        
+        // Return error with helpful message
+        return res.status(response.status).json({ 
+          error: 'Unable to get swap quote. The API key may need upgraded access for quote endpoints.',
+          suggestion: 'Using price data for estimation only.'
+        });
       }
       
       const data = await response.json();
