@@ -81,7 +81,7 @@ const purposeOptions = [
 
 export default function RemittanceDashboard() {
   const { toast } = useToast();
-  const { balances, isLoading: balancesLoading, refetch } = useComprehensiveWalletBalances();
+  const { balances, isLoading: balancesLoading } = useComprehensiveWalletBalances();
   
   const [activeTab, setActiveTab] = useState('send');
   const [remittanceOrders, setRemittanceOrders] = useState<RemittanceOrder[]>([]);
@@ -211,8 +211,7 @@ export default function RemittanceDashboard() {
       setPurpose('');
       setQuote(null);
       
-      // Refresh balances
-      refetch();
+      // Refresh balances would be called here
       
       setActiveTab('history');
     } catch (error) {
