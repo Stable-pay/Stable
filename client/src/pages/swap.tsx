@@ -1,5 +1,5 @@
-import { StablePaySwap } from "@/components/swap/stablepay-swap";
+import { AnimatedSwapInterface } from "@/components/swap/animated-swap-interface";
 
 export default function Swap() {
-  return <StablePaySwap />;
+  return <AnimatedSwapInterface />;
 }
