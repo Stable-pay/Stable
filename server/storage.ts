@@ -4,6 +4,10 @@ import {
   bankAccounts, 
   transactions, 
   custodyWallets,
+  swapOrders,
+  balanceUpdates,
+  webhookEvents,
+  remittanceOrders,
   type User, 
   type InsertUser,
   type KycDocument,
@@ -13,7 +17,15 @@ import {
   type Transaction,
   type InsertTransaction,
   type CustodyWallet,
-  type InsertCustodyWallet
+  type InsertCustodyWallet,
+  type SwapOrder,
+  type InsertSwapOrder,
+  type BalanceUpdate,
+  type InsertBalanceUpdate,
+  type WebhookEvent,
+  type InsertWebhookEvent,
+  type RemittanceOrder,
+  type InsertRemittanceOrder
 } from "@shared/schema";
 
 export interface IStorage {
@@ -43,209 +55,192 @@ export interface IStorage {
   getCustodyWallets(): Promise<CustodyWallet[]>;
   getCustodyWalletByNetwork(network: string): Promise<CustodyWallet | undefined>;
   createCustodyWallet(wallet: InsertCustodyWallet): Promise<CustodyWallet>;
+  
+  // Real-time swap order operations
+  getSwapOrders(userId?: number): Promise<SwapOrder[]>;
+  getSwapOrder(orderHash: string): Promise<SwapOrder | undefined>;
+  createSwapOrder(order: InsertSwapOrder): Promise<SwapOrder>;
+  updateSwapOrder(orderHash: string, updates: Partial<SwapOrder>): Promise<SwapOrder | undefined>;
+  
+  // Real-time balance tracking
+  getBalanceUpdates(walletAddress: string): Promise<BalanceUpdate[]>;
+  createBalanceUpdate(update: InsertBalanceUpdate): Promise<BalanceUpdate>;
+  getLatestBalance(walletAddress: string, tokenAddress: string, chainId: number): Promise<BalanceUpdate | undefined>;
+  
+  // Webhook event management
+  createWebhookEvent(event: InsertWebhookEvent): Promise<WebhookEvent>;
+  getPendingWebhookEvents(): Promise<WebhookEvent[]>;
+  markWebhookProcessed(id: number): Promise<void>;
+  
+  // Remittance operations
+  getRemittanceOrders(userId: number): Promise<RemittanceOrder[]>;
+  createRemittanceOrder(order: InsertRemittanceOrder): Promise<RemittanceOrder>;
+  updateRemittanceOrder(id: number, updates: Partial<RemittanceOrder>): Promise<RemittanceOrder | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private kycDocuments: Map<number, KycDocument>;
-  private bankAccounts: Map<number, BankAccount>;
-  private transactions: Map<number, Transaction>;
-  private custodyWallets: Map<number, CustodyWallet>;
-  private currentUserId: number;
-  private currentKycDocumentId: number;
-  private currentBankAccountId: number;
-  private currentTransactionId: number;
-  private currentCustodyWalletId: number;
+import { db } from "./db";
+import { eq, desc, and } from "drizzle-orm";
 
-  constructor() {
-    this.users = new Map();
-    this.kycDocuments = new Map();
-    this.bankAccounts = new Map();
-    this.transactions = new Map();
-    this.custodyWallets = new Map();
-    this.currentUserId = 1;
-    this.currentKycDocumentId = 1;
-    this.currentBankAccountId = 1;
-    this.currentTransactionId = 1;
-    this.currentCustodyWalletId = 1;
-    
-    // Initialize default custody wallets
-    this.initializeCustodyWallets();
-  }
-
-  private async initializeCustodyWallets() {
-    const networks = [
-      { network: 'ethereum', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F8e' },
-      { network: 'polygon', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F8f' },
-      { network: 'solana', address: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM' },
-      { network: 'bnb', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F90' },
-      { network: 'base', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F91' },
-      { network: 'avalanche', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F92' },
-      { network: 'arbitrum', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F93' },
-      { network: 'optimism', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F94' },
-      { network: 'zksync', address: '0x742d35Cc632C4532c76b78aaE1cbAd4b5E3D6F95' }
-    ];
-
-    for (const wallet of networks) {
-      await this.createCustodyWallet(wallet);
-    }
-  }
-
+export class DatabaseStorage implements IStorage {
+  // User operations
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.walletAddress.toLowerCase() === walletAddress.toLowerCase()
-    );
+    const [user] = await db.select().from(users).where(eq(users.walletAddress, walletAddress));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { 
-      id,
-      walletAddress: insertUser.walletAddress,
-      email: insertUser.email || null,
-      kycStatus: insertUser.kycStatus || null,
-      kycTier: insertUser.kycTier || null,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (!user) return undefined;
-    
-    const updatedUser = { ...user, ...updates, updatedAt: new Date() };
-    this.users.set(id, updatedUser);
-    return updatedUser;
+    const [user] = await db.update(users).set(updates).where(eq(users.id, id)).returning();
+    return user || undefined;
   }
 
+  // KYC operations
   async getKycDocuments(userId: number): Promise<KycDocument[]> {
-    return Array.from(this.kycDocuments.values()).filter(doc => doc.userId === userId);
+    return await db.select().from(kycDocuments).where(eq(kycDocuments.userId, userId));
   }
 
   async createKycDocument(insertDocument: InsertKycDocument): Promise<KycDocument> {
-    const id = this.currentKycDocumentId++;
-    const document: KycDocument = {
-      id,
-      userId: insertDocument.userId,
-      documentType: insertDocument.documentType,
-      documentUrl: insertDocument.documentUrl,
-      status: insertDocument.status ?? null,
-      createdAt: new Date()
-    };
-    this.kycDocuments.set(id, document);
+    const [document] = await db.insert(kycDocuments).values(insertDocument).returning();
     return document;
   }
 
   async updateKycDocument(id: number, updates: Partial<KycDocument>): Promise<KycDocument | undefined> {
-    const document = this.kycDocuments.get(id);
-    if (!document) return undefined;
-    
-    const updatedDocument = { ...document, ...updates };
-    this.kycDocuments.set(id, updatedDocument);
-    return updatedDocument;
+    const [document] = await db.update(kycDocuments).set(updates).where(eq(kycDocuments.id, id)).returning();
+    return document || undefined;
   }
 
+  // Bank account operations
   async getBankAccounts(userId: number): Promise<BankAccount[]> {
-    return Array.from(this.bankAccounts.values()).filter(account => account.userId === userId);
+    return await db.select().from(bankAccounts).where(eq(bankAccounts.userId, userId));
   }
 
   async createBankAccount(insertAccount: InsertBankAccount): Promise<BankAccount> {
-    const id = this.currentBankAccountId++;
-    const account: BankAccount = {
-      id,
-      userId: insertAccount.userId,
-      accountHolderName: insertAccount.accountHolderName,
-      accountNumber: insertAccount.accountNumber,
-      ifscCode: insertAccount.ifscCode,
-      bankName: insertAccount.bankName,
-      isVerified: insertAccount.isVerified ?? null,
-      createdAt: new Date()
-    };
-    this.bankAccounts.set(id, account);
+    const [account] = await db.insert(bankAccounts).values(insertAccount).returning();
     return account;
   }
 
   async updateBankAccount(id: number, updates: Partial<BankAccount>): Promise<BankAccount | undefined> {
-    const account = this.bankAccounts.get(id);
-    if (!account) return undefined;
-    
-    const updatedAccount = { ...account, ...updates };
-    this.bankAccounts.set(id, updatedAccount);
-    return updatedAccount;
+    const [account] = await db.update(bankAccounts).set(updates).where(eq(bankAccounts.id, id)).returning();
+    return account || undefined;
   }
 
+  // Transaction operations
   async getTransactions(userId: number): Promise<Transaction[]> {
-    return Array.from(this.transactions.values())
-      .filter(tx => tx.userId === userId)
-      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+    return await db.select().from(transactions).where(eq(transactions.userId, userId)).orderBy(desc(transactions.createdAt));
   }
 
   async getTransaction(id: number): Promise<Transaction | undefined> {
-    return this.transactions.get(id);
+    const [transaction] = await db.select().from(transactions).where(eq(transactions.id, id));
+    return transaction || undefined;
   }
 
   async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
-    const id = this.currentTransactionId++;
-    const transaction: Transaction = {
-      id,
-      type: insertTransaction.type,
-      userId: insertTransaction.userId,
-      network: insertTransaction.network,
-      status: insertTransaction.status ?? null,
-      fromToken: insertTransaction.fromToken ?? null,
-      toToken: insertTransaction.toToken ?? null,
-      fromAmount: insertTransaction.fromAmount ?? null,
-      toAmount: insertTransaction.toAmount ?? null,
-      txHash: insertTransaction.txHash ?? null,
-      exchangeRate: insertTransaction.exchangeRate ?? null,
-      networkFee: insertTransaction.networkFee ?? null,
-      processingFee: insertTransaction.processingFee ?? null,
-      metadata: insertTransaction.metadata ?? {},
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.transactions.set(id, transaction);
+    const [transaction] = await db.insert(transactions).values(insertTransaction).returning();
     return transaction;
   }
 
   async updateTransaction(id: number, updates: Partial<Transaction>): Promise<Transaction | undefined> {
-    const transaction = this.transactions.get(id);
-    if (!transaction) return undefined;
-    
-    const updatedTransaction = { ...transaction, ...updates, updatedAt: new Date() };
-    this.transactions.set(id, updatedTransaction);
-    return updatedTransaction;
+    const [transaction] = await db.update(transactions).set(updates).where(eq(transactions.id, id)).returning();
+    return transaction || undefined;
   }
 
+  // Custody wallet operations
   async getCustodyWallets(): Promise<CustodyWallet[]> {
-    return Array.from(this.custodyWallets.values()).filter(wallet => wallet.isActive);
+    return await db.select().from(custodyWallets).where(eq(custodyWallets.isActive, true));
   }
 
   async getCustodyWalletByNetwork(network: string): Promise<CustodyWallet | undefined> {
-    return Array.from(this.custodyWallets.values()).find(
-      wallet => wallet.network === network && wallet.isActive
-    );
+    const [wallet] = await db.select().from(custodyWallets).where(and(eq(custodyWallets.network, network), eq(custodyWallets.isActive, true)));
+    return wallet || undefined;
   }
 
   async createCustodyWallet(insertWallet: InsertCustodyWallet): Promise<CustodyWallet> {
-    const id = this.currentCustodyWalletId++;
-    const wallet: CustodyWallet = {
-      id,
-      address: insertWallet.address,
-      network: insertWallet.network,
-      isActive: insertWallet.isActive ?? true,
-      createdAt: new Date()
-    };
-    this.custodyWallets.set(id, wallet);
+    const [wallet] = await db.insert(custodyWallets).values(insertWallet).returning();
     return wallet;
+  }
+
+  // Real-time swap order operations
+  async getSwapOrders(userId?: number): Promise<SwapOrder[]> {
+    if (userId) {
+      return await db.select().from(swapOrders).where(eq(swapOrders.userId, userId)).orderBy(desc(swapOrders.createdAt));
+    }
+    return await db.select().from(swapOrders).orderBy(desc(swapOrders.createdAt));
+  }
+
+  async getSwapOrder(orderHash: string): Promise<SwapOrder | undefined> {
+    const [order] = await db.select().from(swapOrders).where(eq(swapOrders.orderHash, orderHash));
+    return order || undefined;
+  }
+
+  async createSwapOrder(insertOrder: InsertSwapOrder): Promise<SwapOrder> {
+    const [order] = await db.insert(swapOrders).values(insertOrder).returning();
+    return order;
+  }
+
+  async updateSwapOrder(orderHash: string, updates: Partial<SwapOrder>): Promise<SwapOrder | undefined> {
+    const [order] = await db.update(swapOrders).set(updates).where(eq(swapOrders.orderHash, orderHash)).returning();
+    return order || undefined;
+  }
+
+  // Real-time balance tracking
+  async getBalanceUpdates(walletAddress: string): Promise<BalanceUpdate[]> {
+    return await db.select().from(balanceUpdates).where(eq(balanceUpdates.walletAddress, walletAddress)).orderBy(desc(balanceUpdates.lastUpdated));
+  }
+
+  async createBalanceUpdate(insertUpdate: InsertBalanceUpdate): Promise<BalanceUpdate> {
+    const [update] = await db.insert(balanceUpdates).values(insertUpdate).returning();
+    return update;
+  }
+
+  async getLatestBalance(walletAddress: string, tokenAddress: string, chainId: number): Promise<BalanceUpdate | undefined> {
+    const [balance] = await db.select().from(balanceUpdates)
+      .where(and(
+        eq(balanceUpdates.walletAddress, walletAddress),
+        eq(balanceUpdates.tokenAddress, tokenAddress),
+        eq(balanceUpdates.chainId, chainId)
+      ))
+      .orderBy(desc(balanceUpdates.lastUpdated))
+      .limit(1);
+    return balance || undefined;
+  }
+
+  // Webhook event management
+  async createWebhookEvent(insertEvent: InsertWebhookEvent): Promise<WebhookEvent> {
+    const [event] = await db.insert(webhookEvents).values(insertEvent).returning();
+    return event;
+  }
+
+  async getPendingWebhookEvents(): Promise<WebhookEvent[]> {
+    return await db.select().from(webhookEvents).where(eq(webhookEvents.processed, false)).orderBy(webhookEvents.createdAt);
+  }
+
+  async markWebhookProcessed(id: number): Promise<void> {
+    await db.update(webhookEvents).set({ processed: true, processedAt: new Date() }).where(eq(webhookEvents.id, id));
+  }
+
+  // Remittance operations
+  async getRemittanceOrders(userId: number): Promise<RemittanceOrder[]> {
+    return await db.select().from(remittanceOrders).where(eq(remittanceOrders.userId, userId)).orderBy(desc(remittanceOrders.createdAt));
+  }
+
+  async createRemittanceOrder(insertOrder: InsertRemittanceOrder): Promise<RemittanceOrder> {
+    const [order] = await db.insert(remittanceOrders).values(insertOrder).returning();
+    return order;
+  }
+
+  async updateRemittanceOrder(id: number, updates: Partial<RemittanceOrder>): Promise<RemittanceOrder | undefined> {
+    const [order] = await db.update(remittanceOrders).set(updates).where(eq(remittanceOrders.id, id)).returning();
+    return order || undefined;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
