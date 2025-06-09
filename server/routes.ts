@@ -73,6 +73,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
+          '0x-version': 'v2',
           'Content-Type': 'application/json'
         }
       });
@@ -123,6 +124,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
+          '0x-version': 'v2',
           'Content-Type': 'application/json'
         }
       });
@@ -174,6 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
+          '0x-version': 'v2',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(requestBody)
@@ -220,6 +223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
+          '0x-version': 'v2',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(requestBody)
@@ -259,6 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
+          '0x-version': 'v2',
           'Content-Type': 'application/json'
         }
       });
