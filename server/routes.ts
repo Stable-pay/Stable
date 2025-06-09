@@ -23,183 +23,231 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
-// Alternative pricing function using CoinGecko
-async function handleAlternativePricing(req: any, res: any, chainId: string, queryParams: URLSearchParams) {
-  try {
-    const fromTokenAddress = queryParams.get('fromTokenAddress') || queryParams.get('src');
-    const toTokenAddress = queryParams.get('toTokenAddress') || queryParams.get('dst');
-    const amount = queryParams.get('amount');
-    
-    // Token ID mapping for CoinGecko
-    const tokenMapping: Record<string, string> = {
-      // Ethereum
-      '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE': 'ethereum',
-      '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B': 'usd-coin',
-      '0xdAC17F958D2ee523a2206206994597C13D831ec7': 'tether',
-      // Polygon
-      '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270': 'matic-network',
-      '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': 'usd-coin',
-      '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': 'tether',
-      // Native tokens
-      '137-native': 'matic-network',
-      '1-native': 'ethereum',
-      '42161-native': 'ethereum',
-      '8453-native': 'ethereum',
-      '10-native': 'ethereum'
-    };
-    
-    const fromTokenId = tokenMapping[fromTokenAddress || ''] || tokenMapping[`${chainId}-native`];
-    const toTokenId = tokenMapping[toTokenAddress || ''] || 'usd-coin';
-    
-    if (!fromTokenId) {
-      return res.status(400).json({ error: 'Unsupported token for pricing' });
-    }
-    
-    // Fetch real-time prices from CoinGecko
-    const priceResponse = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${fromTokenId},${toTokenId}&vs_currencies=usd`,
-      { headers: { 'Accept': 'application/json' } }
-    );
-    
-    if (!priceResponse.ok) {
-      throw new Error('CoinGecko API failed');
-    }
-    
-    const prices = await priceResponse.json();
-    const fromPrice = prices[fromTokenId]?.usd || 0;
-    const toPrice = prices[toTokenId]?.usd || 1;
-    
-    if (!fromPrice) {
-      return res.status(400).json({ error: 'Token price not available' });
-    }
-    
-    // Calculate conversion
-    const rate = fromPrice / toPrice;
-    const fromAmount = parseFloat(amount || '0');
-    const decimals = fromTokenAddress === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' ? 18 : 6; // ETH vs USDT/USDC
-    const actualFromAmount = fromAmount / Math.pow(10, decimals);
-    const toAmount = actualFromAmount * rate;
-    const toAmountWei = Math.floor(toAmount * 1e6); // USDC has 6 decimals
-    
-    // Return 1inch-compatible response
-    const response = {
-      fromToken: {
-        symbol: fromTokenAddress === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' ? 'ETH' : 'USDT',
-        decimals: decimals,
-        address: fromTokenAddress
-      },
-      toToken: {
-        symbol: 'USDC',
-        decimals: 6,
-        address: toTokenAddress
-      },
-      toTokenAmount: toAmountWei.toString(),
-      fromTokenAmount: amount,
-      protocols: [['CoinGecko Real-Time Pricing']],
-      estimatedGas: '150000'
-    };
-    
-    console.log('Alternative pricing successful:', response);
-    res.json(response);
-    
-  } catch (error) {
-    console.error('Alternative pricing error:', error);
-    res.status(500).json({ error: 'Alternative pricing failed' });
-  }
-}
+// 0x API configuration
+const ZX_API_KEY = '12be1743-8f3e-4867-a82b-501263f3c4b6';
+const ZX_BASE_URL = 'https://api.0x.org';
+
+// Chain ID mapping for 0x
+const ZX_CHAIN_MAPPING: Record<string, string> = {
+  '1': 'ethereum',
+  '137': 'polygon',
+  '42161': 'arbitrum',
+  '8453': 'base',
+  '10': 'optimism',
+  '43114': 'avalanche'
+};
+
+// USDC contract addresses for each chain
+const USDC_ADDRESSES: Record<string, string> = {
+  '1': '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B',      // Ethereum
+  '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon
+  '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
+  '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
+  '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',    // Optimism
+  '43114': '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche
+};
+
+// Native token addresses for 0x API
+const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // 1inch API proxy routes to fix CORS issues
-  app.get("/api/1inch/:chainId/quote", async (req, res) => {
+  // 0x API routes for token swapping
+  app.get("/api/0x/:chainId/price", async (req, res) => {
     try {
       const { chainId } = req.params;
-      const queryParams = new URLSearchParams(req.query as Record<string, string>);
+      const { sellToken, buyToken, sellAmount, takerAddress } = req.query;
       
-      console.log(`1inch quote proxy request: ${chainId} - ${queryParams}`);
+      console.log(`0x price request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
       
-      const response = await fetch(`https://api.1inch.dev/swap/v6.0/${chainId}/quote?${queryParams}`, {
+      // Convert chain ID to 0x network identifier
+      const networkId = ZX_CHAIN_MAPPING[chainId];
+      if (!networkId) {
+        return res.status(400).json({ error: 'Unsupported network' });
+      }
+      
+      // Auto-convert to USDC if buyToken not specified
+      const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
+      
+      const params = new URLSearchParams({
+        sellToken: sellToken as string,
+        buyToken: targetBuyToken as string,
+        sellAmount: sellAmount as string,
+        ...(takerAddress && { takerAddress: takerAddress as string })
+      });
+      
+      const response = await fetch(`${ZX_BASE_URL}/swap/v1/${networkId}/price?${params}`, {
         headers: {
           'Accept': 'application/json',
-          'Authorization': `Bearer ${process.env.ONEINCH_API_KEY}`,
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          '0x-api-key': ZX_API_KEY,
+          'Content-Type': 'application/json'
         }
       });
       
-      console.log(`1inch quote response status: ${response.status}`);
+      console.log(`0x price response status: ${response.status}`);
       
       if (!response.ok) {
         const error = await response.text();
-        console.error('1inch quote error:', error);
-        // Fallback to alternative pricing when 1inch is unavailable
-        return await handleAlternativePricing(req, res, chainId, queryParams);
+        console.error('0x price error:', error);
+        return res.status(response.status).json({ error: 'Failed to get price quote' });
       }
       
-      const responseText = await response.text();
-      console.log('1inch response preview:', responseText.substring(0, 200));
+      const data = await response.json();
+      console.log('0x price response preview:', JSON.stringify(data).substring(0, 200));
       
-      // Check if response is HTML (blocked by 1inch)
-      if (responseText.trim().startsWith('<')) {
-        console.log('1inch returned HTML, using alternative pricing');
-        return await handleAlternativePricing(req, res, chainId, queryParams);
-      }
-      
-      try {
-        const data = JSON.parse(responseText);
-        res.json(data);
-      } catch (parseError) {
-        console.error('JSON parse error:', parseError);
-        return await handleAlternativePricing(req, res, chainId, queryParams);
-      }
+      res.json(data);
     } catch (error) {
-      console.error('1inch quote proxy error:', error);
-      // Fallback to alternative pricing on any error
-      return await handleAlternativePricing(req, res, chainId, queryParams);
+      console.error('0x price proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch price from 0x API' });
     }
   });
 
-  app.get("/api/1inch/:chainId/swap", async (req, res) => {
+  app.get("/api/0x/:chainId/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
-      const queryParams = new URLSearchParams(req.query as Record<string, string>);
+      const { sellToken, buyToken, sellAmount, takerAddress, slippagePercentage } = req.query;
       
-      console.log(`1inch swap proxy request: ${chainId} - ${queryParams}`);
+      console.log(`0x quote request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
       
-      const response = await fetch(`https://api.1inch.dev/swap/v6.0/${chainId}/swap?${queryParams}`, {
+      // Convert chain ID to 0x network identifier
+      const networkId = ZX_CHAIN_MAPPING[chainId];
+      if (!networkId) {
+        return res.status(400).json({ error: 'Unsupported network' });
+      }
+      
+      // Auto-convert to USDC if buyToken not specified
+      const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
+      
+      const params = new URLSearchParams({
+        sellToken: sellToken as string,
+        buyToken: targetBuyToken as string,
+        sellAmount: sellAmount as string,
+        takerAddress: takerAddress as string,
+        slippagePercentage: (slippagePercentage as string) || '0.01' // Default 1% slippage
+      });
+      
+      const response = await fetch(`${ZX_BASE_URL}/swap/v1/${networkId}/quote?${params}`, {
         headers: {
           'Accept': 'application/json',
-          'Authorization': `Bearer ${process.env.ONEINCH_API_KEY}`,
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          '0x-api-key': ZX_API_KEY,
+          'Content-Type': 'application/json'
         }
       });
       
-      console.log(`1inch swap response status: ${response.status}`);
+      console.log(`0x quote response status: ${response.status}`);
       
       if (!response.ok) {
         const error = await response.text();
-        console.error('1inch swap error:', error);
-        return res.status(response.status).json({ error });
+        console.error('0x quote error:', error);
+        return res.status(response.status).json({ error: 'Failed to get swap quote' });
       }
       
-      const responseText = await response.text();
-      console.log('1inch swap response preview:', responseText.substring(0, 200));
+      const data = await response.json();
+      console.log('0x quote response preview:', JSON.stringify(data).substring(0, 200));
       
-      // Check if response is HTML (blocked by 1inch)
-      if (responseText.trim().startsWith('<')) {
-        console.log('1inch swap returned HTML, API may be restricted');
-        return res.status(400).json({ error: 'Swap API temporarily unavailable' });
-      }
-      
-      try {
-        const data = JSON.parse(responseText);
-        res.json(data);
-      } catch (parseError) {
-        console.error('JSON parse error on swap:', parseError);
-        return res.status(500).json({ error: 'Invalid response from swap API' });
-      }
+      res.json(data);
     } catch (error) {
-      console.error('1inch swap proxy error:', error);
-      res.status(500).json({ error: 'Failed to fetch swap data from 1inch API' });
+      console.error('0x quote proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch quote from 0x API' });
+    }
+  });
+
+  // Gasless swap endpoint using 0x gasless API
+  app.post("/api/0x/:chainId/gasless-quote", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const { sellToken, buyToken, sellAmount, takerAddress } = req.body;
+      
+      console.log(`0x gasless quote request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
+      
+      // Convert chain ID to 0x network identifier
+      const networkId = ZX_CHAIN_MAPPING[chainId];
+      if (!networkId) {
+        return res.status(400).json({ error: 'Unsupported network for gasless swaps' });
+      }
+      
+      // Auto-convert to USDC if buyToken not specified
+      const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
+      
+      const requestBody = {
+        sellToken,
+        buyToken: targetBuyToken,
+        sellAmount,
+        takerAddress,
+        slippagePercentage: 0.01 // 1% slippage
+      };
+      
+      const response = await fetch(`${ZX_BASE_URL}/gasless/v1/${networkId}/quote`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          '0x-api-key': ZX_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+      
+      console.log(`0x gasless quote response status: ${response.status}`);
+      
+      if (!response.ok) {
+        const error = await response.text();
+        console.error('0x gasless quote error:', error);
+        return res.status(response.status).json({ error: 'Failed to get gasless quote' });
+      }
+      
+      const data = await response.json();
+      console.log('0x gasless quote response preview:', JSON.stringify(data).substring(0, 200));
+      
+      res.json(data);
+    } catch (error) {
+      console.error('0x gasless quote proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch gasless quote from 0x API' });
+    }
+  });
+
+  app.post("/api/0x/:chainId/gasless-submit", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const { signature, tradeHash } = req.body;
+      
+      console.log(`0x gasless submit request: ${chainId} - tradeHash: ${tradeHash}`);
+      
+      // Convert chain ID to 0x network identifier
+      const networkId = ZX_CHAIN_MAPPING[chainId];
+      if (!networkId) {
+        return res.status(400).json({ error: 'Unsupported network for gasless swaps' });
+      }
+      
+      const requestBody = {
+        signature,
+        tradeHash
+      };
+      
+      const response = await fetch(`${ZX_BASE_URL}/gasless/v1/${networkId}/submit`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          '0x-api-key': ZX_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+      
+      console.log(`0x gasless submit response status: ${response.status}`);
+      
+      if (!response.ok) {
+        const error = await response.text();
+        console.error('0x gasless submit error:', error);
+        return res.status(response.status).json({ error: 'Failed to submit gasless swap' });
+      }
+      
+      const data = await response.json();
+      console.log('0x gasless submit response preview:', JSON.stringify(data).substring(0, 200));
+      
+      res.json(data);
+    } catch (error) {
+      console.error('0x gasless submit proxy error:', error);
+      res.status(500).json({ error: 'Failed to submit gasless swap to 0x API' });
     }
   });
   
