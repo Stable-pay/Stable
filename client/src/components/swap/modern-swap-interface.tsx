@@ -77,18 +77,29 @@ export function ModernSwapInterface() {
     return networks[chainId] || 'Unknown';
   };
 
-  // Load wallet balances
+  // Load wallet balances directly from connected wallet
   const loadBalances = async () => {
     if (!address || !chainId) return;
     
     setBalancesLoading(true);
     setSwapState({ status: 'loading-balances' });
     
+    // Always use direct wallet balance loading
+    await loadNativeBalance();
+    setBalancesLoading(false);
+  };
+
+  // Load actual wallet balances using Web3 provider
+  const loadNativeBalance = async () => {
+    if (!address || !chainId || typeof window === 'undefined' || !(window as any).ethereum) {
+      setBalances([]);
+      setSwapState({ status: 'idle' });
+      return;
+    }
+    
     try {
-      // Simulate loading real balances - replace with actual wallet balance fetching
-      const mockBalances: TokenBalance[] = [];
+      console.log(`Loading balance for ${address} on chain ${chainId}`);
       
-      // Add native token (ETH, MATIC, BNB, etc.)
       const nativeSymbols: Record<number, string> = {
         1: 'ETH',
         137: 'MATIC', 
@@ -101,40 +112,116 @@ export function ModernSwapInterface() {
       
       const nativeSymbol = nativeSymbols[chainId] || 'ETH';
       
-      // Add native balance if available
-      if (typeof window !== 'undefined' && (window as any).ethereum) {
-        try {
-          const balance = await (window as any).ethereum.request({
-            method: 'eth_getBalance',
-            params: [address, 'latest']
-          });
-          
-          const balanceInEther = formatUnits(BigInt(balance), 18);
-          if (parseFloat(balanceInEther) > 0.0001) {
-            mockBalances.push({
-              symbol: nativeSymbol,
-              address: 'native',
-              balance: balance,
-              decimals: 18,
-              chainId,
-              chainName: getNetworkName(chainId),
-              formattedBalance: parseFloat(balanceInEther).toFixed(6),
-              isNative: true
-            });
-          }
-        } catch (error) {
-          console.error('Failed to get native balance:', error);
-        }
+      // Get native token balance
+      const balance = await (window as any).ethereum.request({
+        method: 'eth_getBalance',
+        params: [address, 'latest']
+      });
+      
+      console.log(`Raw balance: ${balance}`);
+      
+      const balanceInEther = formatUnits(BigInt(balance), 18);
+      const formattedBalance = parseFloat(balanceInEther);
+      
+      console.log(`Formatted balance: ${formattedBalance} ${nativeSymbol}`);
+      
+      const balanceResults: TokenBalance[] = [];
+      
+      // Only include if balance is meaningful
+      if (formattedBalance > 0.000001) {
+        balanceResults.push({
+          symbol: nativeSymbol,
+          address: 'native',
+          balance: balance,
+          decimals: 18,
+          chainId,
+          chainName: getNetworkName(chainId),
+          formattedBalance: formattedBalance.toFixed(6),
+          isNative: true
+        });
       }
       
-      setBalances(mockBalances);
+      // Load common ERC20 tokens for this chain
+      await loadERC20Balances(balanceResults);
+      
+      setBalances(balanceResults);
       setSwapState({ status: 'idle' });
       
+      console.log(`Final balance count: ${balanceResults.length}`);
+      
     } catch (error) {
-      console.error('Failed to load balances:', error);
-      setSwapState({ status: 'failed', error: 'Failed to load wallet balances' });
-    } finally {
-      setBalancesLoading(false);
+      console.error('Failed to get wallet balances:', error);
+      setBalances([]);
+      setSwapState({ status: 'idle' });
+      
+      toast({
+        title: "Balance Loading Failed",
+        description: "Unable to fetch wallet balances. Please check your wallet connection.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Load ERC20 token balances for common tokens
+  const loadERC20Balances = async (balanceResults: TokenBalance[]) => {
+    if (!address || !chainId || typeof window === 'undefined' || !(window as any).ethereum) return;
+    
+    // Common tokens by chain
+    const commonTokens: Record<number, Array<{symbol: string, address: string, decimals: number}>> = {
+      1: [
+        { symbol: 'USDC', address: '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B', decimals: 6 },
+        { symbol: 'USDT', address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', decimals: 6 },
+        { symbol: 'DAI', address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', decimals: 18 }
+      ],
+      137: [
+        { symbol: 'USDC', address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6 },
+        { symbol: 'USDT', address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', decimals: 6 },
+        { symbol: 'DAI', address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', decimals: 18 }
+      ],
+      56: [
+        { symbol: 'USDC', address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', decimals: 18 },
+        { symbol: 'USDT', address: '0x55d398326f99059fF775485246999027B3197955', decimals: 18 },
+        { symbol: 'BUSD', address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', decimals: 18 }
+      ]
+    };
+    
+    const tokens = commonTokens[chainId] || [];
+    
+    for (const token of tokens) {
+      try {
+        // ERC20 balanceOf call
+        const data = `0x70a08231000000000000000000000000${address.slice(2)}`;
+        
+        const result = await (window as any).ethereum.request({
+          method: 'eth_call',
+          params: [{
+            to: token.address,
+            data: data
+          }, 'latest']
+        });
+        
+        if (result && result !== '0x') {
+          const balance = BigInt(result);
+          const formattedBalance = parseFloat(formatUnits(balance, token.decimals));
+          
+          if (formattedBalance > 0.000001) {
+            balanceResults.push({
+              symbol: token.symbol,
+              address: token.address,
+              balance: balance.toString(),
+              decimals: token.decimals,
+              chainId,
+              chainName: getNetworkName(chainId),
+              formattedBalance: formattedBalance.toFixed(6),
+              isNative: false
+            });
+            
+            console.log(`Found ${token.symbol} balance: ${formattedBalance}`);
+          }
+        }
+      } catch (error) {
+        console.error(`Failed to get ${token.symbol} balance:`, error);
+      }
     }
   };
 
