@@ -5,12 +5,36 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { VerificationMonitor } from "@/components/system/verification-monitor";
 import { CheckCircle, Copy, ExternalLink, Settings, AlertTriangle, Info, Clock } from "lucide-react";
 
 export default function Setup() {
   const { toast } = useToast();
   const [currentDomain] = useState(window.location.origin);
   const [projectId] = useState('6dfca9af31141b1fb9220aa7db3eee37');
+  const [verificationStatus, setVerificationStatus] = useState<'checking' | 'verified' | 'pending'>('checking');
+
+  useEffect(() => {
+    const checkVerification = async () => {
+      try {
+        const response = await fetch('/.well-known/walletconnect.txt');
+        if (response.ok) {
+          const content = await response.text();
+          if (content.trim() === projectId) {
+            setVerificationStatus('verified');
+          } else {
+            setVerificationStatus('pending');
+          }
+        } else {
+          setVerificationStatus('pending');
+        }
+      } catch (error) {
+        setVerificationStatus('pending');
+      }
+    };
+
+    checkVerification();
+  }, [projectId]);
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -65,6 +89,37 @@ export default function Setup() {
           Configure your Reown project to enable full wallet connectivity
         </p>
       </div>
+
+      {/* Real-time System Monitor */}
+      <VerificationMonitor />
+
+      {/* Verification Status */}
+      <Card className={`${verificationStatus === 'verified' ? 'border-green-200 bg-green-50' : verificationStatus === 'pending' ? 'border-amber-200 bg-amber-50' : 'border-blue-200 bg-blue-50'}`}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            {verificationStatus === 'verified' ? (
+              <CheckCircle className="h-5 w-5 text-green-600" />
+            ) : verificationStatus === 'pending' ? (
+              <AlertTriangle className="h-5 w-5 text-amber-600" />
+            ) : (
+              <Clock className="h-5 w-5 text-blue-600" />
+            )}
+            <span>Domain Verification Status</span>
+            <Badge className={`${verificationStatus === 'verified' ? 'bg-green-100 text-green-800 border-green-300' : verificationStatus === 'pending' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-blue-100 text-blue-800 border-blue-300'}`}>
+              {verificationStatus === 'verified' ? 'Verified' : verificationStatus === 'pending' ? 'Needs Configuration' : 'Checking...'}
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {verificationStatus === 'verified' ? (
+            <p className="text-green-800">Domain verification file is accessible. You can now add this domain to your Reown project allowlist.</p>
+          ) : verificationStatus === 'pending' ? (
+            <p className="text-amber-800">Domain verification file is ready. Add this domain to your Reown project allowlist at cloud.reown.com to complete setup.</p>
+          ) : (
+            <p className="text-blue-800">Checking domain verification status...</p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Current Configuration */}
       <Card className="border-blue-200 bg-blue-50">
