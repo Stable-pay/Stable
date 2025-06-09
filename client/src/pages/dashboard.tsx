@@ -2,12 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
-import { useWalletConnection, useTokenBalances } from "@/hooks/use-wallet-data";
+import { MultiChainSwapInterface } from "@/components/swap/multi-chain-swap-interface";
+import { useWalletConnection } from "@/hooks/use-wallet-data";
+import { useMultiChainBalances, useTotalPortfolioValue } from "@/hooks/use-multi-chain-balances";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network } from "lucide-react";
 
 export default function Dashboard() {
   const { isConnected, address, chainId, connect } = useWalletConnection();
-  const { data: tokenData, isLoading: balancesLoading, error: balancesError } = useTokenBalances();
+  const { data: networkBalances, isLoading: balancesLoading, error: balancesError } = useMultiChainBalances();
+  const { totalValue, totalNetworks, totalTokens } = useTotalPortfolioValue();
 
   if (!isConnected) {
     return (
@@ -79,9 +82,9 @@ export default function Dashboard() {
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold">
-              {tokenData?.nativeBalance} {tokenData?.nativeSymbol}
+              {totalNetworks} Networks
             </div>
-            <p className="text-blue-100">{tokenData?.network} Network</p>
+            <p className="text-blue-100">{totalTokens} Tokens Available</p>
           </div>
         </div>
       </div>
@@ -93,11 +96,9 @@ export default function Dashboard() {
             <div className="flex items-center space-x-3">
               <DollarSign className="h-8 w-8 text-green-600" />
               <div>
-                <p className="text-sm text-gray-600">Native Balance</p>
-                <h3 className="text-2xl font-bold">
-                  {parseFloat(tokenData?.nativeBalance || '0').toFixed(4)}
-                </h3>
-                <p className="text-xs text-green-600">{tokenData?.nativeSymbol}</p>
+                <p className="text-sm text-gray-600">Total Networks</p>
+                <h3 className="text-2xl font-bold">{totalNetworks}</h3>
+                <p className="text-xs text-green-600">Multi-chain</p>
               </div>
             </div>
           </CardContent>
@@ -108,9 +109,9 @@ export default function Dashboard() {
             <div className="flex items-center space-x-3">
               <Network className="h-8 w-8 text-blue-600" />
               <div>
-                <p className="text-sm text-gray-600">Network</p>
-                <h3 className="text-2xl font-bold">{tokenData?.network}</h3>
-                <p className="text-xs text-blue-600">Chain ID: {chainId}</p>
+                <p className="text-sm text-gray-600">Total Tokens</p>
+                <h3 className="text-2xl font-bold">{totalTokens}</h3>
+                <p className="text-xs text-blue-600">Swappable</p>
               </div>
             </div>
           </CardContent>
@@ -143,55 +144,76 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Live Network Information */}
+      {/* Multi-Chain Network Balances */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Wallet className="h-5 w-5" />
-            <span>Connected Wallet Details</span>
+            <span>Multi-Chain Portfolio</span>
             <Badge className="bg-green-100 text-green-800">Live Blockchain Data</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="bg-slate-50 rounded-lg p-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold mb-3">Network Information</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Network:</span>
-                    <span className="font-medium">{tokenData?.network}</span>
+          {networkBalances && networkBalances.length > 0 ? (
+            <div className="space-y-4">
+              {networkBalances.map((networkBalance) => (
+                <div key={networkBalance.chainId} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+                      <h4 className="font-semibold">{networkBalance.network}</h4>
+                      <Badge variant="outline">Chain {networkBalance.chainId}</Badge>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold">
+                        {parseFloat(networkBalance.nativeBalance).toFixed(4)} {networkBalance.nativeSymbol}
+                      </div>
+                      <div className="text-sm text-gray-600">Native Balance</div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Chain ID:</span>
-                    <span className="font-medium">{chainId}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Native Token:</span>
-                    <span className="font-medium">{tokenData?.nativeSymbol}</span>
-                  </div>
+
+                  {networkBalance.tokens.length > 0 && (
+                    <div className="mt-3">
+                      <h5 className="text-sm font-medium text-gray-700 mb-2">Token Balances:</h5>
+                      <div className="grid gap-2 md:grid-cols-2">
+                        {networkBalance.tokens.map((token) => (
+                          <div key={token.address} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <div>
+                              <span className="font-medium">{token.symbol}</span>
+                              <span className="text-sm text-gray-600 ml-2">{token.name}</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-bold">{parseFloat(token.balance).toFixed(4)}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-3">Wallet Information</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Address:</span>
-                    <span className="font-mono text-sm">{address}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Balance:</span>
-                    <span className="font-medium">{tokenData?.nativeBalance} {tokenData?.nativeSymbol}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Status:</span>
-                    <Badge className="bg-green-100 text-green-800">Connected</Badge>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <Wallet className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>No token balances found</p>
+              <p className="text-sm">Make sure your wallet has tokens on supported networks</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Multi-Chain Token Swap Interface */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <TrendingUp className="h-5 w-5" />
+            <span>Token Swap to USDC</span>
+            <Badge className="bg-blue-100 text-blue-800">1inch API</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <MultiChainSwapInterface />
         </CardContent>
       </Card>
 
