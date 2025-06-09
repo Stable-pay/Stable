@@ -192,6 +192,7 @@ export function FusionSwapInterface() {
 
       const toAmountFormatted = formatUnits(BigInt(quoteData.dstAmount), 6);
       const rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
+      const stablecoinSymbol = chainId === 1 ? 'USDT' : 'USDC';
 
       setQuote({
         fromAmount: swapAmount,
@@ -208,7 +209,7 @@ export function FusionSwapInterface() {
 
       toast({
         title: isGasless ? "Gasless Quote Ready!" : "Quote Ready",
-        description: `${swapAmount} ${selectedToken.symbol} → ${toAmountFormatted} USDC ${isGasless ? '(No Gas Fees!)' : ''}`,
+        description: `${swapAmount} ${selectedToken.symbol} → ${toAmountFormatted} ${stablecoinSymbol} ${isGasless ? '(No Gas Fees!)' : ''}`,
       });
 
     } catch (error) {
@@ -299,9 +300,11 @@ export function FusionSwapInterface() {
 
       setSwapState('completed');
       
+      const stablecoinSymbol = chainId === 1 ? 'USDT' : 'USDC';
+      
       toast({
         title: "Swap Completed!",
-        description: `Successfully swapped ${swapAmount} ${selectedToken.symbol} to USDC ${quote.gasless ? 'with no gas fees!' : ''}`,
+        description: `Successfully swapped ${swapAmount} ${selectedToken.symbol} to ${stablecoinSymbol} ${quote.gasless ? 'with no gas fees!' : ''}`,
       });
 
       // Reset form and reload balances
@@ -465,7 +468,7 @@ export function FusionSwapInterface() {
                   <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                     <ArrowUpDown className="h-6 w-6 text-white" />
                   </div>
-                  <span>Swap to USDC</span>
+                  <span>Swap to Stablecoin</span>
                   {quote?.gasless && (
                     <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                       <Fuel className="h-3 w-3 mr-1" />
@@ -602,10 +605,10 @@ export function FusionSwapInterface() {
                       <DollarSign className="h-12 w-12 text-emerald-400" />
                       <div>
                         <p className="text-3xl font-bold text-emerald-400">
-                          {quote.toAmount} USDC
+                          {quote.toAmount} {chainId === 1 ? 'USDT' : 'USDC'}
                         </p>
                         <p className="text-slate-300">
-                          Rate: 1 {selectedToken?.symbol} = {quote.rate.toFixed(4)} USDC
+                          Rate: 1 {selectedToken?.symbol} = {quote.rate.toFixed(4)} {chainId === 1 ? 'USDT' : 'USDC'}
                         </p>
                       </div>
                     </div>
@@ -613,7 +616,7 @@ export function FusionSwapInterface() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-4 bg-slate-800/60 rounded-xl">
                         <p className="text-sm text-slate-400 mb-1">Minimum Received</p>
-                        <p className="font-semibold text-white">{quote.minimumReceived} USDC</p>
+                        <p className="font-semibold text-white">{quote.minimumReceived} {chainId === 1 ? 'USDT' : 'USDC'}</p>
                       </div>
                       <div className="p-4 bg-slate-800/60 rounded-xl">
                         <p className="text-sm text-slate-400 mb-1">Network Fee</p>
@@ -645,7 +648,7 @@ export function FusionSwapInterface() {
                   {swapState === 'ready' && (
                     <>
                       <Zap className="h-6 w-6 mr-3" />
-                      {quote?.gasless ? 'Swap (Gasless)' : 'Swap to USDC'}
+                      {quote?.gasless ? 'Swap (Gasless)' : `Swap to ${chainId === 1 ? 'USDT' : 'USDC'}`}
                     </>
                   )}
                   {swapState === 'swapping' && (
