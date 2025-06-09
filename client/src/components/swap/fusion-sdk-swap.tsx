@@ -86,18 +86,17 @@ export function FusionSDKSwap() {
 
       setProgress(50);
 
-      // Get quote using backend proxy for 1inch Fusion API
+      // Get quote using backend proxy for 1inch API
       const networkId = getNetworkId(chainId);
       const quoteParams = new URLSearchParams({
-        fromTokenAddress,
-        toTokenAddress,
-        amount: amountInWei,
-        walletAddress: address
+        src: fromTokenAddress,
+        dst: toTokenAddress,
+        amount: amountInWei
       });
 
-      console.log('Getting 1inch Fusion quote via backend proxy:', quoteParams.toString());
+      console.log('Getting 1inch quote via backend proxy:', quoteParams.toString());
       
-      const response = await fetch(`/api/1inch/fusion/${networkId}/quote?${quoteParams}`);
+      const response = await fetch(`/api/1inch/${networkId}/quote?${quoteParams}`);
 
       setProgress(80);
 
@@ -106,22 +105,22 @@ export function FusionSDKSwap() {
         throw new Error(errorData.message || `API request failed: ${response.status}`);
       }
 
-      const fusionQuote = await response.json();
+      const oneInchQuote = await response.json();
       
-      if (!fusionQuote || !fusionQuote.toAmount) {
-        throw new Error('Invalid quote response from 1inch Fusion');
+      if (!oneInchQuote || !oneInchQuote.dstAmount) {
+        throw new Error('Invalid quote response from 1inch');
       }
 
-      const toAmountFormatted = formatUnits(BigInt(fusionQuote.toAmount), 6);
+      const toAmountFormatted = formatUnits(BigInt(oneInchQuote.dstAmount), 6);
       const rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
 
       setQuote({
         fromAmount: swapAmount,
         toAmount: toAmountFormatted,
         rate,
-        gasless: true,
+        gasless: false,
         minimumReceived: (parseFloat(toAmountFormatted) * 0.99).toFixed(6),
-        order: fusionQuote
+        order: oneInchQuote
       });
 
       setProgress(100);
@@ -160,20 +159,21 @@ export function FusionSDKSwap() {
 
         console.log('Executing 1inch Fusion swap...');
         
-        // Submit the fusion order via backend proxy
+        // Get swap transaction data from 1inch API
         const networkId = getNetworkId(chainId);
+        const fromTokenAddress = selectedToken.isNative ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : selectedToken.address;
+        const toTokenAddress = getUSDCAddress(chainId);
+        const amountInWei = parseUnits(swapAmount, selectedToken.decimals).toString();
         
-        const response = await fetch(`/api/1inch/fusion/${networkId}/submit`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            order: quote.order,
-            signature: '0x', // Will be signed by wallet
-            extension: quote.order.extension || '0x'
-          })
+        const swapParams = new URLSearchParams({
+          src: fromTokenAddress,
+          dst: toTokenAddress,
+          amount: amountInWei,
+          from: address,
+          slippage: '1'
         });
+        
+        const response = await fetch(`/api/1inch/${networkId}/swap?${swapParams}`);
 
         if (response.ok) {
           const orderData = await response.json();

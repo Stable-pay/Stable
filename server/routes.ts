@@ -50,26 +50,26 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // 1inch Fusion API proxy endpoints
-  app.get("/api/1inch/fusion/:chainId/quote", async (req, res) => {
+  // 1inch API proxy endpoints
+  app.get("/api/1inch/:chainId/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
-      const { fromTokenAddress, toTokenAddress, amount, walletAddress } = req.query;
+      const { src, dst, amount, from } = req.query;
       
-      console.log(`1inch Fusion quote request: ${chainId} - ${fromTokenAddress} to ${toTokenAddress}, amount: ${amount}`);
+      console.log(`1inch quote request: ${chainId} - ${src} to ${dst}, amount: ${amount}`);
       
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
       }
 
-      const quoteUrl = `https://api.1inch.dev/fusion/quoter/v1.0/${chainId}/quote/receive`;
+      const quoteUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/quote`;
       const params = new URLSearchParams({
-        fromTokenAddress: fromTokenAddress as string,
-        toTokenAddress: toTokenAddress as string,
+        src: src as string,
+        dst: dst as string,
         amount: amount as string,
-        walletAddress: walletAddress as string,
-        enableEstimate: 'true'
+        includeTokensInfo: 'true',
+        includeProtocols: 'true'
       });
 
       const response = await fetch(`${quoteUrl}?${params}`, {
@@ -79,75 +79,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
 
-      console.log(`1inch Fusion API response status: ${response.status}`);
+      console.log(`1inch API response status: ${response.status}`);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('1inch Fusion API error:', errorText);
+        console.error('1inch API error:', errorText);
         return res.status(response.status).json({ 
-          error: 'Fusion API request failed',
+          error: '1inch API request failed',
           details: errorText,
           status: response.status
         });
       }
 
       const data = await response.json();
-      console.log('1inch Fusion quote response preview:', JSON.stringify(data).substring(0, 200));
+      console.log('1inch quote response preview:', JSON.stringify(data).substring(0, 200));
       res.json(data);
 
     } catch (error) {
-      console.error('1inch Fusion proxy error:', error);
-      res.status(500).json({ error: 'Failed to connect to 1inch Fusion API' });
+      console.error('1inch proxy error:', error);
+      res.status(500).json({ error: 'Failed to connect to 1inch API' });
     }
   });
 
-  app.post("/api/1inch/fusion/:chainId/submit", async (req, res) => {
+  app.get("/api/1inch/:chainId/swap", async (req, res) => {
     try {
       const { chainId } = req.params;
-      const { order, signature, extension } = req.body;
+      const { src, dst, amount, from, slippage } = req.query;
       
-      console.log(`1inch Fusion submit request: ${chainId}`);
+      console.log(`1inch swap request: ${chainId} - ${src} to ${dst}, amount: ${amount}`);
       
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
       }
 
-      const submitUrl = `https://api.1inch.dev/fusion/relayer/v1.0/${chainId}/submit`;
-      
-      const response = await fetch(submitUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          order,
-          signature: signature || '0x',
-          extension: extension || '0x'
-        })
+      const swapUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/swap`;
+      const params = new URLSearchParams({
+        src: src as string,
+        dst: dst as string,
+        amount: amount as string,
+        from: from as string,
+        slippage: (slippage as string) || '1',
+        disableEstimate: 'true'
       });
 
-      console.log(`1inch Fusion submit response status: ${response.status}`);
+      const response = await fetch(`${swapUrl}?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log(`1inch swap API response status: ${response.status}`);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('1inch Fusion submit error:', errorText);
+        console.error('1inch swap API error:', errorText);
         return res.status(response.status).json({ 
-          error: 'Fusion submit failed',
+          error: '1inch swap API request failed',
           details: errorText,
           status: response.status
         });
       }
 
       const data = await response.json();
-      console.log('1inch Fusion submit response:', JSON.stringify(data).substring(0, 200));
+      console.log('1inch swap response preview:', JSON.stringify(data).substring(0, 200));
       res.json(data);
 
     } catch (error) {
-      console.error('1inch Fusion submit proxy error:', error);
-      res.status(500).json({ error: 'Failed to submit to 1inch Fusion API' });
+      console.error('1inch swap proxy error:', error);
+      res.status(500).json({ error: 'Failed to connect to 1inch swap API' });
     }
   });
 
