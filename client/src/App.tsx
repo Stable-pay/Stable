@@ -10,6 +10,7 @@ import Swap from "@/pages/swap";
 import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
 import Dashboard from "@/pages/dashboard";
+import Setup from "@/pages/setup";
 import NotFound from "@/pages/not-found";
 import "./lib/reown";
 

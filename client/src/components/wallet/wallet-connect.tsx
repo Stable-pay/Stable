@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import { Wallet, ChevronDown, Copy } from "lucide-react";
+import { Wallet, ChevronDown, Copy, AlertCircle, ExternalLink } from "lucide-react";
 
 export function WalletConnect() {
   const { open } = useAppKit();
@@ -13,6 +14,7 @@ export function WalletConnect() {
   const { toast } = useToast();
   const [userCreated, setUserCreated] = useState(false);
   const [balance, setBalance] = useState<string>('0.00');
+  const [connectionError, setConnectionError] = useState<string | null>(null);
 
   // Create user when wallet connects
   useEffect(() => {
@@ -107,7 +109,13 @@ export function WalletConnect() {
   };
 
   const handleConnect = () => {
-    open();
+    try {
+      open();
+      setConnectionError(null);
+    } catch (error) {
+      console.error('Connection error:', error);
+      setConnectionError('Domain not allowlisted. Please configure at cloud.reown.com');
+    }
   };
 
   const handleAccountClick = () => {

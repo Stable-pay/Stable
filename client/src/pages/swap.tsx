@@ -59,6 +59,48 @@ export default function Swap() {
         </p>
       </div>
 
+      {/* Domain Configuration Notice */}
+      <Card className="border-amber-200 bg-amber-50">
+        <CardContent className="p-6">
+          <div className="flex items-start space-x-3">
+            <Activity className="h-6 w-6 text-amber-600 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-900 mb-2">Reown AppKit Configuration</h3>
+              <p className="text-amber-800 mb-4">
+                To enable full wallet connectivity, add this domain to your Reown project allowlist:
+              </p>
+              <div className="bg-amber-100 border border-amber-300 rounded-lg p-3 mb-4">
+                <code className="text-amber-900 text-sm font-mono break-all">
+                  https://fc0fcb6c-8722-458b-9985-8a31854bcfb6-00-9b41tf5yjab1.spock.replit.dev
+                </code>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-amber-300 text-amber-800 hover:bg-amber-100"
+                  onClick={() => window.open('https://cloud.reown.com', '_blank')}
+                >
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Configure at cloud.reown.com
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-amber-300 text-amber-800 hover:bg-amber-100"
+                  onClick={() => {
+                    navigator.clipboard.writeText('https://fc0fcb6c-8722-458b-9985-8a31854bcfb6-00-9b41tf5yjab1.spock.replit.dev');
+                    toast({ title: "Domain Copied", description: "Domain copied to clipboard" });
+                  }}
+                >
+                  Copy Domain
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Connection Status */}
       {!isConnected && (
         <Card className="border-blue-200 bg-blue-50">
@@ -67,7 +109,7 @@ export default function Swap() {
               <Shield className="h-6 w-6 text-blue-600" />
               <div>
                 <h3 className="font-semibold text-blue-900">Connect Your Wallet</h3>
-                <p className="text-blue-700">Connect your wallet to access native swapping powered by Reown</p>
+                <p className="text-blue-700">Connect your wallet to access native swapping powered by Reown AppKit</p>
               </div>
             </div>
           </CardContent>
