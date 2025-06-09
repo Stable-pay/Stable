@@ -37,21 +37,27 @@ class SwapService {
         amount: params.amount,
       });
 
+      console.log('1inch quote request:', `${this.BASE_URL}/${chainId}/quote?${quoteParams}`);
+
       const quoteResponse = await fetch(
         `${this.BASE_URL}/${chainId}/quote?${quoteParams}`,
         {
           headers: {
-            'Authorization': `Bearer ${this.API_KEY}`,
+            'Accept': 'application/json',
           }
         }
       );
 
+      console.log('1inch quote response status:', quoteResponse.status);
+
       if (!quoteResponse.ok) {
         const error = await quoteResponse.text();
-        throw new Error(`Quote failed: ${error}`);
+        console.error('1inch quote error:', error);
+        throw new Error(`Quote failed (${quoteResponse.status}): ${error}`);
       }
 
       const quoteData = await quoteResponse.json();
+      console.log('1inch quote data:', quoteData);
 
       // Then get swap transaction data with developer wallet as recipient
       const swapParams = new URLSearchParams({
@@ -69,7 +75,7 @@ class SwapService {
         `${this.BASE_URL}/${chainId}/swap?${swapParams}`,
         {
           headers: {
-            'Authorization': `Bearer ${this.API_KEY}`,
+            'Accept': 'application/json',
           }
         }
       );
@@ -106,7 +112,7 @@ class SwapService {
         `${this.BASE_URL}/${chainId}/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${userAddress}`,
         {
           headers: {
-            'Authorization': `Bearer ${this.API_KEY}`,
+            'Accept': 'application/json',
           }
         }
       );
@@ -135,7 +141,7 @@ class SwapService {
         `${this.BASE_URL}/${chainId}/approve/transaction?tokenAddress=${tokenAddress}`,
         {
           headers: {
-            'Authorization': `Bearer ${this.API_KEY}`,
+            'Accept': 'application/json',
           }
         }
       );

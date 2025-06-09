@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ComprehensiveTokenSwap } from "@/components/swap/comprehensive-token-swap";
+import { SwapTest } from "@/components/swap/swap-test";
 import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network, Coins, ArrowUpDown } from "lucide-react";
 import { useAccount, useBalance, useChainId } from 'wagmi';
@@ -128,6 +129,7 @@ export function ComprehensiveWalletDashboard() {
         {/* Token Swap Interface */}
         <div className="lg:col-span-2">
           <ComprehensiveTokenSwap />
+          <SwapTest />
         </div>
 
         {/* Sidebar Information */}
