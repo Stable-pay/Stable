@@ -2,15 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
-import { MultiChainSwapInterface } from "@/components/swap/multi-chain-swap-interface";
-import { useWalletConnection } from "@/hooks/use-wallet-data";
-import { useMultiChainBalances, useTotalPortfolioValue } from "@/hooks/use-multi-chain-balances";
+import { useWalletConnection } from "@/hooks/use-wallet-connection";
+import { useRealWalletBalances, useRealPortfolioSummary } from "@/hooks/use-real-wallet-data";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network } from "lucide-react";
 
 export default function Dashboard() {
   const { isConnected, address, chainId, connect } = useWalletConnection();
-  const { data: networkBalances, isLoading: balancesLoading, error: balancesError } = useMultiChainBalances();
-  const { totalValue, totalNetworks, totalTokens } = useTotalPortfolioValue();
+  const { data: networkBalances, isLoading: balancesLoading, error: balancesError } = useRealWalletBalances();
+  const { totalNetworks, totalTokens, connectedNetworks, hasAnyBalance } = useRealPortfolioSummary();
 
   if (!isConnected) {
     return (
