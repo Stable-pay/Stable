@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
+import { RealSwapInterface } from "@/components/swap/real-swap-interface";
 import { ArrowUpDown, Settings, Shield, Zap, TrendingUp, Activity, CreditCard, Coins } from "lucide-react";
 
 export default function Swap() {
@@ -115,6 +116,9 @@ export default function Swap() {
           </CardContent>
         </Card>
       )}
+
+      {/* Real 1inch Swap Interface */}
+      <RealSwapInterface />
 
       {/* Main Actions Grid */}
       <div className="grid md:grid-cols-2 gap-6">

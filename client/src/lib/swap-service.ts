@@ -88,9 +88,9 @@ class SwapService {
         estimatedGas: swapData.tx.gasPrice
       };
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('1inch swap service error:', error);
-      throw new Error(`Swap to USDC failed: ${error.message}`);
+      throw new Error(`Swap to USDC failed: ${error?.message || 'Unknown error'}`);
     }
   }
 
@@ -145,9 +145,9 @@ class SwapService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Approval transaction error:', error);
-      throw new Error(`Failed to get approval transaction: ${error.message}`);
+      throw new Error(`Failed to get approval transaction: ${error?.message || 'Unknown error'}`);
     }
   }
 
@@ -165,7 +165,7 @@ class SwapService {
     try {
       const result = await this.swapTokenToUSDC(params);
       return result.estimatedGas;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Gas estimation error:', error);
       return '21000'; // Default gas estimate
     }
