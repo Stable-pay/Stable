@@ -56,6 +56,7 @@ export interface TokenBalance {
   balance: string;
   decimals: number;
   chainId: number;
+  network: string;
 }
 
 export interface NetworkBalance {
@@ -105,7 +106,8 @@ class BlockchainBalanceFetcher {
               address: tokenAddress,
               balance: balanceFormatted,
               decimals,
-              chainId
+              chainId,
+              network: config.name
             });
           }
         } catch (error) {
@@ -150,7 +152,8 @@ class BlockchainBalanceFetcher {
           address: 'NATIVE',
           balance: network.nativeBalance,
           decimals: 18,
-          chainId: network.chainId
+          chainId: network.chainId,
+          network: network.network
         });
       }
       tokens.push(...network.tokens);

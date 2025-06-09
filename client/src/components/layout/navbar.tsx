@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { WalletConnect } from "@/components/wallet/wallet-connect";
-import { Menu, X, ArrowUpDown, CreditCard, Shield, TrendingUp, Home, Settings } from "lucide-react";
+import { DirectWalletConnect } from "@/components/wallet/direct-wallet-connect";
+import { Menu, X, ArrowUpDown, CreditCard, Shield, TrendingUp, Home } from "lucide-react";
 
 export function Navbar() {
   const [location] = useLocation();
@@ -13,8 +13,7 @@ export function Navbar() {
     { name: "Convert", href: "/swap", icon: ArrowUpDown },
     { name: "KYC", href: "/kyc", icon: Shield },
     { name: "Withdraw", href: "/withdraw", icon: CreditCard },
-    { name: "Dashboard", href: "/dashboard", icon: TrendingUp },
-    { name: "Setup", href: "/setup", icon: Settings }
+    { name: "Dashboard", href: "/dashboard", icon: TrendingUp }
   ];
 
   const isActive = (href: string) => {

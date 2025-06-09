@@ -11,7 +11,7 @@ import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
-import "./lib/reown";
+
 
 function Router() {
   return (

@@ -1,13 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RealTokenSwap } from "@/components/swap/real-token-swap";
+import { WorkingTokenSwap } from "@/components/swap/working-token-swap";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
-import { useWalletConnection } from "@/hooks/use-wallet-connection";
+import { useDirectWallet } from "@/hooks/use-direct-wallet";
 import { ArrowUpDown, Shield, Zap, DollarSign, Wallet } from "lucide-react";
 
 export default function Swap() {
-  const { isConnected, address, connect } = useWalletConnection();
+  const { isConnected, address, connect } = useDirectWallet();
 
   if (!isConnected) {
     return (
@@ -41,7 +41,7 @@ export default function Swap() {
       {/* Main Swap Interface */}
       <div className="grid lg:grid-cols-2 gap-8">
         <div>
-          <RealTokenSwap />
+          <WorkingTokenSwap />
         </div>
         
         <div className="space-y-6">
