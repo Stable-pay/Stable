@@ -8,6 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet-balances';
+import { LottieWrapper, animationConfigs } from '@/components/animations/lottie-wrapper';
+import { 
+  cryptoTransferAnimation,
+  walletConnectAnimation,
+  successCheckAnimation,
+  loadingSpinnerAnimation,
+  errorAnimation
+} from '@/components/animations/lottie-animations';
 import { 
   Send, 
   Globe, 
@@ -20,7 +28,9 @@ import {
   ArrowRight,
   Wallet,
   TrendingUp,
-  Users
+  Users,
+  Download,
+  Smartphone
 } from 'lucide-react';
 
 interface RemittanceOrder {
@@ -259,18 +269,57 @@ export default function RemittanceDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
+        {/* PWA Install Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8">
+              <LottieWrapper
+                animationData={walletConnectAnimation}
+                {...animationConfigs.wallet}
+                className="h-8 w-8"
+              />
+            </div>
+            <div>
+              <p className="font-semibold text-sm sm:text-base">Install StablePay App</p>
+              <p className="text-xs sm:text-sm text-blue-100">Get the full PWA experience</p>
+            </div>
+          </div>
+          <Button
+            id="pwa-install-btn"
+            size="sm"
+            variant="secondary"
+            className="hidden"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Install
+          </Button>
+        </motion.div>
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Global Remittance Dashboard
-          </h1>
-          <p className="text-xl text-gray-600">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-12 w-12 sm:h-16 sm:w-16">
+              <LottieWrapper
+                animationData={cryptoTransferAnimation}
+                {...animationConfigs.transfer}
+                className="h-12 w-12 sm:h-16 sm:w-16"
+              />
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
+              Global Remittance Dashboard
+            </h1>
+          </div>
+          <p className="text-base sm:text-xl text-gray-600 px-4">
             Send money worldwide with gasless USDC conversion via 1inch Fusion
           </p>
         </motion.div>
@@ -280,52 +329,58 @@ export default function RemittanceDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8"
         >
           <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Sent</p>
-                  <p className="text-2xl font-bold text-gray-900">$12,450</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Sent</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">$12,450</p>
                 </div>
-                <Send className="h-8 w-8 text-blue-600" />
+                <div className="h-6 w-6 sm:h-8 sm:w-8">
+                  <LottieWrapper
+                    animationData={cryptoTransferAnimation}
+                    {...animationConfigs.transfer}
+                    className="h-6 w-6 sm:h-8 sm:w-8"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Countries</p>
-                  <p className="text-2xl font-bold text-gray-900">8</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Countries</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">8</p>
                 </div>
-                <Globe className="h-8 w-8 text-green-600" />
+                <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg. Time</p>
-                  <p className="text-2xl font-bold text-gray-900">3.2 min</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Avg. Time</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">3.2 min</p>
                 </div>
-                <Clock className="h-8 w-8 text-purple-600" />
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Gas Saved</p>
-                  <p className="text-2xl font-bold text-gray-900">$284</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Gas Saved</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">$284</p>
                 </div>
-                <Zap className="h-8 w-8 text-yellow-600" />
+                <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
               </div>
             </CardContent>
           </Card>
