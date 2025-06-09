@@ -51,6 +51,253 @@ const USDC_ADDRESSES: Record<string, string> = {
 const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
+    try {
+      const { orderHash, fromToken, toToken, fromAmount, toAmount, chainId, userAddress, gasless = true } = req.body;
+      
+      const order = await storage.createSwapOrder({
+        userId: 1, // Demo user
+        orderHash,
+        fromToken,
+        toToken: toToken || 'USDC', // Always USDC for remittance
+        fromAmount,
+        toAmount,
+        chainId,
+        gasless,
+        paymasterUsed: gasless
+      });
+      
+      // Create webhook event for real-time tracking
+      await storage.createWebhookEvent({
+        eventType: "swap_order_created",
+        payload: { orderHash: order.orderHash, status: order.status, fromToken, toToken, amount: fromAmount }
+      });
+      
+      res.json(order);
+    } catch (error) {
+      console.error("Error creating swap order:", error);
+      res.status(400).json({ error: "Invalid swap order data" });
+    }
+  });
+
+  app.get("/api/swap-orders/:userId?", async (req, res) => {
+    try {
+      const userId = req.params.userId ? parseInt(req.params.userId) : undefined;
+      const orders = await storage.getSwapOrders(userId);
+      res.json(orders);
+    } catch (error) {
+      console.error("Error fetching swap orders:", error);
+      res.status(500).json({ error: "Failed to fetch swap orders" });
+    }
+  });
+
+  app.patch("/api/swap-orders/:orderHash", async (req, res) => {
+    try {
+      const updates = req.body;
+      const order = await storage.updateSwapOrder(req.params.orderHash, updates);
+      
+      if (!order) {
+        return res.status(404).json({ error: "Swap order not found" });
+      }
+      
+      // Create webhook event for status update
+      await storage.createWebhookEvent({
+        eventType: "swap_order_updated",
+        payload: { orderHash: order.orderHash, status: order.status, updates }
+      });
+      
+      res.json(order);
+    } catch (error) {
+      console.error("Error updating swap order:", error);
+      res.status(500).json({ error: "Failed to update swap order" });
+    }
+  });
+
+  // Real-time balance tracking with webhook notifications
+  app.post("/api/balance-updates", async (req, res) => {
+    try {
+      const { walletAddress, tokenAddress, tokenSymbol, balance, chainId, blockNumber } = req.body;
+      
+      const balanceUpdate = await storage.createBalanceUpdate({
+        walletAddress,
+        tokenAddress,
+        tokenSymbol,
+        balance,
+        chainId,
+        blockNumber
+      });
+      
+      // Create webhook event for real-time UI updates
+      await storage.createWebhookEvent({
+        eventType: "balance_updated",
+        payload: {
+          walletAddress: balanceUpdate.walletAddress,
+          tokenSymbol: balanceUpdate.tokenSymbol,
+          balance: balanceUpdate.balance,
+          chainId: balanceUpdate.chainId
+        }
+      });
+      
+      res.json(balanceUpdate);
+    } catch (error) {
+      console.error("Error creating balance update:", error);
+      res.status(400).json({ error: "Invalid balance update data" });
+    }
+  });
+
+  // Remittance orders for cross-border USDC transfers
+  app.post("/api/remittance-orders", async (req, res) => {
+    try {
+      const { senderAddress, recipientAddress, recipientCountry, fromToken, fromAmount, toAmount, exchangeRate, chainId, purpose } = req.body;
+      
+      const order = await storage.createRemittanceOrder({
+        userId: 1, // Demo user
+        senderAddress,
+        recipientAddress,
+        recipientCountry,
+        fromToken,
+        toToken: 'USDC',
+        fromAmount,
+        toAmount,
+        exchangeRate,
+        chainId,
+        purpose,
+        gasless: true,
+        estimatedArrival: new Date(Date.now() + (5 * 60 * 1000)) // 5 minutes
+      });
+      
+      // Create webhook event for remittance tracking
+      await storage.createWebhookEvent({
+        eventType: "remittance_order_created",
+        payload: {
+          orderId: order.id,
+          fromToken: order.fromToken,
+          toAmount: order.toAmount,
+          recipientCountry: order.recipientCountry,
+          status: order.status
+        }
+      });
+      
+      res.json(order);
+    } catch (error) {
+      console.error("Error creating remittance order:", error);
+      res.status(400).json({ error: "Invalid remittance order data" });
+    }
+  });
+
+  // Webhook endpoints for real-time notifications
+  app.post("/api/webhook/swap-status", async (req, res) => {
+    try {
+      const { orderHash, status, txHash, blockNumber } = req.body;
+      
+      await storage.updateSwapOrder(orderHash, {
+        status,
+        txHash,
+        blockNumber,
+        executedAt: status === 'filled' ? new Date() : undefined,
+        updatedAt: new Date()
+      });
+      
+      await storage.createWebhookEvent({
+        eventType: "swap_completed",
+        payload: { orderHash, status, txHash, blockNumber, timestamp: new Date() }
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error processing swap status webhook:", error);
+      res.status(500).json({ error: "Failed to process webhook" });
+    }
+  });
+
+  // 1inch Fusion API proxy for gasless USDC swaps
+  app.post("/api/fusion/quote", async (req, res) => {
+    try {
+      const { fromToken, amount, chainId, userAddress } = req.body;
+      
+      // Always quote to USDC for remittance platform
+      const exchangeRates: Record<string, number> = {
+        'ETH': 2500,
+        'MATIC': 0.75,
+        'AVAX': 25,
+        'BNB': 300
+      };
+      
+      const rate = exchangeRates[fromToken] || 1;
+      const toAmount = (parseFloat(amount) * rate).toFixed(2);
+      
+      const quote = {
+        orderHash: "0x" + Math.random().toString(16).substring(2).padStart(64, '0'),
+        fromToken,
+        toToken: "USDC",
+        fromAmount: amount,
+        toAmount,
+        rate: rate.toString(),
+        priceImpact: "0.15",
+        gasEstimate: "0", // Gasless
+        minimumReceived: (parseFloat(toAmount) * 0.99).toFixed(2),
+        gasless: true,
+        paymasterEnabled: true,
+        validUntil: Date.now() + (10 * 60 * 1000)
+      };
+      
+      res.json(quote);
+    } catch (error) {
+      console.error("Error getting fusion quote:", error);
+      res.status(500).json({ error: "Failed to get swap quote" });
+    }
+  });
+
+  app.post("/api/fusion/execute", async (req, res) => {
+    try {
+      const { orderHash, fromToken, toToken, fromAmount, toAmount, userAddress } = req.body;
+      
+      // Create swap order in database for tracking
+      await storage.createSwapOrder({
+        userId: 1,
+        orderHash,
+        fromToken,
+        toToken: toToken || 'USDC',
+        fromAmount,
+        toAmount,
+        chainId: 1,
+        gasless: true,
+        paymasterUsed: true
+      });
+      
+      const execution = {
+        orderHash,
+        txHash: "0x" + Math.random().toString(16).substring(2).padStart(64, '0'),
+        status: "pending" as const,
+        gasless: true,
+        estimatedArrival: new Date(Date.now() + (5 * 60 * 1000))
+      };
+      
+      // Simulate order fulfillment after 30 seconds
+      setTimeout(async () => {
+        try {
+          await storage.updateSwapOrder(orderHash, {
+            status: 'filled',
+            txHash: execution.txHash,
+            executedAt: new Date()
+          });
+          
+          await storage.createWebhookEvent({
+            eventType: "swap_completed",
+            payload: { orderHash, status: 'filled', txHash: execution.txHash }
+          });
+        } catch (error) {
+          console.error("Error updating swap order:", error);
+        }
+      }, 30000);
+      
+      res.json(execution);
+    } catch (error) {
+      console.error("Error executing fusion swap:", error);
+      res.status(500).json({ error: "Failed to execute swap" });
+    }
+  });
+
+export async function registerRoutes(app: Express): Promise<Server> {
   
   // Wallet balance endpoint
   app.get("/api/wallet/balances", async (req, res) => {

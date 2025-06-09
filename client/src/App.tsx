@@ -11,6 +11,7 @@ import Swap from "@/pages/swap";
 import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
 import Dashboard from "@/pages/dashboard";
+import RemittanceDashboard from "@/pages/remittance-dashboard";
 import NotFound from "@/pages/not-found";
 import "./lib/wallet-config";
 
@@ -18,11 +19,13 @@ import "./lib/wallet-config";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={AnimatedHome} />
+      <Route path="/" component={RemittanceDashboard} />
+      <Route path="/remittance" component={RemittanceDashboard} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/trading" component={AnimatedHome} />
       <Route component={NotFound} />
     </Switch>
   );
