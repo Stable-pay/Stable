@@ -2,16 +2,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
-import { WorkingTokenSwap } from "@/components/swap/working-token-swap";
-import { useDirectWallet, useRealTokenBalances } from "@/hooks/use-direct-wallet";
+import { ReownTokenSwap } from "@/components/swap/reown-token-swap";
+import { useWagmiWallet, useTokenBalances } from "@/hooks/use-wagmi-wallet";
+import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network } from "lucide-react";
+import { useAccount, useBalance } from 'wagmi';
+import { formatUnits } from 'viem';
 
 export default function Dashboard() {
-  const { isConnected, address, chainId, connect } = useDirectWallet();
-  const { data: networkBalances, isLoading: balancesLoading, error: balancesError } = useRealTokenBalances();
+  const { isConnected, address, chainId } = useWagmiWallet();
+  const { balances, isLoading: balancesLoading, nativeBalance } = useTokenBalances();
   
-  const totalNetworks = networkBalances?.length || 0;
-  const totalTokens = networkBalances?.reduce((sum, network) => sum + network.tokens.length, 0) || 0;
+  const totalNetworks = 1; // Currently connected network
+  const totalTokens = balances?.length || 0;
 
   if (!isConnected) {
     return (
@@ -22,10 +25,7 @@ export default function Dashboard() {
           <p className="text-gray-600 mb-6">
             Connect your wallet to view live portfolio balances and execute real token swaps
           </p>
-          <Button onClick={connect} size="lg" className="bg-blue-600 hover:bg-blue-700">
-            <Wallet className="h-5 w-5 mr-2" />
-            Connect Wallet
-          </Button>
+          <ReownWalletConnect />
         </div>
       </div>
     );

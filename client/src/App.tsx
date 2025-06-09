@@ -11,7 +11,7 @@ import Home from "@/pages/home";
 import Swap from "@/pages/swap";
 import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
-import Dashboard from "@/pages/dashboard";
+import Dashboard from "@/pages/dashboard-reown";
 import NotFound from "@/pages/not-found";
 import "./lib/reown";
 
