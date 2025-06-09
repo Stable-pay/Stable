@@ -5,8 +5,8 @@ import { queryClient } from "./lib/queryClient";
 import { wagmiConfig } from "./lib/wallet-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ModernNavbar } from "@/components/layout/modern-navbar";
-import Home from "@/pages/home";
+import { StablePayNavbar } from "@/components/layout/stablepay-navbar";
+import StablePayHome from "@/pages/stablepay-home";
 import Swap from "@/pages/swap";
 import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
@@ -18,7 +18,7 @@ import "./lib/wallet-config";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={StablePayHome} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />
@@ -33,8 +33,8 @@ function App() {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <div className="min-h-screen">
-            <ModernNavbar />
+          <div className="min-h-screen bg-white">
+            <StablePayNavbar />
             <main>
               <Router />
             </main>
