@@ -36,7 +36,7 @@ export function RealSwapInterface() {
     8453: 'base'
   };
 
-  const currentNetwork = chainId ? networkMap[chainId] : '';
+  const currentNetwork = chainId ? networkMap[chainId as keyof typeof networkMap] || '' : '';
 
   useEffect(() => {
     if (isConnected && address && currentNetwork) {

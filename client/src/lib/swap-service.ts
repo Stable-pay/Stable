@@ -147,7 +147,7 @@ class SwapService {
       return await response.json();
     } catch (error: any) {
       console.error('Approval transaction error:', error);
-      throw new Error(`Failed to get approval transaction: ${error?.message || 'Unknown error'}`);
+      throw new Error(`Failed to get approval transaction: ${(error as Error)?.message || 'Unknown error'}`);
     }
   }
 
