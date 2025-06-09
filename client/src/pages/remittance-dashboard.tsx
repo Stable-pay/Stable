@@ -286,13 +286,13 @@ export default function RemittanceDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-6">
+    <div className="min-h-screen bg-background p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* PWA Install Banner */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4 flex items-center justify-between"
+          className="mb-4 bg-primary text-primary-foreground rounded-lg p-4 flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
             <div className="h-8 w-8">
@@ -304,14 +304,14 @@ export default function RemittanceDashboard() {
             </div>
             <div>
               <p className="font-semibold text-sm sm:text-base">Install StablePay App</p>
-              <p className="text-xs sm:text-sm text-blue-100">Get the full PWA experience</p>
+              <p className="text-xs sm:text-sm opacity-90">Get the full PWA experience</p>
             </div>
           </div>
           <Button
             id="pwa-install-btn"
             size="sm"
             variant="secondary"
-            className="hidden"
+            className="hidden bg-white text-primary hover:bg-white/90"
           >
             <Download className="h-4 w-4 mr-2" />
             Install
@@ -348,56 +348,52 @@ export default function RemittanceDashboard() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8"
         >
-          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+          <Card className="bg-card border border-border shadow-sm">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Sent</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">$12,450</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Sent</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">$12,450</p>
                 </div>
-                <div className="h-6 w-6 sm:h-8 sm:w-8">
-                  <LottieWrapper
-                    animationData={cryptoTransferAnimation}
-                    {...animationConfigs.transfer}
-                    className="h-6 w-6 sm:h-8 sm:w-8"
-                  />
+                <div className="h-6 w-6 sm:h-8 sm:w-8 text-primary">
+                  <Send className="h-6 w-6 sm:h-8 sm:w-8" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+          <Card className="bg-card border border-border shadow-sm">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Countries</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">8</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Countries</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">8</p>
                 </div>
-                <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-secondary" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+          <Card className="bg-card border border-border shadow-sm">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Avg. Time</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">3.2 min</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Avg. Time</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">3.2 min</p>
                 </div>
-                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+          <Card className="bg-card border border-border shadow-sm">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Gas Saved</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">$284</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Gas Saved</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">$284</p>
                 </div>
-                <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
+                <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-secondary" />
               </div>
             </CardContent>
           </Card>
@@ -411,16 +407,16 @@ export default function RemittanceDashboard() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <Card className="border-amber-200 bg-amber-50">
+            <Card className="border border-border bg-accent/50">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <AlertCircle className="h-5 w-5 text-amber-600" />
+                    <AlertCircle className="h-5 w-5 text-secondary" />
                     <div>
-                      <p className="font-semibold text-amber-800">
+                      <p className="font-semibold text-foreground">
                         {kycPending ? 'KYC Under Review' : 'Complete KYC Verification'}
                       </p>
-                      <p className="text-sm text-amber-700">
+                      <p className="text-sm text-muted-foreground">
                         {kycPending 
                           ? 'Your documents are being reviewed. You\'ll be notified within 24-48 hours.'
                           : 'Complete KYC verification to send money and withdraw to INR.'
@@ -431,7 +427,7 @@ export default function RemittanceDashboard() {
                   {!kycPending && (
                     <Button 
                       onClick={() => setShowKYCModal(true)}
-                      className="bg-amber-600 hover:bg-amber-700"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                       Start KYC
                     </Button>
@@ -447,13 +443,13 @@ export default function RemittanceDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
-            <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-2">
-                <DollarSign className="h-6 w-6 text-blue-600" />
+          <Card className="bg-card border border-border shadow-sm">
+            <CardHeader className="border-b border-border">
+              <CardTitle className="text-2xl flex items-center gap-2 text-foreground">
+                <DollarSign className="h-6 w-6 text-primary" />
                 Remittance Center
                 {isKycVerified && (
-                  <Badge className="bg-green-100 text-green-800 ml-2">
+                  <Badge className="bg-primary/10 text-primary border border-primary/20 ml-2">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     KYC Verified
                   </Badge>
