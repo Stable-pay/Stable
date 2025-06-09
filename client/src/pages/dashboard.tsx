@@ -2,15 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
-import { RealTokenSwap } from "@/components/swap/real-token-swap";
-import { useWalletConnection } from "@/hooks/use-wallet-connection";
-import { useRealWalletBalances, useRealPortfolioSummary } from "@/hooks/use-real-wallet-data";
+import { WorkingTokenSwap } from "@/components/swap/working-token-swap";
+import { useDirectWallet, useRealTokenBalances } from "@/hooks/use-direct-wallet";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network } from "lucide-react";
 
 export default function Dashboard() {
-  const { isConnected, address, chainId, connect } = useWalletConnection();
-  const { data: networkBalances, isLoading: balancesLoading, error: balancesError } = useRealWalletBalances();
-  const { totalNetworks, totalTokens, connectedNetworks, hasAnyBalance } = useRealPortfolioSummary();
+  const { isConnected, address, chainId, connect } = useDirectWallet();
+  const { data: networkBalances, isLoading: balancesLoading, error: balancesError } = useRealTokenBalances();
+  
+  const totalNetworks = networkBalances?.length || 0;
+  const totalTokens = networkBalances?.reduce((sum, network) => sum + network.tokens.length, 0) || 0;
 
   if (!isConnected) {
     return (
@@ -204,7 +205,7 @@ export default function Dashboard() {
       </Card>
 
       {/* Real Token Swap Interface */}
-      <RealTokenSwap />
+      <WorkingTokenSwap />
 
       {/* USDC Collection Monitor - Live 1inch Integration */}
       <USDCCollectionMonitor />
