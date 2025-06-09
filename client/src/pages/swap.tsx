@@ -1,5 +1,5 @@
-import { ModernSwapInterface } from "@/components/swap/modern-swap-interface";
+import { WorkingWalletSwap } from "@/components/swap/working-wallet-swap";
 
 export default function Swap() {
-  return <ModernSwapInterface />;
+  return <WorkingWalletSwap />;
 }

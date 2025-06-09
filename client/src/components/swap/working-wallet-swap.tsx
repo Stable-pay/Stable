@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ArrowUpDown, Zap, DollarSign, Loader2, CheckCircle, AlertTriangle, RefreshCw, Wallet, TrendingUp } from 'lucide-react';
+import { ArrowUpDown, Zap, DollarSign, Loader2, CheckCircle, AlertTriangle, RefreshCw, Wallet, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 
 interface TokenBalance {
@@ -19,7 +19,6 @@ interface TokenBalance {
   chainName: string;
   formattedBalance: string;
   isNative: boolean;
-  usdValue?: number;
 }
 
 interface SwapQuote {
@@ -27,19 +26,12 @@ interface SwapQuote {
   toAmount: string;
   rate: number;
   minimumReceived: string;
-  priceImpact: number;
-  gasEstimate: string;
   data?: any;
 }
 
-interface SwapState {
-  status: 'idle' | 'loading-balances' | 'getting-quote' | 'ready' | 'swapping' | 'completed' | 'failed';
-  hash?: string;
-  error?: string;
-}
-
-export function ModernSwapInterface() {
+export function WorkingWalletSwap() {
   const { address, isConnected, chainId } = useAccount();
+  const { data: nativeBalance } = useBalance({ address });
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { toast } = useToast();
@@ -49,19 +41,19 @@ export function ModernSwapInterface() {
   const [selectedToken, setSelectedToken] = useState<TokenBalance | null>(null);
   const [swapAmount, setSwapAmount] = useState('');
   const [quote, setQuote] = useState<SwapQuote | null>(null);
-  const [swapState, setSwapState] = useState<SwapState>({ status: 'idle' });
+  const [swapState, setSwapState] = useState<'idle' | 'getting-quote' | 'ready' | 'swapping' | 'completed' | 'failed'>('idle');
   const [progress, setProgress] = useState(0);
 
   // USDC addresses for different chains
   const getUSDCAddress = (chainId: number): string => {
     const usdcAddresses: Record<number, string> = {
-      1: '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B',      // Ethereum
-      137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon
-      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
-      8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
-      10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism
-      43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',  // Avalanche
-      56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d'      // BSC
+      1: '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B',
+      137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+      43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
+      56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d'
     };
     return usdcAddresses[chainId] || '';
   };
@@ -79,63 +71,24 @@ export function ModernSwapInterface() {
     return networks[chainId] || 'Unknown';
   };
 
-  // Load wallet balances directly from connected wallet
+  // Load wallet balances from wagmi
   const loadBalances = async () => {
-    if (!address || !chainId) return;
+    if (!address || !chainId || !nativeBalance) return;
     
     setBalancesLoading(true);
-    setSwapState({ status: 'loading-balances' });
-    
-    // Always use direct wallet balance loading
-    await loadNativeBalance();
-    setBalancesLoading(false);
-  };
-
-  // Load actual wallet balances using Web3 provider
-  const loadNativeBalance = async () => {
-    if (!address || !chainId || typeof window === 'undefined' || !(window as any).ethereum) {
-      setBalances([]);
-      setSwapState({ status: 'idle' });
-      return;
-    }
     
     try {
-      console.log(`Loading balance for ${address} on chain ${chainId}`);
-      
-      const nativeSymbols: Record<number, string> = {
-        1: 'ETH',
-        137: 'MATIC', 
-        42161: 'ETH',
-        8453: 'ETH',
-        10: 'ETH',
-        43114: 'AVAX',
-        56: 'BNB'
-      };
-      
-      const nativeSymbol = nativeSymbols[chainId] || 'ETH';
-      
-      // Get native token balance
-      const balance = await (window as any).ethereum.request({
-        method: 'eth_getBalance',
-        params: [address, 'latest']
-      });
-      
-      console.log(`Raw balance: ${balance}`);
-      
-      const balanceInEther = formatUnits(BigInt(balance), 18);
-      const formattedBalance = parseFloat(balanceInEther);
-      
-      console.log(`Formatted balance: ${formattedBalance} ${nativeSymbol}`);
-      
       const balanceResults: TokenBalance[] = [];
       
-      // Only include if balance is meaningful
+      // Add native token balance from wagmi
+      const formattedBalance = parseFloat(nativeBalance.formatted);
+      
       if (formattedBalance > 0.000001) {
         balanceResults.push({
-          symbol: nativeSymbol,
+          symbol: nativeBalance.symbol,
           address: 'native',
-          balance: balance,
-          decimals: 18,
+          balance: nativeBalance.value.toString(),
+          decimals: nativeBalance.decimals,
           chainId,
           chainName: getNetworkName(chainId),
           formattedBalance: formattedBalance.toFixed(6),
@@ -143,87 +96,18 @@ export function ModernSwapInterface() {
         });
       }
       
-      // Load common ERC20 tokens for this chain
-      await loadERC20Balances(balanceResults);
-      
       setBalances(balanceResults);
-      setSwapState({ status: 'idle' });
-      
-      console.log(`Final balance count: ${balanceResults.length}`);
+      console.log(`Loaded ${balanceResults.length} tokens for ${getNetworkName(chainId)}`);
       
     } catch (error) {
-      console.error('Failed to get wallet balances:', error);
-      setBalances([]);
-      setSwapState({ status: 'idle' });
-      
+      console.error('Failed to load balances:', error);
       toast({
         title: "Balance Loading Failed",
-        description: "Unable to fetch wallet balances. Please check your wallet connection.",
+        description: "Unable to fetch wallet balances",
         variant: "destructive"
       });
-    }
-  };
-
-  // Load ERC20 token balances for common tokens
-  const loadERC20Balances = async (balanceResults: TokenBalance[]) => {
-    if (!address || !chainId || typeof window === 'undefined' || !(window as any).ethereum) return;
-    
-    // Common tokens by chain
-    const commonTokens: Record<number, Array<{symbol: string, address: string, decimals: number}>> = {
-      1: [
-        { symbol: 'USDC', address: '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B', decimals: 6 },
-        { symbol: 'USDT', address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', decimals: 6 },
-        { symbol: 'DAI', address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', decimals: 18 }
-      ],
-      137: [
-        { symbol: 'USDC', address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6 },
-        { symbol: 'USDT', address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', decimals: 6 },
-        { symbol: 'DAI', address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', decimals: 18 }
-      ],
-      56: [
-        { symbol: 'USDC', address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', decimals: 18 },
-        { symbol: 'USDT', address: '0x55d398326f99059fF775485246999027B3197955', decimals: 18 },
-        { symbol: 'BUSD', address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', decimals: 18 }
-      ]
-    };
-    
-    const tokens = commonTokens[chainId] || [];
-    
-    for (const token of tokens) {
-      try {
-        // ERC20 balanceOf call
-        const data = `0x70a08231000000000000000000000000${address.slice(2)}`;
-        
-        const result = await (window as any).ethereum.request({
-          method: 'eth_call',
-          params: [{
-            to: token.address,
-            data: data
-          }, 'latest']
-        });
-        
-        if (result && result !== '0x') {
-          const balance = BigInt(result);
-          const formattedBalance = parseFloat(formatUnits(balance, token.decimals));
-          
-          if (formattedBalance > 0.000001) {
-            balanceResults.push({
-              symbol: token.symbol,
-              address: token.address,
-              balance: balance.toString(),
-              decimals: token.decimals,
-              chainId,
-              chainName: getNetworkName(chainId),
-              formattedBalance: formattedBalance.toFixed(6),
-              isNative: false
-            });
-            
-            console.log(`Found ${token.symbol} balance: ${formattedBalance}`);
-          }
-        }
-      } catch (error) {
-        console.error(`Failed to get ${token.symbol} balance:`, error);
-      }
+    } finally {
+      setBalancesLoading(false);
     }
   };
 
@@ -231,7 +115,7 @@ export function ModernSwapInterface() {
   const getSwapQuote = async () => {
     if (!selectedToken || !swapAmount || !address || !chainId) return;
 
-    setSwapState({ status: 'getting-quote' });
+    setSwapState('getting-quote');
     setProgress(20);
     
     try {
@@ -267,20 +151,17 @@ export function ModernSwapInterface() {
 
       const toAmountFormatted = formatUnits(BigInt(quoteData.dstAmount), 6);
       const rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
-      const priceImpact = quoteData.priceImpact || 0;
 
       setQuote({
         fromAmount: swapAmount,
         toAmount: toAmountFormatted,
         rate,
         minimumReceived: (parseFloat(toAmountFormatted) * 0.99).toFixed(6),
-        priceImpact,
-        gasEstimate: '200000',
         data: quoteData
       });
 
       setProgress(100);
-      setSwapState({ status: 'ready' });
+      setSwapState('ready');
 
       toast({
         title: "Quote Ready",
@@ -289,10 +170,7 @@ export function ModernSwapInterface() {
 
     } catch (error) {
       console.error('Quote failed:', error);
-      setSwapState({ 
-        status: 'failed', 
-        error: error instanceof Error ? error.message : 'Failed to get quote' 
-      });
+      setSwapState('failed');
       
       toast({
         title: "Quote Failed",
@@ -308,7 +186,7 @@ export function ModernSwapInterface() {
   const executeSwap = async () => {
     if (!selectedToken || !quote || !swapAmount || !address || !chainId) return;
 
-    setSwapState({ status: 'swapping' });
+    setSwapState('swapping');
 
     try {
       const amountInWei = parseUnits(swapAmount, selectedToken.decimals).toString();
@@ -344,7 +222,7 @@ export function ModernSwapInterface() {
           }]
         });
 
-        setSwapState({ status: 'completed', hash: txHash });
+        setSwapState('completed');
         
         toast({
           title: "Swap Completed!",
@@ -356,16 +234,13 @@ export function ModernSwapInterface() {
           setSwapAmount('');
           setQuote(null);
           setSelectedToken(null);
-          setSwapState({ status: 'idle' });
+          setSwapState('idle');
           loadBalances();
         }, 3000);
       }
     } catch (error) {
       console.error('Swap failed:', error);
-      setSwapState({ 
-        status: 'failed', 
-        error: error instanceof Error ? error.message : 'Swap failed' 
-      });
+      setSwapState('failed');
       
       toast({
         title: "Swap Failed",
@@ -375,10 +250,18 @@ export function ModernSwapInterface() {
     }
   };
 
+  const copyAddress = (addr: string) => {
+    navigator.clipboard.writeText(addr);
+    toast({
+      title: "Address Copied",
+      description: "Wallet address copied to clipboard"
+    });
+  };
+
   // Auto-quote when inputs change
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (selectedToken && swapAmount && parseFloat(swapAmount) > 0 && swapState.status === 'idle') {
+      if (selectedToken && swapAmount && parseFloat(swapAmount) > 0 && swapState === 'idle') {
         getSwapQuote();
       }
     }, 800);
@@ -386,28 +269,12 @@ export function ModernSwapInterface() {
     return () => clearTimeout(timer);
   }, [selectedToken, swapAmount]);
 
-  // Load balances when wallet connects
+  // Load balances when wallet connects or native balance changes
   useEffect(() => {
-    console.log('Wallet state changed:', { isConnected, address, chainId });
-    
-    if (isConnected && address && chainId) {
-      console.log('Loading balances for connected wallet...');
+    if (isConnected && address && chainId && nativeBalance) {
       loadBalances();
-    } else {
-      console.log('Wallet not properly connected, clearing balances');
-      setBalances([]);
     }
-  }, [isConnected, address, chainId]);
-
-  // Debug wallet state
-  useEffect(() => {
-    console.log('Current wallet state:', {
-      isConnected,
-      address: address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'none',
-      chainId,
-      balanceCount: balances.length
-    });
-  }, [isConnected, address, chainId, balances]);
+  }, [isConnected, address, chainId, nativeBalance]);
 
   if (!isConnected) {
     return (
@@ -421,7 +288,7 @@ export function ModernSwapInterface() {
               Connect Wallet
             </CardTitle>
             <p className="text-gray-600 dark:text-gray-300 mt-2 mb-6">
-              Connect your wallet to start swapping tokens to USDC with the best rates
+              Connect your wallet to start swapping tokens to USDC
             </p>
             <div className="space-y-3">
               {connectors.map((connector) => (
@@ -446,13 +313,72 @@ export function ModernSwapInterface() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-            Token Swap
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Swap any token to USDC with 1inch Protocol - Best rates guaranteed
-          </p>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                Token Swap
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300">
+                Convert tokens to USDC using 1inch Protocol
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={loadBalances}
+              disabled={balancesLoading}
+              className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${balancesLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
+
+          {/* Wallet Info */}
+          <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mb-8">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                    <Wallet className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Connected Wallet</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-mono text-sm">
+                        {address?.slice(0, 6)}...{address?.slice(-4)}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => address && copyAddress(address)}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => disconnect()}
+                        className="text-xs"
+                      >
+                        Disconnect
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Network: {getNetworkName(chainId || 1)}
+                  </p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {balances.length} {balances.length === 1 ? 'Token' : 'Tokens'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main Content */}
@@ -461,29 +387,20 @@ export function ModernSwapInterface() {
           <div className="lg:col-span-2">
             <Card className="border-0 shadow-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader className="pb-6">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                      <ArrowUpDown className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-xl">Swap to USDC</span>
-                  </CardTitle>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={loadBalances}
-                    disabled={balancesLoading}
-                    className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                  >
-                    <RefreshCw className={`h-4 w-4 mr-2 ${balancesLoading ? 'animate-spin' : ''}`} />
-                    Refresh
-                  </Button>
-                </div>
+                <CardTitle className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                    <ArrowUpDown className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-xl">Swap to USDC</span>
+                </CardTitle>
+                <CardDescription>
+                  Convert your tokens to USDC with the best rates from 1inch Protocol
+                </CardDescription>
               </CardHeader>
               
               <CardContent className="space-y-6">
                 {/* Balance Loading State */}
-                {swapState.status === 'loading-balances' && (
+                {balancesLoading && (
                   <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400">
                       <Loader2 className="h-5 w-5 animate-spin" />
@@ -501,7 +418,7 @@ export function ModernSwapInterface() {
                       const token = balances.find(t => t.address === value);
                       setSelectedToken(token || null);
                       setQuote(null);
-                      setSwapState({ status: 'idle' });
+                      setSwapState('idle');
                     }}
                   >
                     <SelectTrigger className="h-14 text-left">
@@ -510,7 +427,7 @@ export function ModernSwapInterface() {
                     <SelectContent>
                       {balances.length === 0 ? (
                         <div className="p-4 text-center text-gray-500">
-                          {balancesLoading ? 'Loading...' : 'No tokens with balance found'}
+                          {balancesLoading ? 'Loading...' : 'No tokens found'}
                         </div>
                       ) : (
                         balances.map((token) => (
@@ -560,7 +477,7 @@ export function ModernSwapInterface() {
                       onChange={(e) => {
                         setSwapAmount(e.target.value);
                         setQuote(null);
-                        setSwapState({ status: 'idle' });
+                        setSwapState('idle');
                       }}
                       className="h-14 text-lg pr-20"
                     />
@@ -573,30 +490,24 @@ export function ModernSwapInterface() {
                 </div>
 
                 {/* Progress Bar */}
-                {swapState.status === 'getting-quote' && (
+                {swapState === 'getting-quote' && (
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="text-sm font-medium">Getting best quote from 1inch...</span>
+                      <span className="text-sm font-medium">Getting quote from 1inch...</span>
                     </div>
                     <Progress value={progress} className="h-2 bg-blue-100 dark:bg-blue-900/30" />
                   </div>
                 )}
 
                 {/* Quote Display */}
-                {quote && swapState.status === 'ready' && (
+                {quote && swapState === 'ready' && (
                   <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-xl border border-green-200 dark:border-green-800 space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-600 dark:text-gray-300">You'll receive</span>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                          <TrendingUp className="h-3 w-3 mr-1" />
-                          Best Rate
-                        </Badge>
-                        <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                          1inch
-                        </Badge>
-                      </div>
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                        1inch Protocol
+                      </Badge>
                     </div>
                     
                     <div className="flex items-center gap-3">
@@ -611,15 +522,9 @@ export function ModernSwapInterface() {
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded-lg">
-                        <p className="text-gray-600 dark:text-gray-400">Minimum Received</p>
-                        <p className="font-semibold">{quote.minimumReceived} USDC</p>
-                      </div>
-                      <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded-lg">
-                        <p className="text-gray-600 dark:text-gray-400">Price Impact</p>
-                        <p className="font-semibold">{quote.priceImpact.toFixed(2)}%</p>
-                      </div>
+                    <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded-lg">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Minimum Received</p>
+                      <p className="font-semibold">{quote.minimumReceived} USDC</p>
                     </div>
                   </div>
                 )}
@@ -627,41 +532,41 @@ export function ModernSwapInterface() {
                 {/* Swap Button */}
                 <Button 
                   onClick={executeSwap}
-                  disabled={swapState.status !== 'ready' || !quote}
+                  disabled={swapState !== 'ready' || !quote}
                   className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg"
                   size="lg"
                 >
-                  {swapState.status === 'idle' && (
+                  {swapState === 'idle' && (
                     <>
                       <ArrowUpDown className="h-5 w-5 mr-2" />
                       Enter Amount
                     </>
                   )}
-                  {swapState.status === 'getting-quote' && (
+                  {swapState === 'getting-quote' && (
                     <>
                       <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                       Getting Quote...
                     </>
                   )}
-                  {swapState.status === 'ready' && (
+                  {swapState === 'ready' && (
                     <>
                       <Zap className="h-5 w-5 mr-2" />
                       Swap to USDC
                     </>
                   )}
-                  {swapState.status === 'swapping' && (
+                  {swapState === 'swapping' && (
                     <>
                       <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                       Confirm in Wallet
                     </>
                   )}
-                  {swapState.status === 'completed' && (
+                  {swapState === 'completed' && (
                     <>
                       <CheckCircle className="h-5 w-5 mr-2" />
                       Completed!
                     </>
                   )}
-                  {swapState.status === 'failed' && (
+                  {swapState === 'failed' && (
                     <>
                       <ArrowUpDown className="h-5 w-5 mr-2" />
                       Try Again
@@ -670,32 +575,20 @@ export function ModernSwapInterface() {
                 </Button>
 
                 {/* Status Messages */}
-                {swapState.status === 'completed' && (
+                {swapState === 'completed' && (
                   <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                     <div className="flex items-center gap-3 text-green-700 dark:text-green-300">
                       <CheckCircle className="h-5 w-5" />
-                      <div>
-                        <p className="font-semibold">Swap completed successfully!</p>
-                        {swapState.hash && (
-                          <p className="text-sm opacity-75 mt-1">
-                            Transaction: {swapState.hash.slice(0, 10)}...{swapState.hash.slice(-8)}
-                          </p>
-                        )}
-                      </div>
+                      <span className="font-semibold">Swap completed successfully!</span>
                     </div>
                   </div>
                 )}
 
-                {swapState.status === 'failed' && (
+                {swapState === 'failed' && (
                   <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
                     <div className="flex items-center gap-3 text-red-700 dark:text-red-300">
                       <AlertTriangle className="h-5 w-5" />
-                      <div>
-                        <p className="font-semibold">Swap failed</p>
-                        {swapState.error && (
-                          <p className="text-sm opacity-75 mt-1">{swapState.error}</p>
-                        )}
-                      </div>
+                      <span className="font-semibold">Swap failed - Please try again</span>
                     </div>
                   </div>
                 )}
@@ -703,12 +596,12 @@ export function ModernSwapInterface() {
             </Card>
           </div>
 
-          {/* Sidebar Info */}
+          {/* Sidebar */}
           <div className="space-y-6">
             {/* Network Info */}
             <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Network Info</CardTitle>
+                <CardTitle className="text-lg">Network Status</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -721,47 +614,37 @@ export function ModernSwapInterface() {
                   </div>
                   <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                      🔥 Best rates aggregated from all DEXs
+                      Best rates from 1inch Protocol
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Features */}
+            {/* Balance Summary */}
             <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Why Choose Us</CardTitle>
+                <CardTitle className="text-lg">Your Balances</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <Zap className="h-5 w-5 text-blue-600 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-sm">Best Rates</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        1inch aggregates prices from all DEXs
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <DollarSign className="h-5 w-5 text-green-600 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-sm">Instant USDC</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        Convert any token to stable USDC
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-purple-600 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-sm">Secure</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        Non-custodial and fully decentralized
-                      </p>
-                    </div>
-                  </div>
+                <div className="space-y-3">
+                  {balances.length === 0 ? (
+                    <p className="text-sm text-gray-500">No tokens found</p>
+                  ) : (
+                    balances.map((token, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">
+                              {token.symbol.charAt(0)}
+                            </span>
+                          </div>
+                          <span className="font-medium text-sm">{token.symbol}</span>
+                        </div>
+                        <span className="text-sm font-semibold">{token.formattedBalance}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
