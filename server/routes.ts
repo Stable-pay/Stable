@@ -311,7 +311,216 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Wallet balance endpoint
+  // Real wallet token balance fetching
+  app.post("/api/wallet/token-balance", async (req, res) => {
+    try {
+      const { address, tokenAddress, chainId } = req.body;
+      
+      if (!address || !tokenAddress || !chainId) {
+        return res.status(400).json({ error: 'Address, tokenAddress, and chainId are required' });
+      }
+
+      // For production, this would integrate with actual RPC providers
+      // Using realistic demo balances based on chain and token
+      const demoBalances: Record<string, Record<string, string>> = {
+        '1': { // Ethereum
+          '0xA0b86a33E6E3B0c8c8D7D45b40b9b5Ba0b3D0e8B': '1250500000', // USDC (6 decimals)
+          '0xdAC17F958D2ee523a2206206994597C13D831ec7': '800750000', // USDT (6 decimals)
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F': '500000000000000000000', // DAI (18 decimals)
+          '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2': '1234500000000000000' // WETH (18 decimals)
+        },
+        '137': { // Polygon
+          '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': '950250000', // USDC (6 decimals)
+          '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': '600000000', // USDT (6 decimals)
+          '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270': '1500750000000000000000' // WMATIC (18 decimals)
+        },
+        '42161': { // Arbitrum
+          '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': '750000000', // USDC (6 decimals)
+          '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9': '400250000', // USDT (6 decimals)
+          '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1': '1876500000000000000' // WETH (18 decimals)
+        }
+      };
+
+      const balance = demoBalances[chainId]?.[tokenAddress] || '0';
+      
+      res.json({ balance });
+    } catch (error) {
+      console.error('Token balance error:', error);
+      res.status(500).json({ error: 'Failed to fetch token balance' });
+    }
+  });
+
+  // KYC verification endpoints
+  app.get("/api/kyc/status/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      
+      // Check KYC status from database
+      const user = await storage.getUserByWalletAddress(address);
+      
+      if (!user) {
+        return res.json({ status: 'none' });
+      }
+
+      // Get latest KYC document
+      const kycDocuments = await storage.getKycDocuments(user.id);
+      const latestKyc = kycDocuments[kycDocuments.length - 1];
+      
+      if (!latestKyc) {
+        return res.json({ status: 'none' });
+      }
+
+      res.json({ 
+        status: latestKyc.status,
+        submittedAt: latestKyc.createdAt,
+        reviewedAt: latestKyc.updatedAt
+      });
+    } catch (error) {
+      console.error('KYC status error:', error);
+      res.status(500).json({ error: 'Failed to fetch KYC status' });
+    }
+  });
+
+  app.post("/api/kyc/submit", upload.fields([
+    { name: 'documentFront', maxCount: 1 },
+    { name: 'documentBack', maxCount: 1 },
+    { name: 'selfie', maxCount: 1 },
+    { name: 'bankStatement', maxCount: 1 }
+  ]), async (req, res) => {
+    try {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const {
+        walletAddress,
+        firstName,
+        lastName,
+        dateOfBirth,
+        email,
+        phone,
+        addressLine1,
+        city,
+        state,
+        pincode,
+        documentType,
+        documentNumber,
+        bankName,
+        accountNumber,
+        ifscCode,
+        accountHolderName
+      } = req.body;
+
+      // Create or update user
+      let user = await storage.getUserByWalletAddress(walletAddress);
+      if (!user) {
+        user = await storage.createUser({
+          walletAddress,
+          email,
+          firstName,
+          lastName,
+          phone,
+          kycStatus: 'pending'
+        });
+      }
+
+      // Create KYC document record
+      const kycDocument = await storage.createKycDocument({
+        userId: user.id,
+        documentType,
+        documentNumber,
+        firstName,
+        lastName,
+        dateOfBirth: new Date(dateOfBirth),
+        email,
+        phone,
+        addressLine1,
+        city,
+        state,
+        pincode,
+        status: 'pending'
+      });
+
+      // Create bank account record
+      await storage.createBankAccount({
+        userId: user.id,
+        bankName,
+        accountNumber,
+        ifscCode,
+        accountHolderName,
+        isVerified: false
+      });
+
+      // Store file information (in production, upload to cloud storage)
+      const documentUrls = {
+        documentFront: files.documentFront?.[0]?.filename,
+        documentBack: files.documentBack?.[0]?.filename,
+        selfie: files.selfie?.[0]?.filename,
+        bankStatement: files.bankStatement?.[0]?.filename
+      };
+
+      console.log('KYC submitted for user:', user.id, documentUrls);
+
+      res.json({ 
+        success: true, 
+        kycId: kycDocument.id,
+        status: 'pending',
+        message: 'KYC documents submitted successfully' 
+      });
+    } catch (error) {
+      console.error('KYC submission error:', error);
+      res.status(500).json({ error: 'Failed to submit KYC documents' });
+    }
+  });
+
+  // INR withdrawal endpoints
+  app.post("/api/withdrawals/inr", async (req, res) => {
+    try {
+      const { walletAddress, usdcAmount, bankAccountId } = req.body;
+      
+      // Verify user and KYC status
+      const user = await storage.getUserByWalletAddress(walletAddress);
+      if (!user || user.kycStatus !== 'verified') {
+        return res.status(403).json({ error: 'KYC verification required' });
+      }
+
+      // Get bank account
+      const bankAccounts = await storage.getBankAccounts(user.id);
+      const bankAccount = bankAccounts.find(acc => acc.id === bankAccountId);
+      if (!bankAccount || !bankAccount.isVerified) {
+        return res.status(400).json({ error: 'Verified bank account required' });
+      }
+
+      // Calculate INR amount (using live exchange rate in production)
+      const exchangeRate = 83.50; // 1 USDC = 83.50 INR
+      const processingFee = 25.00; // ₹25 processing fee
+      const inrAmount = (parseFloat(usdcAmount) * exchangeRate) - processingFee;
+
+      // Create withdrawal transaction
+      const transaction = await storage.createTransaction({
+        userId: user.id,
+        type: 'withdrawal',
+        fromToken: 'USDC',
+        toToken: 'INR',
+        fromAmount: usdcAmount,
+        toAmount: inrAmount.toString(),
+        exchangeRate: exchangeRate.toString(),
+        status: 'pending',
+        bankAccountId,
+        processingFee: processingFee.toString()
+      });
+
+      res.json({
+        transactionId: transaction.id,
+        inrAmount,
+        exchangeRate,
+        processingFee,
+        estimatedArrival: new Date(Date.now() + (4 * 60 * 60 * 1000)) // 4 hours
+      });
+    } catch (error) {
+      console.error('INR withdrawal error:', error);
+      res.status(500).json({ error: 'Failed to process withdrawal' });
+    }
+  });
+
+  // Legacy wallet balance endpoint for compatibility
   app.get("/api/wallet/balances", async (req, res) => {
     try {
       const { address, chainId } = req.query;
@@ -322,7 +531,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Wallet balance request: ${address} on chain ${chainId}`);
       
-      // Comprehensive token mapping with all supported tokens
+      // Demo balances for different chains
       const allSupportedTokens: Record<string, any[]> = {
         '1': [ // Ethereum
           { symbol: 'ETH', address: 'native', decimals: 18, isNative: true, formattedBalance: '2.5432' },
@@ -356,11 +565,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const chainName = networkNames[chainId as string] || 'Unknown';
       const tokens = allSupportedTokens[chainId as string] || [];
       
-      // Return all supported tokens for the chain with realistic balances
       const tokenBalances = tokens.map(token => ({
         symbol: token.symbol,
         address: token.address,
-        balance: '0', // Raw balance
+        balance: '0',
         decimals: token.decimals,
         chainId: parseInt(chainId as string),
         chainName,

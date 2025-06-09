@@ -84,6 +84,11 @@ export function useProductionWallet() {
   // Fetch KYC status
   const { data: kycData } = useQuery({
     queryKey: ['/api/kyc/status', address],
+    queryFn: async () => {
+      if (!address) return null;
+      const response = await fetch(`/api/kyc/status/${address}`);
+      return response.json();
+    },
     enabled: !!address,
   });
 
