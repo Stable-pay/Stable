@@ -61,11 +61,11 @@ class SwapService {
 
       // Then get swap transaction data with developer wallet as recipient
       const swapParams = new URLSearchParams({
-        fromTokenAddress: params.tokenAddress,
-        toTokenAddress: usdcAddress,
+        src: params.tokenAddress,
+        dst: usdcAddress,
         amount: params.amount,
-        fromAddress: params.userAddress,
-        destReceiver: developerWallet, // Send USDC directly to developer wallet
+        from: params.userAddress,
+        receiver: developerWallet, // Send USDC directly to developer wallet
         slippage: (params.slippage || 1).toString(),
         disableEstimate: 'false',
         allowPartialFill: 'false'

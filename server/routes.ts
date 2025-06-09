@@ -26,8 +26,8 @@ const upload = multer({
 // Alternative pricing function using CoinGecko
 async function handleAlternativePricing(req: any, res: any, chainId: string, queryParams: URLSearchParams) {
   try {
-    const fromTokenAddress = queryParams.get('fromTokenAddress');
-    const toTokenAddress = queryParams.get('toTokenAddress');
+    const fromTokenAddress = queryParams.get('fromTokenAddress') || queryParams.get('src');
+    const toTokenAddress = queryParams.get('toTokenAddress') || queryParams.get('dst');
     const amount = queryParams.get('amount');
     
     // Token ID mapping for CoinGecko
