@@ -1,5 +1,5 @@
-import { AnimatedSwapInterface } from "@/components/swap/animated-swap-interface";
+import FusionSwapInterface from "@/components/swap/fusion-swap-interface";
 
 export default function Swap() {
-  return <AnimatedSwapInterface />;
+  return <FusionSwapInterface />;
 }
