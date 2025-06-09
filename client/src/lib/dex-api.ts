@@ -38,6 +38,7 @@ export interface TokenPrice {
 class DexApiService {
   private readonly BASE_URL = 'https://api.1inch.io/v5.0';
   private readonly COINGECKO_URL = 'https://api.coingecko.com/api/v3';
+  private readonly API_KEY = '1Fqf1TSnyq86janyEBVQ9wcd65Ml6yBf';
   
   async getTokenPrices(tokens: string[]): Promise<Record<string, TokenPrice>> {
     try {
@@ -92,7 +93,7 @@ class DexApiService {
         `${this.BASE_URL}/${chainId}/swap?${queryParams}`,
         {
           headers: {
-            'Authorization': 'Bearer YOUR_1INCH_API_KEY' // Would need real API key
+            'Authorization': `Bearer ${this.API_KEY}`
           }
         }
       );
