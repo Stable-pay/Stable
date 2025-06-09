@@ -43,7 +43,7 @@ export function WalletConnect() {
     const fetchBalance = async () => {
       if (isConnected && address) {
         try {
-          // Simulate balance fetch - in production would use real provider
+          // Production balance would be fetched from real provider
           const mockBalance = (Math.random() * 5 + 0.1).toFixed(4);
           setBalance(mockBalance);
         } catch (error) {
@@ -122,7 +122,7 @@ export function WalletConnect() {
     return (
       <Button
         onClick={handleConnect}
-        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold h-12 px-6"
+        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold h-12 px-6"
         size="lg"
       >
         <Wallet className="h-5 w-5 mr-2" />
@@ -137,7 +137,7 @@ export function WalletConnect() {
       <Button
         onClick={handleNetworkClick}
         variant="outline"
-        className="border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 text-slate-700 h-11 px-4 font-medium transition-all duration-200"
+        className="border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-slate-700 h-11 px-4 font-medium transition-all duration-200"
       >
         <div className={`w-3 h-3 bg-gradient-to-r ${getNetworkColor(chainId)} rounded-full mr-2 shadow-sm`}></div>
         <span className="hidden sm:inline">{getNetworkName(chainId)}</span>

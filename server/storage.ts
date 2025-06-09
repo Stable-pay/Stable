@@ -104,8 +104,11 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
     const user: User = { 
-      ...insertUser, 
       id,
+      walletAddress: insertUser.walletAddress,
+      email: insertUser.email || null,
+      kycStatus: insertUser.kycStatus || null,
+      kycTier: insertUser.kycTier || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -129,8 +132,11 @@ export class MemStorage implements IStorage {
   async createKycDocument(insertDocument: InsertKycDocument): Promise<KycDocument> {
     const id = this.currentKycDocumentId++;
     const document: KycDocument = {
-      ...insertDocument,
       id,
+      userId: insertDocument.userId,
+      documentType: insertDocument.documentType,
+      documentUrl: insertDocument.documentUrl,
+      status: insertDocument.status ?? null,
       createdAt: new Date()
     };
     this.kycDocuments.set(id, document);
@@ -153,8 +159,13 @@ export class MemStorage implements IStorage {
   async createBankAccount(insertAccount: InsertBankAccount): Promise<BankAccount> {
     const id = this.currentBankAccountId++;
     const account: BankAccount = {
-      ...insertAccount,
       id,
+      userId: insertAccount.userId,
+      accountHolderName: insertAccount.accountHolderName,
+      accountNumber: insertAccount.accountNumber,
+      ifscCode: insertAccount.ifscCode,
+      bankName: insertAccount.bankName,
+      isVerified: insertAccount.isVerified ?? null,
       createdAt: new Date()
     };
     this.bankAccounts.set(id, account);
@@ -183,8 +194,19 @@ export class MemStorage implements IStorage {
   async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
     const id = this.currentTransactionId++;
     const transaction: Transaction = {
-      ...insertTransaction,
       id,
+      type: insertTransaction.type,
+      userId: insertTransaction.userId,
+      network: insertTransaction.network,
+      status: insertTransaction.status ?? null,
+      fromToken: insertTransaction.fromToken ?? null,
+      toToken: insertTransaction.toToken ?? null,
+      fromAmount: insertTransaction.fromAmount ?? null,
+      toAmount: insertTransaction.toAmount ?? null,
+      rate: insertTransaction.rate ?? null,
+      gasFee: insertTransaction.gasFee ?? null,
+      txHash: insertTransaction.txHash ?? null,
+      metadata: insertTransaction.metadata ?? {},
       createdAt: new Date(),
       updatedAt: new Date()
     };
