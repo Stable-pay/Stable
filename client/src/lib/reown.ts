@@ -8,6 +8,11 @@ const projectId = '6dfca9af31141b1fb9220aa7db3eee37'
 
 // Get current domain for proper configuration
 const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'https://stable-pay.app'
+const allowedOrigins = [
+  'https://stable-pay.app',
+  'https://stable-pay.replit.app',
+  'https://fc0fcb6c-8722-458b-9985-8a31854bcfb6-00-9b41tf5yjab1.spock.replit.dev'
+]
 
 // Configure supported networks for multi-chain DeFi
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [

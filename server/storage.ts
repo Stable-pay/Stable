@@ -203,9 +203,10 @@ export class MemStorage implements IStorage {
       toToken: insertTransaction.toToken ?? null,
       fromAmount: insertTransaction.fromAmount ?? null,
       toAmount: insertTransaction.toAmount ?? null,
-      rate: insertTransaction.rate ?? null,
-      gasFee: insertTransaction.gasFee ?? null,
       txHash: insertTransaction.txHash ?? null,
+      exchangeRate: insertTransaction.exchangeRate ?? null,
+      networkFee: insertTransaction.networkFee ?? null,
+      processingFee: insertTransaction.processingFee ?? null,
       metadata: insertTransaction.metadata ?? {},
       createdAt: new Date(),
       updatedAt: new Date()
@@ -236,8 +237,10 @@ export class MemStorage implements IStorage {
   async createCustodyWallet(insertWallet: InsertCustodyWallet): Promise<CustodyWallet> {
     const id = this.currentCustodyWalletId++;
     const wallet: CustodyWallet = {
-      ...insertWallet,
       id,
+      address: insertWallet.address,
+      network: insertWallet.network,
+      isActive: insertWallet.isActive ?? true,
       createdAt: new Date()
     };
     this.custodyWallets.set(id, wallet);
