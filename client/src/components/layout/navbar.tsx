@@ -68,7 +68,7 @@ export function Navbar() {
 
           {/* Wallet Section */}
           <div className="flex items-center space-x-3">
-            <WalletConnect />
+            <DirectWalletConnect />
           </div>
 
           {/* Mobile Menu Toggle */}
