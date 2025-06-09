@@ -27,8 +27,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // WalletConnect domain verification
   app.get("/.well-known/walletconnect.txt", (_req, res) => {
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('6dfca9af31141b1fb9220aa7db3eee37');
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.status(200).send('6dfca9af31141b1fb9220aa7db3eee37');
   });
   
   // User routes

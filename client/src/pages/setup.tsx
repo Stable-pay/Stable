@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { VerificationMonitor } from "@/components/system/verification-monitor";
+import { DomainVerifier } from "@/components/reown/domain-verifier";
 import { CheckCircle, Copy, ExternalLink, Settings, AlertTriangle, Info, Clock } from "lucide-react";
 
 export default function Setup() {
@@ -90,36 +91,11 @@ export default function Setup() {
         </p>
       </div>
 
+      {/* Domain Verification */}
+      <DomainVerifier />
+
       {/* Real-time System Monitor */}
       <VerificationMonitor />
-
-      {/* Verification Status */}
-      <Card className={`${verificationStatus === 'verified' ? 'border-green-200 bg-green-50' : verificationStatus === 'pending' ? 'border-amber-200 bg-amber-50' : 'border-blue-200 bg-blue-50'}`}>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            {verificationStatus === 'verified' ? (
-              <CheckCircle className="h-5 w-5 text-green-600" />
-            ) : verificationStatus === 'pending' ? (
-              <AlertTriangle className="h-5 w-5 text-amber-600" />
-            ) : (
-              <Clock className="h-5 w-5 text-blue-600" />
-            )}
-            <span>Domain Verification Status</span>
-            <Badge className={`${verificationStatus === 'verified' ? 'bg-green-100 text-green-800 border-green-300' : verificationStatus === 'pending' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-blue-100 text-blue-800 border-blue-300'}`}>
-              {verificationStatus === 'verified' ? 'Verified' : verificationStatus === 'pending' ? 'Needs Configuration' : 'Checking...'}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {verificationStatus === 'verified' ? (
-            <p className="text-green-800">Domain verification file is accessible. You can now add this domain to your Reown project allowlist.</p>
-          ) : verificationStatus === 'pending' ? (
-            <p className="text-amber-800">Domain verification file is ready. Add this domain to your Reown project allowlist at cloud.reown.com to complete setup.</p>
-          ) : (
-            <p className="text-blue-800">Checking domain verification status...</p>
-          )}
-        </CardContent>
-      </Card>
 
       {/* Current Configuration */}
       <Card className="border-blue-200 bg-blue-50">
