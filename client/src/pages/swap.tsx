@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ReownTokenSwap } from "@/components/swap/reown-token-swap";
+import { MultiChainTokenSwap } from "@/components/swap/multi-chain-token-swap";
 import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
 import { useWagmiWallet } from "@/hooks/use-wagmi-wallet";
 import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
@@ -39,7 +39,7 @@ export default function Swap() {
       {/* Main Swap Interface */}
       <div className="grid lg:grid-cols-2 gap-8">
         <div>
-          <ReownTokenSwap />
+          <MultiChainTokenSwap />
         </div>
         
         <div className="space-y-6">

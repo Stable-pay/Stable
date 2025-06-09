@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ReownTokenSwap } from "@/components/swap/reown-token-swap";
+import { MultiChainTokenSwap } from "@/components/swap/multi-chain-token-swap";
 import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network } from "lucide-react";
 import { useAccount, useBalance, useChainId } from 'wagmi';
@@ -116,7 +116,7 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Token Swap Interface */}
         <div className="lg:col-span-2">
-          <ReownTokenSwap />
+          <MultiChainTokenSwap />
         </div>
 
         {/* Sidebar Information */}
