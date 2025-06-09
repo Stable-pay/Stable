@@ -76,10 +76,17 @@ export function ComprehensiveTokenSwap() {
       // Convert amount to wei based on token decimals
       const amountInWei = parseUnits(amount, selectedToken.decimals).toString();
 
+      console.log('Getting 1inch quote for:', {
+        network,
+        tokenAddress: selectedToken.isNative ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : selectedToken.address,
+        amount: amountInWei,
+        symbol: selectedToken.symbol
+      });
+
       const result = await swapService.swapTokenToUSDC({
         userAddress: address,
         network,
-        tokenAddress: selectedToken.isNative ? 'native' : selectedToken.address,
+        tokenAddress: selectedToken.isNative ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : selectedToken.address,
         amount: amountInWei,
         slippage: 1
       });
@@ -88,14 +95,14 @@ export function ComprehensiveTokenSwap() {
       setEstimatedUSDC(formatUnits(BigInt(result.expectedUSDC), 6));
       
       toast({
-        title: "Quote Retrieved Successfully",
-        description: `You will receive approximately ${formatUnits(BigInt(result.expectedUSDC), 6)} USDC on ${selectedToken.chainName}`
+        title: "Live 1inch Quote Retrieved",
+        description: `${formatUnits(BigInt(result.expectedUSDC), 6)} USDC will be sent to developer wallet on ${selectedToken.chainName}`
       });
     } catch (error) {
-      console.error('Quote error:', error);
+      console.error('1inch API error:', error);
       toast({
-        title: "Quote Failed",
-        description: `Unable to get swap quote for ${selectedToken.symbol} on ${selectedToken.chainName}. Please try again.`,
+        title: "1inch API Error",
+        description: `${error instanceof Error ? error.message : 'Unknown error'}. Check network connectivity and try again.`,
         variant: "destructive"
       });
     } finally {
@@ -136,18 +143,43 @@ export function ComprehensiveTokenSwap() {
     }
     
     try {
-      await writeContract({
-        address: swapData.transactionData.to as `0x${string}`,
-        abi: [], // Will be provided by 1inch transaction data
-        functionName: 'swap',
-        args: [],
-        value: BigInt(swapData.transactionData.value || '0')
-      });
+      console.log('Executing 1inch swap transaction:', swapData.transactionData);
+      
+      // Send the raw transaction data from 1inch API
+      const txRequest = {
+        to: swapData.transactionData.to,
+        data: swapData.transactionData.data,
+        value: swapData.transactionData.value,
+        gasLimit: swapData.transactionData.gasLimit || swapData.transactionData.gas,
+        gasPrice: swapData.transactionData.gasPrice
+      };
+
+      // Use window.ethereum to send the transaction directly
+      if (window.ethereum) {
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: address,
+            to: txRequest.to,
+            data: txRequest.data,
+            value: txRequest.value,
+            gas: txRequest.gasLimit,
+            gasPrice: txRequest.gasPrice
+          }]
+        });
+        
+        console.log('Transaction sent:', txHash);
+        
+        toast({
+          title: "Transaction Submitted",
+          description: `Swap transaction submitted to ${selectedToken.chainName} network`
+        });
+      }
     } catch (error) {
-      console.error('Swap error:', error);
+      console.error('Swap execution error:', error);
       toast({
         title: "Swap Failed",
-        description: "Transaction failed. Please check your wallet and try again.",
+        description: `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive"
       });
     }

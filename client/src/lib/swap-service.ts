@@ -156,7 +156,10 @@ class SwapService {
       ethereum: '1',
       polygon: '137',
       arbitrum: '42161',
-      base: '8453'
+      base: '8453',
+      optimism: '10',
+      bsc: '56',
+      avalanche: '43114'
     };
     return chainIds[network];
   }
