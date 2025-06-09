@@ -57,6 +57,7 @@ export default function FusionSwapInterface() {
   const [showTokenSelector, setShowTokenSelector] = useState<'from' | 'to' | null>(null);
   const [swapQuote, setSwapQuote] = useState<SwapQuote | null>(null);
   const [isLoadingQuote, setIsLoadingQuote] = useState(false);
+  const [selectedChain, setSelectedChain] = useState(1); // Default to Ethereum
 
   // Mock recent transactions
   const [recentTransactions] = useState<SwapTransaction[]>([
