@@ -1,5 +1,5 @@
-import { ModernPortfolioDashboard } from "@/components/dashboard/modern-portfolio-dashboard";
+import { PremiumDashboard } from "@/components/dashboard/premium-dashboard";
 
 export default function Dashboard() {
-  return <ModernPortfolioDashboard />;
+  return <PremiumDashboard />;
 }

@@ -1,5 +1,5 @@
-import { WorkingWalletSwap } from "@/components/swap/working-wallet-swap";
+import { FusionSwapInterface } from "@/components/swap/fusion-swap-interface";
 
 export default function Swap() {
-  return <WorkingWalletSwap />;
+  return <FusionSwapInterface />;
 }

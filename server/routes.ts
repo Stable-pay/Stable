@@ -213,6 +213,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 1inch Fusion API endpoints for gasless swaps
+  app.get("/api/1inch/:chainId/fusion/quote", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const { src, dst, amount, from } = req.query;
+      
+      console.log(`1inch Fusion quote request: ${chainId} - gasless swap ${src} to ${dst}`);
+      
+      const apiKey = process.env.VITE_ONEINCH_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+      }
+
+      // Try Fusion API for gasless quotes
+      const fusionUrl = `https://api.1inch.dev/fusion/v1.0/${chainId}/quote/receive`;
+      const params = new URLSearchParams({
+        src: src as string,
+        dst: dst as string,
+        amount: amount as string,
+        walletAddress: from as string
+      });
+
+      const response = await fetch(`${fusionUrl}?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log(`1inch Fusion API response status: ${response.status}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('1inch Fusion API error:', errorText);
+        
+        // Fallback to regular quote if Fusion fails
+        const regularQuoteUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/quote`;
+        const regularParams = new URLSearchParams({
+          src: src as string,
+          dst: dst as string,
+          amount: amount as string
+        });
+
+        const fallbackResponse = await fetch(`${regularQuoteUrl}?${regularParams}`, {
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          return res.json({ ...fallbackData, gasless: false });
+        }
+        
+        return res.status(response.status).json({ 
+          error: '1inch Fusion API request failed',
+          details: errorText
+        });
+      }
+
+      const data = await response.json();
+      console.log('1inch Fusion quote response preview:', JSON.stringify(data).substring(0, 200));
+      res.json({ ...data, gasless: true });
+
+    } catch (error) {
+      console.error('1inch Fusion proxy error:', error);
+      res.status(500).json({ error: 'Failed to connect to 1inch Fusion API' });
+    }
+  });
+
+  app.post("/api/1inch/:chainId/fusion/swap", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      
+      console.log(`1inch Fusion swap request: ${chainId} - gasless transaction`);
+      
+      const apiKey = process.env.VITE_ONEINCH_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+      }
+
+      const fusionUrl = `https://api.1inch.dev/fusion/v1.0/${chainId}/swap/submit`;
+
+      const response = await fetch(fusionUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req.body)
+      });
+
+      console.log(`1inch Fusion swap API response status: ${response.status}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('1inch Fusion swap API error:', errorText);
+        return res.status(response.status).json({ 
+          error: '1inch Fusion swap API request failed',
+          details: errorText
+        });
+      }
+
+      const data = await response.json();
+      console.log('1inch Fusion swap response preview:', JSON.stringify(data).substring(0, 200));
+      res.json(data);
+
+    } catch (error) {
+      console.error('1inch Fusion swap proxy error:', error);
+      res.status(500).json({ error: 'Failed to connect to 1inch Fusion swap API' });
+    }
+  });
+
   // 0x Protocol swap endpoints with proper error handling
   app.get("/api/0x/:chainId/quote", async (req, res) => {
     try {
