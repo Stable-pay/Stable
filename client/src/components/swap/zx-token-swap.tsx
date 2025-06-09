@@ -5,11 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowUpDown, Zap, DollarSign, Fuel, Clock, CheckCircle } from 'lucide-react';
+import { ArrowUpDown, Zap, DollarSign, Fuel, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet-balances';
 import { useAccount } from 'wagmi';
-import { zxApiService, type ZxQuoteResponse, type ZxGaslessQuoteResponse } from '@/lib/zx-api';
+import { zxApiService, type ZxQuoteResponse, type ZxGaslessQuote, type ZxGaslessPrice } from '@/lib/zx-api';
 import { formatUnits, parseUnits } from 'viem';
 
 interface SwapQuote {
@@ -18,8 +18,7 @@ interface SwapQuote {
   rate: number;
   gasEstimate: string;
   minimumReceived: string;
-  protocolFee: string;
-  priceImpact: number;
+  isGasless: boolean;
 }
 
 export function ZxTokenSwap() {
@@ -33,7 +32,9 @@ export function ZxTokenSwap() {
   const [isGettingQuote, setIsGettingQuote] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
   const [useGasless, setUseGasless] = useState(false);
-  const [gaslessQuote, setGaslessQuote] = useState<ZxGaslessQuoteResponse | null>(null);
+  const [gaslessQuote, setGaslessQuote] = useState<ZxGaslessQuote | null>(null);
+  const [regularQuote, setRegularQuote] = useState<ZxQuoteResponse | null>(null);
+  const [swapStatus, setSwapStatus] = useState<'idle' | 'pending' | 'confirmed' | 'failed'>('idle');
 
   // Filter tokens with positive balances
   const availableTokens = balances.filter(token => 
@@ -62,31 +63,43 @@ export function ZxTokenSwap() {
       const sellToken = selectedToken.isNative ? 'native' : selectedToken.address;
       const buyToken = getUSDCAddress(chainId);
 
-      if (useGasless) {
-        // Get gasless quote
-        const gaslessResponse = await zxApiService.getGaslessQuote({
-          sellToken,
-          buyToken,
-          sellAmount: amountInWei,
-          takerAddress: address,
-          chainId
-        });
+      if (useGasless && zxApiService.isGaslessSupported(chainId)) {
+        // Check gasless availability first
+        try {
+          const gaslessResponse = await zxApiService.getGaslessQuote({
+            sellToken,
+            buyToken,
+            sellAmount: amountInWei,
+            takerAddress: address,
+            chainId
+          });
 
-        setGaslessQuote(gaslessResponse);
+          setGaslessQuote(gaslessResponse);
 
-        const buyAmountFormatted = formatUnits(BigInt(gaslessResponse.buyAmount), 6);
-        const rate = parseFloat(buyAmountFormatted) / parseFloat(swapAmount);
+          const buyAmountFormatted = formatUnits(BigInt(gaslessResponse.buyAmount), 6);
+          const rate = parseFloat(buyAmountFormatted) / parseFloat(swapAmount);
 
-        setQuote({
-          fromAmount: swapAmount,
-          toAmount: buyAmountFormatted,
-          rate,
-          gasEstimate: '0', // Gasless
-          minimumReceived: (parseFloat(buyAmountFormatted) * 0.99).toFixed(6),
-          protocolFee: gaslessResponse.protocolFee,
-          priceImpact: 0.5 // Estimate
-        });
-      } else {
+          setQuote({
+            fromAmount: swapAmount,
+            toAmount: buyAmountFormatted,
+            rate,
+            gasEstimate: '0',
+            minimumReceived: (parseFloat(buyAmountFormatted) * 0.99).toFixed(6),
+            isGasless: true
+          });
+
+          toast({
+            title: "Gasless Quote Retrieved",
+            description: `Ready to swap ${swapAmount} ${selectedToken.symbol} to USDC without gas fees`,
+          });
+        } catch (gaslessError) {
+          console.log('Gasless not available, falling back to regular swap');
+          setUseGasless(false);
+          // Fall through to regular quote
+        }
+      }
+      
+      if (!useGasless || !zxApiService.isGaslessSupported(chainId)) {
         // Get regular quote
         const response = await zxApiService.getQuote({
           sellToken,
@@ -95,6 +108,8 @@ export function ZxTokenSwap() {
           takerAddress: address,
           chainId
         });
+
+        setRegularQuote(response);
 
         const buyAmountFormatted = formatUnits(BigInt(response.buyAmount), 6);
         const rate = parseFloat(buyAmountFormatted) / parseFloat(swapAmount);
@@ -105,15 +120,14 @@ export function ZxTokenSwap() {
           rate,
           gasEstimate: response.estimatedGas,
           minimumReceived: (parseFloat(buyAmountFormatted) * 0.99).toFixed(6),
-          protocolFee: response.protocolFee,
-          priceImpact: 0.5 // Estimate
+          isGasless: false
+        });
+
+        toast({
+          title: "Quote Retrieved",
+          description: `Ready to swap ${swapAmount} ${selectedToken.symbol} to USDC`,
         });
       }
-
-      toast({
-        title: "Quote Retrieved",
-        description: `Ready to swap ${swapAmount} ${selectedToken.symbol} to USDC`,
-      });
     } catch (error) {
       console.error('Failed to get swap quote:', error);
       toast({
@@ -130,71 +144,117 @@ export function ZxTokenSwap() {
     if (!selectedToken || !quote || !swapAmount || !address || !chainId) return;
 
     setIsSwapping(true);
+    setSwapStatus('pending');
+    
     try {
       if (typeof window !== 'undefined' && (window as any).ethereum) {
         const ethereum = (window as any).ethereum;
 
-        if (useGasless && gaslessQuote) {
-          // Execute gasless swap
-          const { permit2 } = gaslessQuote;
+        if (quote.isGasless && gaslessQuote) {
+          // Execute 0x Gasless v2 swap
           
-          // Sign the permit2 message
-          const signature = await ethereum.request({
+          // Handle approval if required
+          if (gaslessQuote.approval.isRequired && gaslessQuote.approval.eip712) {
+            const approvalSignature = await ethereum.request({
+              method: 'eth_signTypedData_v4',
+              params: [address, JSON.stringify(gaslessQuote.approval.eip712)]
+            });
+            console.log('Approval signature:', approvalSignature);
+          }
+
+          // Sign the trade
+          const tradeSignature = await ethereum.request({
             method: 'eth_signTypedData_v4',
-            params: [address, JSON.stringify(permit2.eip712)]
+            params: [address, JSON.stringify(gaslessQuote.trade.eip712)]
           });
 
           // Submit the gasless swap
           const submitResponse = await zxApiService.submitGaslessSwap(
             chainId,
-            signature,
-            gaslessQuote.tradeHash
+            tradeSignature,
+            gaslessQuote.trade
           );
 
           toast({
-            title: "Gasless Swap Initiated",
+            title: "Gasless Swap Submitted",
             description: `Swapping ${swapAmount} ${selectedToken.symbol} to USDC without gas fees`,
           });
 
-          console.log('Gasless swap submitted:', submitResponse);
-        } else {
-          // Execute regular swap
-          const amountInWei = parseUnits(swapAmount, selectedToken.decimals).toString();
-          const sellToken = selectedToken.isNative ? 'native' : selectedToken.address;
-          const buyToken = getUSDCAddress(chainId);
+          // Monitor status
+          const tradeHash = submitResponse.tradeHash;
+          let attempts = 0;
+          const maxAttempts = 60; // 5 minutes with 5-second intervals
 
-          const response = await zxApiService.getQuote({
-            sellToken,
-            buyToken,
-            sellAmount: amountInWei,
-            takerAddress: address,
-            chainId
-          });
+          const checkStatus = async () => {
+            try {
+              const status = await zxApiService.getGaslessStatus(chainId, tradeHash);
+              
+              if (status.status === 'confirmed') {
+                setSwapStatus('confirmed');
+                toast({
+                  title: "Gasless Swap Confirmed",
+                  description: "Your swap has been completed successfully!",
+                });
+                return true;
+              } else if (status.status === 'failed') {
+                setSwapStatus('failed');
+                toast({
+                  title: "Gasless Swap Failed",
+                  description: "Your swap could not be completed.",
+                  variant: "destructive"
+                });
+                return true;
+              }
+              
+              attempts++;
+              if (attempts < maxAttempts) {
+                setTimeout(checkStatus, 5000);
+              } else {
+                setSwapStatus('failed');
+                toast({
+                  title: "Swap Status Unknown",
+                  description: "Unable to confirm swap status. Check your wallet.",
+                  variant: "destructive"
+                });
+              }
+            } catch (error) {
+              console.error('Status check failed:', error);
+              attempts++;
+              if (attempts < maxAttempts) {
+                setTimeout(checkStatus, 5000);
+              }
+            }
+          };
 
-          // Execute transaction
+          setTimeout(checkStatus, 5000);
+
+        } else if (regularQuote) {
+          // Execute regular 0x swap
           const txHash = await ethereum.request({
             method: 'eth_sendTransaction',
             params: [{
-              to: response.to,
-              data: response.data,
-              value: response.value,
-              gas: response.gas,
-              gasPrice: response.gasPrice
+              to: regularQuote.to,
+              data: regularQuote.data,
+              value: regularQuote.value,
+              gas: regularQuote.gas,
+              gasPrice: regularQuote.gasPrice
             }]
           });
 
+          setSwapStatus('confirmed');
           toast({
             title: "Swap Initiated",
-            description: `Swapping ${swapAmount} ${selectedToken.symbol} to USDC`,
+            description: `Transaction submitted: ${txHash}`,
           });
 
-          console.log('Swap transaction:', txHash);
+          console.log('Swap transaction hash:', txHash);
         }
 
-        // Reset form
+        // Reset form after successful submission
         setSwapAmount('');
         setQuote(null);
         setGaslessQuote(null);
+        setRegularQuote(null);
         setSelectedToken(null);
 
       } else {
@@ -202,9 +262,10 @@ export function ZxTokenSwap() {
       }
     } catch (error) {
       console.error('Swap failed:', error);
+      setSwapStatus('failed');
       toast({
         title: "Swap Failed",
-        description: "Transaction failed. Please try again.",
+        description: error instanceof Error ? error.message : "Transaction failed. Please try again.",
         variant: "destructive"
       });
     } finally {
