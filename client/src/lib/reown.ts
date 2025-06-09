@@ -1,6 +1,6 @@
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, polygon, arbitrum, base } from '@reown/appkit/networks'
+import { mainnet, polygon, arbitrum, base, optimism, bsc, avalanche } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // Production Reown project configuration
@@ -9,13 +9,21 @@ const projectId = '421930fbeb871d753327b56943afe3ad'
 // Get current domain for proper configuration
 const metadata = {
   name: 'Stable Pay',
-  description: 'Multi-Chain USDC Platform with Live Token Swapping',
+  description: 'Comprehensive Multi-Chain Token Swapping Platform',
   url: 'https://stable-pay.app',
   icons: ['https://stable-pay.app/favicon.ico']
 }
 
-// Configure supported networks for real blockchain integration
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, polygon, arbitrum, base]
+// Configure all supported networks for comprehensive blockchain integration
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
+  mainnet, 
+  polygon, 
+  arbitrum, 
+  base, 
+  optimism, 
+  bsc, 
+  avalanche
+]
 
 // Create Wagmi adapter for real wallet connections
 const wagmiAdapter = new WagmiAdapter({
