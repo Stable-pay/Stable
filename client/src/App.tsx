@@ -5,13 +5,12 @@ import { queryClient } from "./lib/queryClient";
 import { wagmiConfig } from "./lib/reown";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
+import { ModernNavbar } from "@/components/layout/modern-navbar";
 import Home from "@/pages/home";
 import Swap from "@/pages/swap";
 import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
-import Dashboard from "@/pages/comprehensive-dashboard";
+import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
 import "./lib/reown";
 
@@ -34,12 +33,11 @@ function App() {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-            <Navbar />
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="min-h-screen">
+            <ModernNavbar />
+            <main>
               <Router />
             </main>
-            <Footer />
           </div>
           <Toaster />
         </TooltipProvider>
