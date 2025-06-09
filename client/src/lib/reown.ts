@@ -7,11 +7,12 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 const projectId = '421930fbeb871d753327b56943afe3ad'
 
 // Get current domain for proper configuration
+const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'https://stable-pay.app';
 const metadata = {
   name: 'Stable Pay',
   description: 'Comprehensive Multi-Chain Token Swapping Platform',
-  url: 'https://stable-pay.app',
-  icons: ['https://stable-pay.app/favicon.ico']
+  url: currentUrl,
+  icons: [`${currentUrl}/favicon.ico`]
 }
 
 // Configure all supported networks for comprehensive blockchain integration
@@ -39,17 +40,19 @@ export const appKit = createAppKit({
   networks,
   metadata,
   features: {
-    analytics: true,
+    analytics: false,
     email: false,
-    socials: [],
+    socials: false,
     onramp: false,
-    swaps: true,
+    swaps: false,
     history: true
   },
-  themeMode: 'light',
+  themeMode: 'dark',
   themeVariables: {
-    '--w3m-accent': '#3B82F6',
-    '--w3m-border-radius-master': '8px'
+    '--w3m-accent': '#10B981',
+    '--w3m-border-radius-master': '12px',
+    '--w3m-background-color': '#1E293B',
+    '--w3m-foreground-color': '#F8FAFC'
   }
 })
 
