@@ -2,7 +2,7 @@ import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from 'wagmi';
 import { queryClient } from "./lib/queryClient";
-import { wagmiConfig } from "./lib/reown";
+import { wagmiConfig } from "./lib/wallet-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ModernNavbar } from "@/components/layout/modern-navbar";
@@ -12,7 +12,7 @@ import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
-import "./lib/reown";
+import "./lib/wallet-config";
 
 
 function Router() {

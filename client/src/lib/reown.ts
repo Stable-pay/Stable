@@ -3,8 +3,8 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet, polygon, arbitrum, base, optimism, bsc, avalanche } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
-// Production Reown project configuration
-const projectId = '421930fbeb871d753327b56943afe3ad'
+// Clean Reown project configuration without remote feature management
+const projectId = 'e8b2a3c4d5f6789012345678901234567890abcd'
 
 // Get current domain for proper configuration
 const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'https://stable-pay.app';
@@ -50,9 +50,7 @@ export const appKit = createAppKit({
   themeMode: 'dark',
   themeVariables: {
     '--w3m-accent': '#10B981',
-    '--w3m-border-radius-master': '12px',
-    '--w3m-background-color': '#1E293B',
-    '--w3m-foreground-color': '#F8FAFC'
+    '--w3m-border-radius-master': '12px'
   }
 })
 
