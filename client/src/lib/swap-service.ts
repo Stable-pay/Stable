@@ -32,8 +32,8 @@ class SwapService {
     try {
       // First get quote to estimate output
       const quoteParams = new URLSearchParams({
-        fromTokenAddress: params.tokenAddress,
-        toTokenAddress: usdcAddress,
+        src: params.tokenAddress,
+        dst: usdcAddress,
         amount: params.amount,
       });
 

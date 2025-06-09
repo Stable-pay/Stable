@@ -118,9 +118,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`1inch quote proxy request: ${chainId} - ${queryParams}`);
       
-      const response = await fetch(`https://api.1inch.io/v5.0/${chainId}/quote?${queryParams}`, {
+      const response = await fetch(`https://api.1inch.dev/swap/v6.0/${chainId}/quote?${queryParams}`, {
         headers: {
           'Accept': 'application/json',
+          'Authorization': `Bearer ${process.env.ONEINCH_API_KEY}`,
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         }
       });
@@ -164,9 +165,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`1inch swap proxy request: ${chainId} - ${queryParams}`);
       
-      const response = await fetch(`https://api.1inch.io/v5.0/${chainId}/swap?${queryParams}`, {
+      const response = await fetch(`https://api.1inch.dev/swap/v6.0/${chainId}/swap?${queryParams}`, {
         headers: {
           'Accept': 'application/json',
+          'Authorization': `Bearer ${process.env.ONEINCH_API_KEY}`,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         }
       });
       
@@ -178,8 +181,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(response.status).json({ error });
       }
       
-      const data = await response.json();
-      res.json(data);
+      const responseText = await response.text();
+      console.log('1inch swap response preview:', responseText.substring(0, 200));
+      
+      // Check if response is HTML (blocked by 1inch)
+      if (responseText.trim().startsWith('<')) {
+        console.log('1inch swap returned HTML, API may be restricted');
+        return res.status(400).json({ error: 'Swap API temporarily unavailable' });
+      }
+      
+      try {
+        const data = JSON.parse(responseText);
+        res.json(data);
+      } catch (parseError) {
+        console.error('JSON parse error on swap:', parseError);
+        return res.status(500).json({ error: 'Invalid response from swap API' });
+      }
     } catch (error) {
       console.error('1inch swap proxy error:', error);
       res.status(500).json({ error: 'Failed to fetch swap data from 1inch API' });
