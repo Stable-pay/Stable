@@ -23,97 +23,40 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
-// 0x API configuration
+// 0x API configuration - Gasless v2 Implementation
 const ZX_API_KEY = '12be1743-8f3e-4867-a82b-501263f3c4b6';
 const ZX_BASE_URL = 'https://api.0x.org';
 
-// Chain ID mapping for 0x
-const ZX_CHAIN_MAPPING: Record<string, string> = {
-  '1': 'ethereum',
-  '137': 'polygon',
-  '42161': 'arbitrum',
-  '8453': 'base',
-  '10': 'optimism',
-  '43114': 'avalanche'
+// Supported networks for gasless swaps (based on 0x documentation)
+const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
+  '1': true,     // Ethereum
+  '137': true,   // Polygon
+  '42161': true, // Arbitrum
+  '8453': true,  // Base
+  '10': true,    // Optimism
 };
 
-// USDC contract addresses for each chain
+// USDC contract addresses per chain (verified addresses)
 const USDC_ADDRESSES: Record<string, string> = {
-  '1': '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B',      // Ethereum
-  '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon
-  '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
-  '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
-  '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',    // Optimism
-  '43114': '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche
+  '1': '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B',      // Ethereum USDC
+  '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
+  '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
+  '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
+  '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',    // Optimism USDC
 };
 
-// Native token addresses for 0x API
+// Native token representation
 const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // 0x API routes for token swapping
-  app.get("/api/0x/:chainId/price", async (req, res) => {
-    try {
-      const { chainId } = req.params;
-      const { sellToken, buyToken, sellAmount, takerAddress } = req.query;
-      
-      console.log(`0x price request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
-      
-      // Convert chain ID to 0x network identifier
-      const networkId = ZX_CHAIN_MAPPING[chainId];
-      if (!networkId) {
-        return res.status(400).json({ error: 'Unsupported network' });
-      }
-      
-      // Auto-convert to USDC if buyToken not specified
-      const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
-      
-      const params = new URLSearchParams({
-        sellToken: sellToken as string,
-        buyToken: targetBuyToken as string,
-        sellAmount: sellAmount as string,
-        ...(takerAddress && { takerAddress: takerAddress as string })
-      });
-      
-      const response = await fetch(`${ZX_BASE_URL}/swap/v1/${networkId}/price?${params}`, {
-        headers: {
-          'Accept': 'application/json',
-          '0x-api-key': ZX_API_KEY,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log(`0x price response status: ${response.status}`);
-      
-      if (!response.ok) {
-        const error = await response.text();
-        console.error('0x price error:', error);
-        return res.status(response.status).json({ error: 'Failed to get price quote' });
-      }
-      
-      const data = await response.json();
-      console.log('0x price response preview:', JSON.stringify(data).substring(0, 200));
-      
-      res.json(data);
-    } catch (error) {
-      console.error('0x price proxy error:', error);
-      res.status(500).json({ error: 'Failed to fetch price from 0x API' });
-    }
-  });
-
+  // Standard 0x swap quote endpoint
   app.get("/api/0x/:chainId/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
       const { sellToken, buyToken, sellAmount, takerAddress, slippagePercentage } = req.query;
       
       console.log(`0x quote request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
-      
-      // Convert chain ID to 0x network identifier
-      const networkId = ZX_CHAIN_MAPPING[chainId];
-      if (!networkId) {
-        return res.status(400).json({ error: 'Unsupported network' });
-      }
       
       // Auto-convert to USDC if buyToken not specified
       const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
@@ -123,10 +66,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         buyToken: targetBuyToken as string,
         sellAmount: sellAmount as string,
         takerAddress: takerAddress as string,
-        slippagePercentage: (slippagePercentage as string) || '0.01' // Default 1% slippage
+        slippagePercentage: (slippagePercentage as string) || '0.01'
       });
       
-      const response = await fetch(`${ZX_BASE_URL}/swap/v1/${networkId}/quote?${params}`, {
+      const response = await fetch(`${ZX_BASE_URL}/swap/v1/quote?${params}`, {
         headers: {
           'Accept': 'application/json',
           '0x-api-key': ZX_API_KEY,
@@ -152,32 +95,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Gasless swap endpoint using 0x gasless API
-  app.post("/api/0x/:chainId/gasless-quote", async (req, res) => {
+  // 0x Gasless v2 price endpoint - check gasless availability
+  app.get("/api/0x/:chainId/gasless/price", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const { sellToken, buyToken, sellAmount, takerAddress } = req.query;
+      
+      console.log(`0x gasless price request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
+      
+      // Check if gasless is supported on this chain
+      if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
+        return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
+      }
+      
+      // Auto-convert to USDC if buyToken not specified
+      const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
+      
+      const params = new URLSearchParams({
+        chainId: chainId,
+        sellToken: sellToken as string,
+        buyToken: targetBuyToken as string,
+        sellAmount: sellAmount as string,
+        takerAddress: takerAddress as string
+      });
+      
+      const response = await fetch(`${ZX_BASE_URL}/gasless/price?${params}`, {
+        headers: {
+          'Accept': 'application/json',
+          '0x-api-key': ZX_API_KEY,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log(`0x gasless price response status: ${response.status}`);
+      
+      if (!response.ok) {
+        const error = await response.text();
+        console.error('0x gasless price error:', error);
+        return res.status(response.status).json({ error: 'Failed to get gasless price' });
+      }
+      
+      const data = await response.json();
+      console.log('0x gasless price response preview:', JSON.stringify(data).substring(0, 200));
+      
+      res.json(data);
+    } catch (error) {
+      console.error('0x gasless price proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch gasless price from 0x API' });
+    }
+  });
+
+  // 0x Gasless v2 quote endpoint
+  app.post("/api/0x/:chainId/gasless/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
       const { sellToken, buyToken, sellAmount, takerAddress } = req.body;
       
       console.log(`0x gasless quote request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
       
-      // Convert chain ID to 0x network identifier
-      const networkId = ZX_CHAIN_MAPPING[chainId];
-      if (!networkId) {
-        return res.status(400).json({ error: 'Unsupported network for gasless swaps' });
+      // Check if gasless is supported on this chain
+      if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
+        return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
       }
       
       // Auto-convert to USDC if buyToken not specified
       const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
       
       const requestBody = {
-        sellToken,
+        chainId: parseInt(chainId),
+        sellToken: sellToken === 'native' ? NATIVE_TOKEN_ADDRESS : sellToken,
         buyToken: targetBuyToken,
         sellAmount,
-        takerAddress,
-        slippagePercentage: 0.01 // 1% slippage
+        takerAddress
       };
       
-      const response = await fetch(`${ZX_BASE_URL}/gasless/v1/${networkId}/quote`, {
+      const response = await fetch(`${ZX_BASE_URL}/gasless/quote`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -205,25 +197,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/0x/:chainId/gasless-submit", async (req, res) => {
+  // 0x Gasless v2 submit endpoint
+  app.post("/api/0x/:chainId/gasless/submit", async (req, res) => {
     try {
       const { chainId } = req.params;
-      const { signature, tradeHash } = req.body;
+      const { signature, trade } = req.body;
       
-      console.log(`0x gasless submit request: ${chainId} - tradeHash: ${tradeHash}`);
+      console.log(`0x gasless submit request: ${chainId} - trade ID: ${trade?.tradeHash}`);
       
-      // Convert chain ID to 0x network identifier
-      const networkId = ZX_CHAIN_MAPPING[chainId];
-      if (!networkId) {
-        return res.status(400).json({ error: 'Unsupported network for gasless swaps' });
+      // Check if gasless is supported on this chain
+      if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
+        return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
       }
       
       const requestBody = {
         signature,
-        tradeHash
+        trade
       };
       
-      const response = await fetch(`${ZX_BASE_URL}/gasless/v1/${networkId}/submit`, {
+      const response = await fetch(`${ZX_BASE_URL}/gasless/submit`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -248,6 +240,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('0x gasless submit proxy error:', error);
       res.status(500).json({ error: 'Failed to submit gasless swap to 0x API' });
+    }
+  });
+
+  // 0x Gasless v2 status endpoint
+  app.get("/api/0x/:chainId/gasless/status/:tradeHash", async (req, res) => {
+    try {
+      const { chainId, tradeHash } = req.params;
+      
+      console.log(`0x gasless status request: ${chainId} - tradeHash: ${tradeHash}`);
+      
+      // Check if gasless is supported on this chain
+      if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
+        return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
+      }
+      
+      const response = await fetch(`${ZX_BASE_URL}/gasless/status/${tradeHash}`, {
+        headers: {
+          'Accept': 'application/json',
+          '0x-api-key': ZX_API_KEY,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log(`0x gasless status response status: ${response.status}`);
+      
+      if (!response.ok) {
+        const error = await response.text();
+        console.error('0x gasless status error:', error);
+        return res.status(response.status).json({ error: 'Failed to get gasless swap status' });
+      }
+      
+      const data = await response.json();
+      console.log('0x gasless status response preview:', JSON.stringify(data).substring(0, 200));
+      
+      res.json(data);
+    } catch (error) {
+      console.error('0x gasless status proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch gasless swap status from 0x API' });
     }
   });
   

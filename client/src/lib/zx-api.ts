@@ -1,4 +1,4 @@
-// 0x API service for token swapping and gasless transactions
+// 0x Gasless v2 API service based on official headless example
 export interface ZxSwapParams {
   sellToken: string;
   buyToken: string;
@@ -8,96 +8,73 @@ export interface ZxSwapParams {
   slippagePercentage?: number;
 }
 
-export interface ZxPriceResponse {
+export interface ZxQuoteResponse {
   sellToken: string;
   buyToken: string;
   sellAmount: string;
   buyAmount: string;
   price: string;
-  grossPrice: string;
   estimatedGas: string;
-  protocolFee: string;
-  minimumProtocolFee: string;
-  buyTokenToEthRate: string;
-  sellTokenToEthRate: string;
+  to: string;
+  data: string;
+  value: string;
+  gas: string;
+  gasPrice: string;
+  allowanceTarget: string;
+}
+
+export interface ZxGaslessPrice {
+  sellToken: string;
+  buyToken: string;
+  sellAmount: string;
+  buyAmount: string;
+  price: string;
+  estimatedGas: string;
   sources: Array<{
     name: string;
     proportion: string;
   }>;
 }
 
-export interface ZxQuoteResponse extends ZxPriceResponse {
-  to: string;
-  data: string;
-  value: string;
-  gasPrice: string;
-  gas: string;
-  allowanceTarget: string;
-  decodedUniqueId: string;
-}
-
-export interface ZxGaslessQuoteResponse {
+export interface ZxGaslessQuote {
   sellToken: string;
   buyToken: string;
   sellAmount: string;
   buyAmount: string;
   price: string;
-  guaranteedPrice: string;
-  to: string;
-  data: string;
-  value: string;
-  gas: string;
-  estimatedGas: string;
-  gasPrice: string;
-  protocolFee: string;
-  minimumProtocolFee: string;
-  buyTokenToEthRate: string;
-  sellTokenToEthRate: string;
-  sources: Array<{
-    name: string;
-    proportion: string;
-  }>;
-  orders: Array<{
-    makerToken: string;
-    takerToken: string;
-    makerAmount: string;
-    takerAmount: string;
-    fillData: {
-      tokenAddressPath: string[];
-      router: string;
-    };
-    source: string;
-    sourcePathId: string;
-    type: number;
-  }>;
-  allowanceTarget: string;
-  decodedUniqueId: string;
-  buyTokenAddress: string;
-  sellTokenAddress: string;
-  permit2: {
-    type: string;
-    hash: string;
+  trade: {
     eip712: {
       types: Record<string, any>;
       domain: Record<string, any>;
       message: Record<string, any>;
       primaryType: string;
     };
+    tradeHash: string;
   };
-  transaction: {
-    to: string;
-    data: string;
-    gas: string;
-    gasPrice: string;
-    value: string;
+  approval: {
+    isRequired: boolean;
+    eip712?: {
+      types: Record<string, any>;
+      domain: Record<string, any>;
+      message: Record<string, any>;
+      primaryType: string;
+    };
   };
-  tradeHash: string;
 }
 
 export interface ZxGaslessSubmitResponse {
   tradeHash: string;
-  transactionHash?: string;
   status: 'pending' | 'confirmed' | 'failed';
+  transactionHash?: string;
+}
+
+export interface ZxGaslessStatus {
+  status: 'pending' | 'confirmed' | 'failed';
+  transactions: Array<{
+    hash: string;
+    timestamp: number;
+    gasUsed?: string;
+  }>;
 }
 
 // USDC contract addresses for each supported chain
@@ -116,36 +93,17 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 class ZxApiService {
   private readonly BASE_URL = '/api/0x';
 
-  async getPrice(params: ZxSwapParams): Promise<ZxPriceResponse> {
-    const { sellToken, buyToken, sellAmount, takerAddress, chainId } = params;
-    
-    // Auto-convert to USDC if buyToken not specified
-    const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
-    if (!targetBuyToken) {
-      throw new Error(`USDC not supported on chain ${chainId}`);
-    }
+  // Check supported chains for gasless
+  private readonly GASLESS_SUPPORTED_CHAINS = [1, 137, 42161, 8453, 10];
 
-    const queryParams = new URLSearchParams({
-      sellToken: sellToken === 'native' ? NATIVE_TOKEN_ADDRESS : sellToken,
-      buyToken: targetBuyToken,
-      sellAmount,
-      ...(takerAddress && { takerAddress })
-    });
-
-    const response = await fetch(`${this.BASE_URL}/${chainId}/price?${queryParams}`);
-    
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to get price quote');
-    }
-
-    return response.json();
+  isGaslessSupported(chainId: number): boolean {
+    return this.GASLESS_SUPPORTED_CHAINS.includes(chainId);
   }
 
+  // Standard 0x swap quote
   async getQuote(params: ZxSwapParams): Promise<ZxQuoteResponse> {
     const { sellToken, buyToken, sellAmount, takerAddress, chainId, slippagePercentage } = params;
     
-    // Auto-convert to USDC if buyToken not specified
     const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
     if (!targetBuyToken) {
       throw new Error(`USDC not supported on chain ${chainId}`);
@@ -169,10 +127,44 @@ class ZxApiService {
     return response.json();
   }
 
-  async getGaslessQuote(params: ZxSwapParams): Promise<ZxGaslessQuoteResponse> {
+  // 0x Gasless v2 price check
+  async getGaslessPrice(params: ZxSwapParams): Promise<ZxGaslessPrice> {
     const { sellToken, buyToken, sellAmount, takerAddress, chainId } = params;
     
-    // Auto-convert to USDC if buyToken not specified
+    if (!this.isGaslessSupported(chainId)) {
+      throw new Error(`Gasless swaps not supported on chain ${chainId}`);
+    }
+    
+    const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
+    if (!targetBuyToken) {
+      throw new Error(`USDC not supported on chain ${chainId}`);
+    }
+
+    const queryParams = new URLSearchParams({
+      sellToken: sellToken === 'native' ? NATIVE_TOKEN_ADDRESS : sellToken,
+      buyToken: targetBuyToken,
+      sellAmount,
+      takerAddress
+    });
+
+    const response = await fetch(`${this.BASE_URL}/${chainId}/gasless/price?${queryParams}`);
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to get gasless price');
+    }
+
+    return response.json();
+  }
+
+  // 0x Gasless v2 quote with EIP-712 signature data
+  async getGaslessQuote(params: ZxSwapParams): Promise<ZxGaslessQuote> {
+    const { sellToken, buyToken, sellAmount, takerAddress, chainId } = params;
+    
+    if (!this.isGaslessSupported(chainId)) {
+      throw new Error(`Gasless swaps not supported on chain ${chainId}`);
+    }
+    
     const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
     if (!targetBuyToken) {
       throw new Error(`USDC not supported on chain ${chainId}`);
@@ -185,7 +177,7 @@ class ZxApiService {
       takerAddress
     };
 
-    const response = await fetch(`${this.BASE_URL}/${chainId}/gasless-quote`, {
+    const response = await fetch(`${this.BASE_URL}/${chainId}/gasless/quote`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -201,13 +193,18 @@ class ZxApiService {
     return response.json();
   }
 
-  async submitGaslessSwap(chainId: number, signature: string, tradeHash: string): Promise<ZxGaslessSubmitResponse> {
+  // Submit gasless swap with EIP-712 signature
+  async submitGaslessSwap(chainId: number, signature: string, trade: any): Promise<ZxGaslessSubmitResponse> {
+    if (!this.isGaslessSupported(chainId)) {
+      throw new Error(`Gasless swaps not supported on chain ${chainId}`);
+    }
+
     const requestBody = {
       signature,
-      tradeHash
+      trade
     };
 
-    const response = await fetch(`${this.BASE_URL}/${chainId}/gasless-submit`, {
+    const response = await fetch(`${this.BASE_URL}/${chainId}/gasless/submit`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -218,6 +215,22 @@ class ZxApiService {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error || 'Failed to submit gasless swap');
+    }
+
+    return response.json();
+  }
+
+  // Check gasless swap status
+  async getGaslessStatus(chainId: number, tradeHash: string): Promise<ZxGaslessStatus> {
+    if (!this.isGaslessSupported(chainId)) {
+      throw new Error(`Gasless swaps not supported on chain ${chainId}`);
+    }
+
+    const response = await fetch(`${this.BASE_URL}/${chainId}/gasless/status/${tradeHash}`);
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to get gasless swap status');
     }
 
     return response.json();
@@ -241,10 +254,21 @@ class ZxApiService {
       chainId
     };
 
-    if (gasless) {
+    if (gasless && this.isGaslessSupported(chainId)) {
       return this.getGaslessQuote(swapParams);
     } else {
       return this.getQuote(swapParams);
+    }
+  }
+
+  // Helper to check if token approval is needed for gasless swaps
+  async checkApprovalNeeded(params: ZxSwapParams): Promise<boolean> {
+    try {
+      const gaslessQuote = await this.getGaslessQuote(params);
+      return gaslessQuote.approval.isRequired;
+    } catch (error) {
+      console.error('Error checking approval:', error);
+      return false;
     }
   }
 }
