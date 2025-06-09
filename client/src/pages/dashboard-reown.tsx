@@ -116,7 +116,7 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Token Swap Interface */}
         <div className="lg:col-span-2">
-          <MultiChainTokenSwap />
+          <WalletTokenSwap />
         </div>
 
         {/* Sidebar Information */}
