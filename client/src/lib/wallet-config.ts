@@ -3,8 +3,8 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet, polygon, arbitrum, base, optimism, bsc, avalanche } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
-// Working Reown project configuration
-const projectId = 'c4f79cc821944d9680842e34466bfec6'
+// Production Reown project configuration
+const projectId = '8b72ffd36f96abaa49c86c87c9e22a74'
 
 // Dynamic metadata configuration
 const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'https://stable-pay.app';
