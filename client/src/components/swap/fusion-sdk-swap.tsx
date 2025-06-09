@@ -127,8 +127,8 @@ export function FusionSDKSwap() {
       setSwapState({ status: 'ready' });
 
       toast({
-        title: "Gasless Quote Ready",
-        description: `Swap ${swapAmount} ${selectedToken.symbol} → ${toAmountFormatted} USDC (No Gas Required)`,
+        title: "1inch Quote Ready",
+        description: `Swap ${swapAmount} ${selectedToken.symbol} → ${toAmountFormatted} USDC`,
       });
 
     } catch (error) {
@@ -176,12 +176,25 @@ export function FusionSDKSwap() {
         const response = await fetch(`/api/1inch/${networkId}/swap?${swapParams}`);
 
         if (response.ok) {
-          const orderData = await response.json();
-          setSwapState({ status: 'completed', hash: orderData.orderHash || 'submitted' });
+          const swapData = await response.json();
+          
+          // Execute the transaction using wallet
+          const txHash = await ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              to: swapData.tx.to,
+              data: swapData.tx.data,
+              value: swapData.tx.value || '0x0',
+              gas: swapData.tx.gas,
+              gasPrice: swapData.tx.gasPrice
+            }]
+          });
+
+          setSwapState({ status: 'completed', hash: txHash });
           
           toast({
-            title: "Gasless Swap Completed!",
-            description: `Successfully swapped ${swapAmount} ${selectedToken.symbol} to USDC with no gas fees`,
+            title: "Swap Completed!",
+            description: `Successfully swapped ${swapAmount} ${selectedToken.symbol} to USDC`,
           });
 
           // Reset form after completion
@@ -193,7 +206,7 @@ export function FusionSDKSwap() {
           }, 3000);
         } else {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Failed to submit fusion order');
+          throw new Error(errorData.message || 'Failed to get swap transaction');
         }
 
       } else {
@@ -246,11 +259,11 @@ export function FusionSDKSwap() {
       <Card className="border-purple-200 dark:border-purple-800">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
-            <Fuel className="h-5 w-5 text-purple-500" />
-            Gasless Swap to USDC
+            <Zap className="h-5 w-5 text-purple-500" />
+            Swap to USDC
           </CardTitle>
           <CardDescription>
-            Convert tokens to USDC with 1inch Fusion - No gas fees required
+            Convert tokens to USDC using 1inch Protocol - Best rates guaranteed
           </CardDescription>
         </CardHeader>
         
@@ -336,11 +349,11 @@ export function FusionSDKSwap() {
                 <span className="text-sm text-muted-foreground">You'll receive</span>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
-                    <Fuel className="h-3 w-3 mr-1" />
-                    Gasless
+                    <Zap className="h-3 w-3 mr-1" />
+                    Best Rate
                   </Badge>
                   <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                    1inch Fusion
+                    1inch Protocol
                   </Badge>
                 </div>
               </div>
@@ -363,8 +376,8 @@ export function FusionSDKSwap() {
               
               <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded text-xs">
                 <div className="flex items-center gap-1 text-purple-700 dark:text-purple-300">
-                  <Fuel className="h-3 w-3" />
-                  <span className="font-medium">No gas fees required - Powered by 1inch Fusion</span>
+                  <Zap className="h-3 w-3" />
+                  <span className="font-medium">Best price aggregation - Powered by 1inch Protocol</span>
                 </div>
               </div>
             </div>
@@ -391,14 +404,14 @@ export function FusionSDKSwap() {
             )}
             {swapState.status === 'ready' && (
               <>
-                <Fuel className="h-4 w-4 mr-2" />
-                Gasless Swap to USDC
+                <Zap className="h-4 w-4 mr-2" />
+                Swap to USDC
               </>
             )}
             {swapState.status === 'swapping' && (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Processing Fusion Order
+                Confirm in Wallet
               </>
             )}
             {swapState.status === 'completed' && (
@@ -420,11 +433,11 @@ export function FusionSDKSwap() {
             <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-green-700 dark:text-green-300 text-sm">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
-                <span className="font-medium">Gasless swap completed successfully!</span>
+                <span className="font-medium">Swap completed successfully!</span>
               </div>
               {swapState.hash && (
                 <p className="mt-1 text-xs opacity-75">
-                  Order Hash: {swapState.hash.slice(0, 10)}...
+                  Transaction: {swapState.hash.slice(0, 10)}...
                 </p>
               )}
             </div>
@@ -457,13 +470,13 @@ export function FusionSDKSwap() {
               {chainId === 43114 && 'Avalanche Network'}
             </p>
             <p className="text-xs text-muted-foreground">
-              Gasless swaps powered by 1inch Fusion
+              Best rates aggregated from all DEXs
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm font-medium">Zero Gas</p>
+            <p className="text-sm font-medium">Live Trading</p>
             <p className="text-xs text-muted-foreground">
-              1inch Fusion SDK
+              1inch Protocol
             </p>
           </div>
         </div>
