@@ -4,7 +4,7 @@ import { mainnet, polygon, arbitrum, base, optimism, bsc, avalanche } from '@reo
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // Production Reown project configuration
-const projectId = '6dfca9af31141b1fb9220aa7db3eee37'
+const projectId = '421930fbeb871d753327b56943afe3ad'
 
 // Dynamic metadata configuration
 const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'https://stable-pay.app';

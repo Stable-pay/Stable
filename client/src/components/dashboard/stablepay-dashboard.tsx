@@ -1,550 +1,510 @@
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  TrendingUp, 
   Wallet, 
   ArrowUpDown, 
   DollarSign, 
-  RefreshCw, 
-  Eye, 
-  EyeOff, 
-  Copy,
-  BarChart3,
-  PieChart,
-  Activity,
+  TrendingUp, 
+  Send, 
+  Repeat,
   Shield,
+  Zap,
   Globe,
-  Fuel
+  Eye,
+  EyeOff,
+  RefreshCw,
+  Plus,
+  ArrowRight,
+  CheckCircle,
+  Clock,
+  AlertTriangle
 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useAppKit } from '@reown/appkit/react';
 import { useAccount, useBalance } from 'wagmi';
+import { useAppKit } from '@reown/appkit/react';
 import { Link } from 'wouter';
+import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet-balances';
+import { formatUnits } from 'viem';
 
-interface TokenBalance {
-  symbol: string;
-  address: string;
-  balance: string;
-  decimals: number;
-  chainId: number;
-  chainName: string;
-  formattedBalance: string;
-  isNative: boolean;
-  usdValue?: number;
+interface Transaction {
+  id: string;
+  type: 'swap' | 'withdraw' | 'deposit';
+  status: 'completed' | 'pending' | 'failed';
+  amount: string;
+  currency: string;
+  timestamp: Date;
+  hash?: string;
 }
 
-interface NetworkStats {
-  chainId: number;
-  name: string;
-  tokenCount: number;
-  totalValue: number;
-}
-
-export function StablePayDashboard() {
+export default function StablePayDashboard() {
+  const { address, isConnected } = useAccount();
   const { open } = useAppKit();
-  const { address, isConnected, chainId } = useAccount();
-  const { data: nativeBalance } = useBalance({ address });
-  const { toast } = useToast();
-
-  const [balances, setBalances] = useState<TokenBalance[]>([]);
-  const [balancesLoading, setBalancesLoading] = useState(false);
-  const [totalPortfolioValue, setTotalPortfolioValue] = useState(0);
+  const { data: balance } = useBalance({ address });
+  const { balances, isLoading } = useComprehensiveWalletBalances();
+  
   const [hideBalances, setHideBalances] = useState(false);
-  const [networkStats, setNetworkStats] = useState<NetworkStats[]>([]);
+  const [selectedNetwork, setSelectedNetwork] = useState('all');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const getNetworkName = (chainId: number): string => {
-    const networks: Record<number, string> = {
-      1: 'Ethereum',
-      137: 'Polygon',
-      42161: 'Arbitrum',
-      8453: 'Base',
-      10: 'Optimism',
-      43114: 'Avalanche',
-      56: 'BSC'
-    };
-    return networks[chainId] || 'Unknown';
+  // Mock transaction data
+  const [transactions] = useState<Transaction[]>([
+    {
+      id: '1',
+      type: 'swap',
+      status: 'completed',
+      amount: '1,250.00',
+      currency: 'USDC',
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      hash: '0x1234...5678'
+    },
+    {
+      id: '2',
+      type: 'withdraw',
+      status: 'pending',
+      amount: '500.00',
+      currency: 'USD',
+      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000)
+    },
+    {
+      id: '3',
+      type: 'swap',
+      status: 'completed',
+      amount: '750.50',
+      currency: 'USDC',
+      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      hash: '0x9876...5432'
+    }
+  ]);
+
+  // Calculate total USDC balance across all chains
+  const totalUSDCBalance = balances
+    .filter(balance => balance.symbol === 'USDC')
+    .reduce((total, balance) => total + parseFloat(balance.formattedBalance), 0);
+
+  // Get unique networks from balances
+  const networks = Array.from(new Set(balances.map(balance => balance.chainName)));
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setTimeout(() => setIsRefreshing(false), 1000);
   };
 
-  const loadBalances = async () => {
-    if (!address || !chainId || !nativeBalance) return;
-    
-    setBalancesLoading(true);
-    
-    try {
-      const balanceResults: TokenBalance[] = [];
-      
-      const formattedBalance = parseFloat(nativeBalance.formatted);
-      
-      if (formattedBalance > 0.000001) {
-        const mockUsdValue = formattedBalance * 2000;
-        
-        balanceResults.push({
-          symbol: nativeBalance.symbol,
-          address: 'native',
-          balance: nativeBalance.value.toString(),
-          decimals: nativeBalance.decimals,
-          chainId,
-          chainName: getNetworkName(chainId),
-          formattedBalance: formattedBalance.toFixed(6),
-          isNative: true,
-          usdValue: mockUsdValue
-        });
-        
-        setTotalPortfolioValue(mockUsdValue);
-      }
-      
-      setBalances(balanceResults);
-      
-      const stats: NetworkStats[] = [{
-        chainId,
-        name: getNetworkName(chainId),
-        tokenCount: balanceResults.length,
-        totalValue: balanceResults.reduce((sum, token) => sum + (token.usdValue || 0), 0)
-      }];
-      
-      setNetworkStats(stats);
-      
-    } catch (error) {
-      console.error('Failed to load balances:', error);
-      toast({
-        title: "Balance Loading Failed",
-        description: "Unable to fetch wallet balances",
-        variant: "destructive"
-      });
-    } finally {
-      setBalancesLoading(false);
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'pending':
+        return <Clock className="h-4 w-4 text-yellow-500" />;
+      case 'failed':
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      default:
+        return null;
     }
   };
-
-  const copyAddress = (addr: string) => {
-    navigator.clipboard.writeText(addr);
-    toast({
-      title: "Address Copied",
-      description: "Wallet address copied to clipboard"
-    });
-  };
-
-  const formatValue = (value: number) => {
-    if (hideBalances) return '••••••';
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
-    if (value >= 1000) return `$${(value / 1000).toFixed(2)}K`;
-    return `$${value.toFixed(2)}`;
-  };
-
-  const formatBalance = (balance: string) => {
-    if (hideBalances) return '••••••';
-    return balance;
-  };
-
-  useEffect(() => {
-    if (isConnected && address && chainId && nativeBalance) {
-      loadBalances();
-    }
-  }, [isConnected, address, chainId, nativeBalance]);
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <Card className="w-full max-w-lg shadow-xl bg-white">
-          <CardHeader className="text-center pb-8 pt-12">
-            <div 
-              className="mx-auto w-20 h-20 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
-              style={{ backgroundColor: '#6667AB' }}
-            >
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <Wallet className="h-10 w-10 text-white" />
             </div>
-            <CardTitle className="text-3xl font-bold mb-3" style={{ color: '#6667AB' }}>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Connect Your Wallet
-            </CardTitle>
-            <p className="text-gray-600 text-lg">
-              Access your personalized portfolio dashboard
+            </h2>
+            <p className="text-gray-600 mb-8">
+              Connect your wallet to access your StablePay dashboard and manage your crypto assets
             </p>
-          </CardHeader>
-          <CardContent className="px-8 pb-8">
-            <Button
+            <Button 
               onClick={() => open()}
-              className="w-full h-14 text-lg font-semibold bg-[#6667AB] hover:bg-[#5a5b96] text-white shadow-lg"
               size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
             >
-              <Wallet className="h-5 w-5 mr-3" />
+              <Wallet className="mr-2 h-5 w-5" />
               Connect Wallet
             </Button>
-          </CardContent>
-        </Card>
+          </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-5xl font-bold mb-3" style={{ color: '#6667AB' }}>
-                Portfolio Dashboard
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                Welcome back
               </h1>
-              <p className="text-xl text-gray-600">
-                Track and manage your DeFi assets across multiple chains
+              <p className="text-gray-600">
+                Manage your crypto portfolio and track your StablePay transactions
               </p>
             </div>
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
-                size="lg"
-                onClick={() => setHideBalances(!hideBalances)}
-                className="border-[#6667AB] text-[#6667AB] hover:bg-[#6667AB] hover:text-white"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="border-gray-300 hover:border-blue-500"
               >
-                {hideBalances ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
               </Button>
               <Button
                 variant="outline"
-                size="lg"
-                onClick={loadBalances}
-                disabled={balancesLoading}
-                className="border-[#6667AB] text-[#6667AB] hover:bg-[#6667AB] hover:text-white"
+                onClick={() => setHideBalances(!hideBalances)}
+                className="border-gray-300 hover:border-blue-500"
               >
-                <RefreshCw className={`h-5 w-5 mr-2 ${balancesLoading ? 'animate-spin' : ''}`} />
-                Refresh
+                {hideBalances ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </Button>
             </div>
           </div>
 
-          {/* Wallet Info */}
-          <Card className="shadow-xl bg-white border-0 mb-8">
-            <CardContent className="p-8">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <div 
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
-                    style={{ backgroundColor: '#6667AB' }}
-                  >
-                    <Wallet className="h-8 w-8 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-sm mb-1">Connected Wallet</p>
-                    <div className="flex items-center gap-3">
-                      <p className="font-mono text-lg" style={{ color: '#6667AB' }}>
-                        {address?.slice(0, 6)}...{address?.slice(-4)}
-                      </p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => address && copyAddress(address)}
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-[#6667AB]"
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+          {/* Wallet Address */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-white" />
                 </div>
-                <div className="text-right">
-                  <p className="text-gray-500 text-sm mb-1">Total Portfolio Value</p>
-                  <p className="text-4xl font-bold" style={{ color: '#6667AB' }}>
-                    {formatValue(totalPortfolioValue)}
-                  </p>
-                  <p className="text-gray-500 text-sm mt-1">
-                    Network: {getNetworkName(chainId || 1)}
+                <div>
+                  <p className="text-sm text-gray-600">Connected Wallet</p>
+                  <p className="font-mono text-sm font-medium">
+                    {address?.slice(0, 6)}...{address?.slice(-4)}
                   </p>
                 </div>
               </div>
+              <Badge className="bg-green-100 text-green-700">Connected</Badge>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Balance Overview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-2xl">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-blue-100 mb-2">Total USDC Balance</p>
+                  <h2 className="text-5xl font-bold">
+                    {hideBalances ? '••••••' : `$${totalUSDCBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  </h2>
+                  <p className="text-blue-100 mt-2">
+                    Across {networks.length} networks
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                    <DollarSign className="h-10 w-10 text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <TrendingUp className="h-4 w-4" />
+                      <span>+5.2% (24h)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-6">
+                <Link href="/swap">
+                  <Button 
+                    variant="secondary" 
+                    className="bg-white/20 hover:bg-white/30 text-white border-0 w-full h-12"
+                  >
+                    <ArrowUpDown className="mr-2 h-4 w-4" />
+                    Swap Tokens
+                  </Button>
+                </Link>
+                <Link href="/withdraw">
+                  <Button 
+                    variant="secondary" 
+                    className="bg-white/20 hover:bg-white/30 text-white border-0 w-full h-12"
+                  >
+                    <Send className="mr-2 h-4 w-4" />
+                    Withdraw
+                  </Button>
+                </Link>
+                <Link href="/kyc">
+                  <Button 
+                    variant="secondary" 
+                    className="bg-white/20 hover:bg-white/30 text-white border-0 w-full h-12"
+                  >
+                    <Shield className="mr-2 h-4 w-4" />
+                    Complete KYC
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
         {/* Main Content */}
-        <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 bg-white shadow-lg border-0">
-            <TabsTrigger 
-              value="overview" 
-              className="data-[state=active]:bg-[#6667AB] data-[state=active]:text-white"
-              style={{ color: '#6667AB' }}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Portfolio and Balances */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Token Balances */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
             >
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger 
-              value="tokens" 
-              className="data-[state=active]:bg-[#6667AB] data-[state=active]:text-white"
-              style={{ color: '#6667AB' }}
-            >
-              <PieChart className="h-4 w-4 mr-2" />
-              Tokens
-            </TabsTrigger>
-            <TabsTrigger 
-              value="activity" 
-              className="data-[state=active]:bg-[#6667AB] data-[state=active]:text-white"
-              style={{ color: '#6667AB' }}
-            >
-              <Activity className="h-4 w-4 mr-2" />
-              Activity
-            </TabsTrigger>
-            <TabsTrigger 
-              value="defi" 
-              className="data-[state=active]:bg-[#6667AB] data-[state=active]:text-white"
-              style={{ color: '#6667AB' }}
-            >
-              <Shield className="h-4 w-4 mr-2" />
-              DeFi
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-8">
-            {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="shadow-xl bg-white border-0">
-                <CardContent className="p-6">
+              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
+                <CardHeader>
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-500 text-sm">Total Balance</p>
-                      <p className="text-2xl font-bold" style={{ color: '#6667AB' }}>
-                        {formatValue(totalPortfolioValue)}
-                      </p>
-                    </div>
-                    <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center"
-                      style={{ backgroundColor: '#6667AB' }}
-                    >
-                      <DollarSign className="h-6 w-6 text-white" />
+                    <CardTitle className="flex items-center gap-2">
+                      <Wallet className="h-5 w-5 text-blue-600" />
+                      Token Balances
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={selectedNetwork}
+                        onChange={(e) => setSelectedNetwork(e.target.value)}
+                        className="text-sm border border-gray-300 rounded-lg px-3 py-1 bg-white"
+                      >
+                        <option value="all">All Networks</option>
+                        {networks.map(network => (
+                          <option key={network} value={network}>{network}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-xl bg-white border-0">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-500 text-sm">Networks</p>
-                      <p className="text-2xl font-bold" style={{ color: '#6667AB' }}>
-                        {networkStats.length}
-                      </p>
-                    </div>
-                    <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center"
-                      style={{ backgroundColor: '#6667AB' }}
-                    >
-                      <Globe className="h-6 w-6 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-xl bg-white border-0">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-500 text-sm">Total Tokens</p>
-                      <p className="text-2xl font-bold" style={{ color: '#6667AB' }}>
-                        {balances.length}
-                      </p>
-                    </div>
-                    <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center"
-                      style={{ backgroundColor: '#6667AB' }}
-                    >
-                      <PieChart className="h-6 w-6 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-xl bg-white border-0">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-500 text-sm">24h Change</p>
-                      <p className="text-2xl font-bold text-green-600 flex items-center">
-                        +5.7%
-                        <TrendingUp className="h-5 w-5 ml-2" />
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
-                      <TrendingUp className="h-6 w-6 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Quick Actions */}
-            <Card className="shadow-xl bg-white border-0">
-              <CardHeader>
-                <CardTitle className="text-2xl" style={{ color: '#6667AB' }}>Quick Actions</CardTitle>
-                <CardDescription className="text-gray-600">
-                  Perform common DeFi operations with one click
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Link href="/swap">
-                    <Card className="cursor-pointer hover:shadow-lg transition-shadow border-gray-200 bg-gray-50">
-                      <CardContent className="p-6 text-center">
-                        <div 
-                          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                          style={{ backgroundColor: '#6667AB' }}
-                        >
-                          <ArrowUpDown className="h-8 w-8 text-white" />
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="space-y-4">
+                      {[1, 2, 3].map(i => (
+                        <div key={i} className="flex items-center justify-between p-4 bg-gray-100 rounded-lg animate-pulse">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gray-300 rounded-lg"></div>
+                            <div>
+                              <div className="w-20 h-4 bg-gray-300 rounded mb-1"></div>
+                              <div className="w-16 h-3 bg-gray-300 rounded"></div>
+                            </div>
+                          </div>
+                          <div className="w-24 h-4 bg-gray-300 rounded"></div>
                         </div>
-                        <h3 className="text-xl font-semibold mb-2" style={{ color: '#6667AB' }}>
-                          Token Swap
-                        </h3>
-                        <p className="text-gray-600">Convert tokens with gasless transactions</p>
-                        <Badge className="bg-green-100 text-green-700 border-green-200 mt-3">
-                          <Fuel className="h-3 w-3 mr-1" />
-                          Gasless Available
-                        </Badge>
-                      </CardContent>
-                    </Card>
-                  </Link>
-
-                  <Card className="cursor-pointer hover:shadow-lg transition-shadow border-gray-200 bg-gray-50">
-                    <CardContent className="p-6 text-center">
-                      <div 
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                        style={{ backgroundColor: '#6667AB' }}
-                      >
-                        <BarChart3 className="h-8 w-8 text-white" />
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2" style={{ color: '#6667AB' }}>
-                        Yield Farming
-                      </h3>
-                      <p className="text-gray-600">Earn rewards by providing liquidity</p>
-                      <Badge className="bg-gray-100 text-gray-600 border-gray-200 mt-3">
-                        Coming Soon
-                      </Badge>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="cursor-pointer hover:shadow-lg transition-shadow border-gray-200 bg-gray-50">
-                    <CardContent className="p-6 text-center">
-                      <div 
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                        style={{ backgroundColor: '#6667AB' }}
-                      >
-                        <Shield className="h-8 w-8 text-white" />
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2" style={{ color: '#6667AB' }}>
-                        Staking
-                      </h3>
-                      <p className="text-gray-600">Stake tokens to earn passive income</p>
-                      <Badge className="bg-gray-100 text-gray-600 border-gray-200 mt-3">
-                        Coming Soon
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Tokens Tab */}
-          <TabsContent value="tokens" className="space-y-8">
-            <Card className="shadow-xl bg-white border-0">
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-3" style={{ color: '#6667AB' }}>
-                  <PieChart className="h-6 w-6" />
-                  Token Holdings
-                </CardTitle>
-                <CardDescription className="text-gray-600">
-                  Your current token balances across all networks
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {balancesLoading ? (
-                  <div className="p-8 text-center">
-                    <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" style={{ color: '#6667AB' }} />
-                    <p className="text-gray-500">Loading token balances...</p>
-                  </div>
-                ) : balances.length === 0 ? (
-                  <div className="p-8 text-center">
-                    <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500">No tokens found</p>
-                    <p className="text-gray-400 text-sm mt-2">Add some tokens to your wallet to see them here</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {balances.map((token, index) => (
-                      <div key={index} className="flex items-center justify-between p-6 bg-gray-50 rounded-xl">
-                        <div className="flex items-center gap-4">
-                          <div 
-                            className="w-12 h-12 rounded-xl flex items-center justify-center text-lg text-white font-bold"
-                            style={{ backgroundColor: '#6667AB' }}
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {balances
+                        .filter(balance => selectedNetwork === 'all' || balance.chainName === selectedNetwork)
+                        .filter(balance => parseFloat(balance.formattedBalance) > 0)
+                        .map((balance, index) => (
+                          <motion.div
+                            key={`${balance.chainId}-${balance.address}`}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
                           >
-                            {token.symbol.charAt(0)}
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                                <span className="text-white font-bold text-sm">
+                                  {balance.symbol.charAt(0)}
+                                </span>
+                              </div>
+                              <div>
+                                <p className="font-semibold">{balance.symbol}</p>
+                                <p className="text-sm text-gray-600">{balance.chainName}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold">
+                                {hideBalances ? '••••••' : balance.formattedBalance}
+                              </p>
+                              {balance.usdValue && (
+                                <p className="text-sm text-gray-600">
+                                  {hideBalances ? '••••••' : `$${balance.usdValue.toFixed(2)}`}
+                                </p>
+                              )}
+                            </div>
+                          </motion.div>
+                        ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Recent Transactions */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Repeat className="h-5 w-5 text-blue-600" />
+                    Recent Transactions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {transactions.map((tx) => (
+                      <div key={tx.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-2">
+                            {getStatusIcon(tx.status)}
+                            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                              {tx.type === 'swap' && <ArrowUpDown className="h-5 w-5 text-white" />}
+                              {tx.type === 'withdraw' && <Send className="h-5 w-5 text-white" />}
+                              {tx.type === 'deposit' && <Plus className="h-5 w-5 text-white" />}
+                            </div>
                           </div>
                           <div>
-                            <p className="font-semibold text-lg" style={{ color: '#6667AB' }}>
-                              {token.symbol}
+                            <p className="font-semibold capitalize">{tx.type}</p>
+                            <p className="text-sm text-gray-600">
+                              {tx.timestamp.toLocaleDateString()} at {tx.timestamp.toLocaleTimeString()}
                             </p>
-                            <p className="text-gray-500">{token.chainName}</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-lg" style={{ color: '#6667AB' }}>
-                            {formatBalance(token.formattedBalance)}
+                          <p className="font-semibold">
+                            {hideBalances ? '••••••' : `${tx.amount} ${tx.currency}`}
                           </p>
-                          <p className="text-green-600">
-                            {formatValue(token.usdValue || 0)}
-                          </p>
+                          <p className="text-sm text-gray-600 capitalize">{tx.status}</p>
                         </div>
                       </div>
                     ))}
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+                  <div className="mt-6 text-center">
+                    <Button variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50">
+                      View All Transactions
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
 
-          {/* Activity Tab */}
-          <TabsContent value="activity" className="space-y-8">
-            <Card className="shadow-xl bg-white border-0">
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-3" style={{ color: '#6667AB' }}>
-                  <Activity className="h-6 w-6" />
-                  Recent Activity
-                </CardTitle>
-                <CardDescription className="text-gray-600">
-                  Your latest transactions and DeFi interactions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="p-8 text-center">
-                  <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">No recent activity</p>
-                  <p className="text-gray-400 text-sm mt-2">Your transactions will appear here</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
+                <CardHeader>
+                  <CardTitle className="text-lg">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Link href="/swap">
+                    <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                      <ArrowUpDown className="mr-2 h-4 w-4" />
+                      Swap Tokens
+                    </Button>
+                  </Link>
+                  <Link href="/withdraw">
+                    <Button variant="outline" className="w-full border-blue-500 text-blue-600 hover:bg-blue-50">
+                      <Send className="mr-2 h-4 w-4" />
+                      Withdraw Funds
+                    </Button>
+                  </Link>
+                  <Link href="/kyc">
+                    <Button variant="outline" className="w-full border-purple-500 text-purple-600 hover:bg-purple-50">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Complete KYC
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-          {/* DeFi Tab */}
-          <TabsContent value="defi" className="space-y-8">
-            <Card className="shadow-xl bg-white border-0">
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-3" style={{ color: '#6667AB' }}>
-                  <Shield className="h-6 w-6" />
-                  DeFi Positions
-                </CardTitle>
-                <CardDescription className="text-gray-600">
-                  Your staking, farming, and lending positions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="p-8 text-center">
-                  <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">No DeFi positions</p>
-                  <p className="text-gray-400 text-sm mt-2">Start earning by staking or providing liquidity</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            {/* Network Status */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-green-500" />
+                    Network Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {['Ethereum', 'Polygon', 'Arbitrum', 'Base'].map((network) => (
+                      <div key={network} className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{network}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-xs text-gray-600">Online</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Security Status */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-blue-500" />
+                    Security
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Wallet Connected</span>
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">KYC Status</span>
+                      <Clock className="h-4 w-4 text-yellow-500" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">2FA Enabled</span>
+                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                    </div>
+                    <Link href="/kyc">
+                      <Button size="sm" variant="outline" className="w-full mt-3 border-blue-500 text-blue-600 hover:bg-blue-50">
+                        Complete Verification
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );
