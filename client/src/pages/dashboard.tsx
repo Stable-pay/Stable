@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { USDCCollectionMonitor } from "@/components/dashboard/usdc-collection-monitor";
 import { TRANSACTION_TYPES, TRANSACTION_STATUS, EXCHANGE_RATES } from "@/lib/constants";
 import { TrendingUp, Wallet, Shield, University } from "lucide-react";
 
@@ -157,6 +158,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* USDC Collection Monitor */}
+      <USDCCollectionMonitor />
 
       {/* Transaction History */}
       <Card>
