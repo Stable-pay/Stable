@@ -469,14 +469,14 @@ export default function RemittanceDashboard() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Send Form */}
                     <div className="space-y-6">
-                      <div className="bg-blue-50 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                      <div className="bg-accent rounded-lg p-6 border border-border">
+                        <h3 className="text-lg font-semibold text-foreground mb-4">
                           Send Crypto → Receive USDC
                         </h3>
                         
                         <div className="space-y-4">
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               From Token
                             </label>
                             <Select value={fromToken} onValueChange={setFromToken}>
@@ -494,7 +494,7 @@ export default function RemittanceDashboard() {
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Amount to Send
                             </label>
                             <Input
@@ -503,26 +503,28 @@ export default function RemittanceDashboard() {
                               value={fromAmount}
                               onChange={(e) => setFromAmount(e.target.value)}
                               onBlur={getQuote}
+                              className="bg-background border-border"
                             />
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Recipient Address
                             </label>
                             <Input
                               placeholder="0x..."
                               value={recipientAddress}
                               onChange={(e) => setRecipientAddress(e.target.value)}
+                              className="bg-background border-border"
                             />
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Destination Country
                             </label>
                             <Select value={recipientCountry} onValueChange={setRecipientCountry}>
-                              <SelectTrigger>
+                              <SelectTrigger className="bg-background border-border">
                                 <SelectValue placeholder="Select country" />
                               </SelectTrigger>
                               <SelectContent>
@@ -536,11 +538,11 @@ export default function RemittanceDashboard() {
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Purpose of Transfer
                             </label>
                             <Select value={purpose} onValueChange={setPurpose}>
-                              <SelectTrigger>
+                              <SelectTrigger className="bg-background border-border">
                                 <SelectValue placeholder="Select purpose" />
                               </SelectTrigger>
                               <SelectContent>
@@ -558,7 +560,7 @@ export default function RemittanceDashboard() {
                       <Button
                         onClick={executeRemittance}
                         disabled={!quote || isProcessing || !recipientAddress || !recipientCountry || !purpose}
-                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 text-lg"
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-4 text-lg font-medium"
                       >
                         {isProcessing ? (
                           <div className="flex items-center gap-2">
