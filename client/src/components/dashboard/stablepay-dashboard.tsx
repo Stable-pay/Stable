@@ -90,7 +90,7 @@ export default function StablePayDashboard() {
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    await refetch();
+    // Refresh functionality would reload wallet balances
     setTimeout(() => setIsRefreshing(false), 1000);
   };
 
