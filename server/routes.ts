@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-// Removed PancakeSwap - using Reown AppKit swaps instead
+import { particleAPI } from "./particle-api";
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -61,107 +61,15 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Particle Network Swap API routes
-  app.post('/api/particle/swap/quote', async (req: Request, res: Response) => {
-    try {
-      const { fromToken, toToken, amount, chainId } = req.body;
-      
-      // Use Particle Swap API endpoint
-      const response = await fetch('https://swap-api.particle.network/swap/quote', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.PARTICLE_SERVER_KEY}`,
-        },
-        body: JSON.stringify({
-          fromToken,
-          toToken,
-          amount,
-          chainId,
-          slippage: 0.5,
-        }),
-      });
+  // Production Particle Network API routes
+  app.post('/api/particle/auth/login', (req, res) => particleAPI.authenticateUser(req, res));
+  app.post('/api/particle/auth/logout', (req, res) => particleAPI.logoutUser(req, res));
+  app.post('/api/particle/wallet/balance', (req, res) => particleAPI.getWalletBalance(req, res));
+  app.post('/api/particle/swap/quote', (req, res) => particleAPI.getSwapQuote(req, res));
+  app.post('/api/particle/swap/transaction', (req, res) => particleAPI.executeSwap(req, res));
+  app.get('/api/particle/paymaster/balance', (req, res) => particleAPI.getPaymasterBalance(req, res));
 
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      console.error('Swap quote error:', error);
-      res.status(500).json({ error: 'Failed to get swap quote' });
-    }
-  });
 
-  app.post('/api/particle/swap/transaction', async (req: Request, res: Response) => {
-    try {
-      const swapParams = req.body;
-      
-      const response = await fetch('https://api.particle.network/solana/rpc', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.PARTICLE_SERVER_KEY}`,
-        },
-        body: JSON.stringify({
-          chainId: swapParams.chainId,
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'particle_swap_getSwapTransaction',
-          params: swapParams,
-        }),
-      });
-
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      console.error('Swap transaction error:', error);
-      res.status(500).json({ error: 'Failed to get swap transaction' });
-    }
-  });
-
-  // Particle AA Paymaster balance check
-  app.get('/api/particle/paymaster/balance', async (req: Request, res: Response) => {
-    try {
-      const response = await fetch('https://paymaster.particle.network/balance', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${process.env.PARTICLE_SERVER_KEY}`,
-        },
-      });
-
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      console.error('Paymaster balance error:', error);
-      res.status(500).json({ error: 'Failed to get paymaster balance' });
-    }
-  });
-
-  // Particle wallet balance endpoint
-  app.post('/api/particle/wallet/balance', async (req: Request, res: Response) => {
-    try {
-      const { address, chainId, tokens } = req.body;
-      
-      const response = await fetch('https://api.particle.network/solana/rpc', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.PARTICLE_SERVER_KEY}`,
-        },
-        body: JSON.stringify({
-          chainId,
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'particle_getTokensAndNFTs',
-          params: [address, tokens],
-        }),
-      });
-
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      console.error('Wallet balance error:', error);
-      res.status(500).json({ error: 'Failed to get wallet balance' });
-    }
-  });
 
   // Wallet balance endpoint
   app.get("/api/wallet/balances", async (req, res) => {
