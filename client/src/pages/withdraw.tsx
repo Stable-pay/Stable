@@ -1,5 +1,5 @@
-import AnimatedWithdraw from './animated-withdraw';
+import WithdrawDark from './withdraw-dark';
 
 export default function Withdraw() {
-  return <AnimatedWithdraw />;
+  return <WithdrawDark />;
 }

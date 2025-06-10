@@ -1,5 +1,5 @@
-import AnimatedKYC from './animated-kyc';
+import KYCDark from './kyc-dark';
 
 export default function KYC() {
-  return <AnimatedKYC />;
+  return <KYCDark />;
 }
