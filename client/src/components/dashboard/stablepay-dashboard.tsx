@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useSimpleWallet } from '@/hooks/use-simple-wallet';
+import { useWeb3Connection } from '@/hooks/use-web3-connection';
+import { DexIntegration } from '@/lib/dex-integration';
 
 interface TokenPrice {
   id: string;
@@ -21,7 +22,7 @@ interface SwapQuote {
 }
 
 export default function StablePayDashboard() {
-  const walletData = useSimpleWallet();
+  const walletData = useWeb3Connection();
   const [prices, setPrices] = useState<TokenPrice[]>([]);
   const [loading, setLoading] = useState(true);
   const [swapQuote, setSwapQuote] = useState<SwapQuote | null>(null);
@@ -50,51 +51,41 @@ export default function StablePayDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Get swap quote from backend
+  // Get real swap quote using DEX integration
   const getSwapQuote = async () => {
-    if (!fromAmount || !walletData.isConnected) return;
+    if (!fromAmount || !walletData.isConnected || !walletData.provider || !walletData.chainId) return;
 
     try {
-      const response = await fetch('/api/swap/quote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fromToken,
-          toToken,
-          amount: fromAmount,
-          userAddress: walletData.address
-        })
+      const dex = new DexIntegration(walletData.chainId, walletData.provider);
+      const quote = await dex.getSwapQuote({
+        fromToken,
+        toToken,
+        amount: fromAmount,
+        slippage: 0.5,
+        userAddress: walletData.address!
       });
-      const quote = await response.json();
       setSwapQuote(quote);
     } catch (error) {
       console.error('Failed to get swap quote:', error);
+      alert('Failed to get swap quote. Please try again.');
     }
   };
 
-  // Execute swap transaction
+  // Execute real swap transaction
   const executeSwap = async () => {
-    if (!swapQuote || !walletData.isConnected) return;
+    if (!swapQuote || !walletData.isConnected || !walletData.provider) return;
 
     try {
-      const response = await fetch('/api/swap/execute', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          quote: swapQuote,
-          userAddress: walletData.address
-        })
-      });
-      const result = await response.json();
+      const dex = new DexIntegration(walletData.chainId!, walletData.provider);
+      const txHash = await dex.executeSwap(swapQuote, walletData.address!);
       
-      if (result.success) {
-        alert('Swap executed successfully!');
-        walletData.refreshBalances();
-        setSwapQuote(null);
-        setFromAmount('');
-      }
+      alert(`Swap executed successfully! Transaction: ${txHash}`);
+      walletData.refreshBalances();
+      setSwapQuote(null);
+      setFromAmount('');
     } catch (error) {
       console.error('Swap failed:', error);
+      alert('Swap execution failed. Please try again.');
     }
   };
   
