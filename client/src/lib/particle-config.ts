@@ -1,9 +1,10 @@
-// Particle Network configuration
+// Particle Network configuration with environment variables
 export const particleConfig = {
-  projectId: 'c83ce10f-85ce-406e-a9a3-0444767f730b',
-  clientKey: 'cAEYYI4suhkKPKYAuD6APYq6vaj9J4a1KhX1k4Zv',
-  serverKey: 'sT0PzyBOnNglTIKBfPNl6yNcxGflwMixaR352Cik',
-  appId: 'c83ce10f-85ce-406e-a9a3-0444767f730b',
+  projectId: import.meta.env.VITE_PARTICLE_PROJECT_ID || 'c83ce10f-85ce-406e-a9a3-0444767f730b',
+  clientKey: import.meta.env.VITE_PARTICLE_CLIENT_KEY || 'cAEYYI4suhkKPKYAuD6APYq6vaj9J4a1KhX1k4Zv',
+  serverKey: import.meta.env.VITE_PARTICLE_SERVER_KEY || 'sT0PzyBOnNglTIKBfPNl6yNcxGflwMixaR352Cik',
+  appId: import.meta.env.VITE_PARTICLE_PROJECT_ID || 'c83ce10f-85ce-406e-a9a3-0444767f730b',
+  environment: 'production' as const,
 };
 
 // Supported chains configuration
