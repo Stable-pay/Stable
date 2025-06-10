@@ -22,7 +22,8 @@ import {
   ArrowRight,
   CheckCircle,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Banknote
 } from 'lucide-react';
 import { useAccount, useBalance } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
