@@ -33,13 +33,19 @@ const wagmiAdapter = new WagmiAdapter({
   networks
 })
 
-// Clean AppKit configuration
+// AppKit configuration with swap features enabled
 export const appKit = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
   networks,
   metadata,
-  themeMode: 'dark'
+  themeMode: 'dark',
+  features: {
+    swaps: true,
+    onramp: true,
+    email: false,
+    socials: []
+  }
 })
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig

@@ -142,7 +142,18 @@ export function ReownSwapFlow() {
     }
   };
 
-  const handleTokenSelect = (token: Token) => {
+  const handleTokenSelect = (balance: any) => {
+    const token: Token = {
+      symbol: balance.symbol,
+      address: balance.address,
+      balance: balance.balance,
+      formattedBalance: balance.formattedBalance,
+      decimals: balance.decimals,
+      chainId: balance.chainId,
+      chainName: balance.chainName || 'Unknown',
+      isNative: balance.isNative,
+      usdValue: balance.usdValue
+    };
     setSelectedToken(token);
     setSwapAmount('');
     setInrAmount('0');
@@ -182,31 +193,31 @@ export function ReownSwapFlow() {
     setIsSwapping(true);
     
     try {
-      // Use Reown AppKit's built-in swap functionality
+      // Open Reown AppKit swap interface with specific view
       toast({
-        title: "Opening Reown Swap",
-        description: "Complete the swap in the Reown interface",
+        title: "Opening Swap Interface",
+        description: "Complete the token swap in the Reown interface",
       });
 
-      // Open Reown AppKit swap modal
-      await open({ view: 'OnRampProviders' });
+      // Open the swap view specifically
+      await open({ view: 'Swap' });
       
-      // Simulate successful swap completion
+      // Monitor for swap completion (in real implementation, this would listen for blockchain events)
       setTimeout(() => {
         setIsSwapping(false);
         toast({
-          title: "Swap Completed",
-          description: `Successfully swapped ${swapAmount} ${selectedToken.symbol}`,
+          title: "Swap Ready",
+          description: "Please complete the swap in the Reown interface, then continue",
         });
-        handleNextStep();
-      }, 3000);
+        // Don't auto-advance - let user manually continue after swap
+      }, 2000);
 
     } catch (error) {
-      console.error('Swap execution error:', error);
+      console.error('Swap interface error:', error);
       setIsSwapping(false);
       toast({
-        title: "Swap Failed",
-        description: "Failed to execute swap transaction",
+        title: "Interface Error",
+        description: "Failed to open swap interface",
         variant: "destructive"
       });
     }
@@ -589,23 +600,33 @@ export function ReownSwapFlow() {
               <Button variant="outline" onClick={handlePreviousStep}>
                 Back
               </Button>
-              <Button
-                onClick={handleSwapExecution}
-                disabled={isSwapping}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                {isSwapping ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Processing Swap...
-                  </>
-                ) : (
-                  <>
-                    <ArrowUpDown className="w-4 h-4 mr-2" />
-                    Execute Swap
-                  </>
-                )}
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleSwapExecution}
+                  disabled={isSwapping}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  {isSwapping ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Opening Swap...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowUpDown className="w-4 h-4 mr-2" />
+                      Open Reown Swap
+                    </>
+                  )}
+                </Button>
+                <Button
+                  onClick={handleNextStep}
+                  variant="outline"
+                  className="border-green-500 text-green-600 hover:bg-green-50"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Swap Completed
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

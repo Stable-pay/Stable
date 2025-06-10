@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { WalletTokenSwap } from "@/components/swap/wallet-token-swap";
+// Swap components removed - using Reown AppKit built-in swaps
 import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network } from "lucide-react";
 import { useAccount, useBalance, useChainId } from 'wagmi';
@@ -116,7 +116,23 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Token Swap Interface */}
         <div className="lg:col-span-2">
-          <WalletTokenSwap />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-blue-600" />
+                Reown AppKit Swaps
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Alert>
+                <Shield className="h-4 w-4" />
+                <AlertDescription>
+                  Token swapping powered by Reown AppKit's built-in functionality.
+                  Access the full remittance flow in the Remittance tab.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Sidebar Information */}

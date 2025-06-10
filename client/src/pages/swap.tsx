@@ -10,7 +10,7 @@ export default function SwapReown() {
   const { isConnected } = useAccount();
 
   const handleOpenSwap = () => {
-    open({ view: 'OnRampProviders' });
+    open({ view: 'Swap' });
   };
 
   return (
