@@ -42,7 +42,7 @@ export default function AnimatedHome() {
     {
       icon: Fuel,
       title: "Gasless Transactions",
-      description: "Execute swaps without paying gas fees using our advanced 1inch Fusion integration",
+      description: "Execute swaps without paying gas fees using our advanced PancakeSwap Fusion integration",
       gradient: "from-green-500 to-emerald-600"
     },
     {

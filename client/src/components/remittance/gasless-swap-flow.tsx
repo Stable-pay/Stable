@@ -328,7 +328,7 @@ export default function GaslessSwapFlow() {
       console.error('Swap execution error:', error);
       
       if (error instanceof Error && error.message.includes('API key required')) {
-        alert('1inch API key required for gasless swaps. Please contact support or use regular swap mode.');
+        alert('PancakeSwap API required for gasless swaps. Please contact support or use regular swap mode.');
       } else {
         alert('Swap failed. Please check your wallet connection and token balance, then try again.');
       }
@@ -701,7 +701,7 @@ export default function GaslessSwapFlow() {
                               <div className="flex items-center gap-3">
                                 <Zap className="h-5 w-5 text-blue-600" />
                                 <div className="text-sm text-left">
-                                  <p className="font-medium text-blue-900">1inch Fusion Protocol</p>
+                                  <p className="font-medium text-blue-900">PancakeSwap Protocol</p>
                                   <p className="text-blue-700">Zero gas fees • Best rates • MEV protection</p>
                                 </div>
                               </div>
