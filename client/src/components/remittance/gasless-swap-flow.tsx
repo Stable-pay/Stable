@@ -250,7 +250,7 @@ export default function GaslessSwapFlow() {
       } else if (swapQuote && swapQuote.type === 'pancakeswap') {
         console.log('Executing PancakeSwap transaction...');
         
-        // Get swap transaction data from 1inch API
+        // Get swap transaction data from PancakeSwap API
         const swapParams = new URLSearchParams({
           src: fromTokenAddress,
           dst: toTokenAddress,
@@ -259,7 +259,7 @@ export default function GaslessSwapFlow() {
           slippage: '1'
         });
         
-        const swapResponse = await fetch(`/api/1inch/1/swap?${swapParams}`, {
+        const swapResponse = await fetch(`/api/pancakeswap/1/swap?${swapParams}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',

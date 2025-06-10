@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { registerPancakeSwapRoutes } from "./pancakeswap-routes";
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -24,10 +25,9 @@ const upload = multer({
 });
 
 // API configuration
-const ONEINCH_API_KEY = process.env.VITE_ONEINCH_API_KEY;
-const ZX_API_KEY = process.env.ZX_API_KEY || '12be1743-8f3e-4867-a82b-501263f3c4b6';
-const ONEINCH_BASE_URL = 'https://api.1inch.dev';
-const ZX_BASE_URL = 'https://api.0x.org';
+const PANCAKESWAP_API_KEY = process.env.VITE_PANCAKESWAP_API_KEY;
+const PANCAKESWAP_BASE_URL = 'https://api.pancakeswap.info';
+const PANCAKESWAP_ROUTER = '0x13f4EA83D0bd40E75C8222255bc855a974568Dd4';
 
 // Supported networks for gasless swaps (based on 0x documentation)
 const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
@@ -52,6 +52,9 @@ const USDC_ADDRESSES: Record<string, string> = {
 const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // Register PancakeSwap API routes
+  registerPancakeSwapRoutes(app);
 
   // Wallet balance endpoint
   app.get("/api/wallet/balances", async (req, res) => {
