@@ -60,7 +60,7 @@ export function FusionSDKSwap() {
   // USDC contract addresses for each chain
   const getUSDCAddress = (chainId: number): string => {
     const usdcAddresses: Record<number, string> = {
-      1: '0xA0b86a33E6e3B0c8c8d7d45b40b9b5Ba0b3D0e8B',      // Ethereum
+      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum
       137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon
       42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
       8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
@@ -68,6 +68,18 @@ export function FusionSDKSwap() {
       43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche
     };
     return usdcAddresses[chainId] || '';
+  };
+
+  const getNetworkName = (chainId: number): string => {
+    const networkNames: Record<number, string> = {
+      1: 'Ethereum',
+      137: 'Polygon',
+      42161: 'Arbitrum',
+      8453: 'Base',
+      10: 'Optimism',
+      43114: 'Avalanche'
+    };
+    return networkNames[chainId] || 'Unknown';
   };
 
   const getSwapQuote = async () => {
@@ -92,10 +104,16 @@ export function FusionSDKSwap() {
       const quoteParams = new URLSearchParams({
         src: fromTokenAddress,
         dst: toTokenAddress,
-        amount: amountInWei
+        amount: amountInWei,
+        from: address
       });
 
-      console.log('Getting 1inch quote via backend proxy:', quoteParams.toString());
+      console.log('Getting live 1inch quote:', {
+        network: networkId,
+        from: fromTokenAddress,
+        to: toTokenAddress,
+        amount: amountInWei
+      });
       
       const response = await fetch(`/api/1inch/${networkId}/fusion/quote?${quoteParams}`);
 
@@ -103,37 +121,55 @@ export function FusionSDKSwap() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `API request failed: ${response.status}`);
+        throw new Error(errorData.error || `API request failed: ${response.status}`);
       }
 
-      const oneInchQuote = await response.json();
+      const quoteData = await response.json();
+      console.log('1inch quote response:', quoteData);
       
-      if (!oneInchQuote || !oneInchQuote.dstAmount) {
-        throw new Error('Invalid quote response from 1inch');
+      // Handle different quote types from the API
+      let toAmountFormatted: string;
+      let rate: number;
+      let isGasless = false;
+      
+      if (quoteData.type === 'fusion' && quoteData.toToken?.amount) {
+        // Fusion gasless quote
+        toAmountFormatted = formatUnits(BigInt(quoteData.toToken.amount), 6);
+        isGasless = true;
+      } else if (quoteData.type === 'regular' && quoteData.toToken?.amount) {
+        // Regular 1inch quote
+        toAmountFormatted = quoteData.displayToAmount || formatUnits(BigInt(quoteData.toToken.amount), 6);
+      } else if (quoteData.type === 'mock') {
+        // Mock quote fallback
+        toAmountFormatted = quoteData.displayToAmount || '0';
+      } else {
+        throw new Error('Invalid quote response format');
       }
 
-      const toAmountFormatted = formatUnits(BigInt(oneInchQuote.dstAmount), 6);
-      const rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
+      rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
 
       setQuote({
         fromAmount: swapAmount,
         toAmount: toAmountFormatted,
         rate,
-        gasless: false,
+        gasless: isGasless,
         minimumReceived: (parseFloat(toAmountFormatted) * 0.99).toFixed(6),
-        order: oneInchQuote
+        order: quoteData
       });
 
       setProgress(100);
       setSwapState({ status: 'ready' });
 
+      const quoteType = quoteData.type === 'fusion' ? 'Gasless Fusion' : 
+                       quoteData.type === 'regular' ? 'Live 1inch' : 'Demo';
+      
       toast({
-        title: "1inch Quote Ready",
-        description: `Swap ${swapAmount} ${selectedToken.symbol} → ${toAmountFormatted} USDC`,
+        title: `${quoteType} Quote Ready`,
+        description: `${swapAmount} ${selectedToken.symbol} → ${toAmountFormatted} USDC${isGasless ? ' (Gasless)' : ''}`,
       });
 
     } catch (error) {
-      console.error('Fusion quote failed:', error);
+      console.error('Quote failed:', error);
       setSwapState({ 
         status: 'failed', 
         error: error instanceof Error ? error.message : 'Failed to get quote' 
@@ -157,74 +193,96 @@ export function FusionSDKSwap() {
     try {
       if (typeof window !== 'undefined' && (window as any).ethereum) {
         const ethereum = (window as any).ethereum;
-
-        console.log('Executing 1inch Fusion swap...');
-        
-        // Get swap transaction data from 1inch API
         const networkId = getNetworkId(chainId);
         const fromTokenAddress = selectedToken.isNative ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : selectedToken.address;
         const toTokenAddress = getUSDCAddress(chainId);
         const amountInWei = parseUnits(swapAmount, selectedToken.decimals).toString();
-        
-        const swapParams = new URLSearchParams({
-          src: fromTokenAddress,
-          dst: toTokenAddress,
-          amount: amountInWei,
-          from: address,
-          slippage: '1'
-        });
-        
-        const response = await fetch(`/api/1inch/${networkId}/fusion/swap`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            order: quote.order,
-            signature: '', // This would be generated by wallet signature
-            quoteId: quote.order?.quoteId
-          })
+
+        console.log('Executing live swap:', {
+          type: quote.order?.type,
+          gasless: quote.gasless,
+          from: fromTokenAddress,
+          to: toTokenAddress,
+          amount: amountInWei
         });
 
-        if (response.ok) {
-          const swapData = await response.json();
-          
-          // Execute the transaction using wallet
-          const txHash = await ethereum.request({
-            method: 'eth_sendTransaction',
-            params: [{
-              to: swapData.tx.to,
-              data: swapData.tx.data,
-              value: swapData.tx.value || '0x0',
-              gas: swapData.tx.gas,
-              gasPrice: swapData.tx.gasPrice
-            }]
+        if (quote.order?.type === 'fusion' && quote.gasless) {
+          // Execute Fusion gasless swap
+          const response = await fetch(`/api/1inch/${networkId}/fusion/submit`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              order: quote.order.order,
+              signature: '', // Would need wallet signature
+              quoteId: quote.order.quoteId
+            })
           });
 
-          setSwapState({ status: 'completed', hash: txHash });
-          
-          toast({
-            title: "Swap Completed!",
-            description: `Successfully swapped ${swapAmount} ${selectedToken.symbol} to USDC`,
-          });
-
-          // Reset form after completion
-          setTimeout(() => {
-            setSwapAmount('');
-            setQuote(null);
-            setSelectedToken(null);
-            setSwapState({ status: 'idle' });
-          }, 3000);
+          if (response.ok) {
+            const submitData = await response.json();
+            setSwapState({ status: 'completed', hash: submitData.orderHash });
+            
+            toast({
+              title: "Gasless Swap Submitted!",
+              description: `Order submitted to Fusion network - no gas fees!`,
+            });
+          } else {
+            throw new Error('Fusion order submission failed');
+          }
         } else {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Failed to get swap transaction');
+          // Execute regular swap
+          const swapParams = new URLSearchParams({
+            src: fromTokenAddress,
+            dst: toTokenAddress,
+            amount: amountInWei,
+            from: address,
+            slippage: '1'
+          });
+          
+          const response = await fetch(`/api/1inch/${networkId}/swap?${swapParams}`);
+
+          if (response.ok) {
+            const swapData = await response.json();
+            
+            // Execute the transaction using wallet
+            const txHash = await ethereum.request({
+              method: 'eth_sendTransaction',
+              params: [{
+                to: swapData.tx.to,
+                data: swapData.tx.data,
+                value: swapData.tx.value || '0x0',
+                gas: swapData.tx.gas,
+                gasPrice: swapData.tx.gasPrice
+              }]
+            });
+
+            setSwapState({ status: 'completed', hash: txHash });
+            
+            toast({
+              title: "Live Swap Completed!",
+              description: `Successfully swapped ${swapAmount} ${selectedToken.symbol} to USDC`,
+            });
+          } else {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Swap transaction failed');
+          }
         }
+
+        // Reset form after completion
+        setTimeout(() => {
+          setSwapAmount('');
+          setQuote(null);
+          setSelectedToken(null);
+          setSwapState({ status: 'idle' });
+        }, 3000);
 
       } else {
         throw new Error('No wallet provider found');
       }
     } catch (error) {
-      console.error('Fusion swap failed:', error);
+      console.error('Swap execution failed:', error);
       setSwapState({ 
         status: 'failed', 
         error: error instanceof Error ? error.message : 'Swap failed' 
@@ -362,12 +420,21 @@ export function FusionSDKSwap() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">You'll receive</span>
                 <div className="flex items-center gap-2">
+                  {quote.gasless ? (
+                    <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                      <Fuel className="h-3 w-3 mr-1" />
+                      Gasless
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                      <Zap className="h-3 w-3 mr-1" />
+                      Live Rate
+                    </Badge>
+                  )}
                   <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
-                    <Zap className="h-3 w-3 mr-1" />
-                    Best Rate
-                  </Badge>
-                  <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                    1inch Protocol
+                    {quote.order?.type === 'fusion' ? 'Fusion' : 
+                     quote.order?.type === 'regular' ? '1inch DEX' : 
+                     quote.order?.type === 'mock' ? 'Demo' : '1inch Protocol'}
                   </Badge>
                 </div>
               </div>
@@ -375,6 +442,11 @@ export function FusionSDKSwap() {
               <div className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-green-600" />
                 <span className="text-lg font-semibold">{quote.toAmount} USDC</span>
+                {quote.order?.error && (
+                  <Badge variant="outline" className="text-xs">
+                    Demo Mode
+                  </Badge>
+                )}
               </div>
               
               <div className="grid grid-cols-2 gap-4 text-xs">
@@ -388,10 +460,25 @@ export function FusionSDKSwap() {
                 </div>
               </div>
               
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="text-muted-foreground">Network</span>
+                  <p className="font-medium">{getNetworkName(chainId)}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Gas Cost</span>
+                  <p className="font-medium">{quote.gasless ? 'FREE' : '~$3-8'}</p>
+                </div>
+              </div>
+              
               <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded text-xs">
                 <div className="flex items-center gap-1 text-purple-700 dark:text-purple-300">
                   <Zap className="h-3 w-3" />
-                  <span className="font-medium">Best price aggregation - Powered by 1inch Protocol</span>
+                  <span className="font-medium">
+                    {quote.gasless ? 'Gasless swap via 1inch Fusion Network' : 
+                     quote.order?.error ? 'Demo mode - API temporarily unavailable' :
+                     'Live rates from 1inch Protocol aggregator'}
+                  </span>
                 </div>
               </div>
             </div>
