@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowUpDown, Wallet, Zap, Shield, TrendingUp, Sparkles } from 'lucide-react';
-import { useParticleWallet } from '@/hooks/use-particle-wallet';
+import { useProductionParticle } from '@/hooks/use-production-particle';
 import { supportedChains } from '@/lib/particle-config';
 
 export function ParticleSwapInterface() {
@@ -22,7 +22,7 @@ export function ParticleSwapInterface() {
     switchChain, 
     swapToUSDC,
     chainId 
-  } = useParticleWallet();
+  } = useProductionParticle();
   
   const { toast } = useToast();
 
@@ -40,7 +40,7 @@ export function ParticleSwapInterface() {
       
       try {
         const { productionPriceAPI } = await import('@/lib/production-price-api');
-        const symbols = balances.map(token => token.symbol);
+        const symbols = balances.map((token: any) => token.symbol);
         const rates = await productionPriceAPI.getMultiplePrices(symbols);
         
         const rateMap: Record<string, number> = {};
@@ -282,7 +282,7 @@ export function ParticleSwapInterface() {
               <SelectValue placeholder="Select token to swap" />
             </SelectTrigger>
             <SelectContent>
-              {balances.map((balance) => (
+              {balances.map((balance: any) => (
                 <SelectItem key={balance.address} value={balance.symbol}>
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col">
@@ -322,7 +322,7 @@ export function ParticleSwapInterface() {
           {fromToken && amount && liveRates[fromToken] && (
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                Balance: {balances.find(b => b.symbol === fromToken)?.formattedBalance || '0'} {fromToken}
+                Balance: {balances.find((b: any) => b.symbol === fromToken)?.formattedBalance || '0'} {fromToken}
               </span>
               <span className="text-muted-foreground">
                 ≈ ${(parseFloat(amount) * liveRates[fromToken]).toFixed(2)}
@@ -331,7 +331,7 @@ export function ParticleSwapInterface() {
           )}
           {fromToken && !amount && (
             <p className="text-xs text-muted-foreground">
-              Balance: {balances.find(b => b.symbol === fromToken)?.formattedBalance || '0'} {fromToken}
+              Balance: {balances.find((b: any) => b.symbol === fromToken)?.formattedBalance || '0'} {fromToken}
             </p>
           )}
         </div>
