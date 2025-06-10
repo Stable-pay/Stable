@@ -38,14 +38,14 @@ const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
   '10': true,    // Optimism
 };
 
-// USDC addresses for supported chains (verified correct addresses)
+// USDC addresses for supported chains (verified from 1inch API)
 const USDC_ADDRESSES: Record<string, string> = {
-  '1': '0xA0b86a33E6441b8Db75092D5e4FD0B7b1c4c8F0f',      // Ethereum USDC (corrected)
+  '1': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',      // Ethereum USDC (correct)
   '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
   '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
   '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
   '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism USDC
-  '43114': '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche USDC
+  '56': '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d'      // BSC USDC
 };
 
 // Native token representation
@@ -494,135 +494,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Using destination token address: ${correctDst}`);
 
-      // Try 1inch Fusion+ API first (corrected endpoint)
-      try {
-        const fusionPlusUrl = `https://api.1inch.dev/fusion-plus/quoter/v1.0/${chainId}/quote`;
-
-        const requestBody = {
-          src: src as string,
-          dst: correctDst,
-          amount: amount as string,
-          from: from as string || '0x0000000000000000000000000000000000000000',
-          enableEstimate: true,
-          includeTokensInfo: true,
-          includeProtocols: true
-        };
-
-        console.log('Fusion+ request body:', JSON.stringify(requestBody, null, 2));
-
-        const response = await fetch(fusionPlusUrl, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(requestBody)
-        });
-
-        console.log(`Fusion+ API response status: ${response.status}`);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('1inch Fusion+ quote success:', JSON.stringify(data).substring(0, 200));
-
-          const fusionPlusQuote = {
-            type: 'fusion-plus',
-            gasless: true,
-            fromToken: { 
-              address: src, 
-              amount: amount,
-              symbol: data.srcToken?.symbol || 'ETH',
-              decimals: data.srcToken?.decimals || 18
-            },
-            toToken: { 
-              address: correctDst, 
-              amount: data.dstAmount || data.toAmount,
-              symbol: data.dstToken?.symbol || 'USDC',
-              decimals: data.dstToken?.decimals || 6
-            },
-            quoteId: data.quoteId,
-            order: data.order,
-            prices: data.prices,
-            volume: data.volume,
-            settlement: data.settlement,
-            displayToAmount: data.dstAmount ? (parseFloat(data.dstAmount) / Math.pow(10, data.dstToken?.decimals || 6)).toFixed(6) : '0',
-            rate: data.dstAmount ? (parseFloat(data.dstAmount) / parseFloat(amount) * Math.pow(10, (data.srcToken?.decimals || 18) - (data.dstToken?.decimals || 6))).toFixed(4) : '0',
-            validUntil: data.validUntil,
-            protocols: data.protocols
-          };
-
-          return res.json(fusionPlusQuote);
-        } else {
-          const errorText = await response.text();
-          console.log('Fusion+ API failed:', response.status, errorText);
-        }
-      } catch (fusionPlusError) {
-        console.log('Fusion+ API error:', fusionPlusError);
-      }
-
-      // Try Fusion v2.0 with corrected endpoint
-      try {
-        const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote`;
-
-        const requestBody = {
-          src: src as string,
-          dst: correctDst,
-          amount: amount as string,
-          from: from as string || '0x0000000000000000000000000000000000000000',
-          enableEstimate: true,
-          includeTokensInfo: true
-        };
-
-        console.log('Fusion v2.0 fallback request body:', JSON.stringify(requestBody, null, 2));
-
-        const response = await fetch(fusionUrl, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(requestBody)
-        });
-
-        console.log(`Fusion v2.0 API response status: ${response.status}`);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('1inch Fusion v2.0 quote success:', JSON.stringify(data).substring(0, 200));
-
-          const fusionQuote = {
-            type: 'fusion',
-            gasless: true,
-            fromToken: { 
-              address: src, 
-              amount: amount,
-              symbol: data.srcToken?.symbol || 'ETH',
-              decimals: data.srcToken?.decimals || 18
-            },
-            toToken: { 
-              address: correctDst, 
-              amount: data.dstAmount || data.toAmount,
-              symbol: data.dstToken?.symbol || 'USDC',
-              decimals: data.dstToken?.decimals || 6
-            },
-            estimate: data.estimate,
-            order: data.order,
-            quoteId: data.quoteId,
-            displayToAmount: data.dstAmount ? (parseFloat(data.dstAmount) / Math.pow(10, data.dstToken?.decimals || 6)).toFixed(6) : '0',
-            rate: data.dstAmount ? (parseFloat(data.dstAmount) / parseFloat(amount) * Math.pow(10, (data.srcToken?.decimals || 18) - (data.dstToken?.decimals || 6))).toFixed(4) : '0',
-            protocols: data.protocols
-          };
-
-          return res.json(fusionQuote);
-        } else {
-          const errorText = await response.text();
-          console.log('Fusion v2.0 API failed:', response.status, errorText);
-        }
-      } catch (fusionError) {
-        console.log('Fusion v2.0 API error:', fusionError);
-      }
+      // Note: Fusion+ requires SDK integration, not direct API calls
+      // For now, skip Fusion+ and go directly to regular 1inch API
+      console.log('Fusion+ requires SDK integration - using regular 1inch API')
 
       // Fallback to regular 1inch quote with correct destination
       return await handleRegularQuote(chainId, src, correctDst, amount, res);
