@@ -83,7 +83,7 @@ export default function StablePayDashboard() {
     .reduce((total: any, balance: any) => total + parseFloat(balance.formattedBalance), 0);
 
   // Get unique networks from balances
-  const networks = Array.from(new Set(balances.map((balance: any) => balance.chainName)));
+  const networks = Array.from(new Set(balances.map((balance: any) => balance.chainId || 1)));
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -308,7 +308,7 @@ export default function StablePayDashboard() {
                   ) : (
                     <div className="space-y-3">
                       {balances
-                        .filter(balance => selectedNetwork === 'all' || balance.chainName === selectedNetwork)
+                        .filter(balance => selectedNetwork === 'all' || balance.chainId.toString() === selectedNetwork)
                         .filter(balance => parseFloat(balance.formattedBalance) > 0)
                         .map((balance, index) => (
                           <motion.div
@@ -326,7 +326,7 @@ export default function StablePayDashboard() {
                               </div>
                               <div>
                                 <p className="font-semibold">{balance.symbol}</p>
-                                <p className="text-sm text-gray-600">{balance.chainName}</p>
+                                <p className="text-sm text-gray-600">Chain {balance.chainId}</p>
                               </div>
                             </div>
                             <div className="text-right">
