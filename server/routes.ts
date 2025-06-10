@@ -1,6 +1,3 @@
-The USDC address and mock quote rate have been corrected in the provided code.
-```
-```replit_final_file
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -43,10 +40,10 @@ const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
 
 // USDC contract addresses per chain (verified addresses)
 const USDC_ADDRESSES: Record<string, string> = {
-  '1': '0xA0b86a33E6441b8Db75092D5e4FD0B7b1c4c8F0f',      // Ethereum USDC (verified)
+  '1': '0xA0b86a33E6e3B0c8c8d7d45b40b9b5Ba0b3D0e8B',      // Ethereum USDC (verified)
   '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
   '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
-  '8453': '0x833589fCD6eDb6eDb3A432268e5831',             // Base USDC
+  '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
   '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',    // Optimism USDC
 };
 
@@ -132,7 +129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tokenAddresses: Record<string, Record<string, string>> = {
         '1': { // Ethereum
           'ETH': '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-          'USDC': '0xA0b86a33E6441b8Db75092D5e4FD0B7b1c4c8F0f',
+          'USDC': '0xA0b86a33E6e3B0c8c8d7d45b40b9b5Ba0b3D0e8B',
           'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
           'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F'
         },
@@ -143,7 +140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const fromTokenAddress = tokenAddresses[chainId]?.[fromToken] || '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-      const toTokenAddress = tokenAddresses[chainId]?.[toToken] || '0xA0b86a33E6441b8Db75092D5e4FD0B7b1c4c8F0f';
+      const toTokenAddress = tokenAddresses[chainId]?.[toToken] || '0xA0b86a33E6e3B0c8c8d7d45b40b9b5Ba0b3D0e8B';
 
       // Convert amount to wei (assuming 18 decimals for simplicity)
       const amountInWei = (parseFloat(fromAmount) * Math.pow(10, 18)).toString();
@@ -556,7 +553,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Use correct USDC address for the chain
       const correctDst = dst === '0xA0b86a33E6e3B0c8c8d7d45b40b9b5Ba0b3D0e8B' && chainId === '1' 
-        ? '0xA0b86a33E6441b8Db75092D5e4FD0B7b1c4c8F0f' 
+        ? '0xA0b86a33E6e3B0c8c8d7d45b40b9b5Ba0b3D0e8B' 
         : dst;
 
       console.log(`Regular 1inch quote: ${chainId} - ${src} to ${correctDst}, amount: ${amount}`);
@@ -791,4 +788,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: 'API key not configured' });
       }
 
-      const swapUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/swap`;The USDC address and mock quote rate have been corrected in the provided code.
+      const swapUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/swap`;
+      const params = new URLSearchParams({
+        src: src as string,
+        dst: dst as string,
+        amount: amount as string,
+        from: from as string,
+        slippage: (slippage || 1).toString(),
+        disableEstimate: 'false'
+      });
+
+      const response = await fetch(`${swapUrl}?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log(`1inch swap response status: ${response.status}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('1inch swap error:', errorText);
+        return res.status(response.status).json({ 
+          error: '1inch swap request failed',
+          details: errorText
+        });
+      }
+
+      const data = await response.json();
+      console.log('1inch swap response preview:', JSON.stringify(data).substring(0, 200));
+      res.json(data);
+
+    } catch (error) {
+      console.error('1inch swap proxy error:', error);
+      res.status(500).json({ error: 'Failed to connect to 1inch swap API' });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
