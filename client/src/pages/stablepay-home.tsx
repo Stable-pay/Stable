@@ -29,8 +29,7 @@ import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { Link } from 'wouter';
 
 export default function StablePayHome() {
-  const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
+  const { connect, isConnected, address } = useParticleWallet();
   const [currentSection, setCurrentSection] = useState(0);
 
   const heroVariants = {
@@ -467,7 +466,7 @@ export default function StablePayHome() {
               ) : (
                 <Button 
                   size="lg" 
-                  onClick={() => open()}
+                  onClick={() => connect()}
                   className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg"
                 >
                   <Wallet className="mr-2 h-5 w-5" />
