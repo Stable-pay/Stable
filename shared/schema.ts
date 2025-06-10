@@ -59,72 +59,6 @@ export const custodyWallets = pgTable("custody_wallets", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Real-time 1inch Fusion swap orders for USDC remittance
-export const swapOrders = pgTable("swap_orders", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  orderHash: text("order_hash").notNull().unique(),
-  fromToken: text("from_token").notNull(),
-  toToken: text("to_token").notNull().default("USDC"), // Always USDC for remittance
-  fromAmount: text("from_amount").notNull(),
-  toAmount: text("to_amount").notNull(),
-  chainId: integer("chain_id").notNull(),
-  status: text("status").notNull().default("pending"), // pending, filled, cancelled, failed
-  gasless: boolean("gasless").default(true),
-  paymasterUsed: boolean("paymaster_used").default(true),
-  txHash: text("tx_hash"),
-  blockNumber: integer("block_number"),
-  executedAt: timestamp("executed_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
-});
-
-// Real-time balance tracking with webhooks
-export const balanceUpdates = pgTable("balance_updates", {
-  id: serial("id").primaryKey(),
-  walletAddress: text("wallet_address").notNull(),
-  tokenAddress: text("token_address").notNull(),
-  tokenSymbol: text("token_symbol").notNull(),
-  balance: text("balance").notNull(),
-  chainId: integer("chain_id").notNull(),
-  blockNumber: integer("block_number"),
-  lastUpdated: timestamp("last_updated").defaultNow()
-});
-
-// Webhook events for real-time updates
-export const webhookEvents = pgTable("webhook_events", {
-  id: serial("id").primaryKey(),
-  eventType: text("event_type").notNull(), // swap_completed, balance_updated, order_filled
-  payload: jsonb("payload").notNull(),
-  processed: boolean("processed").default(false),
-  retryCount: integer("retry_count").default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  processedAt: timestamp("processed_at")
-});
-
-// Remittance orders (crypto-to-USDC for cross-border transfers)
-export const remittanceOrders = pgTable("remittance_orders", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  senderAddress: text("sender_address").notNull(),
-  recipientAddress: text("recipient_address").notNull(),
-  recipientCountry: text("recipient_country").notNull(),
-  fromToken: text("from_token").notNull(),
-  toToken: text("to_token").notNull().default("USDC"),
-  fromAmount: text("from_amount").notNull(),
-  toAmount: text("to_amount").notNull(),
-  exchangeRate: text("exchange_rate").notNull(),
-  chainId: integer("chain_id").notNull(),
-  status: text("status").notNull().default("pending"),
-  swapOrderHash: text("swap_order_hash"),
-  txHash: text("tx_hash"),
-  gasless: boolean("gasless").default(true),
-  purpose: text("purpose"), // business, personal, family_support
-  estimatedArrival: timestamp("estimated_arrival"),
-  createdAt: timestamp("created_at").defaultNow(),
-  completedAt: timestamp("completed_at")
-});
-
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -152,27 +86,6 @@ export const insertCustodyWalletSchema = createInsertSchema(custodyWallets).omit
   createdAt: true,
 });
 
-export const insertSwapOrderSchema = createInsertSchema(swapOrders).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertBalanceUpdateSchema = createInsertSchema(balanceUpdates).omit({
-  id: true,
-  lastUpdated: true,
-});
-
-export const insertWebhookEventSchema = createInsertSchema(webhookEvents).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertRemittanceOrderSchema = createInsertSchema(remittanceOrders).omit({
-  id: true,
-  createdAt: true,
-});
-
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertKycDocument = z.infer<typeof insertKycDocumentSchema>;
@@ -183,11 +96,3 @@ export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
 export type Transaction = typeof transactions.$inferSelect;
 export type InsertCustodyWallet = z.infer<typeof insertCustodyWalletSchema>;
 export type CustodyWallet = typeof custodyWallets.$inferSelect;
-export type InsertSwapOrder = z.infer<typeof insertSwapOrderSchema>;
-export type SwapOrder = typeof swapOrders.$inferSelect;
-export type InsertBalanceUpdate = z.infer<typeof insertBalanceUpdateSchema>;
-export type BalanceUpdate = typeof balanceUpdates.$inferSelect;
-export type InsertWebhookEvent = z.infer<typeof insertWebhookEventSchema>;
-export type WebhookEvent = typeof webhookEvents.$inferSelect;
-export type InsertRemittanceOrder = z.infer<typeof insertRemittanceOrderSchema>;
-export type RemittanceOrder = typeof remittanceOrders.$inferSelect;
