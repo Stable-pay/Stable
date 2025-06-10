@@ -32,7 +32,7 @@ import {
 import { useAccount, useBalance } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet-balances';
-import { productionFusionAPI, type FusionQuoteRequest } from '@/lib/production-fusion-api';
+import { pancakeSwapAPIService, type PancakeSwapQuoteRequest } from '@/lib/pancakeswap-api';
 import { Link } from 'wouter';
 
 interface SwapStep {
@@ -203,80 +203,52 @@ export default function GaslessSwapFlow() {
       const toTokenAddress = '0xA0b86a33E6E3B0c8c8D7D45b40b9b5Ba0b3D0e8B'; // USDC
       const amountInWei = (parseFloat(fromAmount) * Math.pow(10, 18)).toString();
 
-      console.log('Initiating swap via production Fusion API...');
+      console.log('Initiating swap via PancakeSwap API...');
 
-      const quoteRequest: FusionQuoteRequest = {
+      const quoteRequest: PancakeSwapQuoteRequest = {
         srcTokenAddress: fromTokenAddress,
         dstTokenAddress: toTokenAddress,
         srcTokenAmount: amountInWei,
-        walletAddress: address
+        walletAddress: address,
+        chainId: 1
       };
 
-      // Check if API key is configured
-      const isApiConfigured = await productionFusionAPI.isApiKeyConfigured();
-      if (!isApiConfigured) {
-        console.log('1inch API key not configured - using fallback');
-        throw new Error('API key required for optimal swap experience');
+      // Check if API is available
+      const isApiAvailable = await pancakeSwapAPIService.checkAPIHealth();
+      if (!isApiAvailable) {
+        console.log('PancakeSwap API not available');
+        throw new Error('PancakeSwap service temporarily unavailable');
       }
 
-      // Get swap quote with intelligent fallback
-      const swapQuote = await productionFusionAPI.getSwapQuote(quoteRequest);
+      // Get swap quote from PancakeSwap
+      const swapQuote = await pancakeSwapAPIService.getSwapQuote(quoteRequest);
       
-      if (swapQuote.type === 'fusion' && swapQuote.gasless) {
-        console.log('Executing live gasless swap via Fusion...');
+      if (swapQuote && swapQuote.type === 'pancakeswap' && swapQuote.gasless) {
+        console.log('Executing gasless swap via PancakeSwap...');
         
-        // Execute real Fusion gasless swap with wallet integration
-        if (swapQuote.order && swapQuote.quoteId && window.ethereum) {
+        // Execute PancakeSwap gasless transaction
+        if (swapQuote.transaction && window.ethereum) {
           try {
-            // Request wallet signature for the Fusion order
-            const accounts = await (window.ethereum as any).request({ method: 'eth_requestAccounts' });
-            const userAddress = accounts[0];
-            
-            // Sign the order with user's wallet
-            const signature = await (window.ethereum as any).request({
-              method: 'eth_signTypedData_v4',
-              params: [userAddress, JSON.stringify(swapQuote.order)]
+            const executeResult = await pancakeSwapAPIService.executeSwap({
+              transaction: swapQuote.transaction,
+              quoteId: swapQuote.quoteId,
+              walletAddress: address
             });
             
-            const executeResult = await productionFusionAPI.executeGaslessSwap({
-              order: swapQuote.order,
-              signature: signature,
-              quoteId: swapQuote.quoteId
-            });
-            
-            console.log('Fusion gasless swap submitted:', executeResult);
-            
-            // Monitor real transaction status
-            if (executeResult.orderHash) {
-              const monitorStatus = async () => {
-                try {
-                  const status = await productionFusionAPI.getFusionOrderStatus(executeResult.orderHash);
-                  console.log('Fusion order status:', status);
-                  
-                  if (status.status === 'filled' || status.status === 'completed') {
-                    setSwapCompleted(true);
-                    setCurrentStep(3);
-                    clearInterval(statusInterval);
-                  }
-                } catch (error) {
-                  console.error('Status check error:', error);
-                }
-              };
-              
-              const statusInterval = setInterval(monitorStatus, 5000);
-              setTimeout(() => clearInterval(statusInterval), 300000); // Stop after 5 minutes
-            }
-          } catch (signError) {
-            console.error('Wallet signature error:', signError);
-            throw new Error('User rejected transaction signature');
+            console.log('PancakeSwap gasless swap executed:', executeResult);
+            setSwapCompleted(true);
+            setCurrentStep(3);
+          } catch (executeError) {
+            console.error('PancakeSwap execution error:', executeError);
+            throw new Error('Gasless swap execution failed');
           }
         } else {
-          throw new Error('Wallet not connected or Fusion order not available');
+          throw new Error('Invalid swap data or wallet not connected');
         }
         
         return;
-      } else if (swapQuote.type === 'regular') {
-        console.log('Executing live regular swap...');
+      } else if (swapQuote && swapQuote.type === 'pancakeswap') {
+        console.log('Executing PancakeSwap transaction...');
         
         // Get swap transaction data from 1inch API
         const swapParams = new URLSearchParams({
