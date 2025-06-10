@@ -107,7 +107,14 @@ export default function ParticleWalletConnect() {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
 
+  // Check if wallet provider is available
+  const hasWalletProvider = detectWalletProvider() !== null;
+
   if (!isConnected) {
+    // Show installation guide if no wallet is detected
+    if (!hasWalletProvider) {
+      return <WalletConnectionGuide />;
+    }
     return (
       <div className="max-w-md mx-auto">
         <Card className="border-gradient">
