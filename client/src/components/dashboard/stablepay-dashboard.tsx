@@ -40,7 +40,7 @@ interface Transaction {
 }
 
 export default function StablePayDashboard() {
-  const { address, isConnected, balances, connect } = useParticleWallet();
+  const { address, isConnected, balances, connect } = useProductionParticle();
   const isLoading = false;
   
   const [hideBalances, setHideBalances] = useState(false);
@@ -79,11 +79,11 @@ export default function StablePayDashboard() {
 
   // Calculate total USDC balance across all chains
   const totalUSDCBalance = balances
-    .filter(balance => balance.symbol === 'USDC')
-    .reduce((total, balance) => total + parseFloat(balance.formattedBalance), 0);
+    .filter((balance: any) => balance.symbol === 'USDC')
+    .reduce((total: any, balance: any) => total + parseFloat(balance.formattedBalance), 0);
 
   // Get unique networks from balances
-  const networks = Array.from(new Set(balances.map(balance => balance.chainName)));
+  const networks = Array.from(new Set(balances.map((balance: any) => balance.chainName)));
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
