@@ -31,6 +31,56 @@ export function ParticleSwapInterface() {
   const [amount, setAmount] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
   const [swapQuote, setSwapQuote] = useState<any>(null);
+  const [liveRates, setLiveRates] = useState<Record<string, number>>({});
+
+  // Fetch live rates for available tokens
+  useEffect(() => {
+    const fetchLiveRates = async () => {
+      if (balances.length === 0) return;
+      
+      try {
+        const { productionPriceAPI } = await import('@/lib/production-price-api');
+        const symbols = balances.map(token => token.symbol);
+        const rates = await productionPriceAPI.getMultiplePrices(symbols);
+        
+        const rateMap: Record<string, number> = {};
+        Object.entries(rates).forEach(([symbol, data]) => {
+          rateMap[symbol] = data.price;
+        });
+        
+        setLiveRates(rateMap);
+      } catch (error) {
+        console.error('Failed to fetch live rates:', error);
+      }
+    };
+
+    fetchLiveRates();
+    // Update rates every 30 seconds
+    const interval = setInterval(fetchLiveRates, 30000);
+    return () => clearInterval(interval);
+  }, [balances]);
+
+  // Calculate swap quote when amount or tokens change
+  useEffect(() => {
+    const calculateQuote = async () => {
+      if (!fromToken || !amount || parseFloat(amount) <= 0) {
+        setSwapQuote(null);
+        return;
+      }
+
+      try {
+        const { productionPriceAPI } = await import('@/lib/production-price-api');
+        const quote = await productionPriceAPI.getSwapQuote(fromToken, toToken, amount);
+        setSwapQuote(quote);
+      } catch (error) {
+        console.error('Failed to calculate quote:', error);
+        setSwapQuote(null);
+      }
+    };
+
+    const debounceTimer = setTimeout(calculateQuote, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [fromToken, toToken, amount]);
 
   const handleConnect = async () => {
     try {

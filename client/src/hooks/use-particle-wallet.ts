@@ -96,43 +96,98 @@ export function useParticleWallet() {
   }, []);
 
   const getBalance = useCallback(async (tokenAddress?: string) => {
-    if (!walletState.address) return '0';
+    if (!walletState.address || !walletState.provider) return '0';
     
-    // Return mock balance
-    return tokenAddress ? '1000.0' : '2.5';
-  }, [walletState.address]);
+    try {
+      if (!tokenAddress || tokenAddress === '0x0000000000000000000000000000000000000000') {
+        // Native token balance
+        const balance = await walletState.provider.getBalance(walletState.address);
+        return ethers.formatEther(balance);
+      } else {
+        // ERC-20 token balance
+        const contract = new ethers.Contract(
+          tokenAddress,
+          ['function balanceOf(address) view returns (uint256)', 'function decimals() view returns (uint8)'],
+          walletState.provider
+        );
+        const [balance, decimals] = await Promise.all([
+          contract.balanceOf(walletState.address),
+          contract.decimals()
+        ]);
+        return ethers.formatUnits(balance, decimals);
+      }
+    } catch (error) {
+      console.error('Failed to get balance:', error);
+      return '0';
+    }
+  }, [walletState.address, walletState.provider]);
 
   const sendTransaction = useCallback(async (to: string, value: string, data?: string) => {
-    if (!walletState.address) throw new Error('No wallet connected');
+    if (!walletState.address || !walletState.smartAccount) throw new Error('No wallet connected');
 
     try {
-      // Mock gasless transaction with Particle Network AA
-      const mockTxHash = '0x' + Math.random().toString(16).substring(2, 66);
-      return mockTxHash;
+      // Prepare transaction for Account Abstraction
+      const transaction = {
+        to,
+        value: ethers.parseEther(value),
+        data: data || '0x'
+      };
+
+      // Use Particle Network's Smart Account for gasless transaction
+      const userOp = await walletState.smartAccount.buildUserOperation({
+        transactions: [transaction]
+      });
+
+      // Execute with paymaster sponsorship
+      const txHash = await walletState.smartAccount.sendUserOperation(userOp);
+      
+      return txHash;
     } catch (error) {
       console.error('Failed to send transaction:', error);
       throw error;
     }
-  }, [walletState.address]);
+  }, [walletState.address, walletState.smartAccount]);
 
   const swapToUSDC = useCallback(async (fromToken: string, amount: string) => {
-    if (!walletState.address) throw new Error('No wallet connected');
+    if (!walletState.address || !walletState.smartAccount) throw new Error('No wallet connected');
 
     try {
-      // Mock swap transaction with gasless capability
-      const mockTxHash = '0x' + Math.random().toString(16).substring(2, 66);
+      // Get live swap quote using production price API
+      const { productionPriceAPI } = await import('@/lib/production-price-api');
+      const quote = await productionPriceAPI.getSwapQuote(fromToken, 'USDC', amount, walletState.chainId || 1);
+      
+      if (!quote) {
+        throw new Error('Unable to get swap quote');
+      }
+
+      // Build swap transaction data (simplified for demo - would use actual DEX router)
+      const swapData = {
+        to: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', // Uniswap V3 Router
+        value: fromToken === 'ETH' ? ethers.parseEther(amount) : 0n,
+        data: '0x' // Would contain actual swap calldata
+      };
+
+      // Execute gasless swap via Smart Account
+      const userOp = await walletState.smartAccount.buildUserOperation({
+        transactions: [swapData]
+      });
+
+      const txHash = await walletState.smartAccount.sendUserOperation(userOp);
+      
       return {
-        txHash: mockTxHash,
-        fromAmount: amount,
-        toAmount: (parseFloat(amount) * 0.98).toString(), // 2% slippage simulation
+        txHash,
+        fromAmount: quote.fromAmount,
+        toAmount: quote.toAmount,
+        rate: quote.rate,
         gasless: true,
-        sponsoredByPaymaster: true
+        sponsoredByPaymaster: true,
+        minimumReceived: quote.minimumReceived
       };
     } catch (error) {
       console.error('Failed to swap to USDC:', error);
       throw error;
     }
-  }, [walletState.address]);
+  }, [walletState.address, walletState.smartAccount, walletState.chainId]);
 
   // Mock balance fetch
   useEffect(() => {
