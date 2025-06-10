@@ -51,6 +51,9 @@ const USDC_ADDRESSES: Record<string, string> = {
 const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // Create swap order endpoint
+  app.post("/api/swap-orders", async (req, res) => {
     try {
       const { orderHash, fromToken, toToken, fromAmount, toAmount, chainId, userAddress, gasless = true } = req.body;
       
@@ -297,8 +300,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-export async function registerRoutes(app: Express): Promise<Server> {
-  
   // Wallet balance endpoint
   app.get("/api/wallet/balances", async (req, res) => {
     try {
