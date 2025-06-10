@@ -87,7 +87,7 @@ export function FusionSDKSwap() {
 
     setSwapState({ status: 'getting-quote' });
     setProgress(20);
-    
+
     try {
       const amountInWei = parseUnits(swapAmount, selectedToken.decimals).toString();
       const fromTokenAddress = selectedToken.isNative ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : selectedToken.address;
@@ -115,7 +115,7 @@ export function FusionSDKSwap() {
         amount: amountInWei,
         wallet: address
       });
-      
+
       const response = await fetch(`/api/1inch/${networkId}/fusion/quote?${quoteParams}`);
 
       setProgress(80);
@@ -127,12 +127,12 @@ export function FusionSDKSwap() {
 
       const quoteData = await response.json();
       console.log('1inch quote response:', quoteData);
-      
+
       // Handle different quote types from the API
       let toAmountFormatted: string;
       let rate: number;
       let isGasless = false;
-      
+
       if (quoteData.type === 'fusion' && quoteData.toToken?.amount) {
         // Fusion gasless quote
         toAmountFormatted = formatUnits(BigInt(quoteData.toToken.amount), 6);
@@ -163,7 +163,7 @@ export function FusionSDKSwap() {
 
       const quoteType = quoteData.type === 'fusion' ? 'Gasless Fusion' : 
                        quoteData.type === 'regular' ? 'Live 1inch' : 'Demo';
-      
+
       toast({
         title: `${quoteType} Quote Ready`,
         description: `${swapAmount} ${selectedToken.symbol} → ${toAmountFormatted} USDC${isGasless ? ' (Gasless)' : ''}`,
@@ -175,7 +175,7 @@ export function FusionSDKSwap() {
         status: 'failed', 
         error: error instanceof Error ? error.message : 'Failed to get quote' 
       });
-      
+
       toast({
         title: "Quote Failed",
         description: error instanceof Error ? error.message : "Unable to get swap quote",
@@ -210,12 +210,12 @@ export function FusionSDKSwap() {
         if (quote.order?.type === 'fusion' && quote.gasless && quote.order.order) {
           // Execute Fusion gasless swap with proper wallet signature
           console.log('Executing Fusion gasless swap...');
-          
+
           try {
             // Request wallet signature for the Fusion order
             const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
             const userAddress = accounts[0];
-            
+
             // Create EIP-712 signature for the Fusion order
             const domain = {
               name: '1inch Fusion',
@@ -223,7 +223,7 @@ export function FusionSDKSwap() {
               chainId: networkId,
               verifyingContract: quote.order.order.maker || address
             };
-            
+
             const types = {
               Order: [
                 { name: 'maker', type: 'address' },
@@ -235,7 +235,7 @@ export function FusionSDKSwap() {
                 { name: 'salt', type: 'uint256' }
               ]
             };
-            
+
             const signature = await ethereum.request({
               method: 'eth_signTypedData_v4',
               params: [userAddress, JSON.stringify({
@@ -245,9 +245,9 @@ export function FusionSDKSwap() {
                 message: quote.order.order
               })]
             });
-            
+
             console.log('Wallet signature obtained, submitting to Fusion...');
-            
+
             const response = await fetch(`/api/1inch/${networkId}/fusion/submit`, {
               method: 'POST',
               headers: {
@@ -263,7 +263,7 @@ export function FusionSDKSwap() {
             if (response.ok) {
               const submitData = await response.json();
               setSwapState({ status: 'completed', hash: submitData.orderHash });
-              
+
               toast({
                 title: "Live Gasless Swap Executed!",
                 description: `Order ${submitData.orderHash?.slice(0, 10)}... submitted to 1inch Fusion network`,
@@ -287,12 +287,12 @@ export function FusionSDKSwap() {
             from: address,
             slippage: '1'
           });
-          
+
           const response = await fetch(`/api/1inch/${networkId}/swap?${swapParams}`);
 
           if (response.ok) {
             const swapData = await response.json();
-            
+
             // Execute the transaction using wallet
             const txHash = await ethereum.request({
               method: 'eth_sendTransaction',
@@ -306,7 +306,7 @@ export function FusionSDKSwap() {
             });
 
             setSwapState({ status: 'completed', hash: txHash });
-            
+
             toast({
               title: "Live Swap Completed!",
               description: `Successfully swapped ${swapAmount} ${selectedToken.symbol} to USDC`,
@@ -334,7 +334,7 @@ export function FusionSDKSwap() {
         status: 'failed', 
         error: error instanceof Error ? error.message : 'Swap failed' 
       });
-      
+
       toast({
         title: "Swap Failed",
         description: error instanceof Error ? error.message : "Transaction failed",
@@ -385,7 +385,7 @@ export function FusionSDKSwap() {
             Convert tokens to USDC using 1inch Fusion API - Live production trading
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-4">
           {/* Token Selection */}
           <div className="space-y-2">
@@ -485,7 +485,7 @@ export function FusionSDKSwap() {
                   </Badge>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-green-600" />
                 <span className="text-lg font-semibold">{quote.toAmount} USDC</span>
@@ -495,7 +495,7 @@ export function FusionSDKSwap() {
                   </Badge>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
                   <span className="text-muted-foreground">Rate</span>
@@ -506,7 +506,7 @@ export function FusionSDKSwap() {
                   <p className="font-medium">{quote.minimumReceived} USDC</p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
                   <span className="text-muted-foreground">Network</span>
@@ -517,7 +517,7 @@ export function FusionSDKSwap() {
                   <p className="font-medium">{quote.gasless ? 'FREE' : '~$3-8'}</p>
                 </div>
               </div>
-              
+
               <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded text-xs">
                 <div className="flex items-center gap-1 text-purple-700 dark:text-purple-300">
                   <Zap className="h-3 w-3" />

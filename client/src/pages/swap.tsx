@@ -1,5 +1,5 @@
-
 import { EnhancedSwapInterface } from "@/components/swap/enhanced-swap-interface";
+import { USDCWalletMonitor } from "@/components/swap/usdc-wallet-monitor";
 
 export default function Swap() {
   return (
@@ -14,7 +14,15 @@ export default function Swap() {
             Powered by 1inch Protocol with gasless options available.
           </p>
         </div>
-        <EnhancedSwapInterface />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <USDCWalletMonitor />
+          <EnhancedSwapInterface />
+        </div>
+        <div>
+          
+        </div>
+      </div>
       </div>
     </div>
   );

@@ -38,13 +38,14 @@ const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
   '10': true,    // Optimism
 };
 
-// USDC contract addresses per chain (verified addresses)
-const USDC_ADDRESSES: Record<string, string> = {
-  '1': '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC 
-  '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
-  '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
-  '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
-  '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',    // Optimism USDC
+// USDC addresses for each supported chain
+const USDC_ADDRESSES = {
+  1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC
+  137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
+  42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
+  8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
+  10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism USDC
+  43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche USDC
 };
 
 // Native token representation
@@ -693,7 +694,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = await response.json();
       console.log('1inch Fusion order submitted successfully:', data.orderHash || data);
-      
+
       res.json({
         success: true,
         orderHash: data.orderHash || data.hash,
