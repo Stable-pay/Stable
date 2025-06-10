@@ -60,12 +60,12 @@ export function FusionSDKSwap() {
   // USDC contract addresses for each chain
   const getUSDCAddress = (chainId: number): string => {
     const usdcAddresses: Record<number, string> = {
-      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum
-      137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon
-      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
-      8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
-      10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism
-      43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche
+      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC
+      137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
+      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
+      8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
+      10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism USDC
+      43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche USDC
     };
     return usdcAddresses[chainId] || '';
   };
@@ -108,11 +108,12 @@ export function FusionSDKSwap() {
         from: address
       });
 
-      console.log('Getting live 1inch quote:', {
+      console.log('Getting live 1inch Fusion quote:', {
         network: networkId,
         from: fromTokenAddress,
         to: toTokenAddress,
-        amount: amountInWei
+        amount: amountInWei,
+        wallet: address
       });
       
       const response = await fetch(`/api/1inch/${networkId}/fusion/quote?${quoteParams}`);
@@ -206,30 +207,76 @@ export function FusionSDKSwap() {
           amount: amountInWei
         });
 
-        if (quote.order?.type === 'fusion' && quote.gasless) {
-          // Execute Fusion gasless swap
-          const response = await fetch(`/api/1inch/${networkId}/fusion/submit`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              order: quote.order.order,
-              signature: '', // Would need wallet signature
-              quoteId: quote.order.quoteId
-            })
-          });
-
-          if (response.ok) {
-            const submitData = await response.json();
-            setSwapState({ status: 'completed', hash: submitData.orderHash });
+        if (quote.order?.type === 'fusion' && quote.gasless && quote.order.order) {
+          // Execute Fusion gasless swap with proper wallet signature
+          console.log('Executing Fusion gasless swap...');
+          
+          try {
+            // Request wallet signature for the Fusion order
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const userAddress = accounts[0];
             
-            toast({
-              title: "Gasless Swap Submitted!",
-              description: `Order submitted to Fusion network - no gas fees!`,
+            // Create EIP-712 signature for the Fusion order
+            const domain = {
+              name: '1inch Fusion',
+              version: '1',
+              chainId: networkId,
+              verifyingContract: quote.order.order.maker || address
+            };
+            
+            const types = {
+              Order: [
+                { name: 'maker', type: 'address' },
+                { name: 'receiver', type: 'address' },
+                { name: 'makerAsset', type: 'address' },
+                { name: 'takerAsset', type: 'address' },
+                { name: 'makingAmount', type: 'uint256' },
+                { name: 'takingAmount', type: 'uint256' },
+                { name: 'salt', type: 'uint256' }
+              ]
+            };
+            
+            const signature = await ethereum.request({
+              method: 'eth_signTypedData_v4',
+              params: [userAddress, JSON.stringify({
+                types,
+                primaryType: 'Order',
+                domain,
+                message: quote.order.order
+              })]
             });
-          } else {
-            throw new Error('Fusion order submission failed');
+            
+            console.log('Wallet signature obtained, submitting to Fusion...');
+            
+            const response = await fetch(`/api/1inch/${networkId}/fusion/submit`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                order: quote.order.order,
+                signature: signature,
+                quoteId: quote.order.quoteId
+              })
+            });
+
+            if (response.ok) {
+              const submitData = await response.json();
+              setSwapState({ status: 'completed', hash: submitData.orderHash });
+              
+              toast({
+                title: "Live Gasless Swap Executed!",
+                description: `Order ${submitData.orderHash?.slice(0, 10)}... submitted to 1inch Fusion network`,
+              });
+            } else {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(errorData.error || 'Fusion order submission failed');
+            }
+          } catch (signError: any) {
+            if (signError.code === 4001) {
+              throw new Error('User rejected the signature request');
+            }
+            throw new Error(`Signature failed: ${signError.message}`);
           }
         } else {
           // Execute regular swap

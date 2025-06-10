@@ -40,7 +40,7 @@ const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
 
 // USDC contract addresses per chain (verified addresses)
 const USDC_ADDRESSES: Record<string, string> = {
-  '1': '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC (verified)
+  '1': '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC 
   '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
   '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
   '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
@@ -465,13 +465,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // 1inch Fusion API for gasless swaps - Fixed endpoint structure
+  // 1inch Fusion API for gasless swaps - Rebuilt according to SDK documentation
   app.get("/api/1inch/:chainId/fusion/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
       const { src, dst, amount, from } = req.query;
 
-      console.log(`1inch Fusion quote request: ${chainId} - gasless swap ${src} to ${dst}`);
+      console.log(`1inch Fusion quote request: ${chainId} - gasless swap ${src} to ${dst}, amount: ${amount}`);
 
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       console.log('API key check:', apiKey ? 'Found' : 'Missing');
@@ -484,19 +484,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Try 1inch Fusion API v2.0 first
+      // Use correct USDC address for the chain
+      const correctDst = dst === 'USDC' ? USDC_ADDRESSES[chainId] : dst;
+      if (!correctDst) {
+        console.log(`No USDC address found for chain ${chainId}`);
+        return res.status(400).json({ error: `USDC not supported on chain ${chainId}` });
+      }
+
+      console.log(`Using destination token address: ${correctDst}`);
+
+      // Try 1inch Fusion API v2.0 first with correct structure
       try {
         const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote/receive`;
 
         const requestBody = {
           srcTokenAddress: src as string,
-          dstTokenAddress: dst as string,
+          dstTokenAddress: correctDst,
           srcTokenAmount: amount as string,
           walletAddress: from as string || '0x0000000000000000000000000000000000000000',
           enableEstimate: true,
-          permitDeadline: Math.floor(Date.now() / 1000) + 3600,
-          nonce: Math.floor(Math.random() * 1000000)
+          permits: [],
+          interactions: []
         };
+
+        console.log('Fusion request body:', JSON.stringify(requestBody, null, 2));
 
         const response = await fetch(fusionUrl, {
           method: 'POST',
@@ -508,30 +519,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
           body: JSON.stringify(requestBody)
         });
 
+        console.log(`Fusion API response status: ${response.status}`);
+
         if (response.ok) {
           const data = await response.json();
-          console.log('1inch Fusion quote success');
+          console.log('1inch Fusion quote success:', JSON.stringify(data).substring(0, 200));
 
           const fusionQuote = {
             type: 'fusion',
             gasless: true,
             fromToken: { address: src, amount: amount },
-            toToken: { address: dst, amount: data.dstTokenAmount || data.toAmount },
+            toToken: { address: correctDst, amount: data.dstTokenAmount || data.toAmount },
             estimate: data.estimate,
             order: data.order,
-            quoteId: data.quoteId
+            quoteId: data.quoteId,
+            displayToAmount: data.dstTokenAmount ? (parseFloat(data.dstTokenAmount) / Math.pow(10, 6)).toFixed(6) : '0',
+            rate: data.dstTokenAmount ? (parseFloat(data.dstTokenAmount) / parseFloat(amount) * Math.pow(10, 12)).toFixed(4) : '0'
           };
 
           return res.json(fusionQuote);
         } else {
-          console.log('Fusion API failed, falling back to regular quote');
+          const errorText = await response.text();
+          console.log('Fusion API failed:', response.status, errorText);
         }
       } catch (fusionError) {
-        console.log('Fusion API error, falling back to regular quote');
+        console.log('Fusion API error:', fusionError);
       }
 
-      // Fallback to regular 1inch quote
-      return await handleRegularQuote(chainId, src, dst, amount, res);
+      // Fallback to regular 1inch quote with correct destination
+      return await handleRegularQuote(chainId, src, correctDst, amount, res);
 
     } catch (error) {
       console.error('1inch quote proxy error:', error);
@@ -551,15 +567,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: 'API key not configured' });
       }
 
-      // Use correct USDC address for the chain
-      const correctDst = USDC_ADDRESSES[chainId] || dst;
-
-      console.log(`Regular 1inch quote: ${chainId} - ${src} to ${correctDst}, amount: ${amount}`);
+      console.log(`Regular 1inch quote: ${chainId} - ${src} to ${dst}, amount: ${amount}`);
 
       const quoteUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/quote`;
       const params = new URLSearchParams({
         src: src as string,
-        dst: correctDst as string,
+        dst: dst as string,
         amount: amount as string,
         includeTokensInfo: 'true',
         includeProtocols: 'true'
@@ -582,7 +595,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           type: 'regular',
           gasless: false,
           fromToken: { address: src, amount: amount },
-          toToken: { address: correctDst, amount: data.toAmount },
+          toToken: { address: dst, amount: data.toAmount },
           protocols: data.protocols,
           gas: data.estimatedGas,
           displayToAmount: (parseFloat(data.toAmount) / Math.pow(10, 6)).toFixed(6),
@@ -597,12 +610,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Return a mock quote if API fails
         console.log('Returning mock quote due to API failure');
         const ethToUsdcRate = 3200; // More realistic ETH/USDC rate
+        const amountFloat = parseFloat(amount) / Math.pow(10, 18); // Convert from wei
         const mockQuote = {
           type: 'mock',
           gasless: false,
           fromToken: { address: src, amount: amount },
-          toToken: { address: correctDst, amount: (parseFloat(amount) * ethToUsdcRate * Math.pow(10, 6) / Math.pow(10, 18)).toString() },
-          displayToAmount: (parseFloat(amount) * ethToUsdcRate).toFixed(6),
+          toToken: { address: dst, amount: (amountFloat * ethToUsdcRate * Math.pow(10, 6)).toString() },
+          displayToAmount: (amountFloat * ethToUsdcRate).toFixed(6),
           rate: ethToUsdcRate.toString(),
           error: 'Using mock data - API temporarily unavailable'
         };
@@ -614,12 +628,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Return mock quote on error
       const ethToUsdcRate = 3200; // More realistic ETH/USDC rate
+      const amountFloat = parseFloat(amount) / Math.pow(10, 18); // Convert from wei
       const mockQuote = {
         type: 'mock',
         gasless: false,
         fromToken: { address: src, amount: amount },
-        toToken: { address: dst, amount: (parseFloat(amount) * ethToUsdcRate * Math.pow(10, 6) / Math.pow(10, 18)).toString() },
-        displayToAmount: (parseFloat(amount) * ethToUsdcRate).toFixed(6),
+        toToken: { address: dst, amount: (amountFloat * ethToUsdcRate * Math.pow(10, 6)).toString() },
+        displayToAmount: (amountFloat * ethToUsdcRate).toFixed(6),
         rate: ethToUsdcRate.toString(),
         error: 'Using mock data - connection error'
       };
@@ -628,7 +643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
 
-  // 1inch Fusion execution endpoint
+  // 1inch Fusion execution endpoint - Rebuilt for live trading
   app.post("/api/1inch/:chainId/fusion/submit", async (req, res) => {
     try {
       const { chainId } = req.params;
@@ -646,6 +661,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const submitUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order`;
 
+      const requestBody = {
+        order: order,
+        signature: signature,
+        quoteId: quoteId,
+        extension: "0x"
+      };
+
+      console.log('Fusion submit request:', JSON.stringify(requestBody, null, 2));
+
       const response = await fetch(submitUrl, {
         method: 'POST',
         headers: {
@@ -653,11 +677,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          order,
-          signature,
-          quoteId
-        })
+        body: JSON.stringify(requestBody)
       });
 
       console.log(`1inch Fusion submit response status: ${response.status}`);
@@ -672,8 +692,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const data = await response.json();
-      console.log('1inch Fusion order submitted:', data.orderHash || 'success');
-      res.json(data);
+      console.log('1inch Fusion order submitted successfully:', data.orderHash || data);
+      
+      res.json({
+        success: true,
+        orderHash: data.orderHash || data.hash,
+        status: 'submitted',
+        gasless: true,
+        message: 'Fusion gasless swap submitted successfully'
+      });
 
     } catch (error) {
       console.error('1inch Fusion submit error:', error);
