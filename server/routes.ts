@@ -519,5 +519,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user transaction history
+  app.get('/api/transactions/:address', async (req, res) => {
+    try {
+      const { address } = req.params;
+      
+      const user = await storage.getUserByWalletAddress(address);
+      if (!user) {
+        return res.json([]);
+      }
+
+      const transactions = await storage.getTransactions(user.id);
+      res.json(transactions);
+    } catch (error) {
+      console.error('Failed to fetch transactions:', error);
+      res.status(500).json({ error: 'Failed to fetch transactions' });
+    }
+  });
+
   return server;
 }
