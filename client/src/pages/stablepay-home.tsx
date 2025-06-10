@@ -25,11 +25,11 @@ import {
   Clock,
   FileText
 } from 'lucide-react';
-import { useParticleWallet } from '@/hooks/use-particle-wallet';
+import { useSimpleWallet } from '@/hooks/use-simple-wallet';
 import { Link } from 'wouter';
 
 export default function StablePayHome() {
-  const { connect, isConnected, address } = useParticleWallet();
+  const { connect, isConnected, address } = useSimpleWallet();
   const [currentSection, setCurrentSection] = useState(0);
 
   const heroVariants = {

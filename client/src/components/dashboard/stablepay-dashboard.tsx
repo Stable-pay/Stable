@@ -25,7 +25,7 @@ import {
   AlertTriangle,
   Banknote
 } from 'lucide-react';
-import { useProductionParticle } from '@/hooks/use-production-particle';
+import { useSimpleWallet } from '@/hooks/use-simple-wallet';
 import { Link } from 'wouter';
 // Removed viem and comprehensive wallet balances - replaced with Particle Network
 
@@ -40,8 +40,7 @@ interface Transaction {
 }
 
 export default function StablePayDashboard() {
-  const { address, isConnected, balances, connect } = useProductionParticle();
-  const isLoading = false;
+  const { address, isConnected, balances, connect, isLoading } = useSimpleWallet();
   
   const [hideBalances, setHideBalances] = useState(false);
   const [selectedNetwork, setSelectedNetwork] = useState('all');
