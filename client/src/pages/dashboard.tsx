@@ -1,5 +1,5 @@
-import { ParticleWalletDashboard } from "@/components/dashboard/particle-wallet-dashboard";
+import StablePayDashboard from "@/components/dashboard/stablepay-dashboard";
 
 export default function Dashboard() {
-  return <ParticleWalletDashboard />;
+  return <StablePayDashboard />;
 }
