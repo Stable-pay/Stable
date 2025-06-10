@@ -163,7 +163,7 @@ export function useParticleWallet() {
       // Build swap transaction data (simplified for demo - would use actual DEX router)
       const swapData = {
         to: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', // Uniswap V3 Router
-        value: fromToken === 'ETH' ? ethers.parseEther(amount) : 0n,
+        value: fromToken === 'ETH' ? ethers.parseEther(amount) : BigInt(0),
         data: '0x' // Would contain actual swap calldata
       };
 

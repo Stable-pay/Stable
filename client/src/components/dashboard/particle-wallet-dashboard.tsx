@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,6 +42,27 @@ export function ParticleWalletDashboard() {
   const [balancesVisible, setBalancesVisible] = useState(true);
 
   const totalPortfolioValue = balances.reduce((sum, token) => sum + (token.usdValue || 0), 0);
+  const [liveRates, setLiveRates] = useState<Record<string, any>>({});
+
+  // Fetch live rates for portfolio tracking
+  useEffect(() => {
+    const fetchLiveRates = async () => {
+      if (balances.length === 0) return;
+      
+      try {
+        const { productionPriceAPI } = await import('@/lib/production-price-api');
+        const symbols = balances.map(token => token.symbol);
+        const rates = await productionPriceAPI.getMultiplePrices(symbols);
+        setLiveRates(rates);
+      } catch (error) {
+        console.error('Failed to fetch live rates:', error);
+      }
+    };
+
+    fetchLiveRates();
+    const interval = setInterval(fetchLiveRates, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, [balances]);
 
   const handleConnect = async () => {
     try {

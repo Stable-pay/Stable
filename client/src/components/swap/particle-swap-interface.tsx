@@ -163,21 +163,7 @@ export function ParticleSwapInterface() {
     }
   };
 
-  // Simulate quote calculation
-  useEffect(() => {
-    if (amount && fromToken && parseFloat(amount) > 0) {
-      const simulatedQuote = {
-        fromAmount: amount,
-        toAmount: (parseFloat(amount) * 0.98).toFixed(6), // 2% slippage
-        priceImpact: '0.15%',
-        gasless: true,
-        paymaster: true
-      };
-      setSwapQuote(simulatedQuote);
-    } else {
-      setSwapQuote(null);
-    }
-  }, [amount, fromToken]);
+
 
   if (!isConnected) {
     return (
@@ -299,10 +285,18 @@ export function ParticleSwapInterface() {
               {balances.map((balance) => (
                 <SelectItem key={balance.address} value={balance.symbol}>
                   <div className="flex items-center justify-between w-full">
-                    <span>{balance.symbol}</span>
-                    <span className="text-sm text-gray-500">
-                      {balance.formattedBalance}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{balance.symbol}</span>
+                      <span className="text-xs text-muted-foreground">{balance.name}</span>
+                    </div>
+                    <div className="flex flex-col text-right">
+                      <span className="text-sm">{balance.formattedBalance}</span>
+                      {balance.usdValue && (
+                        <span className="text-xs text-muted-foreground">
+                          ${balance.usdValue.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </SelectItem>
               ))}
@@ -319,14 +313,24 @@ export function ParticleSwapInterface() {
               placeholder="0.00"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="pr-20"
+              className="pr-20 text-lg font-medium"
             />
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <span className="text-sm text-gray-500">{fromToken}</span>
+              <span className="text-sm text-muted-foreground">{fromToken}</span>
             </div>
           </div>
-          {fromToken && (
-            <p className="text-xs text-gray-500">
+          {fromToken && amount && liveRates[fromToken] && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">
+                Balance: {balances.find(b => b.symbol === fromToken)?.formattedBalance || '0'} {fromToken}
+              </span>
+              <span className="text-muted-foreground">
+                ≈ ${(parseFloat(amount) * liveRates[fromToken]).toFixed(2)}
+              </span>
+            </div>
+          )}
+          {fromToken && !amount && (
+            <p className="text-xs text-muted-foreground">
               Balance: {balances.find(b => b.symbol === fromToken)?.formattedBalance || '0'} {fromToken}
             </p>
           )}
@@ -350,15 +354,25 @@ export function ParticleSwapInterface() {
           </div>
         </div>
 
-        {/* Swap Quote */}
+        {/* Live Swap Quote */}
         {swapQuote && (
-          <Alert className="border-green-200 bg-green-50">
-            <TrendingUp className="h-4 w-4 text-green-600" />
+          <Alert className="border-primary/20 bg-primary/5">
+            <TrendingUp className="h-4 w-4 text-primary" />
             <AlertDescription>
-              <div className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span>You'll receive:</span>
-                  <span className="font-medium">{swapQuote.toAmount} USDC</span>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">You'll receive:</span>
+                  <span className="font-semibold text-lg">{swapQuote.toAmount} USDC</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div className="flex justify-between">
+                    <span>Exchange rate:</span>
+                    <span className="font-medium">1 {fromToken} = {swapQuote.rate?.toFixed(4)} USDC</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Minimum received:</span>
+                    <span className="font-medium">{swapQuote.minimumReceived} USDC</span>
+                  </div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Price impact:</span>
