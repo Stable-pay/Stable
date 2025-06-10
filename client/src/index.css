@@ -3,43 +3,43 @@
 @tailwind utilities;
 
 :root {
-  /* Investor-Ready Two-Color Professional Palette */
-  --background: 255 255 255; /* Pure White #FFFFFF */
-  --foreground: 30 41 59; /* Professional Dark Gray #1E293B */
-  --muted: 248 250 252; /* Light Gray #F8FAFC */
-  --muted-foreground: 100 116 139; /* Muted Gray #64748B */
-  --popover: 255 255 255; /* Pure White #FFFFFF */
-  --popover-foreground: 30 41 59; /* Professional Dark Gray #1E293B */
-  --card: 255 255 255; /* Pure White #FFFFFF */
-  --card-foreground: 30 41 59; /* Professional Dark Gray #1E293B */
-  --border: 226 232 240; /* Light Border #E2E8F0 */
-  --input: 248 250 252; /* Input Background #F8FAFC */
+  /* Mobile Wallet Dark Theme - Navy Blue & White Only */
+  --background: 220 30% 12%; /* Dark Navy Blue #1F2937 */
+  --foreground: 0 0% 100%; /* Pure White #FFFFFF */
+  --muted: 220 25% 15%; /* Slightly Lighter Navy */
+  --muted-foreground: 0 0% 70%; /* Light Gray Text */
+  --popover: 220 30% 12%; /* Dark Navy Blue */
+  --popover-foreground: 0 0% 100%; /* White Text */
+  --card: 220 25% 15%; /* Card Background Navy */
+  --card-foreground: 0 0% 100%; /* White Text */
+  --border: 220 20% 25%; /* Border Navy */
+  --input: 220 20% 25%; /* Input Navy Background */
   
-  /* Primary: Deep Professional Blue - Main Brand Color */
-  --primary: 29 78 216; /* Deep Blue #1D4ED8 */
-  --primary-foreground: 255 255 255; /* White Text */
+  /* Primary: White for buttons and key elements */
+  --primary: 0 0% 100%; /* Pure White #FFFFFF */
+  --primary-foreground: 220 30% 12%; /* Navy text on white */
   
-  /* Secondary: Professional Gray - Supporting Color */
-  --secondary: 71 85 105; /* Professional Gray #475569 */
-  --secondary-foreground: 255 255 255; /* White Text */
+  /* Secondary: Medium Navy for secondary elements */
+  --secondary: 220 20% 25%; /* Medium Navy */
+  --secondary-foreground: 0 0% 100%; /* White Text */
   
-  /* Accent: Subtle Gray for highlights */
-  --accent: 241 245 249; /* Very Light Gray #F1F5F9 */
-  --accent-foreground: 30 41 59; /* Dark Gray Text */
+  /* Accent: Lighter Navy for accents */
+  --accent: 220 20% 25%; /* Medium Navy */
+  --accent-foreground: 0 0% 100%; /* White Text */
   
-  /* Status Colors - Minimal and Professional */
-  --destructive: 220 38 38; /* Professional Red #DC2626 */
-  --destructive-foreground: 255 255 255; /* White Text */
+  /* Status Colors */
+  --destructive: 0 84.2% 60.2%; /* Red for errors */
+  --destructive-foreground: 0 0% 100%; /* White Text */
   
-  --ring: 29 78 216; /* Primary Blue Ring */
-  --radius: 0.5rem; /* Smaller radius for professional look */
+  --ring: 0 0% 100%; /* White focus ring */
+  --radius: 1rem; /* Rounded buttons like mockup */
   
-  /* Chart Colors - Two-Color System */
-  --chart-1: 29 78 216; /* Primary Blue */
-  --chart-2: 71 85 105; /* Secondary Gray */
-  --chart-3: 100 116 139; /* Muted Gray */
-  --chart-4: 148 163 184; /* Light Gray */
-  --chart-5: 203 213 225; /* Very Light Gray */
+  /* Chart Colors - Navy variations only */
+  --chart-1: 220 30% 12%; /* Dark Navy */
+  --chart-2: 220 25% 15%; /* Medium Navy */
+  --chart-3: 220 20% 25%; /* Light Navy */
+  --chart-4: 0 0% 100%; /* White */
+  --chart-5: 0 0% 70%; /* Light Gray */
 }
 
 .dark {
