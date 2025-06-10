@@ -77,8 +77,22 @@ export function ReownSwapFlow() {
   const [swapAmount, setSwapAmount] = useState('');
   const [inrAmount, setInrAmount] = useState('0');
   const [exchangeRate, setExchangeRate] = useState<number>(0);
-  const [kycData, setKycData] = useState<KycData | null>(null);
-  const [bankDetails, setBankDetails] = useState<BankDetails | null>(null);
+  const [kycData, setKycData] = useState<KycData>({
+    fullName: '',
+    phoneNumber: '',
+    panNumber: '',
+    aadharNumber: '',
+    address: '',
+    kycStatus: 'pending'
+  });
+  const [bankDetails, setBankDetails] = useState<BankDetails>({
+    accountHolderName: '',
+    accountNumber: '',
+    ifscCode: '',
+    bankName: '',
+    branchName: '',
+    isPrimary: true
+  });
   const [isSwapping, setIsSwapping] = useState(false);
   const [withdrawalId, setWithdrawalId] = useState<string | null>(null);
 
@@ -224,7 +238,7 @@ export function ReownSwapFlow() {
   };
 
   const handleWithdrawal = async () => {
-    if (!bankDetails || !kycData || !inrAmount) {
+    if (!bankDetails.accountNumber || !kycData.fullName || !inrAmount) {
       toast({
         title: "Missing Information",
         description: "Please complete all required fields",
@@ -241,7 +255,7 @@ export function ReownSwapFlow() {
           amount: inrAmount,
           currency: 'INR',
           bankDetails,
-          kycData
+          kycData: { ...kycData, kycStatus: 'verified' }
         })
       });
 
@@ -356,26 +370,26 @@ export function ReownSwapFlow() {
                 <div className="space-y-3">
                   <Label>Select Token</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {balances.map((token) => (
+                    {balances.map((balance) => (
                       <Card
-                        key={`${token.address}-${token.chainId}`}
+                        key={`${balance.address}-${balance.chainId}`}
                         className={`cursor-pointer transition-colors ${
-                          selectedToken?.address === token.address && selectedToken?.chainId === token.chainId
+                          selectedToken?.address === balance.address && selectedToken?.chainId === balance.chainId
                             ? 'ring-2 ring-blue-500 bg-blue-50'
                             : 'hover:bg-gray-50'
                         }`}
-                        onClick={() => handleTokenSelect(token)}
+                        onClick={() => handleTokenSelect(balance)}
                       >
                         <CardContent className="p-4">
                           <div className="flex justify-between items-center">
                             <div>
-                              <div className="font-semibold">{token.symbol}</div>
-                              <div className="text-sm text-gray-500">{token.chainName}</div>
+                              <div className="font-semibold">{balance.symbol}</div>
+                              <div className="text-sm text-gray-500">{balance.chainName || 'Unknown Network'}</div>
                             </div>
                             <div className="text-right">
-                              <div className="font-medium">{token.formattedBalance}</div>
-                              {token.usdValue && (
-                                <div className="text-sm text-gray-500">${token.usdValue.toFixed(2)}</div>
+                              <div className="font-medium">{balance.formattedBalance}</div>
+                              {balance.usdValue && (
+                                <div className="text-sm text-gray-500">${balance.usdValue.toFixed(2)}</div>
                               )}
                             </div>
                           </div>
@@ -457,8 +471,8 @@ export function ReownSwapFlow() {
                 <Input
                   id="fullName"
                   placeholder="Enter your full name"
-                  value={kycData?.fullName || ''}
-                  onChange={(e) => setKycData(prev => ({ ...prev!, fullName: e.target.value }))}
+                  value={kycData.fullName}
+                  onChange={(e) => setKycData(prev => ({ ...prev, fullName: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
@@ -466,8 +480,8 @@ export function ReownSwapFlow() {
                 <Input
                   id="phone"
                   placeholder="+91 XXXXX XXXXX"
-                  value={kycData?.phoneNumber || ''}
-                  onChange={(e) => setKycData(prev => ({ ...prev!, phoneNumber: e.target.value }))}
+                  value={kycData.phoneNumber}
+                  onChange={(e) => setKycData(prev => ({ ...prev, phoneNumber: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
@@ -475,8 +489,8 @@ export function ReownSwapFlow() {
                 <Input
                   id="pan"
                   placeholder="ABCDE1234F"
-                  value={kycData?.panNumber || ''}
-                  onChange={(e) => setKycData(prev => ({ ...prev!, panNumber: e.target.value }))}
+                  value={kycData.panNumber}
+                  onChange={(e) => setKycData(prev => ({ ...prev, panNumber: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
@@ -484,8 +498,8 @@ export function ReownSwapFlow() {
                 <Input
                   id="aadhar"
                   placeholder="XXXX XXXX XXXX"
-                  value={kycData?.aadharNumber || ''}
-                  onChange={(e) => setKycData(prev => ({ ...prev!, aadharNumber: e.target.value }))}
+                  value={kycData.aadharNumber}
+                  onChange={(e) => setKycData(prev => ({ ...prev, aadharNumber: e.target.value }))}
                 />
               </div>
             </div>
@@ -495,8 +509,8 @@ export function ReownSwapFlow() {
               <Input
                 id="address"
                 placeholder="Enter your complete address"
-                value={kycData?.address || ''}
-                onChange={(e) => setKycData(prev => ({ ...prev!, address: e.target.value }))}
+                value={kycData.address}
+                onChange={(e) => setKycData(prev => ({ ...prev, address: e.target.value }))}
               />
             </div>
 
@@ -505,8 +519,8 @@ export function ReownSwapFlow() {
               <Input
                 id="bankAccount"
                 placeholder="Enter account number"
-                value={bankDetails?.accountNumber || ''}
-                onChange={(e) => setBankDetails(prev => ({ ...prev!, accountNumber: e.target.value }))}
+                value={bankDetails.accountNumber}
+                onChange={(e) => setBankDetails(prev => ({ ...prev, accountNumber: e.target.value }))}
               />
             </div>
 
@@ -516,8 +530,8 @@ export function ReownSwapFlow() {
                 <Input
                   id="ifsc"
                   placeholder="BANK0001234"
-                  value={bankDetails?.ifscCode || ''}
-                  onChange={(e) => setBankDetails(prev => ({ ...prev!, ifscCode: e.target.value }))}
+                  value={bankDetails.ifscCode}
+                  onChange={(e) => setBankDetails(prev => ({ ...prev, ifscCode: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
@@ -525,8 +539,8 @@ export function ReownSwapFlow() {
                 <Input
                   id="bankName"
                   placeholder="Bank Name"
-                  value={bankDetails?.bankName || ''}
-                  onChange={(e) => setBankDetails(prev => ({ ...prev!, bankName: e.target.value }))}
+                  value={bankDetails.bankName}
+                  onChange={(e) => setBankDetails(prev => ({ ...prev, bankName: e.target.value }))}
                 />
               </div>
             </div>
@@ -537,7 +551,7 @@ export function ReownSwapFlow() {
               </Button>
               <Button
                 onClick={handleNextStep}
-                disabled={!kycData?.fullName || !kycData?.phoneNumber || !bankDetails?.accountNumber}
+                disabled={!kycData.fullName || !kycData.phoneNumber || !bankDetails.accountNumber}
               >
                 Continue to Swap
                 <ArrowRight className="w-4 h-4 ml-2" />
