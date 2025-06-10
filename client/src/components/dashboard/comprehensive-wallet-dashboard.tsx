@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-// Swap components removed - using Reown AppKit built-in swaps
+import { ReownSwapInterface } from '@/components/swap/reown-swap-interface';
 import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network, Coins, ArrowUpDown } from "lucide-react";
 import { useAccount, useBalance, useChainId } from 'wagmi';
@@ -127,23 +127,7 @@ export function ComprehensiveWalletDashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Token Swap Interface */}
         <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ArrowUpDown className="w-5 h-5 text-blue-600" />
-                Reown AppKit Swaps
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Alert>
-                <Shield className="h-4 w-4" />
-                <AlertDescription>
-                  Token swapping is now powered by Reown AppKit's built-in swap functionality.
-                  Click the "Remittance" tab to access the full gasless swap-to-INR flow.
-                </AlertDescription>
-              </Alert>
-            </CardContent>
-          </Card>
+          <ReownSwapInterface />
         </div>
 
         {/* Sidebar Information */}
