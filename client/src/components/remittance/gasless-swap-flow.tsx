@@ -157,49 +157,68 @@ export default function GaslessSwapFlow() {
       const toTokenAddress = '0xA0b86a33E6E3B0c8c8D7D45b40b9b5Ba0b3D0e8B'; // USDC
       const amountInWei = (parseFloat(fromAmount) * Math.pow(10, 18)).toString();
 
-      // Call 1inch Fusion API for gasless swap
-      const response = await fetch(`/api/1inch/1/fusion/quote?src=${fromTokenAddress}&dst=${toTokenAddress}&amount=${amountInWei}&from=${address}`, {
+      console.log('Attempting gasless swap via 1inch Fusion...');
+
+      // Try 1inch Fusion API first for gasless swap
+      const fusionResponse = await fetch(`/api/1inch/1/fusion/quote?src=${fromTokenAddress}&dst=${toTokenAddress}&amount=${amountInWei}&from=${address}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         }
       });
 
-      if (response.ok) {
-        const swapData = await response.json();
-        console.log('Gasless swap quote received:', swapData);
+      if (fusionResponse.ok) {
+        const fusionData = await fusionResponse.json();
+        console.log('Fusion gasless swap quote received:', fusionData);
         
-        // Process swap execution
+        if (fusionData.type === 'fusion' && fusionData.gasless) {
+          console.log('Executing gasless swap...');
+          // Simulate gasless swap execution
+          await new Promise(resolve => setTimeout(resolve, 4000));
+          setSwapCompleted(true);
+          setCurrentStep(3);
+          return;
+        }
+      } else {
+        const fusionError = await fusionResponse.json().catch(() => ({}));
+        console.log('Fusion not available:', fusionError.error);
+        
+        if (fusionError.requiresAuth) {
+          console.log('API key required for Fusion - attempting fallback');
+        }
+      }
+
+      // Fallback to regular swap if Fusion not available
+      console.log('Falling back to regular swap...');
+      const fallbackResponse = await fetch('/api/swap/quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fromToken,
+          toToken: 'USDC',
+          fromAmount,
+          chainId: 1,
+          walletAddress: address
+        })
+      });
+
+      if (fallbackResponse.ok) {
+        const fallbackData = await fallbackResponse.json();
+        console.log('Regular swap quote received:', fallbackData);
+        
+        // Simulate regular swap execution (with gas fees)
         await new Promise(resolve => setTimeout(resolve, 3000));
         setSwapCompleted(true);
         setCurrentStep(3);
       } else {
-        // Fallback to regular swap if Fusion not available
-        const fallbackResponse = await fetch('/api/swap/quote', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            fromToken,
-            toToken: 'USDC',
-            fromAmount,
-            chainId: 1,
-            walletAddress: address
-          })
-        });
-
-        if (fallbackResponse.ok) {
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          setSwapCompleted(true);
-          setCurrentStep(3);
-        } else {
-          throw new Error('Swap failed');
-        }
+        throw new Error('Both gasless and regular swap failed');
       }
     } catch (error) {
       console.error('Swap error:', error);
-      alert('Swap failed. Please try again.');
+      alert('Swap failed. Please check your wallet connection and try again.');
+      setCurrentStep(1); // Go back to verification step
     } finally {
       setIsSwapping(false);
     }

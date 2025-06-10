@@ -33,15 +33,40 @@ interface SwapTransaction {
 }
 
 class FusionAPIService {
-  private sdk: FusionSDK;
+  private sdk: FusionSDK | null = null;
   private readonly baseURL = 'https://api.1inch.dev';
+  private initialized = false;
 
   constructor() {
-    this.sdk = new FusionSDK({
-      url: this.baseURL,
-      network: NetworkEnum.ETHEREUM,
-      authKey: ONEINCH_API_KEY || ''
-    });
+    this.initializeSDK();
+  }
+
+  private async initializeSDK() {
+    try {
+      if (!ONEINCH_API_KEY) {
+        console.warn('1inch API key required for Fusion gasless swaps');
+        return;
+      }
+
+      this.sdk = new FusionSDK({
+        url: this.baseURL,
+        network: NetworkEnum.ETHEREUM,
+        authKey: ONEINCH_API_KEY
+      });
+
+      this.initialized = true;
+      console.log('1inch Fusion SDK initialized with authentication');
+    } catch (error) {
+      console.error('Failed to initialize 1inch Fusion SDK:', error);
+      this.initialized = false;
+    }
+  }
+
+  async ensureInitialized(): Promise<boolean> {
+    if (!this.initialized && ONEINCH_API_KEY) {
+      await this.initializeSDK();
+    }
+    return this.initialized;
   }
 
   // Get supported tokens for a network

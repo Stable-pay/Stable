@@ -384,7 +384,198 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // 1inch API proxy endpoints
+  // 1inch Fusion API for gasless swaps
+  app.get("/api/1inch/:chainId/fusion/quote", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const { src, dst, amount, from } = req.query;
+      
+      console.log(`1inch Fusion quote request: ${chainId} - gasless swap ${src} to ${dst}`);
+      
+      const apiKey = process.env.VITE_ONEINCH_API_KEY;
+      if (!apiKey) {
+        console.log('1inch API key not found - using fallback');
+        return res.status(503).json({ 
+          error: 'API key required for Fusion gasless swaps',
+          requiresAuth: true
+        });
+      }
+
+      // 1inch Fusion API v2.0 for gasless swaps
+      const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote/receive`;
+      
+      const requestBody = {
+        srcTokenAddress: src as string,
+        dstTokenAddress: dst as string,
+        srcTokenAmount: amount as string,
+        walletAddress: from as string,
+        enableEstimate: true,
+        permitDeadline: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now
+        nonce: Math.floor(Math.random() * 1000000)
+      };
+
+      console.log('Fusion request body:', requestBody);
+
+      const response = await fetch(fusionUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      console.log(`1inch Fusion API response status: ${response.status}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('1inch Fusion API error:', errorText);
+        
+        // If Fusion is not available, fall back to regular swap
+        if (response.status === 404 || response.status === 503) {
+          console.log('Fusion not available, falling back to regular swap');
+          return res.status(503).json({ 
+            error: 'Fusion gasless swaps temporarily unavailable',
+            fallbackAvailable: true,
+            details: errorText
+          });
+        }
+        
+        return res.status(response.status).json({ 
+          error: '1inch Fusion API request failed',
+          details: errorText,
+          status: response.status
+        });
+      }
+
+      const data = await response.json();
+      console.log('1inch Fusion quote success:', JSON.stringify(data).substring(0, 300));
+      
+      // Transform Fusion response to match expected format
+      const fusionQuote = {
+        type: 'fusion',
+        gasless: true,
+        fromToken: {
+          address: src,
+          amount: amount
+        },
+        toToken: {
+          address: dst,
+          amount: data.dstTokenAmount || data.toAmount
+        },
+        estimate: data.estimate,
+        order: data.order,
+        quoteId: data.quoteId
+      };
+      
+      res.json(fusionQuote);
+
+    } catch (error) {
+      console.error('1inch Fusion proxy error:', error);
+      res.status(500).json({ 
+        error: 'Failed to connect to 1inch Fusion API',
+        fallbackAvailable: true 
+      });
+    }
+  });
+
+  // 1inch Fusion execution endpoint
+  app.post("/api/1inch/:chainId/fusion/submit", async (req, res) => {
+    try {
+      const { chainId } = req.params;
+      const { order, signature, quoteId } = req.body;
+      
+      console.log(`1inch Fusion submit order: ${chainId} - quoteId: ${quoteId}`);
+      
+      const apiKey = process.env.VITE_ONEINCH_API_KEY;
+      if (!apiKey) {
+        return res.status(503).json({ 
+          error: 'API key required for Fusion execution',
+          requiresAuth: true
+        });
+      }
+
+      const submitUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order`;
+      
+      const response = await fetch(submitUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          order,
+          signature,
+          quoteId
+        })
+      });
+
+      console.log(`1inch Fusion submit response status: ${response.status}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('1inch Fusion submit error:', errorText);
+        return res.status(response.status).json({ 
+          error: '1inch Fusion order submission failed',
+          details: errorText
+        });
+      }
+
+      const data = await response.json();
+      console.log('1inch Fusion order submitted:', data.orderHash || 'success');
+      res.json(data);
+
+    } catch (error) {
+      console.error('1inch Fusion submit error:', error);
+      res.status(500).json({ error: 'Failed to submit Fusion order' });
+    }
+  });
+
+  // Check Fusion order status
+  app.get("/api/1inch/:chainId/fusion/order/:orderHash", async (req, res) => {
+    try {
+      const { chainId, orderHash } = req.params;
+      
+      console.log(`1inch Fusion order status: ${chainId} - ${orderHash}`);
+      
+      const apiKey = process.env.VITE_ONEINCH_API_KEY;
+      if (!apiKey) {
+        return res.status(503).json({ 
+          error: 'API key required',
+          requiresAuth: true
+        });
+      }
+
+      const statusUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order/status/${orderHash}`;
+      
+      const response = await fetch(statusUrl, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('1inch Fusion status error:', errorText);
+        return res.status(response.status).json({ 
+          error: 'Failed to get order status',
+          details: errorText
+        });
+      }
+
+      const data = await response.json();
+      res.json(data);
+
+    } catch (error) {
+      console.error('1inch Fusion status error:', error);
+      res.status(500).json({ error: 'Failed to check order status' });
+    }
+  });
+
+  // Regular 1inch swap API (fallback)
   app.get("/api/1inch/:chainId/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
