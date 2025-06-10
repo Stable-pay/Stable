@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { registerPancakeSwapRoutes } from "./pancakeswap-routes";
+// Removed PancakeSwap - using Reown AppKit swaps instead
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -60,9 +60,6 @@ const TOKEN_ADDRESSES: Record<string, Record<string, string>> = {
 const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
-  // Register PancakeSwap API routes
-  registerPancakeSwapRoutes(app);
 
   // Wallet balance endpoint
   app.get("/api/wallet/balances", async (req, res) => {

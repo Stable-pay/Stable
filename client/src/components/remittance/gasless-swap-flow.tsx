@@ -32,7 +32,6 @@ import {
 import { useAccount, useBalance } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet-balances';
-import { pancakeSwapAPIService, type PancakeSwapQuoteRequest } from '@/lib/pancakeswap-api';
 import { Link } from 'wouter';
 
 interface SwapStep {

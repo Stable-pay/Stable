@@ -1,5 +1,5 @@
-import GaslessSwapFlow from '@/components/remittance/gasless-swap-flow';
+import { ReownSwapFlow } from '@/components/remittance/reown-swap-flow';
 
 export default function Remittance() {
-  return <GaslessSwapFlow />;
+  return <ReownSwapFlow />;
 }
