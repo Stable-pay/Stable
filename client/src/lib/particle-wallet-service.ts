@@ -1,7 +1,3 @@
-import { ParticleAuthModule, ParticleProvider } from '@particle-network/auth';
-import { ParticleConnect, InjectedConnector } from '@particle-network/connect';
-import { Ethereum, Polygon, BNBChain, Arbitrum, Optimism } from '@particle-network/chains';
-import { AAWrapProvider, SmartAccount } from '@particle-network/aa';
 import { ethers } from 'ethers';
 
 // Production Particle Network Configuration
@@ -11,40 +7,37 @@ const particleConfig = {
   appId: 'stable-pay-production'
 };
 
-const supportedChains = [Ethereum, Polygon, BNBChain, Arbitrum, Optimism];
-
-// Initialize Particle Auth
-const particle = new ParticleAuthModule.ParticleNetwork({
-  ...particleConfig,
-  chainName: Ethereum.name,
-  chainId: Ethereum.id,
-});
-
-// Initialize Particle Connect for multi-wallet support
-const particleConnect = new ParticleConnect({
-  ...particleConfig,
-  chains: supportedChains,
-  particleWalletEntry: {
-    displayWalletEntry: true,
-    defaultWalletEntryPosition: 'BR',
-  },
-});
+// Supported chain configurations
+const supportedChains = [
+  { id: 1, name: 'Ethereum', symbol: 'ETH' },
+  { id: 137, name: 'Polygon', symbol: 'MATIC' },
+  { id: 56, name: 'BSC', symbol: 'BNB' },
+  { id: 42161, name: 'Arbitrum', symbol: 'ETH' },
+  { id: 10, name: 'Optimism', symbol: 'ETH' }
+];
 
 // Production Particle Wallet Service
 export class ParticleWalletService {
-  private provider: ParticleProvider | null = null;
-  private smartAccount: SmartAccount | null = null;
   private ethersProvider: ethers.BrowserProvider | null = null;
   private isInitialized = false;
+  private currentAddress: string | null = null;
 
   async initialize() {
     if (this.isInitialized) return;
 
     try {
-      // Initialize Particle Connect
-      await particleConnect.init();
-      this.isInitialized = true;
-      console.log('Particle Network initialized successfully');
+      // Initialize using server authentication
+      const response = await fetch('/api/particle/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'initialize' })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        this.isInitialized = true;
+        console.log('Particle Network initialized successfully');
+      }
     } catch (error) {
       console.error('Failed to initialize Particle Network:', error);
       throw error;
@@ -57,32 +50,24 @@ export class ParticleWalletService {
     }
 
     try {
-      // Connect using Particle Connect
-      const walletConnectInfo = await particleConnect.connect();
-      
-      if (walletConnectInfo) {
-        this.provider = new ParticleProvider(particle.auth);
-        this.ethersProvider = new ethers.BrowserProvider(this.provider, 'any');
+      // Use window.ethereum for wallet connection
+      if (typeof window !== 'undefined' && window.ethereum) {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         
-        // Initialize Smart Account for gasless transactions
-        this.smartAccount = new SmartAccount(this.provider, {
-          ...particleConfig,
-          aaOptions: {
-            accountContracts: {
-              SIMPLE: [{ chainIds: supportedChains.map(chain => chain.id), version: '1.0.0' }]
-            }
-          }
-        });
-
-        const address = await this.getAddress();
-        console.log('Connected to Particle wallet:', address);
-        
-        return {
-          address,
-          provider: this.provider,
-          smartAccount: this.smartAccount
-        };
+        if (accounts && accounts.length > 0) {
+          this.ethersProvider = new ethers.BrowserProvider(window.ethereum);
+          this.currentAddress = accounts[0];
+          
+          console.log('Connected to wallet:', this.currentAddress);
+          
+          return {
+            address: this.currentAddress,
+            provider: this.ethersProvider
+          };
+        }
       }
+      
+      throw new Error('No wallet provider found');
     } catch (error) {
       console.error('Wallet connection failed:', error);
       throw error;
@@ -91,12 +76,8 @@ export class ParticleWalletService {
 
   async disconnect() {
     try {
-      if (particleConnect) {
-        await particleConnect.disconnect();
-      }
-      this.provider = null;
-      this.smartAccount = null;
       this.ethersProvider = null;
+      this.currentAddress = null;
       console.log('Wallet disconnected');
     } catch (error) {
       console.error('Disconnect failed:', error);
@@ -104,15 +85,7 @@ export class ParticleWalletService {
   }
 
   async getAddress(): Promise<string | null> {
-    if (!this.ethersProvider) return null;
-    
-    try {
-      const signer = await this.ethersProvider.getSigner();
-      return await signer.getAddress();
-    } catch (error) {
-      console.error('Failed to get address:', error);
-      return null;
-    }
+    return this.currentAddress;
   }
 
   async getBalance(tokenAddress?: string): Promise<string> {
@@ -180,10 +153,10 @@ export class ParticleWalletService {
   }
 
   async swapTokens(fromToken: string, toToken: string, amount: string, chainId: number) {
-    if (!this.smartAccount) throw new Error('Smart account not initialized');
+    if (!this.ethersProvider) throw new Error('Wallet not connected');
 
     try {
-      // Get swap quote
+      // Get swap quote from server
       const response = await fetch('/api/particle/swap/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -192,7 +165,7 @@ export class ParticleWalletService {
           toToken,
           amount,
           chainId,
-          userAddress: await this.getAddress()
+          userAddress: this.currentAddress
         })
       });
 
@@ -201,19 +174,18 @@ export class ParticleWalletService {
         throw new Error(swapData.error || 'Failed to get swap quote');
       }
 
-      // Execute gasless swap using Smart Account
-      const userOpParams = {
-        tx: {
-          to: swapData.to,
-          data: swapData.data,
-          value: swapData.value || '0x0'
-        }
+      // Execute swap transaction
+      const signer = await this.ethersProvider.getSigner();
+      const tx = {
+        to: swapData.to,
+        data: swapData.data,
+        value: swapData.value || '0x0'
       };
 
-      const txHash = await this.smartAccount.sendTransaction(userOpParams);
-      console.log('Swap transaction sent:', txHash);
+      const txResponse = await signer.sendTransaction(tx);
+      console.log('Swap transaction sent:', txResponse.hash);
       
-      return { success: true, txHash };
+      return { success: true, txHash: txResponse.hash };
     } catch (error) {
       console.error('Swap failed:', error);
       throw error;
@@ -221,13 +193,17 @@ export class ParticleWalletService {
   }
 
   async switchChain(chainId: number) {
-    if (!this.provider) throw new Error('Wallet not connected');
+    if (!window.ethereum) throw new Error('Wallet not connected');
 
     try {
       const targetChain = supportedChains.find(chain => chain.id === chainId);
       if (!targetChain) throw new Error('Unsupported chain');
 
-      await particle.switchChain({ chainId: targetChain.id, chainName: targetChain.name });
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${chainId.toString(16)}` }]
+      });
+      
       console.log(`Switched to ${targetChain.name}`);
     } catch (error) {
       console.error('Chain switch failed:', error);
@@ -265,15 +241,11 @@ export class ParticleWalletService {
   }
 
   isConnected(): boolean {
-    return this.provider !== null && this.ethersProvider !== null;
+    return this.ethersProvider !== null && this.currentAddress !== null;
   }
 
   getProvider() {
     return this.ethersProvider;
-  }
-
-  getSmartAccount() {
-    return this.smartAccount;
   }
 }
 

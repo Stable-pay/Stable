@@ -25,7 +25,7 @@ import {
   AlertTriangle,
   Banknote
 } from 'lucide-react';
-import { useProductionParticle } from '@/hooks/use-production-particle';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { Link } from 'wouter';
 // Removed viem and comprehensive wallet balances - replaced with Particle Network
 
