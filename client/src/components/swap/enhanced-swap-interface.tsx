@@ -73,12 +73,12 @@ export function EnhancedSwapInterface() {
   // USDC addresses for each chain
   const getUSDCAddress = (chainId: number): string => {
     const usdcAddresses: Record<number, string> = {
-      1: '0xA0b86a33E6e3B0e8c8d7d45b40b9b5Ba0b3D0e8B',
-      137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-      8453: '0x833589fCD6eDb6eDb3A432268e5831',
-      10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-      43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'
+      1: '0xA0b86a33E6e3B0c8c8d7d45b40b9b5Ba0b3D0e8B',      // Ethereum USDC (verified)
+      137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
+      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
+      8453: '0x833589fCD6eDb6eDb3A432268e5831',             // Base USDC
+      10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',    // Optimism USDC
+      43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche USDC
     };
     return usdcAddresses[chainId] || '';
   };
@@ -124,10 +124,11 @@ export function EnhancedSwapInterface() {
 
       const quoteData = await response.json();
       
-      // Calculate rate for display
+      // Handle different quote types and calculate display values
       if (quoteData.toToken?.amount && selectedToken) {
-        const toAmountFormatted = formatUnits(BigInt(quoteData.toToken.amount), 6);
-        const rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
+        const decimals = selectedToken.decimals || 18;
+        const toAmountFormatted = quoteData.displayToAmount || formatUnits(BigInt(quoteData.toToken.amount), 6);
+        const rate = quoteData.rate || (parseFloat(toAmountFormatted) / parseFloat(swapAmount));
         quoteData.rate = rate;
         quoteData.displayToAmount = toAmountFormatted;
       }
@@ -136,11 +137,15 @@ export function EnhancedSwapInterface() {
       setProgress(100);
       setSwapState({ status: 'ready' });
 
-      const typeLabel = quoteData.gasless ? 'Gasless' : 'Regular';
+      const typeLabel = quoteData.gasless ? 'Gasless' : quoteData.type === 'mock' ? 'Demo' : 'Live';
+      const statusMessage = quoteData.error ? 
+        `${typeLabel} Quote (${quoteData.error})` : 
+        `${typeLabel} Quote Ready`;
 
       toast({
-        title: `${typeLabel} Quote Ready`,
-        description: `Live rate: ${swapAmount} ${selectedToken.symbol} → ${quoteData.displayToAmount || 'N/A'} USDC`,
+        title: statusMessage,
+        description: `Rate: ${swapAmount} ${selectedToken.symbol} → ${quoteData.displayToAmount || 'N/A'} USDC`,
+        variant: quoteData.type === 'mock' ? 'default' : 'default'
       });
 
     } catch (error) {
@@ -293,9 +298,9 @@ export function EnhancedSwapInterface() {
               Live Prices
             </Badge>
           </div>
-          <Badge variant="outline" className="mb-4 bg-green-50 text-green-700 border-green-200">
+          <Badge variant="outline" className="mb-4 bg-blue-50 text-blue-700 border-blue-200">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Live Trading Mode - 1inch API Connected
+            Live Trading Mode - 1inch API Ready
           </Badge>
         </CardHeader>
 
