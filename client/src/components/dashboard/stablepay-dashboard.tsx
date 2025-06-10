@@ -1,472 +1,261 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Wallet, 
-  ArrowUpDown, 
-  DollarSign, 
-  TrendingUp, 
-  Send, 
-  Repeat,
-  Shield,
-  Zap,
-  Globe,
-  Eye,
-  EyeOff,
-  RefreshCw,
-  Plus,
-  ArrowRight,
-  CheckCircle,
-  Clock,
-  AlertTriangle,
-  Banknote
-} from 'lucide-react';
 import { useSimpleWallet } from '@/hooks/use-simple-wallet';
-import { Link } from 'wouter';
-// Removed viem and comprehensive wallet balances - replaced with Particle Network
-
-interface Transaction {
-  id: string;
-  type: 'swap' | 'withdraw' | 'deposit';
-  status: 'completed' | 'pending' | 'failed';
-  amount: string;
-  currency: string;
-  timestamp: Date;
-  hash?: string;
-}
 
 export default function StablePayDashboard() {
-  const { address, isConnected, balances, connect, isLoading } = useSimpleWallet();
+  const walletData = useSimpleWallet();
   
-  const [hideBalances, setHideBalances] = useState(false);
-  const [selectedNetwork, setSelectedNetwork] = useState('all');
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  // Mock transaction data
-  const [transactions] = useState<Transaction[]>([
-    {
-      id: '1',
-      type: 'swap',
-      status: 'completed',
-      amount: '1,250.00',
-      currency: 'USDC',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      hash: '0x1234...5678'
-    },
-    {
-      id: '2',
-      type: 'withdraw',
-      status: 'pending',
-      amount: '500.00',
-      currency: 'USD',
-      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000)
-    },
-    {
-      id: '3',
-      type: 'swap',
-      status: 'completed',
-      amount: '750.50',
-      currency: 'USDC',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      hash: '0x9876...5432'
-    }
-  ]);
-
-  // Calculate total USDC balance across all chains
-  const totalUSDCBalance = balances
-    .filter((balance: any) => balance.symbol === 'USDC')
-    .reduce((total: any, balance: any) => total + parseFloat(balance.formattedBalance), 0);
-
-  // Get unique networks from balances
-  const networks = Array.from(new Set(balances.map((balance: any) => balance.chainId || 1)));
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    // Refresh functionality would reload wallet balances
-    setTimeout(() => setIsRefreshing(false), 1000);
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case 'failed':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default:
-        return null;
-    }
-  };
-
-  if (!isConnected) {
+  if (!walletData.isConnected) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-6">
+        <div className="text-center">
+          <div className="w-24 h-24 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl font-bold text-white mb-4">Welcome to StablePay</h1>
+          <p className="text-xl text-gray-300 mb-8">Connect your wallet to access professional DeFi tools</p>
+          <button
+            onClick={walletData.connect}
+            disabled={walletData.isLoading}
+            className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-8 py-4 text-lg rounded-xl shadow-2xl font-semibold transition-all duration-300 transform hover:scale-105"
           >
-            <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Wallet className="h-10 w-10 text-white" />
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Connect Your Wallet
-            </h2>
-            <p className="text-gray-600 mb-8">
-              Connect your wallet to access your StablePay dashboard and manage your crypto assets
-            </p>
-            <Button 
-              onClick={() => open()}
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
-            >
-              <Wallet className="mr-2 h-5 w-5" />
-              Connect Wallet
-            </Button>
-          </motion.div>
+            {walletData.isLoading ? 'Connecting...' : 'Connect Wallet'}
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Welcome back
-              </h1>
-              <p className="text-gray-600">
-                Manage your crypto portfolio and track your StablePay transactions
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="border-gray-300 hover:border-blue-500"
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setHideBalances(!hideBalances)}
-                className="border-gray-300 hover:border-blue-500"
-              >
-                {hideBalances ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-              </Button>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Premium Header */}
+        <div className="flex items-center justify-between bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+              Portfolio Dashboard
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Connected: {walletData.address?.slice(0, 6)}...{walletData.address?.slice(-4)}
+            </p>
           </div>
-
-          {/* Wallet Address */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Wallet className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Connected Wallet</p>
-                  <p className="font-mono text-sm font-medium">
-                    {address?.slice(0, 6)}...{address?.slice(-4)}
-                  </p>
-                </div>
-              </div>
-              <Badge className="bg-green-100 text-green-700">Connected</Badge>
-            </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={walletData.refreshBalances}
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
+            >
+              Refresh
+            </button>
+            <button
+              onClick={walletData.disconnect}
+              className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
+            >
+              Disconnect
+            </button>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Balance Overview */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-2xl">
-            <CardContent className="p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <p className="text-blue-100 mb-2">Total USDC Balance</p>
-                  <h2 className="text-5xl font-bold">
-                    {hideBalances ? '••••••' : `$${totalUSDCBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                  </h2>
-                  <p className="text-blue-100 mt-2">
-                    Across {networks.length} networks
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-                    <DollarSign className="h-10 w-10 text-white" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <TrendingUp className="h-4 w-4" />
-                      <span>+5.2% (24h)</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-6">
-                <Link href="/swap">
-                  <Button 
-                    variant="secondary" 
-                    className="bg-white/20 hover:bg-white/30 text-white border-0 w-full h-12"
-                  >
-                    <ArrowUpDown className="mr-2 h-4 w-4" />
-                    Swap Tokens
-                  </Button>
-                </Link>
-                <Link href="/remittance">
-                  <Button 
-                    variant="secondary" 
-                    className="bg-white/20 hover:bg-white/30 text-white border-0 w-full h-12"
-                  >
-                    <Banknote className="mr-2 h-4 w-4" />
-                    INR Remittance
-                  </Button>
-                </Link>
-                <Link href="/kyc">
-                  <Button 
-                    variant="secondary" 
-                    className="bg-white/20 hover:bg-white/30 text-white border-0 w-full h-12"
-                  >
-                    <Shield className="mr-2 h-4 w-4" />
-                    Complete KYC
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Portfolio and Balances */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Token Balances */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+        {/* Enhanced Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              title: 'Total Portfolio',
+              value: `$${walletData.getTotalValue().toLocaleString()}`,
+              change: '+2.34%',
+              icon: '💰',
+              gradient: 'from-emerald-500 to-green-600',
+              bgGradient: 'from-emerald-50 to-green-50'
+            },
+            {
+              title: 'Active Assets',
+              value: walletData.balances.length.toString(),
+              change: 'Multi-token',
+              icon: '📊',
+              gradient: 'from-blue-500 to-cyan-600',
+              bgGradient: 'from-blue-50 to-cyan-50'
+            },
+            {
+              title: 'Networks',
+              value: '5',
+              change: 'Multi-chain',
+              icon: '🌐',
+              gradient: 'from-purple-500 to-pink-600',
+              bgGradient: 'from-purple-50 to-pink-50'
+            },
+            {
+              title: 'Performance',
+              value: '+12.5%',
+              change: '7d growth',
+              icon: '📈',
+              gradient: 'from-orange-500 to-red-600',
+              bgGradient: 'from-orange-50 to-red-50'
+            }
+          ].map((stat, index) => (
+            <div 
+              key={stat.title} 
+              className={`bg-gradient-to-br ${stat.bgGradient} backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/30 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1`}
             >
-              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      <Wallet className="h-5 w-5 text-blue-600" />
-                      Token Balances
-                    </CardTitle>
-                    <div className="flex items-center gap-2">
-                      <select
-                        value={selectedNetwork}
-                        onChange={(e) => setSelectedNetwork(e.target.value)}
-                        className="text-sm border border-gray-300 rounded-lg px-3 py-1 bg-white"
-                      >
-                        <option value="all">All Networks</option>
-                        {networks.map(network => (
-                          <option key={network} value={network}>{network}</option>
-                        ))}
-                      </select>
-                    </div>
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-600 mb-2">{stat.title}</p>
+                  <p className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</p>
+                  <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${stat.gradient} text-white`}>
+                    {stat.change}
                   </div>
-                </CardHeader>
-                <CardContent>
-                  {isLoading ? (
-                    <div className="space-y-4">
-                      {[1, 2, 3].map(i => (
-                        <div key={i} className="flex items-center justify-between p-4 bg-gray-100 rounded-lg animate-pulse">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gray-300 rounded-lg"></div>
-                            <div>
-                              <div className="w-20 h-4 bg-gray-300 rounded mb-1"></div>
-                              <div className="w-16 h-3 bg-gray-300 rounded"></div>
-                            </div>
-                          </div>
-                          <div className="w-24 h-4 bg-gray-300 rounded"></div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {balances
-                        .filter(balance => selectedNetwork === 'all' || balance.chainId.toString() === selectedNetwork)
-                        .filter(balance => parseFloat(balance.formattedBalance) > 0)
-                        .map((balance, index) => (
-                          <motion.div
-                            key={`${balance.chainId}-${balance.address}`}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">
-                                  {balance.symbol.charAt(0)}
-                                </span>
-                              </div>
-                              <div>
-                                <p className="font-semibold">{balance.symbol}</p>
-                                <p className="text-sm text-gray-600">Chain {balance.chainId}</p>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-semibold">
-                                {hideBalances ? '••••••' : balance.formattedBalance}
-                              </p>
-                              {balance.usdValue && (
-                                <p className="text-sm text-gray-600">
-                                  {hideBalances ? '••••••' : `$${balance.usdValue.toFixed(2)}`}
-                                </p>
-                              )}
-                            </div>
-                          </motion.div>
-                        ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
+                </div>
+                <div className="text-4xl ml-4">{stat.icon}</div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-            {/* Recent Transactions */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Repeat className="h-5 w-5 text-blue-600" />
-                    Recent Transactions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {transactions.map((tx) => (
-                      <div key={tx.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2">
-                            {getStatusIcon(tx.status)}
-                            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                              {tx.type === 'swap' && <ArrowUpDown className="h-5 w-5 text-white" />}
-                              {tx.type === 'withdraw' && <Send className="h-5 w-5 text-white" />}
-                              {tx.type === 'deposit' && <Plus className="h-5 w-5 text-white" />}
-                            </div>
-                          </div>
-                          <div>
-                            <p className="font-semibold capitalize">{tx.type}</p>
-                            <p className="text-sm text-gray-600">
-                              {tx.timestamp.toLocaleDateString()} at {tx.timestamp.toLocaleTimeString()}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold">
-                            {hideBalances ? '••••••' : `${tx.amount} ${tx.currency}`}
-                          </p>
-                          <p className="text-sm text-gray-600 capitalize">{tx.status}</p>
-                        </div>
+        {/* Enhanced Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Premium Portfolio Section */}
+          <div className="lg:col-span-2 bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-white/20">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                Portfolio Overview
+              </h3>
+              <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                {walletData.balances.length} Assets
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              {walletData.balances.map((balance, index) => (
+                <div 
+                  key={`${balance.chainId}-${balance.address}`} 
+                  className="group flex items-center justify-between p-6 bg-gradient-to-r from-white/70 to-white/50 hover:from-white/90 hover:to-white/70 rounded-2xl border border-white/30 hover:border-white/50 transition-all duration-300 hover:shadow-lg"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <span className="text-white font-bold text-lg">{balance.symbol.charAt(0)}</span>
                       </div>
-                    ))}
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                        {balance.symbol}
+                      </p>
+                      <p className="text-sm text-gray-600">{balance.name}</p>
+                      <p className="text-xs text-gray-500">Chain {balance.chainId}</p>
+                    </div>
                   </div>
-                  <div className="mt-6 text-center">
-                    <Button variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50">
-                      View All Transactions
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                      {balance.formattedBalance}
+                    </p>
+                    <p className="text-lg text-gray-600 font-medium">
+                      ${balance.usdValue.toFixed(2)}
+                    </p>
+                    <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full mt-1 inline-block">
+                      +2.4%
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Enhanced Sidebar */}
           <div className="space-y-6">
+            {/* Premium Quick Actions */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                Quick Actions
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { 
+                    label: 'Swap Tokens', 
+                    gradient: 'from-blue-500 via-blue-600 to-indigo-600', 
+                    icon: '🔄',
+                    description: 'Exchange cryptocurrencies'
+                  },
+                  { 
+                    label: 'Send Payment', 
+                    gradient: 'from-green-500 via-green-600 to-emerald-600', 
+                    icon: '💸',
+                    description: 'Transfer to any address'
+                  },
+                  { 
+                    label: 'Withdraw Funds', 
+                    gradient: 'from-purple-500 via-purple-600 to-pink-600', 
+                    icon: '📤',
+                    description: 'Cash out to bank'
+                  },
+                  { 
+                    label: 'Add Liquidity', 
+                    gradient: 'from-orange-500 via-red-500 to-pink-600', 
+                    icon: '➕',
+                    description: 'Earn yield on assets'
+                  }
+                ].map((action, actionIndex) => (
+                  <button
+                    key={action.label}
+                    className={`group w-full p-4 bg-gradient-to-r ${action.gradient} text-white rounded-xl font-semibold flex items-center gap-4 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105`}
+                  >
+                    <span className="text-2xl group-hover:scale-110 transition-transform duration-300">
+                      {action.icon}
+                    </span>
+                    <div className="text-left flex-1">
+                      <div className="font-bold">{action.label}</div>
+                      <div className="text-xs opacity-90">{action.description}</div>
+                    </div>
+                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-            {/* Network Status */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-green-500" />
-                    Network Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {['Ethereum', 'Polygon', 'Arbitrum', 'Base'].map((network) => (
-                      <div key={network} className="flex items-center justify-between">
-                        <span className="text-sm font-medium">{network}</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-xs text-gray-600">Online</span>
-                        </div>
+            {/* Premium Market Insights */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                Live Markets
+              </h3>
+              <div className="space-y-4">
+                {[
+                  { pair: 'ETH/USD', price: '$2,045.67', change: '+3.24%', positive: true },
+                  { pair: 'BTC/USD', price: '$43,256.89', change: '+1.87%', positive: true },
+                  { pair: 'USDC/USD', price: '$1.0001', change: '+0.01%', positive: true },
+                  { pair: 'MATIC/USD', price: '$0.8234', change: '-2.15%', positive: false }
+                ].map((market, marketIndex) => (
+                  <div key={market.pair} className="flex justify-between items-center p-3 bg-gray-50/50 hover:bg-gray-50 rounded-xl transition-colors duration-200">
+                    <div>
+                      <span className="font-semibold text-gray-900">{market.pair}</span>
+                      <div className="text-xs text-gray-500 mt-1">24h Volume: $2.1B</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-gray-900">{market.price}</div>
+                      <div className={`text-sm font-medium ${market.positive ? 'text-green-600' : 'text-red-600'}`}>
+                        {market.change} {market.positive ? '↗' : '↘'}
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Security Status */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-blue-500" />
-                    Security
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Wallet Connected</span>
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">KYC Status</span>
-                      <Clock className="h-4 w-4 text-yellow-500" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">2FA Enabled</span>
-                      <AlertTriangle className="h-4 w-4 text-red-500" />
-                    </div>
-                    <Link href="/kyc">
-                      <Button size="sm" variant="outline" className="w-full mt-3 border-blue-500 text-blue-600 hover:bg-blue-50">
-                        Complete Verification
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
