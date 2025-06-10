@@ -420,13 +420,13 @@ export default function RemittanceDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
+            className="mb-8"
           >
-            <Card className="border border-border bg-accent/50">
+            <Card className="bg-card border-border border-l-4 border-l-orange-500">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <AlertCircle className="h-5 w-5 text-secondary" />
+                    <AlertCircle className="h-6 w-6 text-orange-500" />
                     <div>
                       <p className="font-semibold text-foreground">
                         {kycPending ? 'KYC Under Review' : 'Complete KYC Verification'}
@@ -442,7 +442,7 @@ export default function RemittanceDashboard() {
                   {!kycPending && (
                     <Button 
                       onClick={() => setShowKYCModal(true)}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
                     >
                       Start KYC
                     </Button>

@@ -69,27 +69,27 @@ export default function StablePayHome() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <nav className="bg-card border-b border-border sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-white" />
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold text-gray-900">StablePay</span>
+              <span className="text-xl font-bold text-foreground">StablePay</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
-              <a href="#security" className="text-gray-600 hover:text-blue-600 transition-colors">Security</a>
-              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a>
-              <a href="#contact" className="text-gray-600 hover:text-blue-600 transition-colors">Contact</a>
+              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Features</a>
+              <a href="#security" className="text-muted-foreground hover:text-primary transition-colors">Security</a>
+              <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
+              <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</a>
             </div>
             <div className="flex items-center space-x-4">
               {isConnected ? (
                 <Link href="/dashboard">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                     <Wallet className="mr-2 h-4 w-4" />
                     Dashboard
                   </Button>
@@ -97,7 +97,7 @@ export default function StablePayHome() {
               ) : (
                 <Button 
                   onClick={() => open()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   <Wallet className="mr-2 h-4 w-4" />
                   Connect Wallet
@@ -110,7 +110,7 @@ export default function StablePayHome() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               variants={heroVariants}
@@ -119,16 +119,16 @@ export default function StablePayHome() {
               className="space-y-8"
             >
               <div className="space-y-4">
-                <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+                <Badge variant="outline" className="bg-secondary text-secondary-foreground border-border">
                   Enterprise-Grade Crypto Banking
                 </Badge>
-                <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                   The Future of
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  <span className="text-primary">
                     {" "}Digital Finance
                   </span>
                 </h1>
-                <p className="text-xl text-gray-600 leading-relaxed">
+                <p className="text-xl text-muted-foreground leading-relaxed">
                   Transform your business with our institutional-grade cryptocurrency platform. 
                   Seamless multi-chain transactions, enterprise security, and professional-grade tools 
                   for modern financial operations.
@@ -138,7 +138,7 @@ export default function StablePayHome() {
               <div className="flex flex-col sm:flex-row gap-4">
                 {isConnected ? (
                   <Link href="/dashboard">
-                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
+                    <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 text-lg">
                       <BarChart3 className="mr-2 h-5 w-5" />
                       View Dashboard
                       <ArrowRight className="ml-2 h-5 w-5" />
@@ -148,7 +148,7 @@ export default function StablePayHome() {
                   <Button 
                     size="lg" 
                     onClick={() => open()}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 text-lg"
                   >
                     <Wallet className="mr-2 h-5 w-5" />
                     Connect Wallet
@@ -158,7 +158,7 @@ export default function StablePayHome() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 text-lg"
+                  className="bg-secondary text-secondary-foreground border-border hover:bg-secondary/80 px-8 py-4 text-lg"
                 >
                   <FileText className="mr-2 h-5 w-5" />
                   Learn More
@@ -167,16 +167,16 @@ export default function StablePayHome() {
 
               <div className="flex items-center space-x-8 pt-8">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">$2.4B+</div>
-                  <div className="text-sm text-gray-600">Volume Processed</div>
+                  <div className="text-2xl font-bold text-foreground">$2.4B+</div>
+                  <div className="text-sm text-muted-foreground">Volume Processed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">500K+</div>
-                  <div className="text-sm text-gray-600">Transactions</div>
+                  <div className="text-2xl font-bold text-foreground">500K+</div>
+                  <div className="text-sm text-muted-foreground">Transactions</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">99.9%</div>
-                  <div className="text-sm text-gray-600">Uptime</div>
+                  <div className="text-2xl font-bold text-foreground">99.9%</div>
+                  <div className="text-sm text-muted-foreground">Uptime</div>
                 </div>
               </div>
             </motion.div>
@@ -187,17 +187,17 @@ export default function StablePayHome() {
               transition={{ duration: 1, delay: 0.2 }}
               className="relative"
             >
-              <div className="relative bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-indigo-600/5 rounded-2xl"></div>
+              <div className="relative bg-card rounded-2xl shadow-2xl p-8 border border-border">
+                <div className="absolute inset-0 bg-primary/5 rounded-2xl"></div>
                 <div className="relative space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <Building2 className="h-5 w-5 text-white" />
+                      <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                        <Building2 className="h-5 w-5 text-primary-foreground" />
                       </div>
                       <div>
-                        <div className="font-semibold text-gray-900">Enterprise Dashboard</div>
-                        <div className="text-sm text-gray-600">Real-time analytics</div>
+                        <div className="font-semibold text-foreground">Enterprise Dashboard</div>
+                        <div className="text-sm text-muted-foreground">Real-time analytics</div>
                       </div>
                     </div>
                     <Badge className="bg-green-100 text-green-700">Live</Badge>
