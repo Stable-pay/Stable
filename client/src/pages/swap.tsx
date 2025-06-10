@@ -1,5 +1,5 @@
-import FusionSwapInterface from "@/components/swap/fusion-swap-interface";
+import { StablePaySwap } from "@/components/swap/stablepay-swap";
 
 export default function Swap() {
-  return <FusionSwapInterface />;
+  return <StablePaySwap />;
 }

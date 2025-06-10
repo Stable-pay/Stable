@@ -1,5 +1,5 @@
-import StablePayDashboard from "@/components/dashboard/stablepay-dashboard";
+import { PremiumDashboard } from "@/components/dashboard/premium-dashboard";
 
 export default function Dashboard() {
-  return <StablePayDashboard />;
+  return <PremiumDashboard />;
 }

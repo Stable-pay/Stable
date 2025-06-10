@@ -6,7 +6,7 @@ import { wagmiConfig } from "./lib/wallet-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { StablePayNavbar } from "@/components/layout/stablepay-navbar";
-import AnimatedHome from "@/pages/animated-home";
+import StablePayHome from "@/pages/stablepay-home";
 import Swap from "@/pages/swap";
 import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
@@ -18,7 +18,7 @@ import "./lib/wallet-config";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={AnimatedHome} />
+      <Route path="/" component={StablePayHome} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />
