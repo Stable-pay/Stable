@@ -405,38 +405,6 @@ export default function StablePayDashboard() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Quick Actions */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Card className="shadow-xl bg-white/90 backdrop-blur-sm border-0">
-                <CardHeader>
-                  <CardTitle className="text-lg">Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Link href="/swap">
-                    <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                      <ArrowUpDown className="mr-2 h-4 w-4" />
-                      Swap Tokens
-                    </Button>
-                  </Link>
-                  <Link href="/withdraw">
-                    <Button variant="outline" className="w-full border-blue-500 text-blue-600 hover:bg-blue-50">
-                      <Send className="mr-2 h-4 w-4" />
-                      Withdraw Funds
-                    </Button>
-                  </Link>
-                  <Link href="/kyc">
-                    <Button variant="outline" className="w-full border-purple-500 text-purple-600 hover:bg-purple-50">
-                      <Shield className="mr-2 h-4 w-4" />
-                      Complete KYC
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
 
             {/* Network Status */}
             <motion.div
