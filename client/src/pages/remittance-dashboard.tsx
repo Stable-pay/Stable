@@ -286,13 +286,28 @@ export default function RemittanceDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-3 sm:p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-4xl font-bold mb-4 text-foreground">
+            Global Remittance
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Send money across borders with crypto - fast, secure, and gasless transactions
+          </p>
+        </motion.div>
+
         {/* PWA Install Banner */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 bg-primary text-primary-foreground rounded-lg p-4 flex items-center justify-between"
+          className="mb-8 bg-card border-border rounded-lg p-4 flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
             <div className="h-8 w-8">

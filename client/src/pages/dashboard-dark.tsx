@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -125,27 +125,25 @@ export default function DashboardDark() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <motion.div 
-          className="mb-8"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground">Dashboard</h1>
-              <p className="text-muted-foreground mt-2">
-                Monitor your portfolio and transaction activity
-              </p>
+          <h1 className="text-4xl font-bold mb-4 text-foreground">
+            Portfolio Dashboard
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Monitor your crypto assets, transactions, and portfolio performance
+          </p>
+          {address && (
+            <div className="mt-4">
+              <Badge variant="outline" className="bg-secondary text-secondary-foreground border-border">
+                <Wallet className="h-3 w-3 mr-1" />
+                {address.slice(0, 6)}...{address.slice(-4)}
+              </Badge>
             </div>
-            {address && (
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Connected Wallet</p>
-                <p className="text-foreground font-mono">
-                  {address.slice(0, 6)}...{address.slice(-4)}
-                </p>
-              </div>
-            )}
-          </div>
+          )}
         </motion.div>
 
         {/* KYC Status Banner */}
