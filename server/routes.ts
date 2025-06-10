@@ -389,23 +389,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`KYC status check: ${address}`);
       
-      // In production, this would check KYC database
-      const mockKyc = {
-        address,
-        status: 'verified',
-        tier: 'tier2',
-        verifiedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-        monthlyLimit: 1000000, // ₹10 lakh per month
-        dailyLimit: 200000, // ₹2 lakh per day
-        documentsVerified: ['pan', 'aadhar', 'bank_statement'],
-        nextReviewDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-      };
+      // Check if user exists in database
+      const user = await storage.getUserByWalletAddress(address);
+      
+      if (!user) {
+        return res.status(404).json({ 
+          error: 'User not found. Please complete KYC verification.',
+          status: 'not_found'
+        });
+      }
 
-      res.json(mockKyc);
+      const kycDocuments = await storage.getKycDocuments(user.id);
+      const hasVerifiedDocs = kycDocuments.some(doc => doc.status === 'verified');
+
+      res.json({
+        address,
+        fullName: user.fullName,
+        phoneNumber: user.phoneNumber,
+        panNumber: user.panNumber,
+        aadharNumber: user.aadharNumber,
+        address: user.address,
+        status: hasVerifiedDocs ? 'verified' : 'pending',
+        tier: hasVerifiedDocs ? 'tier2' : 'tier1',
+        verifiedAt: hasVerifiedDocs ? user.updatedAt : null,
+        monthlyLimit: hasVerifiedDocs ? 1000000 : 50000,
+        dailyLimit: hasVerifiedDocs ? 200000 : 10000,
+        documentsVerified: kycDocuments.filter(doc => doc.status === 'verified').map(doc => doc.documentType),
+        nextReviewDate: hasVerifiedDocs ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() : null
+      });
 
     } catch (error) {
       console.error('KYC status error:', error);
       res.status(500).json({ error: 'Failed to fetch KYC status' });
+    }
+  });
+
+  // User bank details endpoint
+  app.get("/api/user/bank-details/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      
+      console.log(`Fetching bank details for: ${address}`);
+      
+      const user = await storage.getUserByWalletAddress(address);
+      
+      if (!user) {
+        return res.status(404).json({ 
+          error: 'User not found',
+          requiresRegistration: true
+        });
+      }
+
+      const bankAccounts = await storage.getBankAccounts(user.id);
+      const primaryAccount = bankAccounts.find(acc => acc.isPrimary) || bankAccounts[0];
+
+      if (!primaryAccount) {
+        return res.status(404).json({
+          error: 'No bank account found. Please add bank details.',
+          requiresBankSetup: true
+        });
+      }
+
+      res.json({
+        accountNumber: primaryAccount.accountNumber,
+        ifscCode: primaryAccount.ifscCode,
+        accountHolderName: primaryAccount.accountHolderName,
+        bankName: primaryAccount.bankName,
+        branchName: primaryAccount.branchName,
+        isVerified: primaryAccount.isVerified
+      });
+
+    } catch (error) {
+      console.error('Bank details error:', error);
+      res.status(500).json({ error: 'Failed to fetch bank details' });
     }
   });
 

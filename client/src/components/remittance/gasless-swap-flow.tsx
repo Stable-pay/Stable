@@ -301,7 +301,7 @@ export default function GaslessSwapFlow() {
           if (window.ethereum && swapData.tx) {
             try {
               // Send transaction through user's wallet
-              const txHash = await window.ethereum.request({
+              const txHash = await (window.ethereum as any).request({
                 method: 'eth_sendTransaction',
                 params: [{
                   from: address,
@@ -317,7 +317,7 @@ export default function GaslessSwapFlow() {
               // Monitor transaction confirmation
               const checkTxStatus = async () => {
                 try {
-                  const receipt = await window.ethereum.request({
+                  const receipt = await (window.ethereum as any)?.request({
                     method: 'eth_getTransactionReceipt',
                     params: [txHash]
                   });
