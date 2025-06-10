@@ -200,58 +200,58 @@ export default function StablePayHome() {
                         <div className="text-sm text-muted-foreground">Real-time analytics</div>
                       </div>
                     </div>
-                    <Badge className="bg-green-100 text-green-700">Live</Badge>
+                    <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">Live</Badge>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="bg-input rounded-lg p-4">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Coins className="h-4 w-4 text-blue-600" />
-                        <span className="text-sm font-medium text-gray-700">USDC Balance</span>
+                        <Coins className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium text-muted-foreground">USDC Balance</span>
                       </div>
-                      <div className="text-2xl font-bold text-gray-900">$847,392</div>
-                      <div className="text-sm text-green-600">+12.4% today</div>
+                      <div className="text-2xl font-bold text-foreground">$847,392</div>
+                      <div className="text-sm text-green-500">+12.4% today</div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="bg-input rounded-lg p-4">
                       <div className="flex items-center space-x-2 mb-2">
-                        <TrendingUp className="h-4 w-4 text-indigo-600" />
-                        <span className="text-sm font-medium text-gray-700">Portfolio</span>
+                        <TrendingUp className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium text-muted-foreground">Portfolio</span>
                       </div>
-                      <div className="text-2xl font-bold text-gray-900">$1.2M</div>
-                      <div className="text-sm text-green-600">+8.7% this week</div>
+                      <div className="text-2xl font-bold text-foreground">$1.2M</div>
+                      <div className="text-sm text-green-500">+8.7% this week</div>
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-input rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                           <CheckCircle className="h-4 w-4 text-white" />
                         </div>
                         <div>
-                          <div className="font-medium text-gray-900">Swap Completed</div>
-                          <div className="text-sm text-gray-600">ETH → USDC</div>
+                          <div className="font-medium text-foreground">Swap Completed</div>
+                          <div className="text-sm text-muted-foreground">ETH → USDC</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-gray-900">$12,450</div>
-                        <div className="text-xs text-gray-600">2 mins ago</div>
+                        <div className="font-semibold text-foreground">$12,450</div>
+                        <div className="text-xs text-muted-foreground">2 mins ago</div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-input rounded-lg">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                          <Send className="h-4 w-4 text-white" />
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                          <Send className="h-4 w-4 text-primary-foreground" />
                         </div>
                         <div>
-                          <div className="font-medium text-gray-900">Withdrawal Processed</div>
-                          <div className="text-sm text-gray-600">To Bank Account</div>
+                          <div className="font-medium text-foreground">Withdrawal Processed</div>
+                          <div className="text-sm text-muted-foreground">To Bank Account</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-gray-900">$25,000</div>
-                        <div className="text-xs text-gray-600">1 hour ago</div>
+                        <div className="font-semibold text-foreground">$25,000</div>
+                        <div className="text-xs text-muted-foreground">1 hour ago</div>
                       </div>
                     </div>
                   </div>
@@ -267,7 +267,7 @@ export default function StablePayHome() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-secondary/20">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             variants={staggerContainer}
