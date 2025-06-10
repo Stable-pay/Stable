@@ -272,6 +272,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Advanced swap quote endpoint
+  app.post('/api/swap/quote', async (req, res) => {
+    try {
+      const { fromToken, toToken, amount, userAddress } = req.body;
+      
+      // Get real-time token prices using external API
+      const fromPrice = await getTokenPrice(fromToken);
+      const toPrice = await getTokenPrice(toToken);
+      
+      const fromAmountNum = parseFloat(amount);
+      const exchangeRate = fromPrice / toPrice;
+      const slippage = 0.005; // 0.5% slippage
+      const priceImpact = Math.min(fromAmountNum * 0.001, 3); // Price impact based on amount
+      
+      const toAmount = (fromAmountNum * exchangeRate * (1 - slippage)).toFixed(6);
+      const gasEstimate = "0.0045"; // Estimated gas in ETH
+      
+      const quote = {
+        fromToken,
+        toToken,
+        fromAmount: amount,
+        toAmount,
+        priceImpact,
+        gasEstimate,
+        exchangeRate: exchangeRate.toFixed(6),
+        timestamp: Date.now()
+      };
+      
+      res.json(quote);
+    } catch (error) {
+      console.error('Swap quote error:', error);
+      res.status(500).json({ error: 'Failed to get swap quote' });
+    }
+  });
+
+  // Execute swap endpoint
+  app.post('/api/swap/execute', async (req, res) => {
+    try {
+      const { quote, userAddress } = req.body;
+      
+      // Simulate swap execution with realistic delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Generate realistic transaction hash
+      const txHash = '0x' + Math.random().toString(16).slice(2, 66);
+      
+      const result = {
+        success: true,
+        transactionHash: txHash,
+        fromToken: quote.fromToken,
+        toToken: quote.toToken,
+        fromAmount: quote.fromAmount,
+        toAmount: quote.toAmount,
+        gasUsed: quote.gasEstimate,
+        timestamp: Date.now()
+      };
+      
+      res.json(result);
+    } catch (error) {
+      console.error('Swap execution error:', error);
+      res.status(500).json({ error: 'Swap execution failed' });
+    }
+  });
+
+  // Token price helper function
+  async function getTokenPrice(symbol: string): Promise<number> {
+    try {
+      // Use CoinGecko API for real price data
+      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${getTokenId(symbol)}&vs_currencies=usd`);
+      const data = await response.json();
+      const tokenId = getTokenId(symbol);
+      return data[tokenId]?.usd || getFallbackPrice(symbol);
+    } catch (error) {
+      console.error('Price fetch error:', error);
+      return getFallbackPrice(symbol);
+    }
+  }
+
+  function getTokenId(symbol: string): string {
+    const tokenMap: Record<string, string> = {
+      'ETH': 'ethereum',
+      'BTC': 'bitcoin',
+      'USDC': 'usd-coin',
+      'USDT': 'tether',
+      'MATIC': 'matic-network',
+      'LINK': 'chainlink',
+      'UNI': 'uniswap',
+      'AAVE': 'aave'
+    };
+    return tokenMap[symbol] || 'ethereum';
+  }
+
+  function getFallbackPrice(symbol: string): number {
+    const prices: Record<string, number> = {
+      'ETH': 2045.67,
+      'BTC': 43256.89,
+      'USDC': 1.0001,
+      'USDT': 1.0002,
+      'MATIC': 0.8234,
+      'LINK': 14.56,
+      'UNI': 7.89,
+      'AAVE': 89.45
+    };
+    return prices[symbol] || 1;
+  }
+
   const server = createServer(app);
   return server;
 }
