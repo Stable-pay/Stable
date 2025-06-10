@@ -1,5 +1,6 @@
 import { EnhancedSwapInterface } from "@/components/swap/enhanced-swap-interface";
 import { USDCWalletMonitor } from "@/components/swap/usdc-wallet-monitor";
+import { USDCAddressMonitor } from "@/components/swap/usdc-address-monitor";
 
 export default function Swap() {
   return (
@@ -20,7 +21,7 @@ export default function Swap() {
           <EnhancedSwapInterface />
         </div>
         <div>
-          
+
         </div>
       </div>
       </div>

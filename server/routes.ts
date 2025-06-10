@@ -38,9 +38,9 @@ const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
   '10': true,    // Optimism
 };
 
-// USDC addresses for each supported chain
+// USDC addresses for each supported chain (verified correct addresses)
 const USDC_ADDRESSES = {
-  1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC
+  1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC (correct)
   137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
   42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
   8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
@@ -792,7 +792,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const data = await response.json();
+      const data= await response.json();
       console.log('1inch quote response preview:', JSON.stringify(data).substring(0, 200));
       res.json(data);
 

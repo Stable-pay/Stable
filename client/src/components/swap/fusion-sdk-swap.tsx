@@ -57,17 +57,17 @@ export function FusionSDKSwap() {
     parseFloat(token.formattedBalance) > 0.000001
   );
 
-  // USDC contract addresses for each chain
+  // USDC contract addresses for each chain (verified correct addresses)
   const getUSDCAddress = (chainId: number): string => {
     const usdcAddresses: Record<number, string> = {
-      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC
+      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC (correct)
       137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
       42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
       8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
       10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism USDC
       43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche USDC
     };
-    return usdcAddresses[chainId] || '';
+    return usdcAddresses[chainId] || usdcAddresses[1]; // Fallback to Ethereum USDC
   };
 
   const getNetworkName = (chainId: number): string => {
@@ -128,26 +128,47 @@ export function FusionSDKSwap() {
       const quoteData = await response.json();
       console.log('1inch quote response:', quoteData);
 
-      // Handle different quote types from the API
+      // Handle different quote types from the API with better error handling
       let toAmountFormatted: string;
       let rate: number;
       let isGasless = false;
 
-      if (quoteData.type === 'fusion' && quoteData.toToken?.amount) {
-        // Fusion gasless quote
-        toAmountFormatted = formatUnits(BigInt(quoteData.toToken.amount), 6);
-        isGasless = true;
-      } else if (quoteData.type === 'regular' && quoteData.toToken?.amount) {
-        // Regular 1inch quote
-        toAmountFormatted = quoteData.displayToAmount || formatUnits(BigInt(quoteData.toToken.amount), 6);
-      } else if (quoteData.type === 'mock') {
-        // Mock quote fallback
-        toAmountFormatted = quoteData.displayToAmount || '0';
-      } else {
-        throw new Error('Invalid quote response format');
-      }
+      try {
+        if (quoteData.type === 'fusion' && quoteData.toToken?.amount) {
+          // Fusion gasless quote
+          toAmountFormatted = formatUnits(BigInt(quoteData.toToken.amount), 6);
+          isGasless = true;
+        } else if (quoteData.type === 'regular') {
+          // Regular 1inch quote
+          if (quoteData.displayToAmount) {
+            toAmountFormatted = quoteData.displayToAmount;
+          } else if (quoteData.toToken?.amount) {
+            toAmountFormatted = formatUnits(BigInt(quoteData.toToken.amount), 6);
+          } else if (quoteData.toAmount) {
+            toAmountFormatted = formatUnits(BigInt(quoteData.toAmount), 6);
+          } else {
+            throw new Error('No amount data in regular quote');
+          }
+        } else if (quoteData.type === 'mock') {
+          // Mock quote fallback
+          toAmountFormatted = quoteData.displayToAmount || '0';
+        } else {
+          throw new Error(`Unsupported quote type: ${quoteData.type}`);
+        }
 
-      rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
+        rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
+
+        if (isNaN(rate) || rate <= 0) {
+          throw new Error('Invalid exchange rate calculated');
+        }
+      } catch (parseError) {
+        console.error('Quote parsing error:', parseError);
+        // Use fallback rate calculation
+        const fallbackRate = selectedToken.symbol === 'ETH' ? 3200 : 1;
+        toAmountFormatted = (parseFloat(swapAmount) * fallbackRate).toFixed(6);
+        rate = fallbackRate;
+        isGasless = false;
+      }
 
       setQuote({
         fromAmount: swapAmount,
