@@ -785,14 +785,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('1inch API error:', errorText);
-```text
         return res.status(response.status).json({ 
           error: '1inch API request failed',
           details: errorText,
-          status: response.status        });
+          status: response.status
+        });
       }
 
-      const data= await response.json();
+      const data = await response.json();
       console.log('1inch quote response preview:', JSON.stringify(data).substring(0, 200));
       res.json(data);
 
