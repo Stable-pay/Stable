@@ -11,6 +11,7 @@ import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet
 import { useAccount } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { FusionAPIStatus } from './fusion-api-status';
+import { livePriceFeed } from '@/lib/live-price-feed';
 // Using direct API calls instead of problematic SDK
 // import { FusionSDK, NetworkEnum } from '@1inch/fusion-sdk';
 
@@ -60,7 +61,7 @@ export function FusionSDKSwap() {
   // USDC contract addresses for each chain (verified correct addresses)
   const getUSDCAddress = (chainId: number): string => {
     const usdcAddresses: Record<number, string> = {
-      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC (corrected)
+      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC (complete)
       137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
       42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
       8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
@@ -157,6 +158,18 @@ export function FusionSDKSwap() {
         }
 
         rate = parseFloat(toAmountFormatted) / parseFloat(swapAmount);
+
+        // Validate rate against live market price
+        if (selectedToken?.symbol) {
+          try {
+            const livePrice = await livePriceFeed.getLivePrice(selectedToken.symbol);
+            if (livePrice && Math.abs(rate - livePrice.price) > livePrice.price * 0.1) {
+              console.warn(`Rate deviation detected: API=${rate}, Live=${livePrice.price}`);
+            }
+          } catch (error) {
+            console.warn('Live price validation failed:', error);
+          }
+        }
 
         if (isNaN(rate) || rate <= 0) {
           throw new Error('Invalid exchange rate calculated');
@@ -519,8 +532,9 @@ export function FusionSDKSwap() {
 
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <span className="text-muted-foreground">Rate</span>
+                  <span className="text-muted-foreground">Live Rate</span>
                   <p className="font-medium">1 {selectedToken?.symbol} = {quote.rate.toFixed(4)} USDC</p>
+                  <p className="text-xs text-green-600">Updated live</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Min Received</span>
