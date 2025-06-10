@@ -477,10 +477,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('API key check:', apiKey ? 'Found' : 'Missing');
 
       if (!apiKey) {
-        console.log('1inch API key not found - falling back to regular quote');
-        console.log('Available env vars:', Object.keys(process.env).filter(k => k.includes('ONEINCH')));
-        // Fall back to regular quote
-        return await handleRegularQuote(chainId, src, dst, amount, res);
+        console.log('1inch API key not found');
+        return res.status(500).json({ 
+          error: 'API key not configured. Please add VITE_ONEINCH_API_KEY to environment variables.',
+          requiresApiKey: true
+        });
       }
 
       // Try 1inch Fusion API v2.0 first
@@ -545,6 +546,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   async function handleRegularQuote(chainId: any, src: any, dst: any, amount: any, res: any) {
     try {
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+      }
+
       const quoteUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/quote`;
       const params = new URLSearchParams({
         src: src as string,
@@ -575,24 +580,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         return res.json(regularQuote);
       } else {
-        // Create a mock quote for UI testing
-        const mockRate = src === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' ? 2490 : 1.001;
-        const mockToAmount = (parseFloat(amount) / Math.pow(10, 18) * mockRate * Math.pow(10, 6)).toString();
-
-        const mockQuote = {
-          type: 'mock',
-          gasless: false,
-          fromToken: { address: src, amount: amount },
-          toToken: { address: dst, amount: mockToAmount },
-          rate: mockRate,
-          mock: true
-        };
-
-        return res.json(mockQuote);
+        const errorText = await response.text();
+        console.error('1inch API error:', errorText);
+        return res.status(response.status).json({ 
+          error: '1inch API request failed',
+          details: errorText
+        });
       }
     } catch (error) {
-      console.error('Regular quote fallback error:', error);
-      return res.status(500).json({ error: 'All quote methods failed' });
+      console.error('Quote API error:', error);
+      return res.status(500).json({ error: 'Failed to get quote from 1inch API' });
     }
   }
 
