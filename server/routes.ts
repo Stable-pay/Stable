@@ -13,7 +13,7 @@ const upload = multer({
     const allowedTypes = /jpeg|jpg|png|pdf/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
-    
+
     if (mimetype && extname) {
       return cb(null, true);
     } else {
@@ -51,22 +51,22 @@ const USDC_ADDRESSES: Record<string, string> = {
 const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
   // Wallet balance endpoint
   app.get("/api/wallet/balances", async (req, res) => {
     try {
       const { address, chainId } = req.query;
-      
+
       if (!address || !chainId) {
         return res.status(400).json({ error: 'Address and chainId are required' });
       }
-      
+
       console.log(`Wallet balance request: ${address} on chain ${chainId}`);
-      
+
       // For now, return the native token balance only
       // This should be expanded to include ERC20 tokens
       const balances = [];
-      
+
       // Get native token symbol
       const nativeTokens: Record<string, string> = {
         '1': 'ETH',
@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         '43114': 'AVAX',
         '56': 'BNB'
       };
-      
+
       const symbol = nativeTokens[chainId as string] || 'ETH';
       const networkNames: Record<string, string> = {
         '1': 'Ethereum',
@@ -88,9 +88,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         '43114': 'Avalanche',
         '56': 'BSC'
       };
-      
+
       const chainName = networkNames[chainId as string] || 'Unknown';
-      
+
       // Return structure that matches the expected format
       res.json({
         balances: [
@@ -106,7 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         ]
       });
-      
+
     } catch (error) {
       console.error('Wallet balance error:', error);
       res.status(500).json({ error: 'Failed to fetch wallet balances' });
@@ -117,9 +117,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/swap/quote", async (req, res) => {
     try {
       const { fromToken, toToken, fromAmount, chainId, walletAddress } = req.body;
-      
+
       console.log(`Swap quote request: ${fromToken} to ${toToken}, amount: ${fromAmount} on chain ${chainId}`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
@@ -165,7 +165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Return fallback quote structure
         const mockRate = fromToken === 'ETH' ? 2490 : 1.001;
         const toAmount = (parseFloat(fromAmount) * mockRate).toFixed(6);
-        
+
         return res.json({
           fromAmount,
           toAmount,
@@ -177,7 +177,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const data = await response.json();
-      
+
       // Transform 1inch response to our format
       const quote = {
         fromAmount: fromAmount,
@@ -200,9 +200,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/remittance/withdraw", async (req, res) => {
     try {
       const { amount, currency, bankDetails, kycData } = req.body;
-      
+
       console.log(`Remittance withdrawal request: ${amount} ${currency} for ${kycData.fullName}`);
-      
+
       // Validate required fields
       if (!amount || !currency || !bankDetails || !kycData) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -216,12 +216,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Simulate bank transfer processing
       const withdrawalId = `WD${Date.now()}`;
       const estimatedTime = '5-10 minutes';
-      
+
       // In production, this would integrate with:
       // - Bank APIs (IMPS/NEFT/RTGS)
       // - Payment gateways (Razorpay, Payu, etc.)
       // - Compliance systems
-      
+
       const withdrawalData = {
         id: withdrawalId,
         amount: parseFloat(amount),
@@ -252,9 +252,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/remittance/status/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      
+
       console.log(`Remittance status check: ${id}`);
-      
+
       // In production, this would query the database for transaction status
       const mockStatus = {
         id,
@@ -276,13 +276,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/remittance/history", async (req, res) => {
     try {
       const { address } = req.query;
-      
+
       if (!address) {
         return res.status(400).json({ error: 'Wallet address required' });
       }
 
       console.log(`Remittance history for: ${address}`);
-      
+
       // In production, this would fetch from database
       const mockHistory = [
         {
@@ -323,9 +323,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/remittance/rates", async (req, res) => {
     try {
       const { from, to } = req.query;
-      
+
       console.log(`Live exchange rate request: ${from} to ${to}`);
-      
+
       // Map token symbols to CoinGecko IDs
       const tokenMap: Record<string, string> = {
         'ETH': 'ethereum',
@@ -342,7 +342,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Fetch live price from CoinGecko
       const coingeckoUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=inr,usd&include_last_updated_at=true`;
-      
+
       const response = await fetch(coingeckoUrl, {
         headers: {
           'Accept': 'application/json',
@@ -356,14 +356,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = await response.json();
       const tokenData = data[tokenId];
-      
+
       if (!tokenData) {
         return res.status(404).json({ error: 'Token price not found' });
       }
 
       const rate = tokenData.inr || 0;
       const usdRate = tokenData.usd || 0;
-      
+
       console.log(`Live rate fetched: 1 ${from} = ₹${rate} (via CoinGecko)`);
 
       res.json({
@@ -386,12 +386,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/kyc/status/:address", async (req, res) => {
     try {
       const { address } = req.params;
-      
+
       console.log(`KYC status check: ${address}`);
-      
+
       // Check if user exists in database
       const user = await storage.getUserByWalletAddress(address);
-      
+
       if (!user) {
         return res.status(404).json({ 
           error: 'User not found. Please complete KYC verification.',
@@ -428,11 +428,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/bank-details/:address", async (req, res) => {
     try {
       const { address } = req.params;
-      
+
       console.log(`Fetching bank details for: ${address}`);
-      
+
       const user = await storage.getUserByWalletAddress(address);
-      
+
       if (!user) {
         return res.status(404).json({ 
           error: 'User not found',
@@ -470,20 +470,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { src, dst, amount, from } = req.query;
-      
+
       console.log(`1inch Fusion quote request: ${chainId} - gasless swap ${src} to ${dst}`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
+      console.log('API key check:', apiKey ? 'Found' : 'Missing');
+
       if (!apiKey) {
         console.log('1inch API key not found - falling back to regular quote');
-        // Fall back to regular 1inch quote
+        console.log('Available env vars:', Object.keys(process.env).filter(k => k.includes('ONEINCH')));
+        // Fall back to regular quote
         return await handleRegularQuote(chainId, src, dst, amount, res);
       }
 
       // Try 1inch Fusion API v2.0 first
       try {
         const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote/receive`;
-        
+
         const requestBody = {
           srcTokenAddress: src as string,
           dstTokenAddress: dst as string,
@@ -507,7 +510,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (response.ok) {
           const data = await response.json();
           console.log('1inch Fusion quote success');
-          
+
           const fusionQuote = {
             type: 'fusion',
             gasless: true,
@@ -517,7 +520,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             order: data.order,
             quoteId: data.quoteId
           };
-          
+
           return res.json(fusionQuote);
         } else {
           console.log('Fusion API failed, falling back to regular quote');
@@ -560,7 +563,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (response.ok) {
         const data = await response.json();
         console.log('Regular 1inch quote success');
-        
+
         const regularQuote = {
           type: 'regular',
           gasless: false,
@@ -569,13 +572,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           protocols: data.protocols,
           gas: data.estimatedGas
         };
-        
+
         return res.json(regularQuote);
       } else {
         // Create a mock quote for UI testing
         const mockRate = src === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' ? 2490 : 1.001;
         const mockToAmount = (parseFloat(amount) / Math.pow(10, 18) * mockRate * Math.pow(10, 6)).toString();
-        
+
         const mockQuote = {
           type: 'mock',
           gasless: false,
@@ -584,7 +587,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           rate: mockRate,
           mock: true
         };
-        
+
         return res.json(mockQuote);
       }
     } catch (error) {
@@ -598,9 +601,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { order, signature, quoteId } = req.body;
-      
+
       console.log(`1inch Fusion submit order: ${chainId} - quoteId: ${quoteId}`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(503).json({ 
@@ -610,7 +613,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const submitUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order`;
-      
+
       const response = await fetch(submitUrl, {
         method: 'POST',
         headers: {
@@ -650,9 +653,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/1inch/:chainId/fusion/order/:orderHash", async (req, res) => {
     try {
       const { chainId, orderHash } = req.params;
-      
+
       console.log(`1inch Fusion order status: ${chainId} - ${orderHash}`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(503).json({ 
@@ -662,7 +665,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const statusUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order/status/${orderHash}`;
-      
+
       const response = await fetch(statusUrl, {
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -693,9 +696,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { src, dst, amount, from } = req.query;
-      
+
       console.log(`1inch quote request: ${chainId} - ${src} to ${dst}, amount: ${amount}`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
@@ -743,9 +746,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { src, dst, amount, from, slippage } = req.query;
-      
+
       console.log(`1inch swap request: ${chainId} - ${src} to ${dst}, amount: ${amount}`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
@@ -795,15 +798,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { src, dst, amount, from } = req.query;
-      
+
       console.log(`1inch Fusion quote request: ${chainId} - gasless swap ${src} to ${dst}`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
       }
 
-      // Try Fusion API for gasless quotes
+      // Try FusionAPI for gasless quotes
       const fusionUrl = `https://api.1inch.dev/fusion/v1.0/${chainId}/quote/receive`;
       const params = new URLSearchParams({
         src: src as string,
@@ -824,7 +827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('1inch Fusion API error:', errorText);
-        
+
         // Fallback to regular quote if Fusion fails
         const regularQuoteUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/quote`;
         const regularParams = new URLSearchParams({
@@ -844,7 +847,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const fallbackData = await fallbackResponse.json();
           return res.json({ ...fallbackData, gasless: false });
         }
-        
+
         return res.status(response.status).json({ 
           error: '1inch Fusion API request failed',
           details: errorText
@@ -864,9 +867,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/1inch/:chainId/fusion/swap", async (req, res) => {
     try {
       const { chainId } = req.params;
-      
+
       console.log(`1inch Fusion swap request: ${chainId} - gasless transaction`);
-      
+
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'API key not configured' });
@@ -910,12 +913,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { sellToken, buyToken, sellAmount, takerAddress, slippagePercentage } = req.query;
-      
+
       console.log(`0x quote request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
-      
+
       // Auto-convert to USDC if buyToken not specified
       const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
-      
+
       // First try price endpoint to check basic API access
       const priceParams = new URLSearchParams({
         chainId: chainId as string,
@@ -923,7 +926,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         buyToken: targetBuyToken as string,
         sellAmount: sellAmount as string
       });
-      
+
       let response = await fetch(`${ZX_BASE_URL}/swap/v1/price?${priceParams}`, {
         headers: {
           'Accept': 'application/json',
@@ -931,9 +934,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log(`0x price response status: ${response.status}`);
-      
+
       if (response.status === 403) {
         return res.status(403).json({
           error: 'API access restricted',
@@ -942,7 +945,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           upgradeUrl: 'https://0x.org/pricing'
         });
       }
-      
+
       if (response.ok) {
         // If price works, try to get full quote
         const quoteParams = new URLSearchParams({
@@ -953,7 +956,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           takerAddress: takerAddress as string,
           slippagePercentage: (slippagePercentage as string) || '0.01'
         });
-        
+
         const quoteResponse = await fetch(`${ZX_BASE_URL}/swap/v1/quote?${quoteParams}`, {
           headers: {
             'Accept': 'application/json',
@@ -962,9 +965,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'Content-Type': 'application/json'
           }
         });
-        
+
         console.log(`0x quote response status: ${quoteResponse.status}`);
-        
+
         if (quoteResponse.ok) {
           const quoteData = await quoteResponse.json();
           console.log('0x quote response preview:', JSON.stringify(quoteData).substring(0, 200));
@@ -985,14 +988,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.json(mockQuote);
         }
       }
-      
+
       const error = await response.text();
       console.error('0x API error:', error);
       return res.status(response.status).json({ 
         error: 'API request failed',
         details: error 
       });
-      
+
     } catch (error) {
       console.error('0x quote proxy error:', error);
       res.status(500).json({ error: 'Failed to connect to 0x API' });
@@ -1004,17 +1007,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { sellToken, buyToken, sellAmount, takerAddress } = req.query;
-      
+
       console.log(`0x gasless price request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
-      
+
       // Check if gasless is supported on this chain
       if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
         return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
       }
-      
+
       // Auto-convert to USDC if buyToken not specified
       const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
-      
+
       const params = new URLSearchParams({
         chainId: chainId,
         sellToken: sellToken as string,
@@ -1022,7 +1025,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sellAmount: sellAmount as string,
         takerAddress: takerAddress as string
       });
-      
+
       const response = await fetch(`${ZX_BASE_URL}/gasless/price?${params}`, {
         headers: {
           'Accept': 'application/json',
@@ -1031,18 +1034,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log(`0x gasless price response status: ${response.status}`);
-      
+
       if (!response.ok) {
         const error = await response.text();
         console.error('0x gasless price error:', error);
         return res.status(response.status).json({ error: 'Failed to get gasless price' });
       }
-      
+
       const data = await response.json();
       console.log('0x gasless price response preview:', JSON.stringify(data).substring(0, 200));
-      
+
       res.json(data);
     } catch (error) {
       console.error('0x gasless price proxy error:', error);
@@ -1055,17 +1058,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { sellToken, buyToken, sellAmount, takerAddress } = req.body;
-      
+
       console.log(`0x gasless quote request: ${chainId} - ${sellToken} to ${buyToken}, amount: ${sellAmount}`);
-      
+
       // Check if gasless is supported on this chain
       if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
         return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
       }
-      
+
       // Auto-convert to USDC if buyToken not specified
       const targetBuyToken = buyToken || USDC_ADDRESSES[chainId];
-      
+
       const requestBody = {
         chainId: parseInt(chainId),
         sellToken: sellToken === 'native' ? NATIVE_TOKEN_ADDRESS : sellToken,
@@ -1073,7 +1076,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sellAmount,
         takerAddress
       };
-      
+
       const response = await fetch(`${ZX_BASE_URL}/gasless/quote`, {
         method: 'POST',
         headers: {
@@ -1084,18 +1087,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         body: JSON.stringify(requestBody)
       });
-      
+
       console.log(`0x gasless quote response status: ${response.status}`);
-      
+
       if (!response.ok) {
         const error = await response.text();
         console.error('0x gasless quote error:', error);
         return res.status(response.status).json({ error: 'Failed to get gasless quote' });
       }
-      
+
       const data = await response.json();
       console.log('0x gasless quote response preview:', JSON.stringify(data).substring(0, 200));
-      
+
       res.json(data);
     } catch (error) {
       console.error('0x gasless quote proxy error:', error);
@@ -1108,19 +1111,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { chainId } = req.params;
       const { signature, trade } = req.body;
-      
+
       console.log(`0x gasless submit request: ${chainId} - trade ID: ${trade?.tradeHash}`);
-      
+
       // Check if gasless is supported on this chain
       if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
         return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
       }
-      
+
       const requestBody = {
         signature,
         trade
       };
-      
+
       const response = await fetch(`${ZX_BASE_URL}/gasless/submit`, {
         method: 'POST',
         headers: {
@@ -1131,18 +1134,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         body: JSON.stringify(requestBody)
       });
-      
+
       console.log(`0x gasless submit response status: ${response.status}`);
-      
+
       if (!response.ok) {
         const error = await response.text();
         console.error('0x gasless submit error:', error);
         return res.status(response.status).json({ error: 'Failed to submit gasless swap' });
       }
-      
+
       const data = await response.json();
       console.log('0x gasless submit response preview:', JSON.stringify(data).substring(0, 200));
-      
+
       res.json(data);
     } catch (error) {
       console.error('0x gasless submit proxy error:', error);
@@ -1154,14 +1157,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/0x/:chainId/gasless/status/:tradeHash", async (req, res) => {
     try {
       const { chainId, tradeHash } = req.params;
-      
+
       console.log(`0x gasless status request: ${chainId} - tradeHash: ${tradeHash}`);
-      
+
       // Check if gasless is supported on this chain
       if (!GASLESS_SUPPORTED_CHAINS[chainId]) {
         return res.status(400).json({ error: 'Gasless swaps not supported on this chain' });
       }
-      
+
       const response = await fetch(`${ZX_BASE_URL}/gasless/status/${tradeHash}`, {
         headers: {
           'Accept': 'application/json',
@@ -1170,25 +1173,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log(`0x gasless status response status: ${response.status}`);
-      
+
       if (!response.ok) {
         const error = await response.text();
         console.error('0x gasless status error:', error);
         return res.status(response.status).json({ error: 'Failed to get gasless swap status' });
       }
-      
+
       const data = await response.json();
       console.log('0x gasless status response preview:', JSON.stringify(data).substring(0, 200));
-      
+
       res.json(data);
     } catch (error) {
       console.error('0x gasless status proxy error:', error);
       res.status(500).json({ error: 'Failed to fetch gasless swap status from 0x API' });
     }
   });
-  
+
   // WalletConnect domain verification
   app.get("/.well-known/walletconnect.txt", (_req, res) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
@@ -1198,18 +1201,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.setHeader('Cache-Control', 'public, max-age=3600');
     res.status(200).send('6dfca9af31141b1fb9220aa7db3eee37');
   });
-  
+
   // User routes
   app.post("/api/users", async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
-      
+
       // Check if user already exists
       const existingUser = await storage.getUserByWalletAddress(userData.walletAddress);
       if (existingUser) {
         return res.json(existingUser);
       }
-      
+
       const user = await storage.createUser(userData);
       res.json(user);
     } catch (error: any) {
@@ -1221,11 +1224,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { walletAddress } = req.params;
       const user = await storage.getUserByWalletAddress(walletAddress);
-      
+
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-      
+
       res.json(user);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -1236,12 +1239,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const updates = req.body;
-      
+
       const user = await storage.updateUser(id, updates);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-      
+
       res.json(user);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -1263,7 +1266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const { documentType } = req.body;
-      
+
       if (!req.file) {
         return res.status(400).json({ error: "Document file is required" });
       }
@@ -1271,14 +1274,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // In a real implementation, you would upload to cloud storage
       // For now, we'll simulate with a fake URL
       const documentUrl = `https://storage.example.com/kyc/${userId}/${documentType}_${Date.now()}.${req.file.originalname.split('.').pop()}`;
-      
+
       const documentData = {
         userId,
         documentType,
         documentUrl,
         status: "pending" as const
       };
-      
+
       const document = await storage.createKycDocument(documentData);
       res.json(document);
     } catch (error: any) {
@@ -1290,12 +1293,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const updates = req.body;
-      
+
       const document = await storage.updateKycDocument(id, updates);
       if (!document) {
         return res.status(404).json({ error: "KYC document not found" });
       }
-      
+
       res.json(document);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -1317,7 +1320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const accountData = insertBankAccountSchema.parse({ ...req.body, userId });
-      
+
       const account = await storage.createBankAccount(accountData);
       res.json(account);
     } catch (error: any) {
@@ -1340,7 +1343,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const transactionData = insertTransactionSchema.parse({ ...req.body, userId });
-      
+
       const transaction = await storage.createTransaction(transactionData);
       res.json(transaction);
     } catch (error: any) {
@@ -1352,12 +1355,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const updates = req.body;
-      
+
       const transaction = await storage.updateTransaction(id, updates);
       if (!transaction) {
         return res.status(404).json({ error: "Transaction not found" });
       }
-      
+
       res.json(transaction);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -1378,11 +1381,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { network } = req.params;
       const wallet = await storage.getCustodyWalletByNetwork(network);
-      
+
       if (!wallet) {
         return res.status(404).json({ error: "Custody wallet not found for network" });
       }
-      
+
       res.json(wallet);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -1393,7 +1396,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/exchange-rates", async (req, res) => {
     try {
       const { from, to, network } = req.query;
-      
+
       // Mock exchange rates - in production, fetch from real APIs
       const rates = {
         'ETH/USDC': 2451.32,
@@ -1403,10 +1406,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'AVAX/USDC': 28.45,
         'USDC/INR': 83.24
       };
-      
+
       const rateKey = `${from}/${to}`;
       const rate = rates[rateKey as keyof typeof rates] || 1;
-      
+
       res.json({
         from,
         to,
@@ -1423,13 +1426,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/swap", async (req, res) => {
     try {
       const { userId, network, fromToken, toToken, fromAmount, slippage } = req.body;
-      
+
       // Mock swap execution
       const exchangeRate = 2451.32; // ETH to USDC
       const toAmount = parseFloat(fromAmount) * exchangeRate;
       const networkFee = 0.005; // 0.005 ETH
       const processingFee = 2.50; // $2.50 in USDC
-      
+
       const transactionData = {
         userId,
         type: "swap" as const,
@@ -1445,7 +1448,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         txHash: `0x${Math.random().toString(16).substring(2, 66)}`,
         metadata: { slippage }
       };
-      
+
       const transaction = await storage.createTransaction(transactionData);
       res.json(transaction);
     } catch (error: any) {
@@ -1457,7 +1460,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/withdraw", async (req, res) => {
     try {
       const { userId, usdcAmount, bankAccountId, inrAmount } = req.body;
-      
+
       const transactionData = {
         userId,
         type: "withdrawal" as const,
@@ -1471,14 +1474,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: "processing" as const,
         metadata: { bankAccountId }
       };
-      
+
       const transaction = await storage.createTransaction(transactionData);
-      
+
       // Simulate processing delay
       setTimeout(async () => {
         await storage.updateTransaction(transaction.id, { status: "completed" });
       }, 5000);
-      
+
       res.json(transaction);
     } catch (error: any) {
       res.status(400).json({ error: error.message });

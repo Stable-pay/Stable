@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -94,7 +93,7 @@ export function EnhancedSwapInterface() {
 
     setSwapState({ status: 'getting-quote' });
     setProgress(20);
-    
+
     try {
       const amountInWei = parseUnits(swapAmount, selectedToken.decimals).toString();
       const fromTokenAddress = selectedToken.isNative ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : selectedToken.address;
@@ -114,7 +113,7 @@ export function EnhancedSwapInterface() {
       });
 
       console.log('Getting quote from enhanced API...');
-      
+
       const response = await fetch(`/api/1inch/${chainId}/fusion/quote?${quoteParams}`);
       setProgress(80);
 
@@ -130,7 +129,7 @@ export function EnhancedSwapInterface() {
 
       const typeLabel = quoteData.gasless ? 'Gasless' : 'Regular';
       const swapType = quoteData.mock ? 'Demo' : typeLabel;
-      
+
       toast({
         title: `${swapType} Quote Ready`,
         description: `Best rate found for ${swapAmount} ${selectedToken.symbol}`,
@@ -142,7 +141,7 @@ export function EnhancedSwapInterface() {
         status: 'failed', 
         error: error instanceof Error ? error.message : 'Failed to get quote' 
       });
-      
+
       toast({
         title: "Quote Failed",
         description: error instanceof Error ? error.message : "Unable to get swap quote",
@@ -166,7 +165,7 @@ export function EnhancedSwapInterface() {
             status: 'completed', 
             hash: `0x${Math.random().toString(16).substring(2, 66)}` 
           });
-          
+
           toast({
             title: "Demo Swap Completed!",
             description: `Successfully simulated swap of ${swapAmount} ${selectedToken.symbol}`,
@@ -194,7 +193,7 @@ export function EnhancedSwapInterface() {
         status: 'failed', 
         error: error instanceof Error ? error.message : 'Swap failed' 
       });
-      
+
       toast({
         title: "Swap Failed",
         description: error instanceof Error ? error.message : "Transaction failed",
@@ -269,8 +268,21 @@ export function EnhancedSwapInterface() {
               Live Prices
             </Badge>
           </div>
+          {!import.meta.env.VITE_ONEINCH_API_KEY && (
+            <Badge variant="outline" className="mb-4 bg-yellow-50 text-yellow-700 border-yellow-200">
+              <AlertTriangle className="h-3 w-3 mr-1" />
+              Demo Mode - Connect API key for live trading
+            </Badge>
+          )}
+
+          {import.meta.env.VITE_ONEINCH_API_KEY && (
+            <Badge variant="outline" className="mb-4 bg-green-50 text-green-700 border-green-200">
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Live Trading Mode - 1inch API Connected
+            </Badge>
+          )}
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           {/* Settings Panel */}
           {showSettings && (
@@ -303,7 +315,7 @@ export function EnhancedSwapInterface() {
                 Live Market Data
               </div>
             </div>
-            
+
             <div className="p-4 bg-white dark:bg-gray-800 rounded-xl border border-slate-200 dark:border-gray-600 space-y-3">
               <Select 
                 value={selectedToken?.address || ''} 
@@ -432,9 +444,9 @@ export function EnhancedSwapInterface() {
                   </Badge>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <div className="text-xs text-slate-600 dark:text-slate-400">Exchange Rate</div>
@@ -460,7 +472,7 @@ export function EnhancedSwapInterface() {
                   </div>
                 </div>
               </div>
-              
+
               {quote.mock && (
                 <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded text-xs flex items-center gap-2">
                   <Info className="h-3 w-3 text-amber-600" />
