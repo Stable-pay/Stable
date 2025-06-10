@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowUpDown, Wallet, Zap, Shield, TrendingUp, Sparkles } from 'lucide-react';
-import { useProductionParticleWallet } from '@/hooks/use-production-particle-wallet';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { supportedChains } from '@/lib/particle-config';
 
 export function ParticleSwapInterface() {
@@ -22,7 +22,7 @@ export function ParticleSwapInterface() {
     switchChain, 
     swapToUSDC,
     chainId 
-  } = useProductionParticleWallet();
+  } = useParticleWallet();
   
   const { toast } = useToast();
 
