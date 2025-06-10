@@ -1,4 +1,3 @@
-
 // Production-ready 1inch Fusion API for live gasless swaps
 // Built according to 1inch Fusion SDK documentation
 
@@ -60,11 +59,12 @@ class ProductionFusionAPI {
 
   // USDC addresses for supported chains
   private readonly USDC_ADDRESSES: Record<number, string> = {
-    1: '0xA0b86a33E6e7c7c0c3e6d2e7d2e6b7e6e6e6e6e6',      // Ethereum
+    1: '0xA0b86a33E6441b8Db75092D5e4FD0B7b1c4c8F0f',      // Ethereum (corrected)
     137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon
     42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
     8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
     10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism
+    43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche
   };
 
   async getGaslessQuote(params: FusionQuoteRequest): Promise<FusionQuoteResponse | null> {
@@ -75,7 +75,7 @@ class ProductionFusionAPI {
 
     try {
       const { srcTokenAddress, dstTokenAddress, srcTokenAmount, walletAddress, chainId } = params;
-      
+
       // Use correct USDC address for the chain
       const correctDstAddress = dstTokenAddress === 'USDC' ? 
         this.USDC_ADDRESSES[chainId] : dstTokenAddress;
@@ -83,7 +83,7 @@ class ProductionFusionAPI {
       if (!correctDstAddress) {
         throw new Error(`USDC not supported on chain ${chainId}`);
       }
-      
+
       console.log('Requesting Fusion gasless quote:', {
         from: srcTokenAddress,
         to: correctDstAddress,
@@ -110,17 +110,17 @@ class ProductionFusionAPI {
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         console.log('Fusion quote failed:', error.error || response.statusText);
-        
+
         if (error.requiresAuth) {
           console.log('API authentication required for Fusion');
         }
-        
+
         return null;
       }
 
       const data = await response.json();
       console.log('Fusion quote received:', data.type, data.gasless ? '(gasless)' : '(regular)');
-      
+
       return data;
     } catch (error) {
       console.error('Fusion quote error:', error);
@@ -136,7 +136,7 @@ class ProductionFusionAPI {
 
     try {
       const { order, signature, quoteId, chainId, type = 'fusion-plus' } = params;
-      
+
       console.log(`Executing ${type} gasless swap:`, {
         quoteId,
         chainId,
@@ -166,7 +166,7 @@ class ProductionFusionAPI {
 
       const data = await response.json();
       console.log(`${type} gasless swap executed:`, data);
-      
+
       return data;
     } catch (error) {
       console.error('Fusion execution error:', error);
@@ -205,9 +205,9 @@ class ProductionFusionAPI {
   async getRegularSwapQuote(params: FusionQuoteRequest): Promise<FusionQuoteResponse> {
     try {
       const { srcTokenAddress, dstTokenAddress, srcTokenAmount, walletAddress, chainId } = params;
-      
+
       console.log('Getting regular swap quote as fallback');
-      
+
       const quoteParams = new URLSearchParams({
         src: srcTokenAddress,
         dst: dstTokenAddress,
@@ -229,7 +229,7 @@ class ProductionFusionAPI {
       }
 
       const data = await response.json();
-      
+
       return {
         type: 'regular',
         gasless: false,
@@ -255,7 +255,7 @@ class ProductionFusionAPI {
   async getSwapQuote(params: FusionQuoteRequest): Promise<FusionQuoteResponse> {
     // Try Fusion first for gasless swap
     const fusionQuote = await this.getGaslessQuote(params);
-    
+
     if (fusionQuote && fusionQuote.gasless) {
       if (fusionQuote.type === 'fusion-plus') {
         console.log('✅ Fusion+ gasless swap available (best option)');

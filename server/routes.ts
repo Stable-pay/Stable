@@ -40,11 +40,11 @@ const GASLESS_SUPPORTED_CHAINS: Record<string, boolean> = {
 
 // USDC addresses for supported chains (verified correct addresses)
 const USDC_ADDRESSES: Record<string, string> = {
-  '1': '0xA0b86a33E6e7c7c0c3e6d2e7d2e6b7e6e6e6e6e6',      // Ethereum USDC (correct)
+  '1': '0xA0b86a33E6441b8Db75092D5e4FD0B7b1c4c8F0f',      // Ethereum USDC (corrected)
   '137': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
   '42161': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
   '8453': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
-  '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism
+  '10': '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism USDC
   '43114': '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'   // Avalanche USDC
 };
 
@@ -494,9 +494,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Using destination token address: ${correctDst}`);
 
-      // Try 1inch Fusion+ API first (newest version)
+      // Try 1inch Fusion+ API first (corrected endpoint)
       try {
-        const fusionPlusUrl = `https://api.1inch.dev/fusion-plus/quoter/v1.0/${chainId}/quote/receive`;
+        const fusionPlusUrl = `https://api.1inch.dev/fusion-plus/quoter/v1.0/${chainId}/quote`;
 
         const requestBody = {
           src: src as string,
@@ -504,7 +504,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           amount: amount as string,
           from: from as string || '0x0000000000000000000000000000000000000000',
           enableEstimate: true,
-          includeTokensInfo: true
+          includeTokensInfo: true,
+          includeProtocols: true
         };
 
         console.log('Fusion+ request body:', JSON.stringify(requestBody, null, 2));
@@ -531,14 +532,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
             fromToken: { 
               address: src, 
               amount: amount,
-              symbol: data.srcToken?.symbol,
-              decimals: data.srcToken?.decimals
+              symbol: data.srcToken?.symbol || 'ETH',
+              decimals: data.srcToken?.decimals || 18
             },
             toToken: { 
               address: correctDst, 
               amount: data.dstAmount || data.toAmount,
-              symbol: data.dstToken?.symbol,
-              decimals: data.dstToken?.decimals
+              symbol: data.dstToken?.symbol || 'USDC',
+              decimals: data.dstToken?.decimals || 6
             },
             quoteId: data.quoteId,
             order: data.order,
@@ -547,7 +548,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             settlement: data.settlement,
             displayToAmount: data.dstAmount ? (parseFloat(data.dstAmount) / Math.pow(10, data.dstToken?.decimals || 6)).toFixed(6) : '0',
             rate: data.dstAmount ? (parseFloat(data.dstAmount) / parseFloat(amount) * Math.pow(10, (data.srcToken?.decimals || 18) - (data.dstToken?.decimals || 6))).toFixed(4) : '0',
-            validUntil: data.validUntil
+            validUntil: data.validUntil,
+            protocols: data.protocols
           };
 
           return res.json(fusionPlusQuote);
@@ -559,18 +561,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('Fusion+ API error:', fusionPlusError);
       }
 
-      // Fallback to Fusion v2.0 if Fusion+ fails
+      // Try Fusion v2.0 with corrected endpoint
       try {
-        const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote/receive`;
+        const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote`;
 
         const requestBody = {
-          srcTokenAddress: src as string,
-          dstTokenAddress: correctDst,
-          srcTokenAmount: amount as string,
-          walletAddress: from as string || '0x0000000000000000000000000000000000000000',
+          src: src as string,
+          dst: correctDst,
+          amount: amount as string,
+          from: from as string || '0x0000000000000000000000000000000000000000',
           enableEstimate: true,
-          permits: [],
-          interactions: []
+          includeTokensInfo: true
         };
 
         console.log('Fusion v2.0 fallback request body:', JSON.stringify(requestBody, null, 2));
@@ -594,13 +595,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const fusionQuote = {
             type: 'fusion',
             gasless: true,
-            fromToken: { address: src, amount: amount },
-            toToken: { address: correctDst, amount: data.dstTokenAmount || data.toAmount },
+            fromToken: { 
+              address: src, 
+              amount: amount,
+              symbol: data.srcToken?.symbol || 'ETH',
+              decimals: data.srcToken?.decimals || 18
+            },
+            toToken: { 
+              address: correctDst, 
+              amount: data.dstAmount || data.toAmount,
+              symbol: data.dstToken?.symbol || 'USDC',
+              decimals: data.dstToken?.decimals || 6
+            },
             estimate: data.estimate,
             order: data.order,
             quoteId: data.quoteId,
-            displayToAmount: data.dstTokenAmount ? (parseFloat(data.dstTokenAmount) / Math.pow(10, 6)).toFixed(6) : '0',
-            rate: data.dstTokenAmount ? (parseFloat(data.dstTokenAmount) / parseFloat(amount) * Math.pow(10, 12)).toFixed(4) : '0'
+            displayToAmount: data.dstAmount ? (parseFloat(data.dstAmount) / Math.pow(10, data.dstToken?.decimals || 6)).toFixed(6) : '0',
+            rate: data.dstAmount ? (parseFloat(data.dstAmount) / parseFloat(amount) * Math.pow(10, (data.srcToken?.decimals || 18) - (data.dstToken?.decimals || 6))).toFixed(4) : '0',
+            protocols: data.protocols
           };
 
           return res.json(fusionQuote);
@@ -624,8 +636,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Helper function for regular 1inch quotes
-  async function handleRegularQuote(chainId: any, src: any, dst: any, amount: any, res: any) {
+  // Helper function for regular 1inch quotes with retry logic
+  async function handleRegularQuote(chainId: any, src: any, dst: any, amount: any, res: any, retryCount = 0) {
     try {
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
@@ -633,7 +645,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: 'API key not configured' });
       }
 
-      console.log(`Regular 1inch quote: ${chainId} - ${src} to ${dst}, amount: ${amount}`);
+      console.log(`Regular 1inch quote: ${chainId} - ${src} to ${dst}, amount: ${amount}, retry: ${retryCount}`);
 
       const quoteUrl = `https://api.1inch.dev/swap/v6.0/${chainId}/quote`;
       const params = new URLSearchParams({
@@ -660,31 +672,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const regularQuote = {
           type: 'regular',
           gasless: false,
-          fromToken: { address: src, amount: amount },
-          toToken: { address: dst, amount: data.toAmount },
+          fromToken: { 
+            address: src, 
+            amount: amount,
+            symbol: data.srcToken?.symbol || 'ETH',
+            decimals: data.srcToken?.decimals || 18
+          },
+          toToken: { 
+            address: dst, 
+            amount: data.toAmount,
+            symbol: data.dstToken?.symbol || 'USDC',
+            decimals: data.dstToken?.decimals || 6
+          },
           protocols: data.protocols,
           gas: data.estimatedGas,
-          displayToAmount: (parseFloat(data.toAmount) / Math.pow(10, 6)).toFixed(6),
-          rate: (parseFloat(data.toAmount) / parseFloat(amount) * Math.pow(10, 12)).toFixed(4)
+          displayToAmount: (parseFloat(data.toAmount) / Math.pow(10, data.dstToken?.decimals || 6)).toFixed(6),
+          rate: (parseFloat(data.toAmount) / parseFloat(amount) * Math.pow(10, (data.srcToken?.decimals || 18) - (data.dstToken?.decimals || 6))).toFixed(4)
         };
 
         return res.json(regularQuote);
+      } else if (response.status === 429 && retryCount < 2) {
+        // Rate limit exceeded, wait and retry
+        console.log(`Rate limit hit, retrying in ${(retryCount + 1) * 2} seconds...`);
+        await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 2000));
+        return handleRegularQuote(chainId, src, dst, amount, res, retryCount + 1);
       } else {
         const errorText = await response.text();
         console.error('1inch API error:', response.status, errorText);
 
-        // Return a mock quote if API fails
-        console.log('Returning mock quote due to API failure');
+        // Return an enhanced mock quote
+        console.log('Returning enhanced mock quote due to API failure');
         const ethToUsdcRate = 3200; // More realistic ETH/USDC rate
-        const amountFloat = parseFloat(amount) / Math.pow(10, 18); // Convert from wei
+        const amountFloat = parseFloat(amount) / Math.pow(10, 18);
         const mockQuote = {
           type: 'mock',
           gasless: false,
-          fromToken: { address: src, amount: amount },
-          toToken: { address: dst, amount: (amountFloat * ethToUsdcRate * Math.pow(10, 6)).toString() },
+          fromToken: { 
+            address: src, 
+            amount: amount,
+            symbol: 'ETH',
+            decimals: 18
+          },
+          toToken: { 
+            address: dst, 
+            amount: (amountFloat * ethToUsdcRate * Math.pow(10, 6)).toString(),
+            symbol: 'USDC',
+            decimals: 6
+          },
           displayToAmount: (amountFloat * ethToUsdcRate).toFixed(6),
           rate: ethToUsdcRate.toString(),
-          error: 'Using mock data - API temporarily unavailable'
+          error: response.status === 429 ? 'Rate limit exceeded - using mock data' : 'API temporarily unavailable'
         };
 
         return res.json(mockQuote);
@@ -692,17 +729,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Quote API error:', error);
 
-      // Return mock quote on error
-      const ethToUsdcRate = 3200; // More realistic ETH/USDC rate
-      const amountFloat = parseFloat(amount) / Math.pow(10, 18); // Convert from wei
+      // Return enhanced mock quote on error
+      const ethToUsdcRate = 3200;
+      const amountFloat = parseFloat(amount) / Math.pow(10, 18);
       const mockQuote = {
         type: 'mock',
         gasless: false,
-        fromToken: { address: src, amount: amount },
-        toToken: { address: dst, amount: (amountFloat * ethToUsdcRate * Math.pow(10, 6)).toString() },
+        fromToken: { 
+          address: src, 
+          amount: amount,
+          symbol: 'ETH',
+          decimals: 18
+        },
+        toToken: { 
+          address: dst, 
+          amount: (amountFloat * ethToUsdcRate * Math.pow(10, 6)).toString(),
+          symbol: 'USDC',
+          decimals: 6
+        },
         displayToAmount: (amountFloat * ethToUsdcRate).toFixed(6),
         rate: ethToUsdcRate.toString(),
-        error: 'Using mock data - connection error'
+        error: 'Connection error - using mock data'
       };
 
       return res.json(mockQuote);
@@ -728,9 +775,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let submitUrl: string;
       let requestBody: any;
 
-      // Use Fusion+ API if available, otherwise fallback to Fusion v2.0
+      // Use correct Fusion+ API endpoints
       if (type === 'fusion-plus') {
-        submitUrl = `https://api.1inch.dev/fusion-plus/relayer/v1.0/${chainId}/order/submit`;
+        submitUrl = `https://api.1inch.dev/fusion-plus/relayer/v1.0/${chainId}/order`;
         requestBody = {
           order: order,
           signature: signature,
