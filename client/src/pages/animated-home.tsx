@@ -21,12 +21,10 @@ import {
 } from 'lucide-react';
 import { Link } from 'wouter';
 import { Web3PulseLoader, Web3SpinLoader } from '@/components/animations/web3-loader';
-import { useAppKit } from '@reown/appkit/react';
-import { useAccount } from 'wagmi';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 
 export default function AnimatedHome() {
-  const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
+  const { connect, address, isConnected } = useParticleWallet();
 
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
