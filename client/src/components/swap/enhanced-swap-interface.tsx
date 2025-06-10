@@ -123,7 +123,7 @@ export function EnhancedSwapInterface() {
       }
 
       const quoteData = await response.json();
-      
+
       // Handle different quote types and calculate display values
       if (quoteData.toToken?.amount && selectedToken) {
         const decimals = selectedToken.decimals || 18;
@@ -132,7 +132,7 @@ export function EnhancedSwapInterface() {
         quoteData.rate = rate;
         quoteData.displayToAmount = toAmountFormatted;
       }
-      
+
       setQuote(quoteData);
       setProgress(100);
       setSwapState({ status: 'ready' });
@@ -172,7 +172,7 @@ export function EnhancedSwapInterface() {
 
     try {
       setProgress(25);
-      
+
       // Execute swap through 1inch API
       const swapParams = new URLSearchParams({
         src: selectedToken.isNative ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' : selectedToken.address,
@@ -185,7 +185,7 @@ export function EnhancedSwapInterface() {
       setProgress(50);
 
       const swapResponse = await fetch(`/api/1inch/${chainId}/swap?${swapParams}`);
-      
+
       if (!swapResponse.ok) {
         const errorData = await swapResponse.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to get swap transaction');
@@ -472,7 +472,7 @@ export function EnhancedSwapInterface() {
                 <div className="space-y-1">
                   <div className="text-xs text-slate-600 dark:text-slate-400">Exchange Rate</div>
                   <div className="font-semibold">
-                    1 {selectedToken?.symbol} = {quote.rate?.toFixed(4) || 'N/A'} USDC
+                    1 {selectedToken?.symbol} = {quote.rate ? Number(quote.rate).toFixed(4) : 'N/A'} USDC
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -494,7 +494,7 @@ export function EnhancedSwapInterface() {
                 </div>
               </div>
 
-              
+
             </div>
           )}
 
