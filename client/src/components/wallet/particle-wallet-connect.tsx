@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { useToast } from '@/hooks/use-toast';
+import WalletConnectionGuide from './wallet-connection-guide';
+import { detectWalletProvider } from '@/lib/wallet-detector';
 
 export default function ParticleWalletConnect() {
   const { 

@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { detectWalletProvider, requestWalletConnection, switchToNetwork, getWalletName } from './wallet-detector';
 
 // Production Particle Network Configuration
 const particleConfig = {
@@ -50,24 +51,48 @@ export class ParticleWalletService {
     }
 
     try {
-      // Use window.ethereum for wallet connection
-      if (typeof window !== 'undefined' && window.ethereum) {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        
-        if (accounts && accounts.length > 0) {
-          this.ethersProvider = new ethers.BrowserProvider(window.ethereum);
-          this.currentAddress = accounts[0];
-          
-          console.log('Connected to wallet:', this.currentAddress);
-          
-          return {
-            address: this.currentAddress,
-            provider: this.ethersProvider
-          };
-        }
+      // Detect wallet provider
+      const provider = detectWalletProvider();
+      if (!provider) {
+        throw new Error('No Web3 wallet detected. Please install MetaMask, Coinbase Wallet, or another Web3 wallet.');
       }
+
+      const walletName = getWalletName(provider);
+      console.log(`Attempting to connect to ${walletName}...`);
       
-      throw new Error('No wallet provider found');
+      // Request account access using improved detection
+      const accounts = await requestWalletConnection(provider);
+      
+      if (accounts && accounts.length > 0) {
+        this.ethersProvider = new ethers.BrowserProvider(provider);
+        this.currentAddress = accounts[0];
+        
+        console.log(`Connected to ${walletName}:`, this.currentAddress);
+        
+        // Listen for account changes
+        provider.on('accountsChanged', (accounts: string[]) => {
+          console.log('Account changed:', accounts);
+          if (accounts.length === 0) {
+            this.disconnect();
+          } else {
+            this.currentAddress = accounts[0];
+          }
+        });
+
+        // Listen for chain changes
+        provider.on('chainChanged', (chainId: string) => {
+          console.log('Chain changed:', chainId);
+          // Reload the page on chain change for simplicity
+          window.location.reload();
+        });
+        
+        return {
+          address: this.currentAddress,
+          provider: this.ethersProvider
+        };
+      } else {
+        throw new Error('No accounts available');
+      }
     } catch (error) {
       console.error('Wallet connection failed:', error);
       throw error;
@@ -193,17 +218,14 @@ export class ParticleWalletService {
   }
 
   async switchChain(chainId: number) {
-    if (!window.ethereum) throw new Error('Wallet not connected');
+    const provider = detectWalletProvider();
+    if (!provider) throw new Error('Wallet not connected');
 
     try {
       const targetChain = supportedChains.find(chain => chain.id === chainId);
       if (!targetChain) throw new Error('Unsupported chain');
 
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${chainId.toString(16)}` }]
-      });
-      
+      await switchToNetwork(provider, chainId);
       console.log(`Switched to ${targetChain.name}`);
     } catch (error) {
       console.error('Chain switch failed:', error);
