@@ -401,7 +401,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // 1inch Fusion API v2.0 for gasless swaps
+      // 1inch Fusion API v2.0 for gasless swaps - correct endpoint
       const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote/receive`;
       
       const requestBody = {
