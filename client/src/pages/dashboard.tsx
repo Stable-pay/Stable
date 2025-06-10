@@ -1,5 +1,5 @@
-import DashboardDark from './dashboard-dark';
+import StablePayDashboard from "@/components/dashboard/stablepay-dashboard";
 
 export default function Dashboard() {
-  return <DashboardDark />;
+  return <StablePayDashboard />;
 }

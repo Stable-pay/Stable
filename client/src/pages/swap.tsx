@@ -1,5 +1,5 @@
-import SwapDark from './swap-dark';
+import FusionSwapInterface from "@/components/swap/fusion-swap-interface";
 
 export default function Swap() {
-  return <SwapDark />;
+  return <FusionSwapInterface />;
 }
