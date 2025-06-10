@@ -379,5 +379,142 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   const server = createServer(app);
+  // StablePay custody transfer endpoint
+  app.post('/api/custody/transfer', async (req, res) => {
+    try {
+      const { userAddress, usdcAmount, chainId, swapTxHash } = req.body;
+      
+      let user = await storage.getUserByWalletAddress(userAddress);
+      if (!user) {
+        user = await storage.createUser({
+          walletAddress: userAddress,
+          email: '',
+          fullName: '',
+          kycStatus: 'none'
+        });
+      }
+
+      const transaction = await storage.createTransaction({
+        userId: user.id,
+        type: 'custody_transfer',
+        amount: parseFloat(usdcAmount),
+        currency: 'USDC',
+        status: 'completed',
+        transactionHash: swapTxHash,
+        metadata: JSON.stringify({ chainId, originalSwapTx: swapTxHash })
+      });
+
+      res.json({ success: true, transactionId: transaction.id });
+    } catch (error) {
+      console.error('Custody transfer failed:', error);
+      res.status(500).json({ error: 'Custody transfer failed' });
+    }
+  });
+
+  // KYC initiation endpoint
+  app.post('/api/kyc/initiate', async (req, res) => {
+    try {
+      const { userAddress } = req.body;
+      
+      let user = await storage.getUserByWalletAddress(userAddress);
+      if (!user) {
+        user = await storage.createUser({
+          walletAddress: userAddress,
+          email: '',
+          fullName: '',
+          kycStatus: 'pending'
+        });
+      } else {
+        await storage.updateUser(user.id, { kycStatus: 'pending' });
+      }
+
+      const kycDocument = await storage.createKycDocument({
+        userId: user.id,
+        documentType: 'aadhaar',
+        documentNumber: '',
+        status: 'pending',
+        filePath: ''
+      });
+
+      setTimeout(async () => {
+        try {
+          await storage.updateKycDocument(kycDocument.id, { status: 'verified' });
+          await storage.updateUser(user.id, { kycStatus: 'verified' });
+        } catch (error) {
+          console.error('Failed to update KYC status:', error);
+        }
+      }, 3000);
+
+      res.json({ success: true, kycId: kycDocument.id, status: 'pending' });
+    } catch (error) {
+      console.error('KYC initiation failed:', error);
+      res.status(500).json({ error: 'KYC initiation failed' });
+    }
+  });
+
+  // INR withdrawal initiation
+  app.post('/api/withdrawal/initiate', async (req, res) => {
+    try {
+      const { userAddress, usdcAmount, inrAmount, bankDetails } = req.body;
+      
+      const user = await storage.getUserByWalletAddress(userAddress);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      if (user.kycStatus !== 'verified') {
+        return res.status(403).json({ error: 'KYC verification required' });
+      }
+
+      const existingAccounts = await storage.getBankAccounts(user.id);
+      let bankAccount = existingAccounts.find(acc => acc.accountNumber === bankDetails.accountNumber);
+      
+      if (!bankAccount) {
+        bankAccount = await storage.createBankAccount({
+          userId: user.id,
+          bankName: 'Unknown Bank',
+          accountNumber: bankDetails.accountNumber,
+          ifscCode: bankDetails.ifscCode,
+          accountHolderName: bankDetails.accountHolderName
+        });
+      }
+
+      const transaction = await storage.createTransaction({
+        userId: user.id,
+        type: 'withdrawal',
+        amount: parseFloat(inrAmount),
+        currency: 'INR',
+        status: 'pending',
+        transactionHash: '',
+        metadata: JSON.stringify({ 
+          usdcAmount, 
+          bankAccountId: bankAccount.id,
+          exchangeRate: parseFloat(inrAmount) / parseFloat(usdcAmount)
+        })
+      });
+
+      setTimeout(async () => {
+        try {
+          await storage.updateTransaction(transaction.id, {
+            status: 'completed',
+            transactionHash: `INR_${Date.now()}`
+          });
+        } catch (error) {
+          console.error('Failed to update transaction status:', error);
+        }
+      }, 5000);
+
+      res.json({ 
+        success: true, 
+        transactionId: transaction.id,
+        estimatedTime: '24 hours',
+        inrAmount 
+      });
+    } catch (error) {
+      console.error('Withdrawal initiation failed:', error);
+      res.status(500).json({ error: 'Withdrawal initiation failed' });
+    }
+  });
+
   return server;
 }

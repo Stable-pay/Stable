@@ -11,17 +11,19 @@ import Withdraw from "@/pages/withdraw";
 import Dashboard from "@/pages/dashboard";
 import Remittance from "@/pages/remittance";
 import NotFound from "@/pages/not-found";
+import { StablePayConversion } from "@/pages/stablepay-conversion";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={AnimatedHome} />
+      <Route path="/" component={StablePayConversion} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/remittance" component={Remittance} />
+      <Route path="/home" component={AnimatedHome} />
       <Route component={NotFound} />
     </Switch>
   );
