@@ -25,8 +25,7 @@ import {
   Zap
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAppKit } from '@reown/appkit/react';
-import { useAccount } from 'wagmi';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { Web3PulseLoader, Web3SpinLoader } from '@/components/animations/web3-loader';
 import { ModernWalletModal } from '@/components/web3/modern-wallet-modal';
 
@@ -57,8 +56,7 @@ interface KYCFormData {
 type KYCStep = 'connect' | 'personal' | 'documents' | 'verification' | 'review' | 'completed';
 
 export default function AnimatedKYC() {
-  const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
+  const { connect, address, isConnected } = useParticleWallet();
   const { toast } = useToast();
   
   const [currentStep, setCurrentStep] = useState<KYCStep>('connect');

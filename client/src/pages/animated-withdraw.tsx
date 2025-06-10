@@ -26,8 +26,7 @@ import {
   ArrowUpDown
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAppKit } from '@reown/appkit/react';
-import { useAccount, useBalance } from 'wagmi';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { Web3PulseLoader, Web3SpinLoader } from '@/components/animations/web3-loader';
 import { ModernWalletModal } from '@/components/web3/modern-wallet-modal';
 
@@ -53,9 +52,7 @@ interface WithdrawRequest {
 type WithdrawStep = 'connect' | 'select-method' | 'bank-details' | 'amount' | 'review' | 'processing' | 'completed';
 
 export default function AnimatedWithdraw() {
-  const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
-  const { data: balance } = useBalance({ address });
+  const { connect, address, isConnected, balances } = useParticleWallet();
   const { toast } = useToast();
   
   const [currentStep, setCurrentStep] = useState<WithdrawStep>('connect');
