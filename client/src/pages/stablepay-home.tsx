@@ -25,8 +25,7 @@ import {
   Clock,
   FileText
 } from 'lucide-react';
-import { useAppKit } from '@reown/appkit/react';
-import { useAccount } from 'wagmi';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { Link } from 'wouter';
 
 export default function StablePayHome() {

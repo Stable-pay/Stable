@@ -1,4 +1,4 @@
-import { ParticleSwapInterface } from '@/components/swap/particle-swap-interface';
+import ProductionSwapInterface from '@/components/swap/production-swap-interface';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowUpDown, Zap, Shield, Sparkles } from 'lucide-react';
 import { useParticleWallet } from '@/hooks/use-particle-wallet';
@@ -20,7 +20,7 @@ export default function SwapParticle() {
         </div>
 
         <div className="max-w-2xl mx-auto">
-          <ParticleSwapInterface />
+          <ProductionSwapInterface />
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="text-center p-4">

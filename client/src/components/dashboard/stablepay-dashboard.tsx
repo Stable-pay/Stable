@@ -40,8 +40,8 @@ interface Transaction {
 }
 
 export default function StablePayDashboard() {
-  const { address, isConnected, balances, connect } = useProductionParticle();
-  const isLoading = false;
+  const { address, isConnected, balances, connect, isLoading } = useParticleWallet();
+  const totalValue = balances.reduce((sum, balance) => sum + balance.usdValue, 0);
   
   const [hideBalances, setHideBalances] = useState(false);
   const [selectedNetwork, setSelectedNetwork] = useState('all');
