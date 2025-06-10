@@ -191,7 +191,7 @@ export default function AnimatedHome() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Button 
-                    onClick={() => open()}
+                    onClick={() => connect()}
                     size="lg" 
                     className="bg-[#6667AB] hover:bg-[#5a5b96] text-white px-8 py-4 text-lg h-auto"
                   >

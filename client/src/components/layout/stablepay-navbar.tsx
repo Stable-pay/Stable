@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useAppKit } from '@reown/appkit/react';
-import { useAccount } from 'wagmi';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { Link, useLocation } from 'wouter';
 import { Menu, X, Wallet } from 'lucide-react';
 
 export function StablePayNavbar() {
-  const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
+  const { connect, address, isConnected } = useParticleWallet();
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -68,19 +66,20 @@ export function StablePayNavbar() {
                 >
                   {address?.slice(0, 6)}...{address?.slice(-4)}
                 </div>
-                <Button
-                  onClick={() => open()}
-                  variant="outline"
-                  size="sm"
-                  className="border-[#6667AB] text-[#6667AB] hover:bg-[#6667AB] hover:text-white"
-                >
-                  <Wallet className="h-4 w-4 mr-2" />
-                  Wallet
-                </Button>
+                <Link href="/dashboard">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-[#6667AB] text-[#6667AB] hover:bg-[#6667AB] hover:text-white"
+                  >
+                    <Wallet className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Button>
+                </Link>
               </div>
             ) : (
               <Button
-                onClick={() => open()}
+                onClick={() => connect()}
                 className="bg-[#6667AB] hover:bg-[#5a5b96] text-white"
               >
                 <Wallet className="h-4 w-4 mr-2" />

@@ -25,11 +25,9 @@ import {
   AlertTriangle,
   Banknote
 } from 'lucide-react';
-import { useAccount, useBalance } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
+import { useParticleWallet } from '@/hooks/use-particle-wallet';
 import { Link } from 'wouter';
-import { useComprehensiveWalletBalances } from '@/hooks/use-comprehensive-wallet-balances';
-import { formatUnits } from 'viem';
+// Removed viem and comprehensive wallet balances - replaced with Particle Network
 
 interface Transaction {
   id: string;
@@ -42,10 +40,8 @@ interface Transaction {
 }
 
 export default function StablePayDashboard() {
-  const { address, isConnected } = useAccount();
-  const { open } = useAppKit();
-  const { data: balance } = useBalance({ address });
-  const { balances, isLoading } = useComprehensiveWalletBalances();
+  const { address, isConnected, balances, connect } = useParticleWallet();
+  const isLoading = false;
   
   const [hideBalances, setHideBalances] = useState(false);
   const [selectedNetwork, setSelectedNetwork] = useState('all');
