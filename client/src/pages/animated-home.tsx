@@ -21,25 +21,16 @@ import {
 } from 'lucide-react';
 import { Link } from 'wouter';
 import { Web3PulseLoader, Web3SpinLoader } from '@/components/animations/web3-loader';
-import { useState } from 'react';
-import { ModernWalletModal } from '@/components/web3/modern-wallet-modal';
+import { useAppKit } from '@reown/appkit/react';
+import { useAccount } from 'wagmi';
 
 export default function AnimatedHome() {
-  const [showWalletModal, setShowWalletModal] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
+  const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
 
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
-  const handleWalletConnect = async (walletId: string) => {
-    setIsConnecting(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsConnected(true);
-    setIsConnecting(false);
-    setShowWalletModal(false);
-  };
 
   const features = [
     {
@@ -202,7 +193,7 @@ export default function AnimatedHome() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Button 
-                    onClick={() => setShowWalletModal(true)}
+                    onClick={() => open()}
                     size="lg" 
                     className="bg-[#6667AB] hover:bg-[#5a5b96] text-white px-8 py-4 text-lg h-auto"
                   >
@@ -506,7 +497,7 @@ export default function AnimatedHome() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Button 
-                  onClick={() => setShowWalletModal(true)}
+                  onClick={() => open()}
                   size="lg" 
                   className="bg-white text-[#6667AB] hover:bg-gray-100 px-8 py-4 text-lg font-semibold h-auto"
                 >
@@ -550,13 +541,6 @@ export default function AnimatedHome() {
         </div>
       </motion.section>
 
-      {/* Wallet Modal */}
-      <ModernWalletModal
-        isOpen={showWalletModal}
-        onClose={() => setShowWalletModal(false)}
-        onConnect={handleWalletConnect}
-        isConnecting={isConnecting}
-      />
     </div>
   );
 }
