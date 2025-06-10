@@ -389,7 +389,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user = await storage.createUser({
           walletAddress: userAddress,
           email: '',
-          fullName: '',
           kycStatus: 'none'
         });
       }
@@ -397,10 +396,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const transaction = await storage.createTransaction({
         userId: user.id,
         type: 'custody_transfer',
-        amount: parseFloat(usdcAmount),
-        currency: 'USDC',
+        network: `chain_${chainId}`,
+        fromToken: 'CRYPTO',
+        toToken: 'USDC',
+        toAmount: usdcAmount,
         status: 'completed',
-        transactionHash: swapTxHash,
+        txHash: swapTxHash,
         metadata: JSON.stringify({ chainId, originalSwapTx: swapTxHash })
       });
 
@@ -421,7 +422,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user = await storage.createUser({
           walletAddress: userAddress,
           email: '',
-          fullName: '',
           kycStatus: 'pending'
         });
       } else {
@@ -431,9 +431,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const kycDocument = await storage.createKycDocument({
         userId: user.id,
         documentType: 'aadhaar',
-        documentNumber: '',
-        status: 'pending',
-        filePath: ''
+        documentUrl: '',
+        status: 'pending'
       });
 
       setTimeout(async () => {
@@ -482,10 +481,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const transaction = await storage.createTransaction({
         userId: user.id,
         type: 'withdrawal',
-        amount: parseFloat(inrAmount),
-        currency: 'INR',
+        network: 'INR_BANK',
+        fromToken: 'USDC',
+        toToken: 'INR',
+        fromAmount: usdcAmount,
+        toAmount: inrAmount,
+        exchangeRate: (parseFloat(inrAmount) / parseFloat(usdcAmount)).toString(),
         status: 'pending',
-        transactionHash: '',
+        txHash: '',
         metadata: JSON.stringify({ 
           usdcAmount, 
           bankAccountId: bankAccount.id,
@@ -497,7 +500,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           await storage.updateTransaction(transaction.id, {
             status: 'completed',
-            transactionHash: `INR_${Date.now()}`
+            txHash: `INR_${Date.now()}`
           });
         } catch (error) {
           console.error('Failed to update transaction status:', error);

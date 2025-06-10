@@ -19,6 +19,8 @@ interface SwapQuote {
   toAmount: string;
   priceImpact: number;
   gasEstimate: string;
+  exchangeRate: string;
+  route: string[];
 }
 
 export default function StablePayDashboard() {
