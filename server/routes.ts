@@ -196,6 +196,194 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Remittance API endpoints
+  app.post("/api/remittance/withdraw", async (req, res) => {
+    try {
+      const { amount, currency, bankDetails, kycData } = req.body;
+      
+      console.log(`Remittance withdrawal request: ${amount} ${currency} for ${kycData.fullName}`);
+      
+      // Validate required fields
+      if (!amount || !currency || !bankDetails || !kycData) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
+
+      // Validate KYC status
+      if (kycData.kycStatus !== 'verified') {
+        return res.status(400).json({ error: 'KYC verification required' });
+      }
+
+      // Simulate bank transfer processing
+      const withdrawalId = `WD${Date.now()}`;
+      const estimatedTime = '5-10 minutes';
+      
+      // In production, this would integrate with:
+      // - Bank APIs (IMPS/NEFT/RTGS)
+      // - Payment gateways (Razorpay, Payu, etc.)
+      // - Compliance systems
+      
+      const withdrawalData = {
+        id: withdrawalId,
+        amount: parseFloat(amount),
+        currency,
+        status: 'processing',
+        bankDetails: {
+          accountNumber: bankDetails.accountNumber,
+          ifscCode: bankDetails.ifscCode,
+          accountHolderName: bankDetails.accountHolderName,
+          bankName: bankDetails.bankName
+        },
+        estimatedTime,
+        createdAt: new Date().toISOString(),
+        processingFee: 0, // No fees for gasless
+        exchangeRate: currency === 'INR' ? 83.25 : 1
+      };
+
+      console.log('Withdrawal processed:', withdrawalData);
+      res.json(withdrawalData);
+
+    } catch (error) {
+      console.error('Remittance withdrawal error:', error);
+      res.status(500).json({ error: 'Failed to process withdrawal' });
+    }
+  });
+
+  // Get remittance transaction status
+  app.get("/api/remittance/status/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      console.log(`Remittance status check: ${id}`);
+      
+      // In production, this would query the database for transaction status
+      const mockStatus = {
+        id,
+        status: 'completed',
+        completedAt: new Date().toISOString(),
+        bankTransferRef: `IMPS${Date.now()}`,
+        actualProcessingTime: '4 minutes 32 seconds'
+      };
+
+      res.json(mockStatus);
+
+    } catch (error) {
+      console.error('Remittance status error:', error);
+      res.status(500).json({ error: 'Failed to fetch status' });
+    }
+  });
+
+  // Get user's remittance history
+  app.get("/api/remittance/history", async (req, res) => {
+    try {
+      const { address } = req.query;
+      
+      if (!address) {
+        return res.status(400).json({ error: 'Wallet address required' });
+      }
+
+      console.log(`Remittance history for: ${address}`);
+      
+      // In production, this would fetch from database
+      const mockHistory = [
+        {
+          id: 'WD1749541234567',
+          amount: 207392.50,
+          currency: 'INR',
+          status: 'completed',
+          fromToken: 'ETH',
+          fromAmount: '0.1',
+          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          completedAt: new Date(Date.now() - 24 * 60 * 60 * 1000 + 5 * 60 * 1000).toISOString(),
+          bankName: 'HDFC Bank',
+          accountNumber: '****7890'
+        },
+        {
+          id: 'WD1749481234567',
+          amount: 83250.00,
+          currency: 'INR',
+          status: 'completed',
+          fromToken: 'USDC',
+          fromAmount: '1000',
+          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          completedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 3 * 60 * 1000).toISOString(),
+          bankName: 'HDFC Bank',
+          accountNumber: '****7890'
+        }
+      ];
+
+      res.json({ transactions: mockHistory });
+
+    } catch (error) {
+      console.error('Remittance history error:', error);
+      res.status(500).json({ error: 'Failed to fetch history' });
+    }
+  });
+
+  // Exchange rate endpoint
+  app.get("/api/remittance/rates", async (req, res) => {
+    try {
+      const { from, to } = req.query;
+      
+      console.log(`Exchange rate request: ${from} to ${to}`);
+      
+      // In production, this would fetch real-time rates from:
+      // - Currency exchange APIs
+      // - Multiple sources for best rates
+      // - Include spread and fees
+      
+      const rates = {
+        'USD-INR': 83.25,
+        'ETH-INR': 207392.50,
+        'BTC-INR': 4156250.00,
+        'USDC-INR': 83.25,
+        'USDT-INR': 83.20
+      };
+
+      const rateKey = `${from}-${to}`;
+      const rate = rates[rateKey as keyof typeof rates] || 1;
+
+      res.json({
+        from,
+        to,
+        rate,
+        lastUpdated: new Date().toISOString(),
+        spread: 0.25, // 0.25% spread
+        source: 'Multiple exchanges'
+      });
+
+    } catch (error) {
+      console.error('Exchange rate error:', error);
+      res.status(500).json({ error: 'Failed to fetch rates' });
+    }
+  });
+
+  // KYC verification status
+  app.get("/api/kyc/status/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      
+      console.log(`KYC status check: ${address}`);
+      
+      // In production, this would check KYC database
+      const mockKyc = {
+        address,
+        status: 'verified',
+        tier: 'tier2',
+        verifiedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        monthlyLimit: 1000000, // ₹10 lakh per month
+        dailyLimit: 200000, // ₹2 lakh per day
+        documentsVerified: ['pan', 'aadhar', 'bank_statement'],
+        nextReviewDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+      };
+
+      res.json(mockKyc);
+
+    } catch (error) {
+      console.error('KYC status error:', error);
+      res.status(500).json({ error: 'Failed to fetch KYC status' });
+    }
+  });
+
   // 1inch API proxy endpoints
   app.get("/api/1inch/:chainId/quote", async (req, res) => {
     try {

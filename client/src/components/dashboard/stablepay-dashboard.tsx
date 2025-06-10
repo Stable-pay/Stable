@@ -238,13 +238,13 @@ export default function StablePayDashboard() {
                     Swap Tokens
                   </Button>
                 </Link>
-                <Link href="/withdraw">
+                <Link href="/remittance">
                   <Button 
                     variant="secondary" 
                     className="bg-white/20 hover:bg-white/30 text-white border-0 w-full h-12"
                   >
-                    <Send className="mr-2 h-4 w-4" />
-                    Withdraw
+                    <Banknote className="mr-2 h-4 w-4" />
+                    INR Remittance
                   </Button>
                 </Link>
                 <Link href="/kyc">
