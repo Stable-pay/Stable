@@ -74,23 +74,48 @@ export default function GaslessSwapFlow() {
   const [withdrawalInitiated, setWithdrawalInitiated] = useState(false);
   const [withdrawalCompleted, setWithdrawalCompleted] = useState(false);
   
-  // User data from backend API
-  const [kycData] = useState<KycData>({
-    fullName: 'Rajesh Kumar',
-    phoneNumber: '+91 98765 43210',
-    panNumber: 'ABCDE1234F',
-    aadharNumber: '1234 5678 9012',
-    address: 'Mumbai, Maharashtra, India',
-    kycStatus: 'verified'
-  });
+  // Real user data from API
+  const [kycData, setKycData] = useState<KycData | null>(null);
+  const [bankDetails, setBankDetails] = useState<BankDetails | null>(null);
+  const [isLoadingUserData, setIsLoadingUserData] = useState(true);
 
-  const [bankDetails] = useState<BankDetails>({
-    accountNumber: '1234567890',
-    ifscCode: 'HDFC0001234',
-    accountHolderName: 'Rajesh Kumar',
-    bankName: 'HDFC Bank',
-    branchName: 'Bandra West Branch'
-  });
+  // Fetch real user KYC and bank data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!address) return;
+
+      try {
+        setIsLoadingUserData(true);
+        
+        // Fetch KYC status
+        const kycResponse = await fetch(`/api/kyc/status/${address}`);
+        if (kycResponse.ok) {
+          const kycInfo = await kycResponse.json();
+          setKycData({
+            fullName: kycInfo.fullName || '',
+            phoneNumber: kycInfo.phoneNumber || '',
+            panNumber: kycInfo.panNumber || '',
+            aadharNumber: kycInfo.aadharNumber || '',
+            address: kycInfo.address || '',
+            kycStatus: kycInfo.status || 'pending'
+          });
+        }
+
+        // Fetch bank details
+        const bankResponse = await fetch(`/api/user/bank-details/${address}`);
+        if (bankResponse.ok) {
+          const bankInfo = await bankResponse.json();
+          setBankDetails(bankInfo);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      } finally {
+        setIsLoadingUserData(false);
+      }
+    };
+
+    fetchUserData();
+  }, [address]);
 
   const steps: SwapStep[] = [
     {
@@ -136,16 +161,32 @@ export default function GaslessSwapFlow() {
     return token ? parseFloat(token.formattedBalance) : 0;
   };
 
-  // Calculate INR amount using real exchange rates
+  // Calculate INR amount using live exchange rates
   useEffect(() => {
-    if (fromAmount && parseFloat(fromAmount) > 0) {
-      const usdRate = fromToken === 'ETH' ? 2490 : fromToken === 'USDC' ? 1 : 0.999;
-      const inrRate = 83.25; // USD to INR rate
-      const inrValue = parseFloat(fromAmount) * usdRate * inrRate;
-      setInrAmount(inrValue.toFixed(2));
-    } else {
-      setInrAmount('');
-    }
+    const fetchLiveRates = async () => {
+      if (!fromAmount || parseFloat(fromAmount) <= 0) {
+        setInrAmount('');
+        return;
+      }
+
+      try {
+        console.log(`Fetching live rate for ${fromToken} to INR`);
+        const response = await fetch(`/api/remittance/rates?from=${fromToken}&to=INR`);
+        
+        if (response.ok) {
+          const rateData = await response.json();
+          const inrValue = parseFloat(fromAmount) * rateData.rate;
+          setInrAmount(inrValue.toFixed(2));
+          console.log(`Live rate: 1 ${fromToken} = ₹${rateData.rate}`);
+        } else {
+          console.error('Failed to fetch live exchange rates');
+        }
+      } catch (error) {
+        console.error('Exchange rate fetch error:', error);
+      }
+    };
+
+    fetchLiveRates();
   }, [fromAmount, fromToken]);
 
   const handleSwap = async () => {
@@ -182,24 +223,130 @@ export default function GaslessSwapFlow() {
       const swapQuote = await productionFusionAPI.getSwapQuote(quoteRequest);
       
       if (swapQuote.type === 'fusion' && swapQuote.gasless) {
-        console.log('Executing gasless swap via Fusion...');
+        console.log('Executing live gasless swap via Fusion...');
         
-        // Simulate gasless swap execution time
-        await new Promise(resolve => setTimeout(resolve, 4000));
+        // Execute real Fusion gasless swap with wallet integration
+        if (swapQuote.order && swapQuote.quoteId && window.ethereum) {
+          try {
+            // Request wallet signature for the Fusion order
+            const accounts = await (window.ethereum as any).request({ method: 'eth_requestAccounts' });
+            const userAddress = accounts[0];
+            
+            // Sign the order with user's wallet
+            const signature = await (window.ethereum as any).request({
+              method: 'eth_signTypedData_v4',
+              params: [userAddress, JSON.stringify(swapQuote.order)]
+            });
+            
+            const executeResult = await productionFusionAPI.executeGaslessSwap({
+              order: swapQuote.order,
+              signature: signature,
+              quoteId: swapQuote.quoteId
+            });
+            
+            console.log('Fusion gasless swap submitted:', executeResult);
+            
+            // Monitor real transaction status
+            if (executeResult.orderHash) {
+              const monitorStatus = async () => {
+                try {
+                  const status = await productionFusionAPI.getFusionOrderStatus(executeResult.orderHash);
+                  console.log('Fusion order status:', status);
+                  
+                  if (status.status === 'filled' || status.status === 'completed') {
+                    setSwapCompleted(true);
+                    setCurrentStep(3);
+                    clearInterval(statusInterval);
+                  }
+                } catch (error) {
+                  console.error('Status check error:', error);
+                }
+              };
+              
+              const statusInterval = setInterval(monitorStatus, 5000);
+              setTimeout(() => clearInterval(statusInterval), 300000); // Stop after 5 minutes
+            }
+          } catch (signError) {
+            console.error('Wallet signature error:', signError);
+            throw new Error('User rejected transaction signature');
+          }
+        } else {
+          throw new Error('Wallet not connected or Fusion order not available');
+        }
         
-        console.log('Gasless swap completed successfully');
-        setSwapCompleted(true);
-        setCurrentStep(3);
         return;
       } else if (swapQuote.type === 'regular') {
-        console.log('Executing regular swap (with gas fees)...');
+        console.log('Executing live regular swap...');
         
-        // Simulate regular swap execution time
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // Get swap transaction data from 1inch API
+        const swapParams = new URLSearchParams({
+          src: fromTokenAddress,
+          dst: toTokenAddress,
+          amount: amountInWei,
+          from: address,
+          slippage: '1'
+        });
         
-        console.log('Regular swap completed');
-        setSwapCompleted(true);
-        setCurrentStep(3);
+        const swapResponse = await fetch(`/api/1inch/1/swap?${swapParams}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+        
+        if (swapResponse.ok) {
+          const swapData = await swapResponse.json();
+          console.log('Regular swap transaction prepared:', swapData);
+          
+          if (window.ethereum && swapData.tx) {
+            try {
+              // Send transaction through user's wallet
+              const txHash = await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [{
+                  from: address,
+                  to: swapData.tx.to,
+                  value: swapData.tx.value,
+                  data: swapData.tx.data,
+                  gas: swapData.tx.gas
+                }]
+              });
+              
+              console.log('Swap transaction submitted:', txHash);
+              
+              // Monitor transaction confirmation
+              const checkTxStatus = async () => {
+                try {
+                  const receipt = await window.ethereum.request({
+                    method: 'eth_getTransactionReceipt',
+                    params: [txHash]
+                  });
+                  
+                  if (receipt && receipt.status === '0x1') {
+                    console.log('Swap transaction confirmed');
+                    setSwapCompleted(true);
+                    setCurrentStep(3);
+                    clearInterval(txInterval);
+                  }
+                } catch (error) {
+                  console.error('Transaction status check error:', error);
+                }
+              };
+              
+              const txInterval = setInterval(checkTxStatus, 3000);
+              setTimeout(() => clearInterval(txInterval), 180000); // Stop after 3 minutes
+              
+            } catch (txError) {
+              console.error('Transaction error:', txError);
+              throw new Error('User rejected transaction or insufficient funds');
+            }
+          } else {
+            throw new Error('Wallet not available or invalid swap data');
+          }
+        } else {
+          throw new Error('Failed to get swap transaction data');
+        }
+        
         return;
       } else {
         throw new Error('No valid swap option available');

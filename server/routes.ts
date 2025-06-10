@@ -319,41 +319,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Exchange rate endpoint
+  // Live exchange rate endpoint using CoinGecko API
   app.get("/api/remittance/rates", async (req, res) => {
     try {
       const { from, to } = req.query;
       
-      console.log(`Exchange rate request: ${from} to ${to}`);
+      console.log(`Live exchange rate request: ${from} to ${to}`);
       
-      // In production, this would fetch real-time rates from:
-      // - Currency exchange APIs
-      // - Multiple sources for best rates
-      // - Include spread and fees
-      
-      const rates = {
-        'USD-INR': 83.25,
-        'ETH-INR': 207392.50,
-        'BTC-INR': 4156250.00,
-        'USDC-INR': 83.25,
-        'USDT-INR': 83.20
+      // Map token symbols to CoinGecko IDs
+      const tokenMap: Record<string, string> = {
+        'ETH': 'ethereum',
+        'BTC': 'bitcoin', 
+        'USDC': 'usd-coin',
+        'USDT': 'tether',
+        'USD': 'usd'
       };
 
-      const rateKey = `${from}-${to}`;
-      const rate = rates[rateKey as keyof typeof rates] || 1;
+      const tokenId = tokenMap[from as string];
+      if (!tokenId) {
+        return res.status(400).json({ error: `Unsupported token: ${from}` });
+      }
+
+      // Fetch live price from CoinGecko
+      const coingeckoUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=inr,usd&include_last_updated_at=true`;
+      
+      const response = await fetch(coingeckoUrl, {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        console.error(`CoinGecko API error: ${response.status}`);
+        return res.status(503).json({ error: 'Exchange rate service unavailable' });
+      }
+
+      const data = await response.json();
+      const tokenData = data[tokenId];
+      
+      if (!tokenData) {
+        return res.status(404).json({ error: 'Token price not found' });
+      }
+
+      const rate = tokenData.inr || 0;
+      const usdRate = tokenData.usd || 0;
+      
+      console.log(`Live rate fetched: 1 ${from} = ₹${rate} (via CoinGecko)`);
 
       res.json({
         from,
         to,
         rate,
-        lastUpdated: new Date().toISOString(),
+        usdRate,
+        lastUpdated: new Date(tokenData.last_updated_at * 1000).toISOString(),
         spread: 0.25, // 0.25% spread
-        source: 'Multiple exchanges'
+        source: 'CoinGecko API'
       });
 
     } catch (error) {
-      console.error('Exchange rate error:', error);
-      res.status(500).json({ error: 'Failed to fetch rates' });
+      console.error('Live exchange rate error:', error);
+      res.status(500).json({ error: 'Failed to fetch live exchange rates' });
     }
   });
 
