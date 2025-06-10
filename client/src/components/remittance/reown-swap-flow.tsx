@@ -43,6 +43,7 @@ interface Token {
   formattedBalance: string;
   decimals: number;
   chainId: number;
+  chainName: string;
   isNative: boolean;
   usdValue?: number;
 }
@@ -344,7 +345,7 @@ export function ReownSwapFlow() {
                 <div className="space-y-3">
                   <Label>Select Token</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {allTokens.map((token) => (
+                    {balances.map((token) => (
                       <Card
                         key={`${token.address}-${token.chainId}`}
                         className={`cursor-pointer transition-colors ${

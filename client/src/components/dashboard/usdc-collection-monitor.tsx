@@ -155,7 +155,7 @@ export function USDCCollectionMonitor() {
             <Activity className="h-5 w-5 text-indigo-600" />
             <span>Recent Swaps</span>
             <Badge className="bg-blue-100 text-blue-800">
-              Live 1inch API
+              Live Reown Swaps
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -205,7 +205,7 @@ export function USDCCollectionMonitor() {
           <div className="flex items-center space-x-3">
             <TrendingUp className="h-5 w-5 text-blue-600" />
             <div>
-              <div className="font-medium text-blue-900">1inch API Integration</div>
+              <div className="font-medium text-blue-900">Reown AppKit Integration</div>
               <div className="text-sm text-blue-700">
                 Real-time swap execution with automatic USDC collection to developer wallets
               </div>

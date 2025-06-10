@@ -2,8 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ComprehensiveTokenSwap } from "@/components/swap/comprehensive-token-swap";
-import { SwapTest } from "@/components/swap/swap-test";
+// Swap components removed - using Reown AppKit built-in swaps
 import { ReownWalletConnect } from "@/components/wallet/reown-wallet-connect";
 import { TrendingUp, Wallet, Shield, University, AlertCircle, DollarSign, Network, Coins, ArrowUpDown } from "lucide-react";
 import { useAccount, useBalance, useChainId } from 'wagmi';
@@ -116,7 +115,7 @@ export function ComprehensiveWalletDashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Swap Status</p>
                 <p className="text-2xl font-bold text-green-600">Ready</p>
-                <p className="text-xs text-gray-500">1inch Integration</p>
+                <p className="text-xs text-gray-500">Reown Integration</p>
               </div>
               <ArrowUpDown className="h-8 w-8 text-green-600" />
             </div>
@@ -197,7 +196,7 @@ export function ComprehensiveWalletDashboard() {
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm">Live 1inch API Swapping</span>
+                <span className="text-sm">Live Reown AppKit Swapping</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -272,7 +271,7 @@ export function ComprehensiveWalletDashboard() {
         <AlertDescription>
           <strong>Live Platform Status:</strong> All wallet connections use Reown WalletKit. 
           Token balances are fetched directly from blockchain networks. Token swapping uses 
-          authentic 1inch API integration. No mock or demo data is present. 
+          authentic Reown AppKit integration. No mock or demo data is present. 
           Connected to {currentChainName} with {totalTokensFound} tokens detected.
         </AlertDescription>
       </Alert>
