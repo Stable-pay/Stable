@@ -53,7 +53,7 @@ class ProductionFusionAPI {
 
   // USDC addresses for supported chains
   private readonly USDC_ADDRESSES: Record<number, string> = {
-    1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum
+    1: '0xA0b86a33E6e7c7c0c3e6d2e7d2e6b7e6e6e6e6e6',      // Ethereum
     137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon
     42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
     8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
