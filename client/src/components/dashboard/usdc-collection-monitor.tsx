@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { transactionMonitor, type TransactionMonitor } from "@/lib/transaction-monitor";
-import { getDeveloperWallet } from "@/lib/wallet-config";
+// Developer wallet functionality removed - using Reown AppKit only
 import { Wallet, TrendingUp, Activity, RefreshCw, ExternalLink, DollarSign } from "lucide-react";
 
 export function USDCCollectionMonitor() {
@@ -125,7 +125,7 @@ export function USDCCollectionMonitor() {
           <div className="grid gap-4">
             {networks.map((network) => {
               const balance = balances[network.id] || '0';
-              const walletAddress = getDeveloperWallet(network.id as any);
+              const walletAddress = `0x${network.id}DeveloperWallet`; // Mock for display
               
               return (
                 <div key={network.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">

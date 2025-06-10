@@ -46,7 +46,7 @@ export default function Dashboard() {
         <div>
           <h1 className="text-3xl font-bold mb-2">Portfolio Dashboard</h1>
           <p className="text-gray-600">
-            Real-time wallet balances and token swapping powered by 1inch API
+            Real-time wallet balances and token swapping powered by Reown AppKit
           </p>
         </div>
         <div className="mt-4 md:mt-0">

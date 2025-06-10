@@ -127,8 +127,23 @@ export function ComprehensiveWalletDashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Token Swap Interface */}
         <div className="lg:col-span-2">
-          <ComprehensiveTokenSwap />
-          <SwapTest />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ArrowUpDown className="w-5 h-5 text-blue-600" />
+                Reown AppKit Swaps
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Alert>
+                <Shield className="h-4 w-4" />
+                <AlertDescription>
+                  Token swapping is now powered by Reown AppKit's built-in swap functionality.
+                  Click the "Remittance" tab to access the full gasless swap-to-INR flow.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Sidebar Information */}
