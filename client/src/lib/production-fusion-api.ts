@@ -11,17 +11,19 @@ interface FusionQuoteRequest {
 }
 
 interface FusionQuoteResponse {
-  type: 'fusion' | 'regular' | 'mock';
+  type: 'fusion-plus' | 'fusion' | 'regular' | 'mock';
   gasless: boolean;
   fromToken: {
     address: string;
     amount: string;
     symbol?: string;
+    decimals?: number;
   };
   toToken: {
     address: string;
     amount: string;
     symbol?: string;
+    decimals?: number;
   };
   order?: any;
   quoteId?: string;
@@ -29,6 +31,9 @@ interface FusionQuoteResponse {
   validUntil?: number;
   displayToAmount?: string;
   rate?: string;
+  prices?: any;
+  volume?: any;
+  settlement?: any;
   error?: string;
 }
 
@@ -37,6 +42,7 @@ interface FusionExecuteRequest {
   signature: string;
   quoteId: string;
   chainId: number;
+  type?: 'fusion-plus' | 'fusion';
 }
 
 interface FusionExecuteResponse {
@@ -44,6 +50,7 @@ interface FusionExecuteResponse {
   orderHash?: string;
   status: string;
   gasless: boolean;
+  type: 'fusion-plus' | 'fusion';
   message: string;
 }
 
@@ -121,18 +128,19 @@ class ProductionFusionAPI {
     }
   }
 
-  // Execute gasless swap via Fusion
+  // Execute gasless swap via Fusion+ or Fusion
   async executeGaslessSwap(params: FusionExecuteRequest): Promise<FusionExecuteResponse> {
     if (!this.apiKey) {
       throw new Error('API key required for Fusion execution');
     }
 
     try {
-      const { order, signature, quoteId, chainId } = params;
+      const { order, signature, quoteId, chainId, type = 'fusion-plus' } = params;
       
-      console.log('Executing Fusion gasless swap:', {
+      console.log(`Executing ${type} gasless swap:`, {
         quoteId,
         chainId,
+        type,
         hasOrder: !!order,
         hasSignature: !!signature
       });
@@ -146,7 +154,8 @@ class ProductionFusionAPI {
         body: JSON.stringify({
           order,
           signature,
-          quoteId
+          quoteId,
+          type
         })
       });
 
@@ -156,7 +165,7 @@ class ProductionFusionAPI {
       }
 
       const data = await response.json();
-      console.log('Fusion gasless swap executed:', data);
+      console.log(`${type} gasless swap executed:`, data);
       
       return data;
     } catch (error) {
@@ -165,14 +174,15 @@ class ProductionFusionAPI {
     }
   }
 
-  // Get Fusion order status
-  async getFusionOrderStatus(orderHash: string, chainId: number): Promise<any> {
+  // Get Fusion+ order status with fallback
+  async getFusionOrderStatus(orderHash: string, chainId: number, type?: 'fusion-plus' | 'fusion'): Promise<any> {
     if (!this.apiKey) {
       throw new Error('API key required');
     }
 
     try {
-      const response = await fetch(`${this.baseURL}/${chainId}/fusion/order/${orderHash}`, {
+      const params = type ? `?type=${type}` : '';
+      const response = await fetch(`${this.baseURL}/${chainId}/fusion/order/${orderHash}${params}`, {
         headers: {
           'Accept': 'application/json',
         }
@@ -247,7 +257,11 @@ class ProductionFusionAPI {
     const fusionQuote = await this.getGaslessQuote(params);
     
     if (fusionQuote && fusionQuote.gasless) {
-      console.log('✅ Fusion gasless swap available');
+      if (fusionQuote.type === 'fusion-plus') {
+        console.log('✅ Fusion+ gasless swap available (best option)');
+      } else if (fusionQuote.type === 'fusion') {
+        console.log('✅ Fusion gasless swap available');
+      }
       return fusionQuote;
     }
 

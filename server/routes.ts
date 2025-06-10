@@ -466,13 +466,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // 1inch Fusion API for gasless swaps - Rebuilt according to SDK documentation
+  // 1inch Fusion+ API for gasless swaps - Latest API integration
   app.get("/api/1inch/:chainId/fusion/quote", async (req, res) => {
     try {
       const { chainId } = req.params;
       const { src, dst, amount, from } = req.query;
 
-      console.log(`1inch Fusion quote request: ${chainId} - gasless swap ${src} to ${dst}, amount: ${amount}`);
+      console.log(`1inch Fusion+ quote request: ${chainId} - gasless swap ${src} to ${dst}, amount: ${amount}`);
 
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       console.log('API key check:', apiKey ? 'Found' : 'Missing');
@@ -494,7 +494,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Using destination token address: ${correctDst}`);
 
-      // Try 1inch Fusion API v2.0 first with correct structure
+      // Try 1inch Fusion+ API first (newest version)
+      try {
+        const fusionPlusUrl = `https://api.1inch.dev/fusion-plus/quoter/v1.0/${chainId}/quote/receive`;
+
+        const requestBody = {
+          src: src as string,
+          dst: correctDst,
+          amount: amount as string,
+          from: from as string || '0x0000000000000000000000000000000000000000',
+          enableEstimate: true,
+          includeTokensInfo: true
+        };
+
+        console.log('Fusion+ request body:', JSON.stringify(requestBody, null, 2));
+
+        const response = await fetch(fusionPlusUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        console.log(`Fusion+ API response status: ${response.status}`);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('1inch Fusion+ quote success:', JSON.stringify(data).substring(0, 200));
+
+          const fusionPlusQuote = {
+            type: 'fusion-plus',
+            gasless: true,
+            fromToken: { 
+              address: src, 
+              amount: amount,
+              symbol: data.srcToken?.symbol,
+              decimals: data.srcToken?.decimals
+            },
+            toToken: { 
+              address: correctDst, 
+              amount: data.dstAmount || data.toAmount,
+              symbol: data.dstToken?.symbol,
+              decimals: data.dstToken?.decimals
+            },
+            quoteId: data.quoteId,
+            order: data.order,
+            prices: data.prices,
+            volume: data.volume,
+            settlement: data.settlement,
+            displayToAmount: data.dstAmount ? (parseFloat(data.dstAmount) / Math.pow(10, data.dstToken?.decimals || 6)).toFixed(6) : '0',
+            rate: data.dstAmount ? (parseFloat(data.dstAmount) / parseFloat(amount) * Math.pow(10, (data.srcToken?.decimals || 18) - (data.dstToken?.decimals || 6))).toFixed(4) : '0',
+            validUntil: data.validUntil
+          };
+
+          return res.json(fusionPlusQuote);
+        } else {
+          const errorText = await response.text();
+          console.log('Fusion+ API failed:', response.status, errorText);
+        }
+      } catch (fusionPlusError) {
+        console.log('Fusion+ API error:', fusionPlusError);
+      }
+
+      // Fallback to Fusion v2.0 if Fusion+ fails
       try {
         const fusionUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/quote/receive`;
 
@@ -508,7 +573,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           interactions: []
         };
 
-        console.log('Fusion request body:', JSON.stringify(requestBody, null, 2));
+        console.log('Fusion v2.0 fallback request body:', JSON.stringify(requestBody, null, 2));
 
         const response = await fetch(fusionUrl, {
           method: 'POST',
@@ -520,11 +585,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           body: JSON.stringify(requestBody)
         });
 
-        console.log(`Fusion API response status: ${response.status}`);
+        console.log(`Fusion v2.0 API response status: ${response.status}`);
 
         if (response.ok) {
           const data = await response.json();
-          console.log('1inch Fusion quote success:', JSON.stringify(data).substring(0, 200));
+          console.log('1inch Fusion v2.0 quote success:', JSON.stringify(data).substring(0, 200));
 
           const fusionQuote = {
             type: 'fusion',
@@ -541,10 +606,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.json(fusionQuote);
         } else {
           const errorText = await response.text();
-          console.log('Fusion API failed:', response.status, errorText);
+          console.log('Fusion v2.0 API failed:', response.status, errorText);
         }
       } catch (fusionError) {
-        console.log('Fusion API error:', fusionError);
+        console.log('Fusion v2.0 API error:', fusionError);
       }
 
       // Fallback to regular 1inch quote with correct destination
@@ -644,32 +709,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
 
-  // 1inch Fusion execution endpoint - Rebuilt for live trading
+  // 1inch Fusion+ execution endpoint - Latest API integration
   app.post("/api/1inch/:chainId/fusion/submit", async (req, res) => {
     try {
       const { chainId } = req.params;
-      const { order, signature, quoteId } = req.body;
+      const { order, signature, quoteId, type } = req.body;
 
-      console.log(`1inch Fusion submit order: ${chainId} - quoteId: ${quoteId}`);
+      console.log(`1inch Fusion+ submit order: ${chainId} - quoteId: ${quoteId}, type: ${type}`);
 
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
         return res.status(503).json({ 
-          error: 'API key required for Fusion execution',
+          error: 'API key required for Fusion+ execution',
           requiresAuth: true
         });
       }
 
-      const submitUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order`;
+      let submitUrl: string;
+      let requestBody: any;
 
-      const requestBody = {
-        order: order,
-        signature: signature,
-        quoteId: quoteId,
-        extension: "0x"
-      };
+      // Use Fusion+ API if available, otherwise fallback to Fusion v2.0
+      if (type === 'fusion-plus') {
+        submitUrl = `https://api.1inch.dev/fusion-plus/relayer/v1.0/${chainId}/order/submit`;
+        requestBody = {
+          order: order,
+          signature: signature,
+          quoteId: quoteId,
+          extension: "0x"
+        };
+      } else {
+        // Fallback to Fusion v2.0
+        submitUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order`;
+        requestBody = {
+          order: order,
+          signature: signature,
+          quoteId: quoteId,
+          extension: "0x"
+        };
+      }
 
-      console.log('Fusion submit request:', JSON.stringify(requestBody, null, 2));
+      console.log(`Using ${type === 'fusion-plus' ? 'Fusion+' : 'Fusion v2.0'} submit endpoint`);
+      console.log('Submit request:', JSON.stringify(requestBody, null, 2));
 
       const response = await fetch(submitUrl, {
         method: 'POST',
@@ -681,26 +761,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         body: JSON.stringify(requestBody)
       });
 
-      console.log(`1inch Fusion submit response status: ${response.status}`);
+      console.log(`1inch ${type === 'fusion-plus' ? 'Fusion+' : 'Fusion'} submit response status: ${response.status}`);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('1inch Fusion submit error:', errorText);
+        console.error(`1inch ${type === 'fusion-plus' ? 'Fusion+' : 'Fusion'} submit error:`, errorText);
         return res.status(response.status).json({ 
-          error: '1inch Fusion order submission failed',
+          error: `1inch ${type === 'fusion-plus' ? 'Fusion+' : 'Fusion'} order submission failed`,
           details: errorText
         });
       }
 
       const data = await response.json();
-      console.log('1inch Fusion order submitted successfully:', data.orderHash || data);
+      console.log(`1inch ${type === 'fusion-plus' ? 'Fusion+' : 'Fusion'} order submitted successfully:`, data.orderHash || data);
 
       res.json({
         success: true,
         orderHash: data.orderHash || data.hash,
         status: 'submitted',
         gasless: true,
-        message: 'Fusion gasless swap submitted successfully'
+        type: type === 'fusion-plus' ? 'fusion-plus' : 'fusion',
+        message: `${type === 'fusion-plus' ? 'Fusion+' : 'Fusion'} gasless swap submitted successfully`
       });
 
     } catch (error) {
@@ -709,12 +790,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Check Fusion order status
+  // Check Fusion+ order status with fallback
   app.get("/api/1inch/:chainId/fusion/order/:orderHash", async (req, res) => {
     try {
       const { chainId, orderHash } = req.params;
+      const { type } = req.query;
 
-      console.log(`1inch Fusion order status: ${chainId} - ${orderHash}`);
+      console.log(`1inch Fusion+ order status: ${chainId} - ${orderHash}, type: ${type}`);
 
       const apiKey = process.env.VITE_ONEINCH_API_KEY;
       if (!apiKey) {
@@ -724,7 +806,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const statusUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order/status/${orderHash}`;
+      let statusUrl: string;
+
+      // Use Fusion+ API if specified, otherwise try both
+      if (type === 'fusion-plus') {
+        statusUrl = `https://api.1inch.dev/fusion-plus/relayer/v1.0/${chainId}/order/status/${orderHash}`;
+      } else {
+        statusUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order/status/${orderHash}`;
+      }
 
       const response = await fetch(statusUrl, {
         headers: {
@@ -734,8 +823,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       if (!response.ok) {
+        // If Fusion+ fails and we haven't tried v2.0 yet, try it as fallback
+        if (type === 'fusion-plus') {
+          console.log('Fusion+ status failed, trying Fusion v2.0 fallback');
+          const fallbackUrl = `https://api.1inch.dev/fusion/v2.0/${chainId}/order/status/${orderHash}`;
+          
+          const fallbackResponse = await fetch(fallbackUrl, {
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Accept': 'application/json'
+            }
+          });
+
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            return res.json(fallbackData);
+          }
+        }
+
         const errorText = await response.text();
-        console.error('1inch Fusion status error:', errorText);
+        console.error(`1inch ${type === 'fusion-plus' ? 'Fusion+' : 'Fusion'} status error:`, errorText);
         return res.status(response.status).json({ 
           error: 'Failed to get order status',
           details: errorText
