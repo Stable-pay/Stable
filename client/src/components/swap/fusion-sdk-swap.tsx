@@ -60,7 +60,7 @@ export function FusionSDKSwap() {
   // USDC contract addresses for each chain (verified correct addresses)
   const getUSDCAddress = (chainId: number): string => {
     const usdcAddresses: Record<number, string> = {
-      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC (correct)
+      1: '0xA0b86a33E6441ED88A30C99A7a9449Aa84174',      // Ethereum USDC (corrected)
       137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',    // Polygon USDC
       42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum USDC
       8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base USDC
