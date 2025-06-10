@@ -332,11 +332,11 @@ export default function RemittanceDashboard() {
                 className="h-12 w-12 sm:h-16 sm:w-16"
               />
             </div>
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-4xl font-bold text-foreground">
               Global Remittance Dashboard
             </h1>
           </div>
-          <p className="text-base sm:text-xl text-gray-600 px-4">
+          <p className="text-base sm:text-xl text-muted-foreground px-4">
             Send money worldwide with gasless USDC conversion via 1inch Fusion
           </p>
         </motion.div>
@@ -348,52 +348,52 @@ export default function RemittanceDashboard() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8"
         >
-          <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200">
+          <Card className="bg-card border-border">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-blue-600">Total Sent</p>
-                  <p className="text-lg sm:text-2xl font-bold text-blue-900">$12,450</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Sent</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">$12,450</p>
                 </div>
-                <div className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600">
+                <div className="h-6 w-6 sm:h-8 sm:w-8 text-primary">
                   <Send className="h-6 w-6 sm:h-8 sm:w-8" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200">
+          <Card className="bg-card border-border">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-green-600">Countries</p>
-                  <p className="text-lg sm:text-2xl font-bold text-green-900">8</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Countries</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">8</p>
                 </div>
-                <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200">
+          <Card className="bg-card border-border">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-purple-600">Avg. Time</p>
-                  <p className="text-lg sm:text-2xl font-bold text-purple-900">3.2 min</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Avg. Time</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">3.2 min</p>
                 </div>
-                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200">
+          <Card className="bg-card border-border">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-orange-600">Gas Saved</p>
-                  <p className="text-lg sm:text-2xl font-bold text-orange-900">$284</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Gas Saved</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">$284</p>
                 </div>
-                <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
+                <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -469,14 +469,14 @@ export default function RemittanceDashboard() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Send Form */}
                     <div className="space-y-6">
-                      <div className="bg-blue-50 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                      <div className="bg-card border border-border rounded-lg p-6">
+                        <h3 className="text-lg font-semibold text-foreground mb-4">
                           Send Crypto → Receive USDC
                         </h3>
                         
                         <div className="space-y-4">
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               From Token
                             </label>
                             <Select value={fromToken} onValueChange={setFromToken}>
@@ -494,7 +494,7 @@ export default function RemittanceDashboard() {
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Amount to Send
                             </label>
                             <Input
@@ -503,26 +503,28 @@ export default function RemittanceDashboard() {
                               value={fromAmount}
                               onChange={(e) => setFromAmount(e.target.value)}
                               onBlur={getQuote}
+                              className="bg-input border-border text-foreground"
                             />
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Recipient Address
                             </label>
                             <Input
                               placeholder="0x..."
                               value={recipientAddress}
                               onChange={(e) => setRecipientAddress(e.target.value)}
+                              className="bg-input border-border text-foreground"
                             />
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Destination Country
                             </label>
                             <Select value={recipientCountry} onValueChange={setRecipientCountry}>
-                              <SelectTrigger>
+                              <SelectTrigger className="bg-input border-border text-foreground">
                                 <SelectValue placeholder="Select country" />
                               </SelectTrigger>
                               <SelectContent>
@@ -536,11 +538,11 @@ export default function RemittanceDashboard() {
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
                               Purpose of Transfer
                             </label>
                             <Select value={purpose} onValueChange={setPurpose}>
-                              <SelectTrigger>
+                              <SelectTrigger className="bg-input border-border text-foreground">
                                 <SelectValue placeholder="Select purpose" />
                               </SelectTrigger>
                               <SelectContent>
