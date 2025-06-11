@@ -16,15 +16,13 @@ import NotFound from "@/pages/not-found";
 import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
 import { StablePayWalletConnect } from "@/pages/stablepay-walletconnect";
-import { StablePayNew } from "@/pages/stablepay-new";
 import { AdminConfig } from "@/pages/admin-config";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={StablePayNew} />
-      <Route path="/old" component={StablePayWalletConnect} />
+      <Route path="/" component={StablePayWalletConnect} />
       <Route path="/admin" component={AdminConfig} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />

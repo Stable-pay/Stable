@@ -1,37 +1,118 @@
 import { useState, useEffect } from 'react';
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { appKit } from '@/lib/reown';
 
-export function useWalletConnection() {
-  const { address, isConnected, status } = useAppKitAccount();
-  const { caipNetwork } = useAppKitNetwork();
-  
-  const [chainId, setChainId] = useState<number>(1);
-  
-  useEffect(() => {
-    if (caipNetwork?.id) {
-      const id = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
-      setChainId(id);
-    }
-  }, [caipNetwork]);
-  
-  return {
-    address,
-    isConnected,
-    status,
-    chainId,
-    chainName: getChainName(chainId)
-  };
+interface WalletState {
+  isConnected: boolean;
+  address: string | null;
+  chainId: number | null;
+  isConnecting: boolean;
 }
 
-function getChainName(chainId: number): string {
-  const names: Record<number, string> = {
-    1: 'Ethereum',
-    137: 'Polygon',
-    56: 'BNB Chain',
-    42161: 'Arbitrum',
-    10: 'Optimism',
-    43114: 'Avalanche',
-    1337: 'Hardhat'
+export function useWalletConnection() {
+  const [walletState, setWalletState] = useState<WalletState>({
+    isConnected: false,
+    address: null,
+    chainId: null,
+    isConnecting: false
+  });
+
+  useEffect(() => {
+    const checkWalletConnection = async () => {
+      if (typeof window !== 'undefined' && (window as any).ethereum) {
+        try {
+          const ethereum = (window as any).ethereum;
+          
+          // Check if already connected
+          const accounts = await ethereum.request({ 
+            method: 'eth_accounts' 
+          });
+          
+          if (accounts.length > 0) {
+            const chainId = await ethereum.request({ 
+              method: 'eth_chainId' 
+            });
+            
+            setWalletState({
+              isConnected: true,
+              address: accounts[0],
+              chainId: parseInt(chainId, 16),
+              isConnecting: false
+            });
+          }
+        } catch (error) {
+          console.error('Failed to check wallet connection:', error);
+        }
+      }
+    };
+
+    checkWalletConnection();
+
+    // Listen for account changes
+    if (typeof window !== 'undefined' && (window as any).ethereum) {
+      const ethereum = (window as any).ethereum;
+      
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length > 0) {
+          setWalletState(prev => ({
+            ...prev,
+            isConnected: true,
+            address: accounts[0]
+          }));
+        } else {
+          setWalletState({
+            isConnected: false,
+            address: null,
+            chainId: null,
+            isConnecting: false
+          });
+        }
+      };
+
+      const handleChainChanged = (chainId: string) => {
+        setWalletState(prev => ({
+          ...prev,
+          chainId: parseInt(chainId, 16)
+        }));
+      };
+
+      ethereum.on('accountsChanged', handleAccountsChanged);
+      ethereum.on('chainChanged', handleChainChanged);
+
+      return () => {
+        ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        ethereum.removeListener('chainChanged', handleChainChanged);
+      };
+    }
+  }, []);
+
+  const connectWallet = async () => {
+    setWalletState(prev => ({ ...prev, isConnecting: true }));
+    
+    try {
+      appKit.open();
+    } catch (error) {
+      console.error('Failed to open wallet modal:', error);
+      setWalletState(prev => ({ ...prev, isConnecting: false }));
+    }
   };
-  return names[chainId] || 'Unknown';
+
+  const disconnectWallet = async () => {
+    try {
+      await appKit.disconnect();
+      setWalletState({
+        isConnected: false,
+        address: null,
+        chainId: null,
+        isConnecting: false
+      });
+    } catch (error) {
+      console.error('Failed to disconnect wallet:', error);
+    }
+  };
+
+  return {
+    ...walletState,
+    connect: connectWallet,
+    disconnect: disconnectWallet
+  };
 }
