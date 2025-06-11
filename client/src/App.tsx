@@ -16,6 +16,7 @@ import NotFound from "@/pages/not-found";
 import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
 import { StablePayWalletConnect } from "@/pages/stablepay-walletconnect";
+import { StablePayNew } from "@/pages/stablepay-new";
 import { AdminConfig } from "@/pages/admin-config";
 
 
