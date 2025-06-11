@@ -69,19 +69,21 @@ export function useParticleReal() {
 
     setState(prev => ({ ...prev, isLoading: true }));
 
-    try {
-      // Prompt user for email to authenticate with Particle Network
-      const email = prompt('Enter your email to connect with Particle Network:');
-      console.log('Email entered:', email);
-      
-      if (!email) {
-        console.log('No email provided, cancelling connection');
-        setState(prev => ({ ...prev, isLoading: false }));
-        return;
-      }
+    alert('Please use the email dialog to connect');
+    setState(prev => ({ ...prev, isLoading: false }));
+  }, [particle]);
 
-      console.log('Authenticating with backend...');
-      // Authenticate with backend using email
+  // Connect with email (new function for dialog-based connection)
+  const connectWithEmail = useCallback(async (email: string) => {
+    if (!particle) {
+      console.error('Particle Network not initialized');
+      throw new Error('Particle Network not initialized');
+    }
+
+    setState(prev => ({ ...prev, isLoading: true }));
+
+    try {
+      console.log('Authenticating with backend using email:', email);
       const userInfo = await authenticateWithBackend(email);
       console.log('Authentication response:', userInfo);
       
@@ -111,8 +113,8 @@ export function useParticleReal() {
 
     } catch (error) {
       console.error('Particle connection failed:', error);
-      alert(`Connection failed: ${error.message}`);
       setState(prev => ({ ...prev, isLoading: false }));
+      throw error;
     }
   }, [particle]);
 
@@ -270,6 +272,7 @@ export function useParticleReal() {
     ...state,
     balances,
     connect,
+    connectWithEmail,
     disconnect,
     refreshBalances,
     getSwapQuote,

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap } from 'lucide-react';
 import { useParticleReal } from '@/hooks/use-particle-real';
 
@@ -32,6 +33,8 @@ export function StablePayParticle() {
     ifscCode: '',
     accountHolderName: ''
   });
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [email, setEmail] = useState('');
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
 
@@ -59,6 +62,19 @@ export function StablePayParticle() {
       return () => clearTimeout(timer);
     }
   }, [state.amount, state.fromToken, particleWallet.isConnected, particleWallet]);
+
+  // Handle email authentication
+  const handleEmailConnect = async () => {
+    if (!email.trim()) return;
+    
+    try {
+      await particleWallet.connectWithEmail(email);
+      setShowEmailDialog(false);
+      setEmail('');
+    } catch (error) {
+      console.error('Connection failed:', error);
+    }
+  };
 
   // Update step based on wallet connection
   useEffect(() => {
@@ -183,8 +199,8 @@ export function StablePayParticle() {
             
             <Button 
               onClick={() => {
-                console.log('Connect button clicked');
-                particleWallet.connect();
+                console.log('Connect button clicked - opening email dialog');
+                setShowEmailDialog(true);
               }} 
               disabled={particleWallet.isLoading}
               className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
@@ -197,6 +213,43 @@ export function StablePayParticle() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Email Input Dialog */}
+        <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Connect with Particle Network</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Email Address</label>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleEmailConnect()}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setShowEmailDialog(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleEmailConnect}
+                  disabled={!email.trim() || particleWallet.isLoading}
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600"
+                >
+                  {particleWallet.isLoading ? 'Connecting...' : 'Connect'}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
