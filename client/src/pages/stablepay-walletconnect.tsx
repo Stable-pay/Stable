@@ -7,6 +7,7 @@ import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalL
 import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useWithdrawalTransfer } from '@/hooks/use-withdrawal-transfer';
+import { useSmartContractWithdrawal } from '@/hooks/use-smart-contract-withdrawal';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';

@@ -96,8 +96,9 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
+    if (!walletAddress) return undefined;
     return Array.from(this.users.values()).find(
-      (user) => user.walletAddress.toLowerCase() === walletAddress.toLowerCase()
+      (user) => user.walletAddress?.toLowerCase() === walletAddress.toLowerCase()
     );
   }
 
