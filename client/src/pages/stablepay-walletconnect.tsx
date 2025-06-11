@@ -424,7 +424,7 @@ export function StablePayWalletConnect() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-white text-sm font-medium">Amount</label>
+                    <label className="text-foreground text-sm font-medium">Amount</label>
                     {tokenBalances.length > 0 && (() => {
                       const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                       return selectedToken ? (
@@ -432,7 +432,7 @@ export function StablePayWalletConnect() {
                           onClick={() => setState(prev => ({ ...prev, amount: selectedToken.formattedBalance }))}
                           variant="ghost"
                           size="sm"
-                          className="text-blue-400 hover:text-blue-300 h-auto p-1 text-xs"
+                          className="text-very-peri hover:text-very-peri/80 h-auto p-1 text-xs"
                         >
                           Max
                         </Button>
@@ -445,7 +445,7 @@ export function StablePayWalletConnect() {
                       placeholder="0.0"
                       value={state.amount}
                       onChange={(e) => setState(prev => ({ ...prev, amount: e.target.value }))}
-                      className="bg-gray-700/50 border-gray-600 text-white pr-16"
+                      className="bg-background border-border text-foreground pr-16"
                       step="any"
                       min="0"
                     />
@@ -453,7 +453,7 @@ export function StablePayWalletConnect() {
                       const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                       return selectedToken ? (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          <span className="text-white/60 text-sm">{selectedToken.symbol}</span>
+                          <span className="text-muted-foreground text-sm">{selectedToken.symbol}</span>
                         </div>
                       ) : null;
                     })()}
@@ -464,7 +464,7 @@ export function StablePayWalletConnect() {
                     const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                     if (selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance)) {
                       return (
-                        <div className="text-red-400 text-xs">
+                        <div className="text-soft-coral text-xs">
                           Insufficient balance. Available: {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
                         </div>
                       );
@@ -474,46 +474,46 @@ export function StablePayWalletConnect() {
                 </div>
 
                 <div className="flex justify-center">
-                  <ArrowDown className="w-6 h-6 text-white/60" />
+                  <ArrowDown className="w-6 h-6 text-muted-foreground" />
                 </div>
 
-                <div className="space-y-4 p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
+                <div className="space-y-4 p-4 bg-mint-green/10 border border-mint-green/30 rounded-lg">
                   <div className="flex justify-between">
-                    <span className="text-white">USDC Amount:</span>
-                    <span className="text-white font-bold">{state.usdcAmount || '0.00'} USDC</span>
+                    <span className="text-foreground">USDC Amount:</span>
+                    <span className="text-very-peri font-bold">{state.usdcAmount || '0.00'} USDC</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white">INR Amount:</span>
-                    <span className="text-white font-bold">₹{state.inrAmount || '0.00'}</span>
+                    <span className="text-foreground">INR Amount:</span>
+                    <span className="text-mint-green font-bold">₹{state.inrAmount || '0.00'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-white/60">Exchange Rate:</span>
-                    <span className="text-white/60">1 USDC = ₹{INR_RATE}</span>
+                    <span className="text-muted-foreground">Exchange Rate:</span>
+                    <span className="text-muted-foreground">1 USDC = ₹{INR_RATE}</span>
                   </div>
                 </div>
               </div>
 
               {/* Bank Details */}
               <div className="space-y-4">
-                <h3 className="text-white font-medium">Bank Account Details</h3>
+                <h3 className="text-foreground font-medium">Bank Account Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     placeholder="Account Number"
                     value={bankDetails.accountNumber}
                     onChange={(e) => setBankDetails(prev => ({ ...prev, accountNumber: e.target.value }))}
-                    className="bg-gray-700/50 border-gray-600 text-white"
+                    className="bg-background border-border text-foreground"
                   />
                   <Input
                     placeholder="IFSC Code"
                     value={bankDetails.ifscCode}
                     onChange={(e) => setBankDetails(prev => ({ ...prev, ifscCode: e.target.value }))}
-                    className="bg-gray-700/50 border-gray-600 text-white"
+                    className="bg-background border-border text-foreground"
                   />
                   <Input
                     placeholder="Account Holder Name"
                     value={bankDetails.accountHolderName}
                     onChange={(e) => setBankDetails(prev => ({ ...prev, accountHolderName: e.target.value }))}
-                    className="bg-gray-700/50 border-gray-600 text-white md:col-span-2"
+                    className="bg-background border-border text-foreground md:col-span-2"
                   />
                 </div>
               </div>
@@ -529,7 +529,7 @@ export function StablePayWalletConnect() {
                     return selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance);
                   })())
                 }
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-12 text-lg font-semibold gradient-very-peri hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground"
               >
                 {state.isProcessing ? (
                   <div className="flex items-center gap-2">
