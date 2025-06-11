@@ -54,6 +54,18 @@ export function StablePayMinimal() {
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
 
+  // Add debugging for wallet connection
+  const handleConnect = async (connector: any) => {
+    try {
+      console.log('Attempting to connect with:', connector.name);
+      await connect({ connector });
+      console.log('Connection initiated successfully');
+    } catch (error) {
+      console.error('Connection failed:', error);
+      alert('Failed to connect wallet: ' + (error as Error).message);
+    }
+  };
+
   // Update step based on wallet connection
   useEffect(() => {
     if (status === 'connected' && address) {
@@ -321,12 +333,28 @@ export function StablePayMinimal() {
               </div>
             </div>
 
-            <Button 
-              onClick={() => connectors[0] && connect({ connector: connectors[0] })}
-              className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-            >
-              Connect Wallet
-            </Button>
+            <div className="space-y-3">
+              {connectors.map((connector) => (
+                <Button 
+                  key={connector.id}
+                  onClick={() => handleConnect(connector)}
+                  className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                >
+                  Connect {connector.name}
+                </Button>
+              ))}
+              {connectors.length === 0 && (
+                <div className="space-y-2">
+                  <p className="text-white/60 text-sm text-center">No wallet detected</p>
+                  <Button 
+                    onClick={() => window.open('https://metamask.io/download/', '_blank')}
+                    className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
+                  >
+                    Install MetaMask
+                  </Button>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
