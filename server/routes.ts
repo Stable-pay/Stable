@@ -136,6 +136,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Real token balance endpoint for wallet integration
+  app.post("/api/tokens/balance", async (req, res) => {
+    try {
+      const { address, tokenAddress, chainId } = req.body;
+      
+      if (!address || !tokenAddress || !chainId) {
+        return res.status(400).json({ error: 'Address, token address, and chain ID required' });
+      }
+
+      // Get token info from chain
+      const tokenInfo = getTokenInfo(tokenAddress, chainId);
+      const price = await getTokenPrice(tokenInfo.symbol);
+      
+      // Use Reown API to get real balance
+      const result = await reownAPI.getTokenBalance(req, res);
+      
+    } catch (error) {
+      console.error('Token balance error:', error);
+      res.status(500).json({ error: 'Failed to fetch token balance' });
+    }
+  });
+
+  function getTokenInfo(tokenAddress: string, chainId: number) {
+    const tokens = TOKEN_ADDRESSES[chainId.toString()] || {};
+    
+    // Find token by address
+    for (const [symbol, address] of Object.entries(tokens)) {
+      if (address.toLowerCase() === tokenAddress.toLowerCase()) {
+        return {
+          symbol,
+          name: getTokenName(symbol),
+          decimals: getTokenDecimals(symbol)
+        };
+      }
+    }
+    
+    // Default fallback
+    return {
+      symbol: 'UNKNOWN',
+      name: 'Unknown Token',
+      decimals: 18
+    };
+  }
+
+  function getTokenName(symbol: string): string {
+    const names: Record<string, string> = {
+      'ETH': 'Ethereum',
+      'USDC': 'USD Coin',
+      'USDT': 'Tether USD',
+      'WBTC': 'Wrapped Bitcoin',
+      'MATIC': 'Polygon',
+      'BNB': 'Binance Coin',
+      'DAI': 'Dai Stablecoin',
+      'BUSD': 'Binance USD'
+    };
+    return names[symbol] || symbol;
+  }
+
+  function getTokenDecimals(symbol: string): number {
+    const decimals: Record<string, number> = {
+      'ETH': 18,
+      'USDC': 6,
+      'USDT': 6,
+      'WBTC': 8,
+      'MATIC': 18,
+      'BNB': 18,
+      'DAI': 18,
+      'BUSD': 18
+    };
+    return decimals[symbol] || 18;
+  }
+
   // Live exchange rate endpoint using CoinGecko API
   app.get("/api/remittance/rates", async (req, res) => {
     try {

@@ -365,7 +365,7 @@ export function StablePayWalletConnect() {
                   <div className="flex items-center justify-between">
                     <label className="text-white text-sm font-medium">From Token</label>
                     {balancesLoading && (
-                      <div className="flex items-center gap-1 text-white/60 text-xs">
+                      <div className="flex items-center gap-1 text-blue-300 text-xs font-medium">
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         Loading balances...
                       </div>
@@ -375,20 +375,20 @@ export function StablePayWalletConnect() {
                     <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-600">
+                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
                       {tokenBalances.length > 0 ? (
                         tokenBalances.map((token) => (
-                          <SelectItem key={token.address} value={token.symbol} className="text-white hover:bg-gray-700">
-                            <div className="flex items-center justify-between w-full">
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium">{token.symbol}</span>
-                                <span className="text-gray-400 text-sm">- {token.name}</span>
+                          <SelectItem key={token.address} value={token.symbol} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">
+                            <div className="flex items-center justify-between w-full min-w-0">
+                              <div className="flex items-center gap-2 flex-1 min-w-0">
+                                <span className="font-medium text-gray-900 dark:text-white">{token.symbol}</span>
+                                <span className="text-gray-600 dark:text-gray-300 text-sm truncate">- {token.name}</span>
                               </div>
-                              <div className="text-right text-sm">
-                                <div className="text-white font-medium">
+                              <div className="text-right text-sm ml-4 flex-shrink-0">
+                                <div className="text-gray-900 dark:text-white font-medium">
                                   {parseFloat(token.formattedBalance).toFixed(4)}
                                 </div>
-                                <div className="text-gray-400">
+                                <div className="text-gray-600 dark:text-gray-400">
                                   ${token.usdValue.toFixed(2)}
                                 </div>
                               </div>
@@ -396,7 +396,7 @@ export function StablePayWalletConnect() {
                           </SelectItem>
                         ))
                       ) : (
-                        <SelectItem value="no-tokens" disabled className="text-gray-500">
+                        <SelectItem value="no-tokens" disabled className="text-gray-500 dark:text-gray-400">
                           No tokens found - Connect wallet to see balances
                         </SelectItem>
                       )}
@@ -407,13 +407,13 @@ export function StablePayWalletConnect() {
                   {tokenBalances.length > 0 && (() => {
                     const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                     return selectedToken ? (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/60">Available Balance:</span>
+                      <div className="flex items-center justify-between text-sm p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                        <span className="text-blue-300 font-medium">Available Balance:</span>
                         <div className="text-right">
-                          <div className="text-white font-medium">
+                          <div className="text-white font-semibold">
                             {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
                           </div>
-                          <div className="text-white/60">
+                          <div className="text-blue-200">
                             ≈ ${selectedToken.usdValue.toFixed(2)}
                           </div>
                         </div>
@@ -464,8 +464,8 @@ export function StablePayWalletConnect() {
                     const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                     if (selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance)) {
                       return (
-                        <div className="text-red-400 text-xs">
-                          Insufficient balance. Available: {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
+                        <div className="text-red-300 bg-red-500/10 border border-red-500/20 rounded p-2 text-sm font-medium">
+                          ⚠️ Insufficient balance. Available: {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
                         </div>
                       );
                     }
