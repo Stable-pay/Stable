@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network } from 'lucide-react';
+import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@reown/appkit/react';
+import { useWalletBalances } from '@/hooks/use-wallet-balances';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -19,6 +20,7 @@ export function StablePayWalletConnect() {
   const { open } = useAppKit();
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
+  const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -47,19 +49,39 @@ export function StablePayWalletConnect() {
     }
   }, [isConnected, state.step]);
 
-  // Calculate conversion rates
+  // Calculate conversion rates using real token data
   useEffect(() => {
-    if (state.amount && isConnected) {
-      const mockUsdcAmount = (parseFloat(state.amount) * 2000).toFixed(6); // Mock conversion rate
-      const inrValue = (parseFloat(mockUsdcAmount) * INR_RATE).toFixed(2);
-      
-      setState(prev => ({
-        ...prev,
-        usdcAmount: mockUsdcAmount,
-        inrAmount: inrValue
-      }));
+    const calculateConversion = async () => {
+      if (!state.amount || !isConnected || !tokenBalances.length) return;
+
+      try {
+        const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+        if (!selectedToken) return;
+
+        // Calculate USD value of the input amount
+        const amountValue = parseFloat(state.amount);
+        const tokenPrice = selectedToken.usdValue / parseFloat(selectedToken.formattedBalance);
+        const usdValue = amountValue * tokenPrice;
+        
+        // Convert USD to USDC (1:1 for simplicity)
+        const usdcAmount = usdValue.toFixed(6);
+        const inrValue = (usdValue * INR_RATE).toFixed(2);
+        
+        setState(prev => ({
+          ...prev,
+          usdcAmount: usdcAmount,
+          inrAmount: inrValue
+        }));
+      } catch (error) {
+        console.error('Failed to calculate conversion:', error);
+      }
+    };
+
+    if (state.amount && isConnected && tokenBalances.length > 0) {
+      const timer = setTimeout(calculateConversion, 500);
+      return () => clearTimeout(timer);
     }
-  }, [state.amount, isConnected]);
+  }, [state.amount, state.fromToken, isConnected, tokenBalances]);
 
   const handleKycStart = async () => {
     if (!address) return;
@@ -306,16 +328,32 @@ export function StablePayWalletConnect() {
             <p className="text-white/80">Swap any crypto to USDC, then convert to Indian Rupees</p>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Network and Account Info */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Portfolio Overview */}
+            <div className="grid grid-cols-3 gap-4">
               <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
                 <h3 className="text-white font-medium mb-2">Network</h3>
                 <p className="text-white font-bold">{caipNetwork?.name || 'Unknown'}</p>
                 <p className="text-white/60 text-sm">Chain ID: {caipNetwork?.id}</p>
               </div>
               <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-white font-medium">Portfolio Value</h3>
+                  <Button
+                    onClick={refreshBalances}
+                    disabled={balancesLoading}
+                    variant="ghost"
+                    size="sm"
+                    className="p-1 h-auto text-white/60 hover:text-white"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${balancesLoading ? 'animate-spin' : ''}`} />
+                  </Button>
+                </div>
+                <p className="text-green-400 font-bold">${totalValue.toFixed(2)}</p>
+                <p className="text-white/60 text-sm">{tokenBalances.length} tokens</p>
+              </div>
+              <div className="p-4 bg-purple-500/20 border border-purple-500/30 rounded-lg">
                 <h3 className="text-white font-medium mb-2">Status</h3>
-                <p className="text-green-400 font-bold">Connected</p>
+                <p className="text-purple-400 font-bold">Connected</p>
                 <p className="text-white/60 text-sm">Ready to convert</p>
               </div>
             </div>
@@ -324,29 +362,115 @@ export function StablePayWalletConnect() {
             <div className="space-y-4">
               <div className="p-6 bg-gray-800/50 rounded-lg space-y-4">
                 <div className="space-y-2">
-                  <label className="text-white text-sm font-medium">From Token</label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-white text-sm font-medium">From Token</label>
+                    {balancesLoading && (
+                      <div className="flex items-center gap-1 text-white/60 text-xs">
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        Loading balances...
+                      </div>
+                    )}
+                  </div>
                   <Select value={state.fromToken} onValueChange={(value) => setState(prev => ({ ...prev, fromToken: value }))}>
                     <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ETH">ETH - Ethereum</SelectItem>
-                      <SelectItem value="MATIC">MATIC - Polygon</SelectItem>
-                      <SelectItem value="BNB">BNB - Binance Coin</SelectItem>
-                      <SelectItem value="USDC">USDC - USD Coin</SelectItem>
+                    <SelectContent className="bg-gray-800 border-gray-600">
+                      {tokenBalances.length > 0 ? (
+                        tokenBalances.map((token) => (
+                          <SelectItem key={token.address} value={token.symbol} className="text-white hover:bg-gray-700">
+                            <div className="flex items-center justify-between w-full">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">{token.symbol}</span>
+                                <span className="text-gray-400 text-sm">- {token.name}</span>
+                              </div>
+                              <div className="text-right text-sm">
+                                <div className="text-white font-medium">
+                                  {parseFloat(token.formattedBalance).toFixed(4)}
+                                </div>
+                                <div className="text-gray-400">
+                                  ${token.usdValue.toFixed(2)}
+                                </div>
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-tokens" disabled className="text-gray-500">
+                          No tokens found - Connect wallet to see balances
+                        </SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
+                  
+                  {/* Available Balance Display */}
+                  {tokenBalances.length > 0 && (() => {
+                    const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+                    return selectedToken ? (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-white/60">Available Balance:</span>
+                        <div className="text-right">
+                          <div className="text-white font-medium">
+                            {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
+                          </div>
+                          <div className="text-white/60">
+                            ≈ ${selectedToken.usdValue.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-white text-sm font-medium">Amount</label>
-                  <Input
-                    type="number"
-                    placeholder="0.0"
-                    value={state.amount}
-                    onChange={(e) => setState(prev => ({ ...prev, amount: e.target.value }))}
-                    className="bg-gray-700/50 border-gray-600 text-white"
-                  />
+                  <div className="flex items-center justify-between">
+                    <label className="text-white text-sm font-medium">Amount</label>
+                    {tokenBalances.length > 0 && (() => {
+                      const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+                      return selectedToken ? (
+                        <Button
+                          onClick={() => setState(prev => ({ ...prev, amount: selectedToken.formattedBalance }))}
+                          variant="ghost"
+                          size="sm"
+                          className="text-blue-400 hover:text-blue-300 h-auto p-1 text-xs"
+                        >
+                          Max
+                        </Button>
+                      ) : null;
+                    })()}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      placeholder="0.0"
+                      value={state.amount}
+                      onChange={(e) => setState(prev => ({ ...prev, amount: e.target.value }))}
+                      className="bg-gray-700/50 border-gray-600 text-white pr-16"
+                      step="any"
+                      min="0"
+                    />
+                    {tokenBalances.length > 0 && (() => {
+                      const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+                      return selectedToken ? (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <span className="text-white/60 text-sm">{selectedToken.symbol}</span>
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                  
+                  {/* Amount validation */}
+                  {state.amount && tokenBalances.length > 0 && (() => {
+                    const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+                    if (selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance)) {
+                      return (
+                        <div className="text-red-400 text-xs">
+                          Insufficient balance. Available: {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
 
                 <div className="flex justify-center">
@@ -396,8 +520,16 @@ export function StablePayWalletConnect() {
 
               <Button 
                 onClick={handleConversion}
-                disabled={!state.amount || !bankDetails.accountNumber || state.isProcessing}
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                disabled={
+                  !state.amount || 
+                  !bankDetails.accountNumber || 
+                  state.isProcessing ||
+                  (tokenBalances.length > 0 && (() => {
+                    const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+                    return selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance);
+                  })())
+                }
+                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {state.isProcessing ? (
                   <div className="flex items-center gap-2">
