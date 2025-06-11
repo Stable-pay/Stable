@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useWithdrawalContract } from '@/hooks/use-withdrawal-contract';
-import { useDirectWallet } from '@/hooks/use-direct-wallet';
+import { useWalletProvider } from '@/hooks/use-wallet-provider';
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface WithdrawalFormProps {
@@ -21,7 +21,7 @@ export function WithdrawalForm({ onSuccess }: WithdrawalFormProps) {
   const [kycVerified, setKycVerified] = useState(false);
 
   const { state, supportedTokens, calculateInrAmount, initiateWithdrawal, resetState } = useWithdrawalContract();
-  const walletData = useDirectWallet();
+  const walletData = useWalletProvider();
 
   // Check KYC status
   useEffect(() => {

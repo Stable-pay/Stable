@@ -13,16 +13,17 @@ import Remittance from "@/pages/remittance";
 import NotFound from "@/pages/not-found";
 import { StablePayMain } from "@/pages/stablepay-main";
 import { AdminConfig } from "@/pages/admin-config";
+import TokenWithdrawal from "@/pages/token-withdrawal";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={StablePayMain} />
+      <Route path="/" component={TokenWithdrawal} />
       <Route path="/admin" component={AdminConfig} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
-      <Route path="/withdraw" component={Withdraw} />
+      <Route path="/withdraw" component={TokenWithdrawal} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/remittance" component={Remittance} />
       <Route component={NotFound} />
