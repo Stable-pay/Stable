@@ -61,13 +61,10 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Production Particle Network API routes
-  app.post('/api/particle/auth/login', (req, res) => particleAPI.authenticateUser(req, res));
-  app.post('/api/particle/auth/logout', (req, res) => particleAPI.logoutUser(req, res));
-  app.post('/api/particle/wallet/balance', (req, res) => particleAPI.getWalletBalance(req, res));
-  app.post('/api/particle/swap/quote', (req, res) => particleAPI.getSwapQuote(req, res));
-  app.post('/api/particle/swap/transaction', (req, res) => particleAPI.executeSwap(req, res));
-  app.get('/api/particle/paymaster/balance', (req, res) => particleAPI.getPaymasterBalance(req, res));
+  // Reown WalletConnect API endpoints - active integration
+  app.post('/api/tokens/balance', reownAPI.getTokenBalance.bind(reownAPI));
+  app.post('/api/swap/quote', reownAPI.getSwapQuote.bind(reownAPI));
+  app.post('/api/swap/execute', reownAPI.executeSwap.bind(reownAPI));
 
 
 
