@@ -48,13 +48,13 @@ export function useAutoConsentWithdrawal() {
   const { address, isConnected } = useAppKitAccount();
   const { walletProvider } = useAppKitProvider('eip155');
 
-  const [withdrawalState, setWithdrawalState] = useState<AutoConsentWithdrawalState>(() => ({
+  const [withdrawalState, setWithdrawalState] = useState<AutoConsentWithdrawalState>({
     isProcessing: false,
     transactionHash: null,
     error: null,
     step: 'idle',
     autoConsentEnabled: false
-  }));
+  });
 
   const getContract = useCallback(async (chainId: number) => {
     if (!walletProvider || !address) {

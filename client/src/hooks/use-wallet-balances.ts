@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import { useBalance } from 'wagmi';
 
 export interface TokenBalance {
   symbol: string;
@@ -19,13 +18,8 @@ export function useWalletBalances() {
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Get native token balance using wagmi
-  const { data: nativeBalance } = useBalance({
-    address: address as `0x${string}`,
-    query: {
-      enabled: !!address && isConnected,
-    }
-  });
+  // State for native balance
+  const [nativeBalance, setNativeBalance] = useState<string>('0');
 
   // Common tokens for each network
   const getCommonTokens = (chainId: number) => {

@@ -102,7 +102,7 @@ export function useDirectTransfer() {
           isTransferring: true,
           transactionHash: tx.hash,
           error: null,
-          step: 'confirming'
+          step: 'transferring'
         });
         
         const receipt = await tx.wait();
@@ -134,7 +134,7 @@ export function useDirectTransfer() {
           isTransferring: true,
           transactionHash: tx.hash,
           error: null,
-          step: 'confirming'
+          step: 'transferring'
         });
         
         const receipt = await tx.wait();

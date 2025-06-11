@@ -35,8 +35,6 @@ export function StablePayWalletConnect() {
   const { transferState: simpleTokenState, executeTransfer: executeSimpleTokenTransfer, resetTransferState: resetSimpleTokenState } = useSimpleTokenTransfer();
   const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
   const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
-  // Temporarily disabled auto-consent to fix proxyState error
-  // const { withdrawalState: autoConsentState, executeAutoWithdrawal, enableAutoConsent, resetState: resetAutoConsentState } = useAutoConsentWithdrawal();
 
   
   const [state, setState] = useState<ConversionState>({
