@@ -5,7 +5,7 @@ import { reownAPI } from "./reown-api";
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
-import { particleAPI } from './particle-api';
+
 import { smartContractAPI } from './smart-contract-api';
 
 // Multer configuration for file uploads
@@ -688,10 +688,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/swap/quote', reownAPI.getSwapQuote.bind(reownAPI));
   app.post('/api/swap/execute', reownAPI.executeSwap.bind(reownAPI));
 
-  // Particle endpoints
-  app.get('/api/particle/balance/:address', particleAPI.getWalletBalance.bind(particleAPI));
-  app.post('/api/particle/swap', particleAPI.executeSwap.bind(particleAPI));
-  app.get('/api/particle/transaction/:hash', particleAPI.getTransactionStatus.bind(particleAPI));
+  
 
   // Smart contract withdrawal endpoints
   app.post('/api/withdrawal/consent', smartContractAPI.grantConsent.bind(smartContractAPI));
