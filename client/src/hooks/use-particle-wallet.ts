@@ -43,7 +43,7 @@ export function useParticleWallet() {
       address,
       chainId: 1, // Default to Ethereum mainnet
       isLoading: false,
-      provider: walletProvider ? new BrowserProvider(walletProvider) : null
+      provider: walletProvider ? new BrowserProvider(walletProvider as any) : null
     });
   }, [isConnected, address, walletProvider]);
 
@@ -74,7 +74,7 @@ export function useParticleWallet() {
   };
 
   const fetchTokenBalances = async (): Promise<TokenBalance[]> => {
-    if (!address || !chainId) {
+    if (!address || !state.chainId) {
       return [];
     }
 
@@ -87,7 +87,7 @@ export function useParticleWallet() {
         },
         body: JSON.stringify({
           address,
-          chainId
+          chainId: state.chainId
         }),
       });
 

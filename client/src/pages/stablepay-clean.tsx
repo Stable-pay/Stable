@@ -469,8 +469,7 @@ export function StablePayClean() {
                 {state.isProcessing ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    {transferState.step === 'approving' ? 'Approving Token...' :
-                     transferState.step === 'transferring' ? 'Executing Blockchain Transfer...' :
+                    {transferState.step === 'transferring' ? 'Executing Blockchain Transfer...' :
                      'Processing Conversion...'}
                   </div>
                 ) : (
