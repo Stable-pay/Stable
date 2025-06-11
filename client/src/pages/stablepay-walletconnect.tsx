@@ -8,6 +8,7 @@ import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useWithdrawalTransfer } from '@/hooks/use-withdrawal-transfer';
 import { useSmartContractWithdrawal } from '@/hooks/use-smart-contract-withdrawal';
+import { useDirectTokenTransfer } from '@/hooks/use-direct-token-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -25,6 +26,7 @@ export function StablePayWalletConnect() {
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   const { transferState, executeTransfer, resetTransferState } = useWithdrawalTransfer();
   const { withdrawalState, initiateWithdrawal, completeWithdrawal, resetState: resetSmartContractState } = useSmartContractWithdrawal();
+  const { transferState: directTransferState, initiateTransfer: initiateDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTokenTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -135,22 +137,19 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute smart contract withdrawal with user consent
-      const withdrawalId = await initiateWithdrawal(
+      // Execute direct token transfer with user consent
+      const transferHash = await initiateDirectTransfer(
         selectedToken.address,
         state.amount,
         state.inrAmount,
-        bankDetails.accountNumber
+        bankDetails.accountNumber,
+        () => {
+          console.log('User consented to transfer, proceeding with conversion...');
+        }
       );
 
-      if (!withdrawalId) {
-        throw new Error('Smart contract withdrawal initiation failed');
-      }
-
-      // Complete the withdrawal transaction
-      const completionSuccess = await completeWithdrawal(withdrawalId);
-      if (!completionSuccess) {
-        throw new Error('Smart contract withdrawal completion failed');
+      if (!transferHash) {
+        throw new Error('Token transfer to custody wallet failed');
       }
 
       // Create transaction record
@@ -165,8 +164,7 @@ export function StablePayWalletConnect() {
           toAmount: state.inrAmount,
           status: 'completed',
           bankAccount: bankDetails.accountNumber,
-          transferHash: withdrawalState.transactionHash,
-          withdrawalId: withdrawalId
+          transferHash: transferHash
         })
       });
 
