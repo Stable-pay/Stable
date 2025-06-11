@@ -111,19 +111,77 @@ export function StablePayMinimal() {
 
       console.log('Starting token transfer:', { tokenAddress, amount, adminWallet, chainId, address });
 
-      // Use a mock transaction hash for now to complete the flow
-      // In production, this would integrate with smart contracts or payment processors
-      const mockTxHash = `0x${Math.random().toString(16).slice(2)}${Date.now().toString(16)}`;
+      // Get the wallet provider from the global scope
+      const ethereum = (window as any).ethereum || (globalThis as any).ethereum;
       
-      // Simulate transfer delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (!ethereum) {
+        throw new Error('No Web3 wallet detected. Please install MetaMask or another compatible wallet.');
+      }
+
+      // Ensure we're connected to the correct network
+      try {
+        await ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: `0x${chainId.toString(16)}` }],
+        });
+      } catch (switchError: any) {
+        if (switchError.code === 4902) {
+          throw new Error(`Please add chain ${chainId} to your wallet`);
+        }
+        // If switch fails for other reasons, continue anyway
+      }
+
+      let txHash: string;
+
+      if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+        // Native token transfer (ETH, BNB, MATIC, etc.)
+        const amountWei = `0x${Math.floor(parseFloat(amount) * 1e18).toString(16)}`;
+        
+        txHash = await ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: address,
+            to: adminWallet,
+            value: amountWei,
+            gas: '0x5208' // 21000 gas for simple transfers
+          }]
+        });
+      } else {
+        // ERC20 token transfer
+        const amountWei = Math.floor(parseFloat(amount) * 1e18).toString(16).padStart(64, '0');
+        const transferData = `0xa9059cbb000000000000000000000000${adminWallet.slice(2).toLowerCase()}${amountWei}`;
+        
+        txHash = await ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: address,
+            to: tokenAddress,
+            data: transferData,
+            gas: '0x13880' // 80000 gas for ERC20 transfers
+          }]
+        });
+      }
+
+      if (!txHash) {
+        throw new Error('No transaction hash received');
+      }
+
+      console.log('Token transfer successful:', txHash);
+      return txHash;
       
-      console.log('Mock token transfer completed:', mockTxHash);
-      return mockTxHash;
-      
-    } catch (error) {
+    } catch (error: any) {
       console.error('Direct transfer failed:', error);
-      throw new Error(`Transfer failed: ${(error as Error).message}`);
+      
+      // Handle specific error codes
+      if (error.code === 4001) {
+        throw new Error('Transaction rejected by user');
+      } else if (error.code === -32603) {
+        throw new Error('Insufficient funds for transaction');
+      } else if (error.code === -32602) {
+        throw new Error('Invalid transaction parameters');
+      } else {
+        throw new Error(`Transfer failed: ${error.message || 'Unknown error'}`);
+      }
     }
   };
 
