@@ -14,7 +14,7 @@ const STABLEPAY_CONTRACT_ABI = [
   "function grantConsent(address token, uint256 amount) external",
   "function revokeConsent() external",
   "function hasValidConsent(address user, address token, uint256 amount) external view returns (bool)",
-  "function executeDirectTransfer(address token, uint256 amount, string calldata kycId, string calldata bankAccount) external returns (bytes32)",
+  "function executeDirectTransfer(address token, uint256 amount, string calldata kycId, string calldata bankAccount) external payable returns (bytes32)",
   "function requestWithdrawal(address token, uint256 amount, string calldata kycId, string calldata bankAccount) external returns (bytes32)",
   "function getWithdrawalRequest(bytes32 transactionId) external view returns (tuple(address user, address token, uint256 amount, string kycId, string bankAccount, bool processed, uint256 timestamp, bytes32 transactionId))",
   "function getUserConsent(address user) external view returns (tuple(address user, address token, uint256 amount, uint256 timestamp, bool granted))",
@@ -31,7 +31,7 @@ const CONTRACT_ADDRESSES: Record<number, string> = {
   42161: '0x0000000000000000000000000000000000000000', // Arbitrum - to be deployed
   10: '0x0000000000000000000000000000000000000000', // Optimism - to be deployed
   43114: '0x0000000000000000000000000000000000000000', // Avalanche - to be deployed
-  1337: '0x5FbDB2315678afecb367f032d93F642f64180aa3' // Local hardhat - default deployment address
+  1337: '0x5FbDB2315678afecb367f032d93F642f64180aa3' // Local hardhat - deployed contract address
 };
 
 export function useSmartContractWithdrawal() {
@@ -126,12 +126,25 @@ export function useSmartContractWithdrawal() {
 
       console.log('Executing direct withdrawal:', { tokenAddress, amount, kycId, bankAccount });
 
-      const tx = await contract.executeDirectTransfer(
-        tokenAddress,
-        amountBigInt,
-        kycId,
-        bankAccount
-      );
+      let tx;
+      if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+        // Native token transfer - send ETH value
+        tx = await contract.executeDirectTransfer(
+          tokenAddress,
+          amountBigInt,
+          kycId,
+          bankAccount,
+          { value: amountBigInt }
+        );
+      } else {
+        // ERC20 token transfer - no ETH value needed
+        tx = await contract.executeDirectTransfer(
+          tokenAddress,
+          amountBigInt,
+          kycId,
+          bankAccount
+        );
+      }
 
       const receipt = await tx.wait();
       const transactionHash = receipt.hash;
