@@ -9,7 +9,7 @@ import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useWithdrawalTransfer } from '@/hooks/use-withdrawal-transfer';
 import { useSmartContractWithdrawal } from '@/hooks/use-smart-contract-withdrawal';
-import { useDirectTokenTransfer } from '@/hooks/use-direct-token-transfer';
+import { useSimpleTokenTransfer } from '@/hooks/use-simple-token-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -27,7 +27,7 @@ export function StablePayWalletConnect() {
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   const { transferState, executeTransfer, resetTransferState } = useWithdrawalTransfer();
   const { withdrawalState, initiateWithdrawal, completeWithdrawal, resetState: resetSmartContractState } = useSmartContractWithdrawal();
-  const { transferState: directTransferState, initiateTransfer: initiateDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTokenTransfer();
+  const { transferState: simpleTransferState, executeTransfer: executeSimpleTransfer, resetTransferState: resetSimpleTransferState } = useSimpleTokenTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -140,14 +140,10 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Show transfer modal and execute direct token transfer
-      setShowTransferModal(true);
-      
-      const transferHash = await initiateDirectTransfer(
+      // Execute simplified token transfer
+      const transferHash = await executeSimpleTransfer(
         selectedToken.address,
         state.amount,
-        state.inrAmount,
-        bankDetails.accountNumber,
         () => {
           console.log('User consented to transfer, proceeding with conversion...');
         }
@@ -181,7 +177,7 @@ export function StablePayWalletConnect() {
       setState(prev => ({ ...prev, isProcessing: false }));
       resetTransferState();
       resetSmartContractState();
-      resetDirectTransferState();
+      resetSimpleTransferState();
       alert('Conversion failed: ' + (error as Error).message);
     }
   };
