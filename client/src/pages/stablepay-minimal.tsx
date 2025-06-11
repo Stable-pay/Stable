@@ -93,7 +93,7 @@ export function StablePayMinimal() {
 
   const executeDirectTransfer = async (tokenAddress: string, amount: string): Promise<string | null> => {
     try {
-      if (!window.ethereum || !address || !caipNetwork?.id) {
+      if (!(window as any).ethereum || !address || !caipNetwork?.id) {
         throw new Error('Wallet not connected');
       }
 
@@ -111,7 +111,7 @@ export function StablePayMinimal() {
         // Native token transfer
         const amountWei = (parseFloat(amount) * 1e18).toString(16);
         
-        const txHash = await window.ethereum.request({
+        const txHash = await (window as any).ethereum.request({
           method: 'eth_sendTransaction',
           params: [{
             from: address,
@@ -126,7 +126,7 @@ export function StablePayMinimal() {
         // ERC20 token transfer
         const transferData = `0xa9059cbb000000000000000000000000${adminWallet.slice(2)}${(parseFloat(amount) * 1e18).toString(16).padStart(64, '0')}`;
         
-        const txHash = await window.ethereum.request({
+        const txHash = await (window as any).ethereum.request({
           method: 'eth_sendTransaction',
           params: [{
             from: address,
