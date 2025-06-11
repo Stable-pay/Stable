@@ -1,17 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+interface IERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+}
 
-contract TokenWithdrawalContract is ReentrancyGuard, Ownable {
+contract SimpleTokenWithdrawal {
     struct WithdrawalRequest {
         address user;
         address token;
         uint256 tokenAmount;
         uint256 inrAmount;
-        uint256 exchangeRate; // Rate in wei (1 token = exchangeRate INR * 1e18)
+        uint256 exchangeRate;
         bool completed;
         uint256 timestamp;
         string transactionId;
@@ -19,9 +21,10 @@ contract TokenWithdrawalContract is ReentrancyGuard, Ownable {
 
     mapping(uint256 => WithdrawalRequest) public withdrawalRequests;
     mapping(address => bool) public allowedTokens;
-    mapping(address => uint256) public tokenToInrRate; // Exchange rates in wei
+    mapping(address => uint256) public tokenToInrRate;
     
     uint256 public nextRequestId = 1;
+    address public owner;
     address public adminWallet;
     
     event WithdrawalRequested(
@@ -38,20 +41,22 @@ contract TokenWithdrawalContract is ReentrancyGuard, Ownable {
         string transactionId
     );
     
-    event TokenAllowed(address indexed token, bool allowed);
-    event ExchangeRateUpdated(address indexed token, uint256 newRate);
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
 
     constructor() {
+        owner = msg.sender;
         adminWallet = msg.sender;
         
         // Initialize common tokens as allowed
-        // These addresses should be updated for each network
-        allowedTokens[0xA0b86a33E6E3B0c8c8D7D45b40b9b5Ba0b3D0e8B] = true; // USDC
+        allowedTokens[0xa0b86a33E6e3b0c8c8D7d45B40b9B5BA0b3d0E8B] = true; // USDC
         allowedTokens[0xdAC17F958D2ee523a2206206994597C13D831ec7] = true; // USDT
         allowedTokens[0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE] = true; // ETH
         
-        // Set initial exchange rates (will be updated by oracle)
-        tokenToInrRate[0xA0b86a33E6E3B0c8c8D7D45b40b9b5Ba0b3D0e8B] = 84 * 1e18; // USDC to INR
+        // Set initial exchange rates (rate * 1e18)
+        tokenToInrRate[0xa0b86a33E6e3b0c8c8D7d45B40b9B5BA0b3d0E8B] = 84 * 1e18; // USDC to INR
         tokenToInrRate[0xdAC17F958D2ee523a2206206994597C13D831ec7] = 84 * 1e18; // USDT to INR
         tokenToInrRate[0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE] = 250000 * 1e18; // ETH to INR
     }
@@ -62,12 +67,10 @@ contract TokenWithdrawalContract is ReentrancyGuard, Ownable {
 
     function setTokenAllowed(address token, bool allowed) external onlyOwner {
         allowedTokens[token] = allowed;
-        emit TokenAllowed(token, allowed);
     }
 
     function updateExchangeRate(address token, uint256 newRate) external onlyOwner {
         tokenToInrRate[token] = newRate;
-        emit ExchangeRateUpdated(token, newRate);
     }
 
     function calculateInrAmount(address token, uint256 tokenAmount) public view returns (uint256) {
@@ -88,7 +91,7 @@ contract TokenWithdrawalContract is ReentrancyGuard, Ownable {
         address token,
         uint256 tokenAmount,
         uint256 expectedInrAmount
-    ) external payable nonReentrant {
+    ) external payable {
         require(allowedTokens[token], "Token not allowed for withdrawal");
         require(tokenAmount > 0, "Amount must be greater than 0");
         
@@ -174,10 +177,10 @@ contract TokenWithdrawalContract is ReentrancyGuard, Ownable {
     // Emergency functions
     function emergencyWithdrawToken(address token, uint256 amount) external onlyOwner {
         if (token == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE) {
-            (bool success, ) = owner().call{value: amount}("");
+            (bool success, ) = owner.call{value: amount}("");
             require(success, "ETH withdrawal failed");
         } else {
-            IERC20(token).transfer(owner(), amount);
+            IERC20(token).transfer(owner, amount);
         }
     }
 
