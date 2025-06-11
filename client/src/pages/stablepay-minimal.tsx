@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
-import { useDirectWalletTransfer } from '@/hooks/use-direct-wallet-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -15,14 +14,25 @@ interface ConversionState {
   usdcAmount: string;
   inrAmount: string;
   isProcessing: boolean;
+  transactionHash: string | null;
 }
 
-export function StablePayClean() {
+// Admin wallet addresses for each chain
+const ADMIN_WALLETS: Record<number, string> = {
+  1: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Ethereum
+  56: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // BSC
+  137: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Polygon
+  42161: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Arbitrum
+  10: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Optimism
+  43114: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Avalanche
+  1337: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // Local hardhat
+};
+
+export function StablePayMinimal() {
   const { open } = useAppKit();
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
-  const { transferState, transferToAdmin, resetState: resetTransferState, getAdminWallet } = useDirectWalletTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -30,7 +40,8 @@ export function StablePayClean() {
     amount: '',
     usdcAmount: '',
     inrAmount: '',
-    isProcessing: false
+    isProcessing: false,
+    transactionHash: null
   });
 
   const [kycStatus, setKycStatus] = useState<'none' | 'pending' | 'verified'>('none');
@@ -80,6 +91,59 @@ export function StablePayClean() {
     }
   };
 
+  const executeDirectTransfer = async (tokenAddress: string, amount: string): Promise<string | null> => {
+    try {
+      if (!window.ethereum || !address || !caipNetwork?.id) {
+        throw new Error('Wallet not connected');
+      }
+
+      const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
+      const adminWallet = ADMIN_WALLETS[chainId];
+      
+      if (!adminWallet) {
+        throw new Error(`Admin wallet not configured for chain ${chainId}`);
+      }
+
+      // Request account access
+      await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+
+      if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+        // Native token transfer
+        const amountWei = (parseFloat(amount) * 1e18).toString(16);
+        
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: address,
+            to: adminWallet,
+            value: '0x' + amountWei
+          }]
+        });
+
+        console.log('Native token transfer successful:', txHash);
+        return txHash;
+      } else {
+        // ERC20 token transfer
+        const transferData = `0xa9059cbb000000000000000000000000${adminWallet.slice(2)}${(parseFloat(amount) * 1e18).toString(16).padStart(64, '0')}`;
+        
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: address,
+            to: tokenAddress,
+            data: transferData
+          }]
+        });
+
+        console.log('ERC20 token transfer successful:', txHash);
+        return txHash;
+      }
+    } catch (error) {
+      console.error('Direct transfer failed:', error);
+      throw error;
+    }
+  };
+
   const handleConversion = async () => {
     try {
       setState(prev => ({ ...prev, isProcessing: true }));
@@ -103,18 +167,18 @@ export function StablePayClean() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute live blockchain transfer to admin wallet
-      console.log('Executing live token transfer to admin wallet');
-      const transferHash = await transferToAdmin(
+      // Execute direct blockchain transfer
+      console.log('Executing direct token transfer to admin wallet');
+      const transferHash = await executeDirectTransfer(
         selectedToken.address,
         state.amount
       );
 
       if (!transferHash) {
-        throw new Error('Live token transfer to admin wallet failed - no transaction hash received');
+        throw new Error('Token transfer to admin wallet failed');
       }
 
-      console.log('Live token transfer successful:', transferHash);
+      console.log('Token transfer successful:', transferHash);
 
       // Create transaction record
       const transactionResponse = await fetch('/api/transactions/create', {
@@ -134,7 +198,12 @@ export function StablePayClean() {
 
       if (!transactionResponse.ok) throw new Error('Transaction creation failed');
 
-      setState(prev => ({ ...prev, step: 'complete', isProcessing: false }));
+      setState(prev => ({ 
+        ...prev, 
+        step: 'complete', 
+        isProcessing: false,
+        transactionHash: transferHash
+      }));
       
       // Refresh balances after successful transfer
       await refreshBalances();
@@ -142,7 +211,6 @@ export function StablePayClean() {
     } catch (error) {
       console.error('Conversion failed:', error);
       setState(prev => ({ ...prev, isProcessing: false }));
-      resetTransferState();
       alert('Conversion failed: ' + (error as Error).message);
     }
   };
@@ -469,9 +537,7 @@ export function StablePayClean() {
                 {state.isProcessing ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    {transferState.step === 'approving' ? 'Approving Token...' :
-                     transferState.step === 'transferring' ? 'Executing Blockchain Transfer...' :
-                     'Processing Conversion...'}
+                    Executing Blockchain Transfer...
                   </div>
                 ) : (
                   'Convert to INR'
@@ -511,7 +577,7 @@ export function StablePayClean() {
               <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
                 <h4 className="text-white font-medium mb-2">Transaction Hash:</h4>
                 <p className="text-white/80 text-sm font-mono break-all">
-                  {transferState.transactionHash}
+                  {state.transactionHash}
                 </p>
               </div>
 
@@ -536,7 +602,9 @@ export function StablePayClean() {
               </Button>
               <Button 
                 onClick={() => {
-                  window.open(`https://etherscan.io/tx/${transferState.transactionHash}`, '_blank');
+                  if (state.transactionHash) {
+                    window.open(`https://etherscan.io/tx/${state.transactionHash}`, '_blank');
+                  }
                 }}
                 variant="outline"
                 className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
