@@ -51,6 +51,7 @@ export function StablePayWalletConnect() {
   });
 
   const [showTransferModal, setShowTransferModal] = useState(false);
+  const [showDirectTransferModal, setShowDirectTransferModal] = useState(false);
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
 
@@ -145,7 +146,8 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute direct token transfer
+      // Show direct transfer modal and execute transfer
+      setShowDirectTransferModal(true);
       const transferHash = await executeDirectTransfer(
         selectedToken.address,
         state.amount
@@ -694,7 +696,17 @@ export function StablePayWalletConnect() {
           error={simpleTransferState.error || undefined}
         />
       )}
-      {null}
+      
+      {showDirectTransferModal && selectedToken && (
+        <DirectTransferModal
+          isOpen={showDirectTransferModal}
+          onClose={() => setShowDirectTransferModal(false)}
+          transferState={directTransferState}
+          tokenSymbol={selectedToken.symbol}
+          amount={state.amount}
+          chainId={chainId}
+        />
+      )}
     </>
   );
 }
