@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { particleAPI } from "./particle-api";
+import { reownAPI } from "./reown-api";
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -537,13 +537,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Particle Network API endpoints
-  app.post('/api/particle/auth/login', particleAPI.authenticateUser.bind(particleAPI));
-  app.post('/api/particle/wallet/balance', particleAPI.getWalletBalance.bind(particleAPI));
-  app.post('/api/particle/swap/quote', particleAPI.getSwapQuote.bind(particleAPI));
-  app.post('/api/particle/swap/execute', particleAPI.executeSwap.bind(particleAPI));
-  app.post('/api/particle/paymaster/balance', particleAPI.getPaymasterBalance.bind(particleAPI));
-  app.post('/api/particle/auth/logout', particleAPI.logoutUser.bind(particleAPI));
+  // Reown WalletConnect API endpoints
+  app.post('/api/tokens/balance', reownAPI.getTokenBalance.bind(reownAPI));
+  app.post('/api/swap/quote', reownAPI.getSwapQuote.bind(reownAPI));
+  app.post('/api/swap/execute', reownAPI.executeSwap.bind(reownAPI));
 
   return server;
 }
