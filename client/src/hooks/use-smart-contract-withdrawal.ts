@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react';
 import { BrowserProvider, Contract, parseUnits } from 'ethers';
 
 interface WithdrawalState {
@@ -37,6 +37,7 @@ const CONTRACT_ADDRESSES: Record<number, string> = {
 export function useSmartContractWithdrawal() {
   const { address, isConnected } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
+  const { walletProvider } = useAppKitProvider('eip155');
 
   const [withdrawalState, setWithdrawalState] = useState<WithdrawalState>({
     isProcessing: false,
@@ -58,11 +59,15 @@ export function useSmartContractWithdrawal() {
       throw new Error(`Smart contract not deployed on chain ${chainId}`);
     }
 
-    const provider = new BrowserProvider((window as any).ethereum);
+    if (!walletProvider) {
+      throw new Error('Wallet provider not available');
+    }
+
+    const provider = new BrowserProvider(walletProvider as any);
     const signer = await provider.getSigner();
 
     return new Contract(contractAddress, STABLEPAY_CONTRACT_ABI, signer);
-  }, [isConnected, address, caipNetwork]);
+  }, [isConnected, address, caipNetwork, walletProvider]);
 
   const grantConsent = useCallback(async (
     tokenAddress: string,
