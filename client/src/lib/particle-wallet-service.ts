@@ -1,2 +1,4 @@
-<replit_final_file>
-</replit_final_file>
+// Particle Wallet Service - Placeholder for future implementation
+export class ParticleWalletService {
+  // Future implementation for particle wallet integration
+}

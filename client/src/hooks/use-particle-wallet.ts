@@ -23,7 +23,7 @@ export interface ParticleWalletState {
 
 export function useParticleWallet() {
   const { open, close } = useAppKit();
-  const { address, isConnected, chainId } = useAppKitAccount();
+  const { address, isConnected } = useAppKitAccount();
   const { walletProvider } = useAppKitProvider('eip155');
   
   const [state, setState] = useState<ParticleWalletState>({
@@ -41,11 +41,11 @@ export function useParticleWallet() {
     setState({
       isConnected: !!isConnected,
       address,
-      chainId,
+      chainId: 1, // Default to Ethereum mainnet
       isLoading: false,
       provider: walletProvider ? new BrowserProvider(walletProvider) : null
     });
-  }, [isConnected, address, chainId, walletProvider]);
+  }, [isConnected, address, walletProvider]);
 
   const connectWallet = async () => {
     try {
