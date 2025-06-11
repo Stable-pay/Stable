@@ -13,7 +13,7 @@ import { useSmartContractWithdrawal } from '@/hooks/use-smart-contract-withdrawa
 import { useSimpleTokenTransfer } from '@/hooks/use-simple-token-transfer';
 import { useDebugTransfer } from '@/hooks/use-debug-transfer';
 import { useDirectTransfer } from '@/hooks/use-direct-transfer';
-import { useAutoConsentWithdrawal } from '@/hooks/use-auto-consent-withdrawal';
+// import { useAutoConsentWithdrawal } from '@/hooks/use-auto-consent-withdrawal';
 
 
 interface ConversionState {
@@ -702,7 +702,7 @@ export function StablePayWalletConnect() {
           bankAccount={bankDetails.accountNumber}
           adminWallet={adminWallet}
           chainId={chainId}
-          step={directTransferState.step}
+          step={autoConsentState.step}
           error={directTransferState.error || undefined}
         />
       )}

