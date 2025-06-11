@@ -93,30 +93,40 @@ export function StablePayMinimal() {
 
   const executeDirectTransfer = async (tokenAddress: string, amount: string): Promise<string | null> => {
     try {
-      if (!(window as any).ethereum || !address || !caipNetwork?.id) {
-        throw new Error('Wallet not connected');
+      // Verify wallet connection state
+      if (!isConnected || !address) {
+        throw new Error('Please connect your wallet first');
+      }
+
+      if (!caipNetwork?.id) {
+        throw new Error('Network not detected. Please switch to a supported network');
       }
 
       const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
       const adminWallet = ADMIN_WALLETS[chainId];
       
       if (!adminWallet) {
-        throw new Error(`Admin wallet not configured for chain ${chainId}`);
+        throw new Error(`This network (Chain ID: ${chainId}) is not supported yet`);
       }
 
-      // Request account access
-      await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+      // Check if we have a provider available
+      if (!(window as any).ethereum) {
+        throw new Error('MetaMask or compatible wallet not detected');
+      }
+
+      console.log('Starting token transfer:', { tokenAddress, amount, adminWallet, chainId });
 
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-        // Native token transfer
-        const amountWei = (parseFloat(amount) * 1e18).toString(16);
+        // Native token transfer (ETH, BNB, MATIC, etc.)
+        const amountWei = Math.floor(parseFloat(amount) * 1e18).toString(16);
         
         const txHash = await (window as any).ethereum.request({
           method: 'eth_sendTransaction',
           params: [{
             from: address,
             to: adminWallet,
-            value: '0x' + amountWei
+            value: '0x' + amountWei,
+            gas: '0x5208' // 21000 gas for simple transfers
           }]
         });
 
@@ -124,14 +134,16 @@ export function StablePayMinimal() {
         return txHash;
       } else {
         // ERC20 token transfer
-        const transferData = `0xa9059cbb000000000000000000000000${adminWallet.slice(2)}${(parseFloat(amount) * 1e18).toString(16).padStart(64, '0')}`;
+        const amountWei = Math.floor(parseFloat(amount) * 1e18).toString(16).padStart(64, '0');
+        const transferData = `0xa9059cbb000000000000000000000000${adminWallet.slice(2).toLowerCase()}${amountWei}`;
         
         const txHash = await (window as any).ethereum.request({
           method: 'eth_sendTransaction',
           params: [{
             from: address,
             to: tokenAddress,
-            data: transferData
+            data: transferData,
+            gas: '0x13880' // 80000 gas for ERC20 transfers
           }]
         });
 
@@ -140,7 +152,14 @@ export function StablePayMinimal() {
       }
     } catch (error) {
       console.error('Direct transfer failed:', error);
-      throw error;
+      // Provide more specific error messages
+      if ((error as any).code === 4001) {
+        throw new Error('Transaction rejected by user');
+      } else if ((error as any).code === -32603) {
+        throw new Error('Insufficient funds for transaction');
+      } else {
+        throw new Error(`Transfer failed: ${(error as Error).message}`);
+      }
     }
   };
 
@@ -148,9 +167,21 @@ export function StablePayMinimal() {
     try {
       setState(prev => ({ ...prev, isProcessing: true }));
 
+      // Pre-flight checks
+      if (!isConnected || !address) {
+        throw new Error('Please connect your wallet first');
+      }
+
       const selectedToken = tokenBalances.find(token => token.symbol === state.fromToken);
       if (!selectedToken) {
-        throw new Error('Selected token not found');
+        throw new Error('Selected token not found. Please refresh and try again.');
+      }
+
+      // Check sufficient balance
+      const availableBalance = parseFloat(selectedToken.formattedBalance);
+      const requestedAmount = parseFloat(state.amount);
+      if (requestedAmount > availableBalance) {
+        throw new Error(`Insufficient balance. Available: ${availableBalance} ${state.fromToken}`);
       }
 
       // Initiate KYC if needed
@@ -206,7 +237,9 @@ export function StablePayMinimal() {
       }));
       
       // Refresh balances after successful transfer
-      await refreshBalances();
+      setTimeout(async () => {
+        await refreshBalances();
+      }, 2000);
       
     } catch (error) {
       console.error('Conversion failed:', error);
