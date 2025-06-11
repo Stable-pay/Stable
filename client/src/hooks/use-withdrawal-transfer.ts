@@ -79,7 +79,7 @@ export function useWithdrawalTransfer() {
         throw new Error('No ethereum provider found');
       }
 
-      const provider = new BrowserProvider(window.ethereum);
+      const provider = new BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
 
       let transactionHash: string;

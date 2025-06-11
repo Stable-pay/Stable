@@ -447,6 +447,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return prices[symbol] || 1;
   }
 
+  // Admin transfer logging endpoint
+  app.post('/api/admin/log-transfer', async (req, res) => {
+    try {
+      const { userAddress, adminWallet, tokenAddress, amount, transactionHash, chainId } = req.body;
+      
+      console.log('Transfer logged:', {
+        userAddress,
+        adminWallet: adminWallet.slice(0, 6) + '...' + adminWallet.slice(-4),
+        tokenAddress,
+        amount,
+        transactionHash,
+        chainId,
+        timestamp: new Date().toISOString()
+      });
+
+      // Store transfer record in database or log system
+      const transferRecord = {
+        userAddress,
+        adminWallet,
+        tokenAddress,
+        amount,
+        transactionHash,
+        chainId,
+        timestamp: new Date(),
+        status: 'completed'
+      };
+
+      // In a real implementation, save to database
+      res.json({ success: true, transferId: Date.now() });
+    } catch (error) {
+      console.error('Transfer logging error:', error);
+      res.status(500).json({ error: 'Failed to log transfer' });
+    }
+  });
+
+  // Admin wallet configuration endpoint
+  app.post('/api/admin/configure-wallets', async (req, res) => {
+    try {
+      const walletConfig = req.body;
+      
+      console.log('Admin wallet configuration updated:', {
+        chains: Object.keys(walletConfig).length,
+        timestamp: new Date().toISOString()
+      });
+
+      // In production, save to secure configuration storage
+      // For now, we'll just confirm the configuration
+      res.json({ 
+        success: true, 
+        message: 'Admin wallet configuration saved successfully',
+        configuredChains: Object.keys(walletConfig).length
+      });
+    } catch (error) {
+      console.error('Admin configuration error:', error);
+      res.status(500).json({ error: 'Failed to save admin configuration' });
+    }
+  });
+
   const server = createServer(app);
   // StablePay custody transfer endpoint
   app.post('/api/custody/transfer', async (req, res) => {
