@@ -29,12 +29,21 @@ export function StablePayWalletConnect() {
   const { open } = useAppKit();
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
-  const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
-  const { transferState, executeTransfer, resetTransferState } = useWithdrawalTransfer();
-  const { withdrawalState, initiateWithdrawal, resetState: resetSmartContractState } = useSmartContractWithdrawal();
-  const { transferState: simpleTokenState, executeTransfer: executeSimpleTokenTransfer, resetTransferState: resetSimpleTokenState } = useSimpleTokenTransfer();
-  const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
-  const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
+  // Temporarily disable hooks to fix proxyState error
+  const tokenBalances = [];
+  const balancesLoading = false;
+  const refreshBalances = () => {};
+  const totalValue = 0;
+  
+  // Temporarily disable direct transfer hook to isolate error
+  const directTransferState = {
+    isTransferring: false,
+    transactionHash: null,
+    error: null,
+    step: 'idle' as const
+  };
+  const executeDirectTransfer = async () => null;
+  const resetDirectTransferState = () => {};
 
   
   const [state, setState] = useState<ConversionState>({
