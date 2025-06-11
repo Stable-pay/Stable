@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
-import { useConnect, useAccount, useChainId, useDisconnect } from 'wagmi';
+import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 
 interface ConversionState {
@@ -29,10 +29,9 @@ const ADMIN_WALLETS: Record<number, string> = {
 };
 
 export function StablePayMinimal() {
-  const { connect, connectors } = useConnect();
-  const { address, isConnected, status } = useAccount();
-  const { disconnect } = useDisconnect();
-  const chainId = useChainId();
+  const { open } = useAppKit();
+  const { address, isConnected, status } = useAppKitAccount();
+  const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   
   const [state, setState] = useState<ConversionState>({
@@ -53,18 +52,6 @@ export function StablePayMinimal() {
   });
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
-
-  // Add debugging for wallet connection
-  const handleConnect = async (connector: any) => {
-    try {
-      console.log('Attempting to connect with:', connector.name);
-      await connect({ connector });
-      console.log('Connection initiated successfully');
-    } catch (error) {
-      console.error('Connection failed:', error);
-      alert('Failed to connect wallet: ' + (error as Error).message);
-    }
-  };
 
   // Update step based on wallet connection
   useEffect(() => {
@@ -111,9 +98,11 @@ export function StablePayMinimal() {
         throw new Error('Please connect your wallet first');
       }
 
-      if (!chainId) {
+      if (!caipNetwork?.id) {
         throw new Error('Network not detected. Please switch to a supported network');
       }
+
+      const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
       const adminWallet = ADMIN_WALLETS[chainId];
       
       if (!adminWallet) {
@@ -333,28 +322,12 @@ export function StablePayMinimal() {
               </div>
             </div>
 
-            <div className="space-y-3">
-              {connectors.map((connector) => (
-                <Button 
-                  key={connector.id}
-                  onClick={() => handleConnect(connector)}
-                  className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                >
-                  Connect {connector.name}
-                </Button>
-              ))}
-              {connectors.length === 0 && (
-                <div className="space-y-2">
-                  <p className="text-white/60 text-sm text-center">No wallet detected</p>
-                  <Button 
-                    onClick={() => window.open('https://metamask.io/download/', '_blank')}
-                    className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
-                  >
-                    Install MetaMask
-                  </Button>
-                </div>
-              )}
-            </div>
+            <Button 
+              onClick={() => open()}
+              className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            >
+              Connect Wallet
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -370,7 +343,7 @@ export function StablePayMinimal() {
               <CardTitle className="text-2xl font-bold text-white">Identity Verification</CardTitle>
               <div className="flex gap-2">
                 <Button
-                  onClick={() => disconnect()}
+                  onClick={() => open({ view: 'Account' })}
                   variant="outline"
                   size="sm"
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20"
@@ -379,12 +352,13 @@ export function StablePayMinimal() {
                   {address?.slice(0, 6)}...{address?.slice(-4)}
                 </Button>
                 <Button
+                  onClick={() => open({ view: 'Networks' })}
                   variant="outline"
                   size="sm"
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                 >
                   <Network className="w-4 h-4 mr-2" />
-                  Chain {chainId}
+                  {caipNetwork?.name || 'Network'}
                 </Button>
               </div>
             </div>
@@ -400,7 +374,7 @@ export function StablePayMinimal() {
                     <div>
                       <p className="text-white font-medium">Wallet Connected</p>
                       <p className="text-white/60 text-sm">{address?.slice(0, 12)}...{address?.slice(-6)}</p>
-                      <p className="text-white/60 text-sm">Network: Chain {chainId}</p>
+                      <p className="text-white/60 text-sm">Network: {caipNetwork?.name}</p>
                     </div>
                   </div>
                 </div>
@@ -486,13 +460,13 @@ export function StablePayMinimal() {
                   <RefreshCw className={`w-4 h-4 ${balancesLoading ? 'animate-spin' : ''}`} />
                 </Button>
                 <Button
-                  onClick={() => disconnect()}
+                  onClick={() => open({ view: 'Account' })}
                   variant="outline"
                   size="sm"
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Disconnect
+                  <User className="w-4 h-4 mr-2" />
+                  {address?.slice(0, 6)}...{address?.slice(-4)}
                 </Button>
               </div>
             </div>
