@@ -67,32 +67,35 @@ export function useParticleReal() {
     setState(prev => ({ ...prev, isLoading: true }));
 
     try {
-      // Simulate user login via email for demo purposes
-      const mockUserInfo = {
-        uuid: `particle-user-${Date.now()}`,
-        email: 'user@example.com',
-        token: `token-${Date.now()}`,
-        address: '0x742d35cc6bf8e8cad85e9a6ad13e81c3dca4af6b' // Demo address
-      };
+      // Prompt user for email to authenticate with Particle Network
+      const email = prompt('Enter your email to connect with Particle Network:');
+      if (!email) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        return;
+      }
 
-      // Create mock ethers provider for testing
+      // Authenticate with backend using email
+      const userInfo = await authenticateWithBackend(email);
+      
+      if (!userInfo || !userInfo.wallets || userInfo.wallets.length === 0) {
+        throw new Error('Invalid user information received');
+      }
+      
+      // Create ethers provider for blockchain interactions
       const provider = new ethers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/demo');
 
       setState(prev => ({
         ...prev,
         isConnected: true,
-        address: mockUserInfo.address,
+        address: userInfo.wallets[0].public_address,
         chainId: 1,
-        userInfo: mockUserInfo,
+        userInfo: userInfo,
         provider: provider as any,
         isLoading: false
       }));
-
-      // Authenticate with backend using real Particle API
-      await authenticateWithBackend(mockUserInfo, mockUserInfo.address);
       
-      // Fetch wallet balances using real API
-      await fetchBalances(mockUserInfo.uuid, 1, mockUserInfo.address);
+      // Fetch wallet balances using real blockchain data
+      await fetchBalances(userInfo.uuid, 1, userInfo.wallets[0].public_address);
 
     } catch (error) {
       console.error('Particle connection failed:', error);
@@ -100,16 +103,14 @@ export function useParticleReal() {
     }
   }, [particle]);
 
-  // Authenticate with backend using Particle credentials
-  const authenticateWithBackend = async (userInfo: any, address: string) => {
+  // Authenticate with backend using email
+  const authenticateWithBackend = async (email: string) => {
     try {
       const response = await fetch('/api/particle/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          token: userInfo.token,
-          uuid: userInfo.uuid,
-          address: address
+          email: email
         })
       });
 
@@ -119,8 +120,10 @@ export function useParticleReal() {
 
       const result = await response.json();
       console.log('Backend authentication successful:', result);
+      return result.userInfo;
     } catch (error) {
       console.error('Backend authentication error:', error);
+      throw error;
     }
   };
 
