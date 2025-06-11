@@ -69,6 +69,27 @@ export function useSimpleTokenTransfer() {
 
       console.log('Starting token transfer:', { tokenAddress, amount, adminWallet, chainId });
 
+      // Validate sufficient balance before proceeding
+      const web3Provider = new BrowserProvider((window as any).ethereum);
+      if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+        const balance = await web3Provider.getBalance(address);
+        const requiredAmount = parseUnits(amount, 18);
+        if (balance < requiredAmount) {
+          throw new Error(`Insufficient balance. Available: ${formatUnits(balance, 18)} ETH, Required: ${amount} ETH`);
+        }
+      } else {
+        const tokenContract = new Contract(tokenAddress, ERC20_ABI, web3Provider);
+        const [balance, decimals] = await Promise.all([
+          tokenContract.balanceOf(address),
+          tokenContract.decimals()
+        ]);
+        const requiredAmount = parseUnits(amount, decimals);
+        if (balance < requiredAmount) {
+          const symbol = await tokenContract.symbol();
+          throw new Error(`Insufficient balance. Available: ${formatUnits(balance, decimals)} ${symbol}, Required: ${amount} ${symbol}`);
+        }
+      }
+
       // Show user consent
       const userConfirmed = await showUserConsentModal(tokenAddress, amount, adminWallet, chainId);
       if (!userConfirmed) {
@@ -80,8 +101,7 @@ export function useSimpleTokenTransfer() {
         onUserConsent();
       }
 
-      const provider = new BrowserProvider((window as any).ethereum);
-      const signer = await provider.getSigner();
+      const signer = await web3Provider.getSigner();
 
       let txHash: string;
 
