@@ -160,7 +160,7 @@ export default function TokenWithdrawal() {
       }
 
       // Record the withdrawal in backend
-      await fetch('/api/withdrawal/initiate', {
+      await fetch('/api/withdrawal/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
