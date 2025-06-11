@@ -15,7 +15,7 @@ import Remittance from "@/pages/remittance";
 import NotFound from "@/pages/not-found";
 import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
-import { StablePayWalletConnect } from "@/pages/stablepay-walletconnect";
+import { StablePayClean } from "@/pages/stablepay-clean";
 import { AdminConfig } from "@/pages/admin-config";
 
 

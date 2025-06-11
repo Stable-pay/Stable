@@ -202,12 +202,7 @@ export function useSmartContractWithdrawal() {
       const receipt = await tx.wait();
 
       // Extract request ID from events
-      const withdrawalRequestedTopic = '0x' + contract.interface.getEvent('WithdrawalRequested').topicHash.slice(2);
-      const event = receipt.logs.find((log: any) => 
-        log.topics[0] === withdrawalRequestedTopic
-      );
-
-      const requestId = event ? event.topics[1] : null;
+      const requestId = receipt.hash; // Use transaction hash as request ID
 
       console.log('Withdrawal requested:', { transactionHash: receipt.hash, requestId });
 
