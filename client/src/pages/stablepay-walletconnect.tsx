@@ -671,7 +671,7 @@ export function StablePayWalletConnect() {
 
   const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
   const chainId = parseInt(caipNetwork?.id?.toString() || '1');
-  const adminWallet = directTransferState.step === 'completed' || directTransferState.transactionHash ? 
+  const adminWallet = simpleTransferState.step === 'completed' || simpleTransferState.transactionHash ? 
     '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e' : '';
 
   return (
@@ -680,15 +680,15 @@ export function StablePayWalletConnect() {
         <TransferStatusModal
           isOpen={showTransferModal}
           onClose={() => setShowTransferModal(false)}
-          transferHash={directTransferState.transactionHash}
+          transferHash={simpleTransferState.transactionHash}
           tokenSymbol={selectedToken.symbol}
           amount={state.amount}
           inrAmount={state.inrAmount}
           bankAccount={bankDetails.accountNumber}
           adminWallet={adminWallet}
           chainId={chainId}
-          step={directTransferState.step}
-          error={directTransferState.error || undefined}
+          step={simpleTransferState.step}
+          error={simpleTransferState.error || undefined}
         />
       )}
       {null}
