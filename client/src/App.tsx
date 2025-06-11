@@ -1,7 +1,7 @@
 import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from 'wagmi';
-import { queryClient, config } from "@/lib/reown-config";
+import { queryClient, config } from "@/lib/direct-wallet-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { StablePayNav } from "@/components/layout/stablepay-nav";

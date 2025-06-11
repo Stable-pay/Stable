@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
-import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { useConnect, useAccount, useChainId, useDisconnect } from 'wagmi';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 
 interface ConversionState {
@@ -29,9 +29,10 @@ const ADMIN_WALLETS: Record<number, string> = {
 };
 
 export function StablePayMinimal() {
-  const { open } = useAppKit();
-  const { address, isConnected, status } = useAppKitAccount();
-  const { caipNetwork } = useAppKitNetwork();
+  const { connect, connectors } = useConnect();
+  const { address, isConnected, status } = useAccount();
+  const { disconnect } = useDisconnect();
+  const chainId = useChainId();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   
   const [state, setState] = useState<ConversionState>({
