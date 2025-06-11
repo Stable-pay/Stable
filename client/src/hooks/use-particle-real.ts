@@ -59,8 +59,11 @@ export function useParticleReal() {
 
   // Connect wallet using Particle Network API
   const connect = useCallback(async () => {
+    console.log('Connect button clicked - Starting Particle Network connection...');
+    
     if (!particle) {
       console.error('Particle Network not initialized');
+      alert('Particle Network not initialized. Please refresh the page.');
       return;
     }
 
@@ -69,13 +72,18 @@ export function useParticleReal() {
     try {
       // Prompt user for email to authenticate with Particle Network
       const email = prompt('Enter your email to connect with Particle Network:');
+      console.log('Email entered:', email);
+      
       if (!email) {
+        console.log('No email provided, cancelling connection');
         setState(prev => ({ ...prev, isLoading: false }));
         return;
       }
 
+      console.log('Authenticating with backend...');
       // Authenticate with backend using email
       const userInfo = await authenticateWithBackend(email);
+      console.log('Authentication response:', userInfo);
       
       if (!userInfo || !userInfo.wallets || userInfo.wallets.length === 0) {
         throw new Error('Invalid user information received');
@@ -84,6 +92,7 @@ export function useParticleReal() {
       // Create ethers provider for blockchain interactions
       const provider = new ethers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/demo');
 
+      console.log('Setting connected state with address:', userInfo.wallets[0].public_address);
       setState(prev => ({
         ...prev,
         isConnected: true,
@@ -95,10 +104,14 @@ export function useParticleReal() {
       }));
       
       // Fetch wallet balances using real blockchain data
+      console.log('Fetching wallet balances...');
       await fetchBalances(userInfo.uuid, 1, userInfo.wallets[0].public_address);
+      
+      console.log('Particle Network connection successful!');
 
     } catch (error) {
       console.error('Particle connection failed:', error);
+      alert(`Connection failed: ${error.message}`);
       setState(prev => ({ ...prev, isLoading: false }));
     }
   }, [particle]);

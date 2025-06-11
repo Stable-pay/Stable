@@ -182,7 +182,10 @@ export function StablePayParticle() {
             </div>
             
             <Button 
-              onClick={particleWallet.connect} 
+              onClick={() => {
+                console.log('Connect button clicked');
+                particleWallet.connect();
+              }} 
               disabled={particleWallet.isLoading}
               className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
