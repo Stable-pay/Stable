@@ -14,6 +14,7 @@ import { useSimpleTokenTransfer } from '@/hooks/use-simple-token-transfer';
 import { useDebugTransfer } from '@/hooks/use-debug-transfer';
 import { useDirectTransfer } from '@/hooks/use-direct-transfer';
 
+
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
   fromToken: string;
@@ -30,9 +31,10 @@ export function StablePayWalletConnect() {
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   const { transferState, executeTransfer, resetTransferState } = useWithdrawalTransfer();
   const { withdrawalState, initiateWithdrawal, resetState: resetSmartContractState } = useSmartContractWithdrawal();
-  const { transferState: simpleTransferState, executeTransfer: executeSimpleTransfer, resetTransferState: resetSimpleTransferState } = useSimpleTokenTransfer();
+  const { transferState: simpleTokenState, executeTransfer: executeSimpleTokenTransfer, resetTransferState: resetSimpleTokenState } = useSimpleTokenTransfer();
   const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
   const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
+  const { transferState: reliableTransferState, executeTransfer: executeReliableTransfer, resetTransfer: resetReliableTransfer } = useSimpleTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -146,34 +148,45 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Always try smart contract withdrawal first
-      let transferHash: string | null = null;
+      // Execute direct token transfer using Reown AppKit
+      console.log('Executing token transfer to custody wallet');
       
-      try {
-        // Use smart contract withdrawal system
-        console.log('Using smart contract withdrawal system');
-        transferHash = await initiateWithdrawal(
-          selectedToken.address,
-          state.amount,
-          kycStatus,
-          bankDetails.accountNumber,
-          true // Use direct transfer method
-        );
-      } catch (contractError) {
-        console.warn('Smart contract withdrawal failed, attempting fallback:', contractError);
+      const adminWallet = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
+      let transferHash: string | null = null;
+
+      if (selectedToken.address === '0x0000000000000000000000000000000000000000') {
+        // Native token transfer
+        const { sendTransaction } = await import('@reown/appkit/react');
+        const amountWei = (parseFloat(state.amount) * 1e18).toString();
         
-        // Fallback to direct transfer
-        console.log('Fallback to direct transfer system');
-        setShowDirectTransferModal(true);
-        try {
-          transferHash = await executeDirectTransfer(
-            selectedToken.address,
-            state.amount
-          );
-        } catch (directError) {
-          console.error('Direct transfer also failed:', directError);
-          throw new Error(`Both transfer methods failed. Contract: ${(contractError as Error).message}, Direct: ${(directError as Error).message}`);
-        }
+        const tx = await sendTransaction({
+          to: adminWallet,
+          value: amountWei
+        });
+        
+        transferHash = tx;
+      } else {
+        // ERC20 token transfer
+        const { writeContract } = await import('@reown/appkit/react');
+        
+        const tx = await writeContract({
+          address: selectedToken.address as `0x${string}`,
+          abi: [
+            {
+              name: 'transfer',
+              type: 'function',
+              inputs: [
+                { name: 'to', type: 'address' },
+                { name: 'amount', type: 'uint256' }
+              ],
+              outputs: [{ type: 'bool' }]
+            }
+          ],
+          functionName: 'transfer',
+          args: [adminWallet, (parseFloat(state.amount) * 1e18).toString()]
+        });
+        
+        transferHash = tx;
       }
 
       if (!transferHash) {

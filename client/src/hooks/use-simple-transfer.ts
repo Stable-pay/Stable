@@ -61,7 +61,7 @@ export function useSimpleTransfer() {
 
       console.log('Executing simple transfer:', { tokenAddress, amount, chainId, adminWallet });
 
-      const provider = new BrowserProvider(walletProvider);
+      const provider = new BrowserProvider(walletProvider as any);
       const signer = await provider.getSigner();
 
       let txHash: string;
