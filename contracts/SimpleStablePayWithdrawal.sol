@@ -139,7 +139,7 @@ contract SimpleStablePayWithdrawal {
         uint256 amount,
         string calldata kycId,
         string calldata bankAccount
-    ) external nonReentrant whenNotPaused returns (bytes32) {
+    ) external payable nonReentrant whenNotPaused returns (bytes32) {
         require(amount > 0, "Invalid amount");
         require(bytes(kycId).length > 0, "KYC ID required");
         

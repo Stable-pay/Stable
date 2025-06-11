@@ -7,7 +7,7 @@ async function main() {
   const StablePayWithdrawal = await ethers.getContractFactory('SimpleStablePayWithdrawal');
 
   // Deploy arguments
-  const custodyWallet = process.env.CUSTODY_WALLET || '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e';
+  const custodyWallet = process.env.CUSTODY_WALLET || '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e';
   const withdrawalFee = 100; // 1% fee in basis points
 
   console.log('Deployment parameters:');
