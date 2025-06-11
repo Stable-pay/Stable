@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { blockchainService } from './blockchain-service';
 
 interface ParticleAuthResponse {
   data: {
@@ -234,12 +233,12 @@ export class ParticleAPI {
           fromToken,
           toToken,
           fromAmount: amount,
-          toAmount: data.result.toAmount,
-          priceImpact: data.result.priceImpact || 0,
-          gasEstimate: data.result.gasPrice || '0',
-          exchangeRate: data.result.exchangeRate || '1',
-          route: data.result.route || [fromToken, toToken],
-          transaction: data.result.transaction
+          toAmount: data.result?.toAmount || '0',
+          priceImpact: data.result?.priceImpact || 0,
+          gasEstimate: data.result?.gasPrice || '0',
+          exchangeRate: data.result?.exchangeRate || '1',
+          route: data.result?.route || [fromToken, toToken],
+          transaction: data.result?.transaction
         }
       });
     } catch (error) {
@@ -291,8 +290,8 @@ export class ParticleAPI {
 
       res.json({
         success: true,
-        transactionHash: data.result.transactionHash,
-        signature: data.result.signature,
+        transactionHash: data.result?.transactionHash || '',
+        signature: data.result?.signature || '',
         sponsored: true,
         timestamp: new Date().toISOString()
       });
@@ -378,116 +377,6 @@ export class ParticleAPI {
         success: false, 
         error: 'Failed to logout user' 
       });
-    }
-  }
-      
-      res.json({
-        success: true,
-        quote: {
-          fromToken,
-          toToken,
-          fromAmount: amount,
-          toAmount,
-          rate: exchangeRate,
-          priceImpact: 0.3,
-          gasEstimate: '150000',
-          minimumReceived: (parseFloat(toAmount) * 0.995).toString(),
-        }
-      });
-    } catch (error) {
-      console.error('Swap quote error:', error);
-      res.status(500).json({ success: false, error: 'Failed to get swap quote' });
-    }
-  }
-
-  private getTokenPrice(symbol: string, prices: any): number {
-    const tokenMap: Record<string, string> = {
-      'ETH': 'ethereum',
-      'USDC': 'usd-coin',
-      'USDT': 'tether'
-    };
-    
-    const coinId = tokenMap[symbol];
-    return coinId ? prices[coinId]?.usd || 0 : 0;
-  }
-
-  // Execute swap transaction with simulation
-  async executeSwap(req: Request, res: Response) {
-    try {
-      const { userAddress, chainId, fromAmount, toAmount, fromToken, toToken } = req.body;
-
-      // Generate realistic transaction hash
-      const txHash = '0x' + Math.random().toString(16).substring(2, 66);
-      
-      // Simulate transaction execution
-      const simulationDelay = Math.random() * 2000 + 1000; // 1-3 seconds
-      
-      await new Promise(resolve => setTimeout(resolve, simulationDelay));
-      
-      res.json({
-        success: true,
-        txHash,
-        fromAmount,
-        toAmount,
-        fromToken,
-        toToken,
-        gasless: false,
-        sponsoredByPaymaster: false,
-        gasUsed: '150000',
-        gasPrice: '20000000000', // 20 gwei
-        blockNumber: Math.floor(Math.random() * 1000000) + 18000000,
-      });
-    } catch (error) {
-      console.error('Swap execution error:', error);
-      res.status(500).json({ success: false, error: 'Transaction failed' });
-    }
-  }
-
-  // Get paymaster balance
-  async getPaymasterBalance(req: Request, res: Response) {
-    try {
-      res.json({
-        success: true,
-        balance: '50.00',
-        currency: 'USD',
-        gasSponsored: true,
-        dailyLimit: '100.00',
-        usedToday: '15.50'
-      });
-    } catch (error) {
-      console.error('Paymaster balance error:', error);
-      res.status(500).json({ success: false, error: 'Failed to get paymaster balance' });
-    }
-  }
-
-  // Logout user
-  async logoutUser(req: Request, res: Response) {
-    try {
-      const response = await fetch('https://api.particle.network/server/rpc', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.serverKey}`,
-        },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'particle_auth_logout',
-          params: [{
-            projectId: this.projectId,
-          }]
-        })
-      });
-
-      const data = await response.json();
-      
-      res.json({
-        success: true,
-        message: 'Logged out successfully'
-      });
-    } catch (error) {
-      console.error('Logout error:', error);
-      res.status(500).json({ success: false, error: 'Logout failed' });
     }
   }
 }
