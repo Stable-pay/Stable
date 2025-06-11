@@ -490,10 +490,11 @@ export function StablePayClean() {
                 }
                 className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {state.isProcessing ? (
+                {state.isProcessing || permissionState.isProcessing ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    {transferState.step === 'transferring' ? 'Executing Blockchain Transfer...' :
+                    {permissionState.step === 'approving' ? 'Requesting Token Permission...' :
+                     permissionState.step === 'transferring' ? 'Executing Blockchain Transfer...' :
                      'Processing Conversion...'}
                   </div>
                 ) : (
@@ -534,7 +535,7 @@ export function StablePayClean() {
               <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
                 <h4 className="text-white font-medium mb-2">Transaction Hash:</h4>
                 <p className="text-white/80 text-sm font-mono break-all">
-                  {transferState.transactionHash}
+                  {permissionState.transactionHash}
                 </p>
               </div>
 
@@ -559,7 +560,7 @@ export function StablePayClean() {
               </Button>
               <Button 
                 onClick={() => {
-                  window.open(`https://etherscan.io/tx/${transferState.transactionHash}`, '_blank');
+                  window.open(`https://etherscan.io/tx/${permissionState.transactionHash}`, '_blank');
                 }}
                 variant="outline"
                 className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
@@ -574,5 +575,37 @@ export function StablePayClean() {
     );
   }
 
-  return null;
+  return (
+    <>
+      {/* Consent Modal */}
+      <ConsentModal
+        isOpen={showConsentModal}
+        onClose={() => setShowConsentModal(false)}
+        onConsent={handleUserConsent}
+        tokenSymbol={state.fromToken}
+        amount={state.amount}
+        inrAmount={state.inrAmount}
+        adminWallet={getAdminWallet() || ''}
+      />
+
+      {/* Permission Request Modal */}
+      <PermissionRequestModal
+        isOpen={showPermissionModal}
+        onClose={() => {
+          setShowPermissionModal(false);
+          resetTransferState();
+        }}
+        onApprove={handleWalletPermission}
+        tokenSymbol={state.fromToken}
+        tokenName={tokenBalances.find(t => t.symbol === state.fromToken)?.name || state.fromToken}
+        amount={state.amount}
+        currentAllowance={permissionState.currentAllowance}
+        adminWallet={getAdminWallet() || ''}
+        step={permissionState.step}
+        approvalHash={permissionState.approvalHash}
+        error={permissionState.error}
+        needsApproval={permissionState.needsApproval}
+      />
+    </>
+  );
 }
