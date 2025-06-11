@@ -116,7 +116,7 @@ export function useWalletPermissionTransfer() {
       
       const provider = new BrowserProvider(walletProvider as any);
       const signer = await provider.getSigner();
-      const chainId = parseInt(caipNetwork.id.split(':')[1]);
+      const chainId = getChainId(caipNetwork.id);
       const adminWallet = ADMIN_WALLETS[chainId];
       
       if (!adminWallet) {
@@ -195,7 +195,7 @@ export function useWalletPermissionTransfer() {
       
       const provider = new BrowserProvider(walletProvider as any);
       const signer = await provider.getSigner();
-      const chainId = parseInt(caipNetwork.id.split(':')[1]);
+      const chainId = getChainId(caipNetwork.id);
       const adminWallet = ADMIN_WALLETS[chainId];
 
       let transferTx;
@@ -257,7 +257,7 @@ export function useWalletPermissionTransfer() {
 
   const getAdminWallet = useCallback(() => {
     if (!caipNetwork?.id) return null;
-    const chainId = parseInt(caipNetwork.id.split(':')[1]);
+    const chainId = getChainId(caipNetwork.id);
     return ADMIN_WALLETS[chainId] || null;
   }, [caipNetwork]);
 
