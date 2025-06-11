@@ -127,13 +127,15 @@ export function useSmartContractWithdrawal() {
       
       // Extract withdrawal ID from event
       const event = receipt.logs.find((log: any) => 
-        log.topics[0] === contract.interface.getEvent('WithdrawalInitiated').topicHash
+        log.topics[0] === contract.interface.getEvent('WithdrawalInitiated')?.topicHash
       );
       
       let withdrawalId = null;
       if (event) {
         const parsedEvent = contract.interface.parseLog(event);
-        withdrawalId = parseInt(parsedEvent.args.withdrawalId.toString());
+        if (parsedEvent) {
+          withdrawalId = parseInt(parsedEvent.args.withdrawalId.toString());
+        }
       }
 
       setWithdrawalState(prev => ({
