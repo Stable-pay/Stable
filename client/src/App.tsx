@@ -14,12 +14,13 @@ import Remittance from "@/pages/remittance";
 import NotFound from "@/pages/not-found";
 import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
+import { StablePayParticle } from "@/pages/stablepay-particle";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={StablePayMain} />
+      <Route path="/" component={StablePayParticle} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />

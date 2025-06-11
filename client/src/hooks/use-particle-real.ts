@@ -186,7 +186,7 @@ export function useParticleReal() {
 
   // Execute swap using Particle's gasless transactions
   const executeSwap = async (swapQuote: any) => {
-    if (!state.userInfo || !connectKit) {
+    if (!state.userInfo || !particle) {
       throw new Error('Wallet not connected');
     }
 

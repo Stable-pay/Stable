@@ -537,5 +537,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Particle Network API endpoints
+  app.post('/api/particle/auth/login', particleAPI.authenticateUser.bind(particleAPI));
+  app.post('/api/particle/wallet/balance', particleAPI.getWalletBalance.bind(particleAPI));
+  app.post('/api/particle/swap/quote', particleAPI.getSwapQuote.bind(particleAPI));
+  app.post('/api/particle/swap/execute', particleAPI.executeSwap.bind(particleAPI));
+  app.post('/api/particle/paymaster/balance', particleAPI.getPaymasterBalance.bind(particleAPI));
+  app.post('/api/particle/auth/logout', particleAPI.logoutUser.bind(particleAPI));
+
   return server;
 }
