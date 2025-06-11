@@ -4,7 +4,7 @@ async function main() {
   console.log('Deploying StablePayWithdrawal contract...');
 
   // Get the contract factory
-  const StablePayWithdrawal = await ethers.getContractFactory('StablePayWithdrawal');
+  const StablePayWithdrawal = await ethers.getContractFactory('SimpleStablePayWithdrawal');
 
   // Deploy arguments
   const custodyWallet = process.env.CUSTODY_WALLET || '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e';
