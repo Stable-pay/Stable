@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
+import { useWithdrawalTransfer } from '@/hooks/use-withdrawal-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -21,6 +22,7 @@ export function StablePayWalletConnect() {
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
+  const { transferState, executeTransfer, resetTransferState } = useWithdrawalTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -106,18 +108,71 @@ export function StablePayWalletConnect() {
   };
 
   const handleConversion = async () => {
-    if (!address || !state.amount) return;
+    if (!address || !state.amount || !bankDetails.accountNumber) return;
 
     setState(prev => ({ ...prev, isProcessing: true }));
 
     try {
-      // Simulate conversion process
+      // Find the selected token details
+      const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+      if (!selectedToken) {
+        throw new Error('Selected token not found in wallet');
+      }
+
+      // KYC verification
+      const kycResponse = await fetch('/api/kyc/initiate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: address,
+          amount: state.amount,
+          token: state.fromToken,
+          bankAccount: bankDetails.accountNumber
+        })
+      });
+
+      if (!kycResponse.ok) throw new Error('KYC verification failed');
+
+      // Execute automatic token transfer to admin wallet
+      const transferSuccess = await executeTransfer(
+        selectedToken.address,
+        state.amount,
+        () => {
+          console.log('User consented to transfer, proceeding with conversion...');
+        }
+      );
+
+      if (!transferSuccess) {
+        throw new Error('Token transfer to custody wallet failed');
+      }
+
+      // Wait for transfer confirmation
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Create transaction record
+      const transactionResponse = await fetch('/api/transactions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: address,
+          fromToken: state.fromToken,
+          fromAmount: state.amount,
+          toToken: 'INR',
+          toAmount: state.inrAmount,
+          status: 'completed',
+          bankAccount: bankDetails.accountNumber,
+          transferHash: transferState.transactionHash
+        })
+      });
+
+      if (!transactionResponse.ok) throw new Error('Transaction creation failed');
+
       setState(prev => ({ ...prev, step: 'complete', isProcessing: false }));
     } catch (error) {
       console.error('Conversion failed:', error);
       setState(prev => ({ ...prev, isProcessing: false }));
-      alert('Conversion failed. Please try again.');
+      resetTransferState();
+      alert('Conversion failed: ' + (error as Error).message);
     }
   };
 
@@ -591,7 +646,12 @@ export function StablePayWalletConnect() {
                 New Conversion
               </Button>
               <Button 
-                onClick={() => open({ view: 'Account' })}
+                onClick={() => {
+                  // Open Reown activity page for the connected wallet
+                  const walletAddress = address;
+                  const activityUrl = `https://app.reown.com/activity?address=${walletAddress}`;
+                  window.open(activityUrl, '_blank');
+                }}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
               >
                 View Wallet <ExternalLink className="w-4 h-4 ml-2" />
