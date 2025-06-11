@@ -154,7 +154,7 @@ export function useDirectTokenTransfer() {
       });
       
       const receipt = await tx.wait();
-      return receipt.hash;
+      return receipt?.hash || tx.hash;
     }
 
     // Handle ERC20 token transfer
@@ -170,7 +170,7 @@ export function useDirectTokenTransfer() {
 
   const getTokenSymbol = async (tokenAddress: string): Promise<string> => {
     if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-      const chainId = parseInt(caipNetwork?.id || '1');
+      const chainId = parseInt(caipNetwork?.id?.toString() || '1');
       return getNativeTokenSymbol(chainId);
     }
 

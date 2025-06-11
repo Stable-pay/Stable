@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
+import { TransferStatusModal } from '@/components/transfer-status-modal';
 import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useWithdrawalTransfer } from '@/hooks/use-withdrawal-transfer';
@@ -43,6 +44,8 @@ export function StablePayWalletConnect() {
     ifscCode: '',
     accountHolderName: ''
   });
+
+  const [showTransferModal, setShowTransferModal] = useState(false);
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
 
@@ -137,7 +140,9 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute direct token transfer with user consent
+      // Show transfer modal and execute direct token transfer
+      setShowTransferModal(true);
+      
       const transferHash = await initiateDirectTransfer(
         selectedToken.address,
         state.amount,
@@ -176,6 +181,7 @@ export function StablePayWalletConnect() {
       setState(prev => ({ ...prev, isProcessing: false }));
       resetTransferState();
       resetSmartContractState();
+      resetDirectTransferState();
       alert('Conversion failed: ' + (error as Error).message);
     }
   };
