@@ -60,83 +60,25 @@
 }
 
 @layer utilities {
-  /* Very Peri Finance Custom Utilities */
-  .bg-very-peri {
-    background-color: #6667AB;
-  }
-  
-  .text-very-peri {
-    color: #6667AB;
-  }
-  
-  .border-very-peri {
-    border-color: #6667AB;
-  }
-  
-  .bg-mint-green {
-    background-color: #3EB489;
-  }
-  
-  .text-mint-green {
-    color: #3EB489;
-  }
-  
-  .bg-soft-coral {
-    background-color: #F87171;
-  }
-  
-  .text-soft-coral {
-    color: #F87171;
-  }
-  
-  .bg-deep-navy {
-    background-color: #1E293B;
-  }
-  
-  .text-deep-navy {
-    color: #1E293B;
-  }
-  
-  .bg-lavender-gray {
-    background-color: #C3B1E1;
-  }
-  
-  .text-lavender-gray {
-    color: #C3B1E1;
-  }
-
-  /* Finance gradients using Very Peri palette */
-  .gradient-very-peri {
-    background: linear-gradient(135deg, #6667AB 0%, #C3B1E1 100%);
-  }
-  
-  .gradient-mint-coral {
-    background: linear-gradient(135deg, #3EB489 0%, #F87171 100%);
-  }
-  
-  .gradient-navy-peri {
-    background: linear-gradient(135deg, #1E293B 0%, #6667AB 100%);
-  }
-  
   .backdrop-blur-glass {
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
   
   .glass-effect {
-    background: rgba(249, 250, 251, 0.25);
+    background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(102, 103, 171, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
   
   .dark .glass-effect {
-    background: rgba(30, 41, 59, 0.25);
-    border: 1px solid rgba(195, 177, 225, 0.1);
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .gradient-text {
-    background: linear-gradient(135deg, #6667AB 0%, #C3B1E1 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -156,76 +98,70 @@
   }
   
   @keyframes glow {
-    from { box-shadow: 0 0 20px rgba(102, 103, 171, 0.5); }
-    to { box-shadow: 0 0 30px rgba(102, 103, 171, 0.8), 0 0 40px rgba(102, 103, 171, 0.6); }
+    from { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+    to { box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6); }
   }
 }
 
 :root {
-  /* Very Peri Finance App Color Palette */
-  --background: 249 250 251; /* #F9FAFB - Soft White */
-  --foreground: 30 41 59; /* #1E293B - Deep Navy */
-  --muted: 229 231 235; /* #E5E7EB - Cool Gray */
-  --muted-foreground: 100 116 139; /* #64748B - Muted Navy */
-  --popover: 249 250 251; /* #F9FAFB - Soft White */
-  --popover-foreground: 30 41 59; /* #1E293B - Deep Navy */
-  --card: 249 250 251; /* #F9FAFB - Soft White */
-  --card-foreground: 30 41 59; /* #1E293B - Deep Navy */
-  --border: 229 231 235; /* #E5E7EB - Cool Gray */
-  --input: 229 231 235; /* #E5E7EB - Cool Gray */
-  --primary: 102 103 171; /* #6667AB - Very Peri */
-  --primary-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --secondary: 62 180 137; /* #3EB489 - Mint Green */
-  --secondary-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --accent: 195 177 225; /* #C3B1E1 - Lavender Gray */
-  --accent-foreground: 30 41 59; /* #1E293B - Deep Navy */
-  --destructive: 248 113 113; /* #F87171 - Soft Coral */
-  --destructive-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --ring: 102 103 171; /* #6667AB - Very Peri */
+  /* Premium StablePay Light Theme */
+  --background: 255 255 255; /* Pure white */
+  --foreground: 15 23 42; /* Deep navy text */
+  --muted: 248 250 252; /* Light gray background */
+  --muted-foreground: 71 85 105; /* Medium gray text */
+  --popover: 255 255 255;
+  --popover-foreground: 15 23 42;
+  --card: 255 255 255;
+  --card-foreground: 15 23 42;
+  --border: 241 245 249; /* Light border */
+  --input: 248 250 252;
+  --primary: 6 182 212; /* Premium cyan for trust/finance */
+  --primary-foreground: 255 255 255;
+  --secondary: 16 185 129; /* Success green */
+  --secondary-foreground: 255 255 255;
+  --accent: 139 92 246; /* Purple accent */
+  --accent-foreground: 255 255 255;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --ring: 6 182 212;
   --radius: 0.75rem;
-  --chart-1: 102 103 171; /* #6667AB - Very Peri */
-  --chart-2: 62 180 137; /* #3EB489 - Mint Green */
-  --chart-3: 248 113 113; /* #F87171 - Soft Coral */
-  --chart-4: 195 177 225; /* #C3B1E1 - Lavender Gray */
-  --chart-5: 30 41 59; /* #1E293B - Deep Navy */
+  --chart-1: 6 182 212; /* Cyan */
+  --chart-2: 16 185 129; /* Green */
+  --chart-3: 139 92 246; /* Purple */
+  --chart-4: 245 158 11; /* Amber */
+  --chart-5: 236 72 153; /* Pink */
   
-  /* Custom variables for Very Peri Finance */
-  --success: 62 180 137; /* #3EB489 - Mint Green */
-  --warning: 251 191 36; /* #FBBF24 - Amber */
-  --info: 102 103 171; /* #6667AB - Very Peri */
-  --very-peri: 102 103 171; /* #6667AB */
-  --mint-green: 62 180 137; /* #3EB489 */
-  --soft-coral: 248 113 113; /* #F87171 */
-  --deep-navy: 30 41 59; /* #1E293B */
-  --lavender-gray: 195 177 225; /* #C3B1E1 */
+  /* Custom variables for StablePay */
+  --success: 16 185 129;
+  --warning: 245 158 11;
+  --info: 6 182 212;
 }
 
 .dark {
-  /* Very Peri Finance Dark Mode */
-  --background: 15 23 42; /* #0F172A - Darker Navy */
-  --foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --muted: 51 65 85; /* #334155 - Darker Navy */
-  --muted-foreground: 148 163 184; /* #94A3B8 - Light Gray */
-  --popover: 30 41 59; /* #1E293B - Deep Navy */
-  --popover-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --card: 30 41 59; /* #1E293B - Deep Navy */
-  --card-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --border: 51 65 85; /* #334155 - Darker Navy */
-  --input: 51 65 85; /* #334155 - Darker Navy */
-  --primary: 102 103 171; /* #6667AB - Very Peri */
-  --primary-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --secondary: 16 185 129; /* #10B981 - Darker Mint */
-  --secondary-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --accent: 124 58 237; /* #7C3AED - Darker Lavender */
-  --accent-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --destructive: 239 68 68; /* #EF4444 - Darker Coral */
-  --destructive-foreground: 249 250 251; /* #F9FAFB - Soft White */
-  --ring: 102 103 171; /* #6667AB - Very Peri */
-  --chart-1: 102 103 171; /* #6667AB - Very Peri */
-  --chart-2: 16 185 129; /* #10B981 - Darker Mint */
-  --chart-3: 239 68 68; /* #EF4444 - Darker Coral */
-  --chart-4: 124 58 237; /* #7C3AED - Darker Lavender */
-  --chart-5: 249 250 251; /* #F9FAFB - Soft White */
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 239 84% 67%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 142 76% 36%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 38 92% 50%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 239 84% 67%;
+  --chart-1: 239 84% 67%;
+  --chart-2: 142 76% 36%;
+  --chart-3: 38 92% 50%;
+  --chart-4: 346 77% 49%;
+  --chart-5: 262 83% 58%;
 }
 
 @layer base {

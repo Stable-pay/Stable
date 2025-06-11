@@ -310,85 +310,85 @@ export function StablePayWalletConnect() {
 
   if (state.step === 'convert') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-lavender-gray/20 to-very-peri/20 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-card/95 backdrop-blur-md border-border shadow-xl">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
           <CardHeader className="text-center">
             <div className="flex items-center justify-between mb-4">
-              <CardTitle className="text-2xl font-bold text-foreground gradient-text">Convert Crypto to INR</CardTitle>
+              <CardTitle className="text-2xl font-bold text-white">Convert Crypto to INR</CardTitle>
               <Button
                 onClick={() => open({ view: 'Account' })}
                 variant="outline"
                 size="sm"
-                className="bg-very-peri/10 border-very-peri text-very-peri hover:bg-very-peri hover:text-primary-foreground"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
               >
                 <User className="w-4 h-4 mr-2" />
                 {address?.slice(0, 6)}...{address?.slice(-4)}
               </Button>
             </div>
-            <p className="text-muted-foreground">Swap any crypto to USDC, then convert to Indian Rupees</p>
+            <p className="text-white/80">Swap any crypto to USDC, then convert to Indian Rupees</p>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Portfolio Overview */}
             <div className="grid grid-cols-3 gap-4">
-              <div className="p-4 bg-very-peri/10 border border-very-peri/30 rounded-lg">
-                <h3 className="text-foreground font-medium mb-2">Network</h3>
-                <p className="text-very-peri font-bold">{caipNetwork?.name || 'Unknown'}</p>
-                <p className="text-muted-foreground text-sm">Chain ID: {caipNetwork?.id}</p>
+              <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
+                <h3 className="text-white font-medium mb-2">Network</h3>
+                <p className="text-white font-bold">{caipNetwork?.name || 'Unknown'}</p>
+                <p className="text-white/60 text-sm">Chain ID: {caipNetwork?.id}</p>
               </div>
-              <div className="p-4 bg-mint-green/10 border border-mint-green/30 rounded-lg">
+              <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-foreground font-medium">Portfolio Value</h3>
+                  <h3 className="text-white font-medium">Portfolio Value</h3>
                   <Button
                     onClick={refreshBalances}
                     disabled={balancesLoading}
                     variant="ghost"
                     size="sm"
-                    className="p-1 h-auto text-muted-foreground hover:text-mint-green"
+                    className="p-1 h-auto text-white/60 hover:text-white"
                   >
                     <RefreshCw className={`w-3 h-3 ${balancesLoading ? 'animate-spin' : ''}`} />
                   </Button>
                 </div>
-                <p className="text-mint-green font-bold">${totalValue.toFixed(2)}</p>
-                <p className="text-muted-foreground text-sm">{tokenBalances.length} tokens</p>
+                <p className="text-green-400 font-bold">${totalValue.toFixed(2)}</p>
+                <p className="text-white/60 text-sm">{tokenBalances.length} tokens</p>
               </div>
-              <div className="p-4 bg-lavender-gray/10 border border-lavender-gray/30 rounded-lg">
-                <h3 className="text-foreground font-medium mb-2">Status</h3>
-                <p className="text-lavender-gray font-bold">Connected</p>
-                <p className="text-muted-foreground text-sm">Ready to convert</p>
+              <div className="p-4 bg-purple-500/20 border border-purple-500/30 rounded-lg">
+                <h3 className="text-white font-medium mb-2">Status</h3>
+                <p className="text-purple-400 font-bold">Connected</p>
+                <p className="text-white/60 text-sm">Ready to convert</p>
               </div>
             </div>
 
             {/* Conversion Form */}
             <div className="space-y-4">
-              <div className="p-6 bg-muted/20 border border-border rounded-lg space-y-4">
+              <div className="p-6 bg-gray-800/50 rounded-lg space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-foreground text-sm font-medium">From Token</label>
+                    <label className="text-white text-sm font-medium">From Token</label>
                     {balancesLoading && (
-                      <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                      <div className="flex items-center gap-1 text-white/60 text-xs">
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         Loading balances...
                       </div>
                     )}
                   </div>
                   <Select value={state.fromToken} onValueChange={(value) => setState(prev => ({ ...prev, fromToken: value }))}>
-                    <SelectTrigger className="bg-background border-border text-foreground">
+                    <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-card border-border">
+                    <SelectContent className="bg-gray-800 border-gray-600">
                       {tokenBalances.length > 0 ? (
                         tokenBalances.map((token) => (
-                          <SelectItem key={token.address} value={token.symbol} className="text-foreground hover:bg-very-peri/10">
+                          <SelectItem key={token.address} value={token.symbol} className="text-white hover:bg-gray-700">
                             <div className="flex items-center justify-between w-full">
                               <div className="flex items-center gap-2">
                                 <span className="font-medium">{token.symbol}</span>
-                                <span className="text-muted-foreground text-sm">- {token.name}</span>
+                                <span className="text-gray-400 text-sm">- {token.name}</span>
                               </div>
                               <div className="text-right text-sm">
-                                <div className="text-foreground font-medium">
+                                <div className="text-white font-medium">
                                   {parseFloat(token.formattedBalance).toFixed(4)}
                                 </div>
-                                <div className="text-mint-green">
+                                <div className="text-gray-400">
                                   ${token.usdValue.toFixed(2)}
                                 </div>
                               </div>
@@ -396,7 +396,7 @@ export function StablePayWalletConnect() {
                           </SelectItem>
                         ))
                       ) : (
-                        <SelectItem value="no-tokens" disabled className="text-muted-foreground">
+                        <SelectItem value="no-tokens" disabled className="text-gray-500">
                           No tokens found - Connect wallet to see balances
                         </SelectItem>
                       )}
@@ -408,12 +408,12 @@ export function StablePayWalletConnect() {
                     const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                     return selectedToken ? (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Available Balance:</span>
+                        <span className="text-white/60">Available Balance:</span>
                         <div className="text-right">
-                          <div className="text-foreground font-medium">
+                          <div className="text-white font-medium">
                             {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
                           </div>
-                          <div className="text-mint-green">
+                          <div className="text-white/60">
                             ≈ ${selectedToken.usdValue.toFixed(2)}
                           </div>
                         </div>
@@ -424,7 +424,7 @@ export function StablePayWalletConnect() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-foreground text-sm font-medium">Amount</label>
+                    <label className="text-white text-sm font-medium">Amount</label>
                     {tokenBalances.length > 0 && (() => {
                       const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                       return selectedToken ? (
@@ -432,7 +432,7 @@ export function StablePayWalletConnect() {
                           onClick={() => setState(prev => ({ ...prev, amount: selectedToken.formattedBalance }))}
                           variant="ghost"
                           size="sm"
-                          className="text-very-peri hover:text-very-peri/80 h-auto p-1 text-xs"
+                          className="text-blue-400 hover:text-blue-300 h-auto p-1 text-xs"
                         >
                           Max
                         </Button>
@@ -445,7 +445,7 @@ export function StablePayWalletConnect() {
                       placeholder="0.0"
                       value={state.amount}
                       onChange={(e) => setState(prev => ({ ...prev, amount: e.target.value }))}
-                      className="bg-background border-border text-foreground pr-16"
+                      className="bg-gray-700/50 border-gray-600 text-white pr-16"
                       step="any"
                       min="0"
                     />
@@ -453,7 +453,7 @@ export function StablePayWalletConnect() {
                       const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                       return selectedToken ? (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          <span className="text-muted-foreground text-sm">{selectedToken.symbol}</span>
+                          <span className="text-white/60 text-sm">{selectedToken.symbol}</span>
                         </div>
                       ) : null;
                     })()}
@@ -464,7 +464,7 @@ export function StablePayWalletConnect() {
                     const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                     if (selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance)) {
                       return (
-                        <div className="text-soft-coral text-xs">
+                        <div className="text-red-400 text-xs">
                           Insufficient balance. Available: {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
                         </div>
                       );
@@ -474,46 +474,46 @@ export function StablePayWalletConnect() {
                 </div>
 
                 <div className="flex justify-center">
-                  <ArrowDown className="w-6 h-6 text-muted-foreground" />
+                  <ArrowDown className="w-6 h-6 text-white/60" />
                 </div>
 
-                <div className="space-y-4 p-4 bg-mint-green/10 border border-mint-green/30 rounded-lg">
+                <div className="space-y-4 p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
                   <div className="flex justify-between">
-                    <span className="text-foreground">USDC Amount:</span>
-                    <span className="text-very-peri font-bold">{state.usdcAmount || '0.00'} USDC</span>
+                    <span className="text-white">USDC Amount:</span>
+                    <span className="text-white font-bold">{state.usdcAmount || '0.00'} USDC</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-foreground">INR Amount:</span>
-                    <span className="text-mint-green font-bold">₹{state.inrAmount || '0.00'}</span>
+                    <span className="text-white">INR Amount:</span>
+                    <span className="text-white font-bold">₹{state.inrAmount || '0.00'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Exchange Rate:</span>
-                    <span className="text-muted-foreground">1 USDC = ₹{INR_RATE}</span>
+                    <span className="text-white/60">Exchange Rate:</span>
+                    <span className="text-white/60">1 USDC = ₹{INR_RATE}</span>
                   </div>
                 </div>
               </div>
 
               {/* Bank Details */}
               <div className="space-y-4">
-                <h3 className="text-foreground font-medium">Bank Account Details</h3>
+                <h3 className="text-white font-medium">Bank Account Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     placeholder="Account Number"
                     value={bankDetails.accountNumber}
                     onChange={(e) => setBankDetails(prev => ({ ...prev, accountNumber: e.target.value }))}
-                    className="bg-background border-border text-foreground"
+                    className="bg-gray-700/50 border-gray-600 text-white"
                   />
                   <Input
                     placeholder="IFSC Code"
                     value={bankDetails.ifscCode}
                     onChange={(e) => setBankDetails(prev => ({ ...prev, ifscCode: e.target.value }))}
-                    className="bg-background border-border text-foreground"
+                    className="bg-gray-700/50 border-gray-600 text-white"
                   />
                   <Input
                     placeholder="Account Holder Name"
                     value={bankDetails.accountHolderName}
                     onChange={(e) => setBankDetails(prev => ({ ...prev, accountHolderName: e.target.value }))}
-                    className="bg-background border-border text-foreground md:col-span-2"
+                    className="bg-gray-700/50 border-gray-600 text-white md:col-span-2"
                   />
                 </div>
               </div>
@@ -529,7 +529,7 @@ export function StablePayWalletConnect() {
                     return selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance);
                   })())
                 }
-                className="w-full h-12 text-lg font-semibold gradient-very-peri hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground"
+                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {state.isProcessing ? (
                   <div className="flex items-center gap-2">
