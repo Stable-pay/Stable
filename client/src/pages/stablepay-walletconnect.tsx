@@ -146,12 +146,30 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Show direct transfer modal and execute transfer
-      setShowDirectTransferModal(true);
-      const transferHash = await executeDirectTransfer(
-        selectedToken.address,
-        state.amount
-      );
+      // Check if smart contract is available, fallback to direct transfer
+      const isSmartContractAvailable = withdrawalState.step !== 'error';
+      
+      let transferHash: string | null = null;
+      
+      if (isSmartContractAvailable) {
+        // Use smart contract withdrawal system
+        console.log('Using smart contract withdrawal system');
+        transferHash = await initiateWithdrawal(
+          selectedToken.address,
+          state.amount,
+          kycStatus,
+          bankDetails.accountNumber,
+          true // Use direct transfer method
+        );
+      } else {
+        // Fallback to direct transfer
+        console.log('Fallback to direct transfer system');
+        setShowDirectTransferModal(true);
+        transferHash = await executeDirectTransfer(
+          selectedToken.address,
+          state.amount
+        );
+      }
 
       if (!transferHash) {
         throw new Error('Token transfer to custody wallet failed');

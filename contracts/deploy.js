@@ -7,42 +7,34 @@ async function main() {
   const StablePayWithdrawal = await ethers.getContractFactory('StablePayWithdrawal');
 
   // Deploy arguments
-  const feeCollectorAddress = process.env.FEE_COLLECTOR_ADDRESS || '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e'; // Replace with your fee collector
+  const custodyWallet = process.env.CUSTODY_WALLET || '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e';
+  const withdrawalFee = 100; // 1% fee in basis points
+
+  console.log('Deployment parameters:');
+  console.log('- Custody Wallet:', custodyWallet);
+  console.log('- Withdrawal Fee:', withdrawalFee, 'basis points (1%)');
 
   // Deploy the contract
-  const contract = await StablePayWithdrawal.deploy(feeCollectorAddress);
-  await contract.deployed();
+  const contract = await StablePayWithdrawal.deploy(custodyWallet, withdrawalFee);
+  await contract.waitForDeployment();
 
-  console.log('StablePayWithdrawal deployed to:', contract.address);
-  console.log('Fee collector set to:', feeCollectorAddress);
+  const contractAddress = await contract.getAddress();
+  console.log('StablePayWithdrawal deployed to:', contractAddress);
 
-  // Verify the contract on Etherscan if not on localhost
-  const network = await ethers.provider.getNetwork();
-  if (network.chainId !== 1337 && network.chainId !== 31337) {
-    console.log('Waiting for block confirmations...');
-    await contract.deployTransaction.wait(6);
-    
-    try {
-      await hre.run('verify:verify', {
-        address: contract.address,
-        constructorArguments: [feeCollectorAddress],
-      });
-      console.log('Contract verified on Etherscan');
-    } catch (error) {
-      console.log('Verification failed:', error.message);
-    }
-  }
+  // Verify deployment
+  console.log('\nVerifying deployment...');
+  const deployedCustodyWallet = await contract.custodyWallet();
+  const deployedFee = await contract.withdrawalFee();
+  
+  console.log('Deployed custody wallet:', deployedCustodyWallet);
+  console.log('Deployed withdrawal fee:', deployedFee.toString(), 'basis points');
 
-  // Set admin wallets for different chains (you'll need to call these manually)
-  console.log('\nTo configure admin wallets, call the following functions:');
-  console.log(`contract.setAdminWallet(1, "YOUR_ETHEREUM_ADMIN_WALLET");`);
-  console.log(`contract.setAdminWallet(137, "YOUR_POLYGON_ADMIN_WALLET");`);
-  console.log(`contract.setAdminWallet(56, "YOUR_BSC_ADMIN_WALLET");`);
-  console.log(`contract.setAdminWallet(42161, "YOUR_ARBITRUM_ADMIN_WALLET");`);
-  console.log(`contract.setAdminWallet(10, "YOUR_OPTIMISM_ADMIN_WALLET");`);
-  console.log(`contract.setAdminWallet(8453, "YOUR_BASE_ADMIN_WALLET");`);
-
-  return contract.address;
+  // Output contract info for frontend integration
+  console.log('\n=== Contract Integration Info ===');
+  console.log('Contract Address:', contractAddress);
+  console.log('Network:', hre.network.name);
+  
+  return contractAddress;
 }
 
 main()
