@@ -3,9 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink } from 'lucide-react';
-import { useAppKitAccount } from '@reown/appkit/react';
-import { WalletConnectButton, WalletConnectionCard } from '@/components/wallet/wallet-connect-button';
+import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network } from 'lucide-react';
+import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@reown/appkit/react';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -16,8 +15,11 @@ interface ConversionState {
   isProcessing: boolean;
 }
 
-export function StablePayReown() {
-  const { address, isConnected, chainId } = useAppKitAccount();
+export function StablePayWalletConnect() {
+  const { open } = useAppKit();
+  const { address, isConnected, status } = useAppKitAccount();
+  const { caipNetwork } = useAppKitNetwork();
+  
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
     fromToken: 'ETH',
@@ -36,31 +38,6 @@ export function StablePayReown() {
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
 
-  // Calculate real-time conversion rates
-  useEffect(() => {
-    const calculateConversion = async () => {
-      if (!state.amount || !wallet.isConnected) return;
-
-      try {
-        const quote = await wallet.getSwapQuote(state.fromToken, 'USDC', state.amount);
-        const inrValue = (parseFloat(quote.toAmount) * INR_RATE).toFixed(2);
-        
-        setState(prev => ({
-          ...prev,
-          usdcAmount: quote.toAmount,
-          inrAmount: inrValue
-        }));
-      } catch (error) {
-        console.error('Failed to calculate conversion:', error);
-      }
-    };
-
-    if (state.amount && wallet.isConnected) {
-      const timer = setTimeout(calculateConversion, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [state.amount, state.fromToken, wallet.isConnected, wallet]);
-
   // Update step based on wallet connection
   useEffect(() => {
     if (isConnected && state.step === 'connect') {
@@ -70,14 +47,28 @@ export function StablePayReown() {
     }
   }, [isConnected, state.step]);
 
+  // Calculate conversion rates
+  useEffect(() => {
+    if (state.amount && isConnected) {
+      const mockUsdcAmount = (parseFloat(state.amount) * 2000).toFixed(6); // Mock conversion rate
+      const inrValue = (parseFloat(mockUsdcAmount) * INR_RATE).toFixed(2);
+      
+      setState(prev => ({
+        ...prev,
+        usdcAmount: mockUsdcAmount,
+        inrAmount: inrValue
+      }));
+    }
+  }, [state.amount, isConnected]);
+
   const handleKycStart = async () => {
-    if (!wallet.address) return;
+    if (!address) return;
 
     try {
       const response = await fetch('/api/kyc/initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userAddress: wallet.address })
+        body: JSON.stringify({ userAddress: address })
       });
       
       if (response.ok) {
@@ -93,43 +84,14 @@ export function StablePayReown() {
   };
 
   const handleConversion = async () => {
-    if (!wallet.address || !state.amount) return;
+    if (!address || !state.amount) return;
 
     setState(prev => ({ ...prev, isProcessing: true }));
 
     try {
-      // Step 1: Get swap quote
-      const quote = await wallet.getSwapQuote(state.fromToken, 'USDC', state.amount);
-
-      // Step 2: Execute swap
-      const swapTxHash = await wallet.executeSwap(quote);
-
-      // Step 3: Auto-transfer to custody wallet
-      await fetch('/api/custody/transfer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userAddress: wallet.address,
-          usdcAmount: quote.toAmount,
-          chainId: wallet.chainId,
-          swapTxHash
-        })
-      });
-
-      // Step 4: Initiate INR withdrawal
-      await fetch('/api/withdrawal/initiate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userAddress: wallet.address,
-          usdcAmount: quote.toAmount,
-          inrAmount: state.inrAmount,
-          bankDetails
-        })
-      });
-
+      // Simulate conversion process
+      await new Promise(resolve => setTimeout(resolve, 2000));
       setState(prev => ({ ...prev, step: 'complete', isProcessing: false }));
-      
     } catch (error) {
       console.error('Conversion failed:', error);
       setState(prev => ({ ...prev, isProcessing: false }));
@@ -172,25 +134,43 @@ export function StablePayReown() {
             </div>
 
             <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-              <h3 className="text-white font-medium mb-2">Supported Wallets:</h3>
-              <ul className="text-white/80 text-sm space-y-1">
-                <li>• MetaMask, Rainbow, Coinbase Wallet</li>
-                <li>• Trust Wallet, WalletConnect</li>
-                <li>• Multi-chain support (Ethereum, Polygon, BSC)</li>
-                <li>• Hardware wallets (Ledger, Trezor)</li>
-              </ul>
+              <h3 className="text-white font-medium mb-3">Connection Options:</h3>
+              <div className="space-y-2 text-white/80 text-sm">
+                <div className="flex items-center gap-2">
+                  <Wallet className="w-4 h-4" />
+                  <span>350+ Wallets (MetaMask, Rainbow, Coinbase)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  <span>Social Login (Google, Apple, X, Discord)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Network className="w-4 h-4" />
+                  <span>Multi-chain (Ethereum, Polygon, BSC, Arbitrum)</span>
+                </div>
+              </div>
             </div>
             
             <Button 
-              onClick={wallet.connect}
-              disabled={wallet.isConnecting}
+              onClick={() => open()}
+              disabled={status === 'connecting'}
               className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
             >
-              {wallet.isConnecting ? 'Connecting...' : 'Connect Wallet'}
+              {status === 'connecting' ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  Connecting...
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Wallet className="w-5 h-5" />
+                  Connect Wallet
+                </div>
+              )}
             </Button>
             
             <div className="text-center text-white/60 text-sm">
-              Connect with 350+ wallets via WalletConnect
+              Choose from wallet apps, browser extensions, or social login
             </div>
           </CardContent>
         </Card>
@@ -203,7 +183,29 @@ export function StablePayReown() {
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 flex items-center justify-center p-6">
         <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-white">KYC Verification Required</CardTitle>
+            <div className="flex items-center justify-between mb-4">
+              <CardTitle className="text-2xl font-bold text-white">KYC Verification</CardTitle>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => open({ view: 'Account' })}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                </Button>
+                <Button
+                  onClick={() => open({ view: 'Networks' })}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  <Network className="w-4 h-4 mr-2" />
+                  {caipNetwork?.name || 'Network'}
+                </Button>
+              </div>
+            </div>
             <p className="text-white/80">Complete identity verification for INR withdrawals</p>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -215,8 +217,8 @@ export function StablePayReown() {
                     <CheckCircle className="w-5 h-5 text-green-400" />
                     <div>
                       <p className="text-white font-medium">Wallet Connected</p>
-                      <p className="text-white/60 text-sm">{wallet.address?.slice(0, 6)}...{wallet.address?.slice(-4)}</p>
-                      <p className="text-white/60 text-sm">Network: {wallet.chainId}</p>
+                      <p className="text-white/60 text-sm">{address?.slice(0, 12)}...{address?.slice(-6)}</p>
+                      <p className="text-white/60 text-sm">Network: {caipNetwork?.name}</p>
                     </div>
                   </div>
                 </div>
@@ -289,21 +291,32 @@ export function StablePayReown() {
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 flex items-center justify-center p-6">
         <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-white">Convert Crypto to INR</CardTitle>
+            <div className="flex items-center justify-between mb-4">
+              <CardTitle className="text-2xl font-bold text-white">Convert Crypto to INR</CardTitle>
+              <Button
+                onClick={() => open({ view: 'Account' })}
+                variant="outline"
+                size="sm"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              >
+                <User className="w-4 h-4 mr-2" />
+                {address?.slice(0, 6)}...{address?.slice(-4)}
+              </Button>
+            </div>
             <p className="text-white/80">Swap any crypto to USDC, then convert to Indian Rupees</p>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Portfolio Overview */}
+            {/* Network and Account Info */}
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-                <h3 className="text-white font-medium mb-2">Portfolio Value</h3>
-                <p className="text-2xl font-bold text-white">${wallet.getTotalValue().toFixed(2)}</p>
-                <p className="text-white/60 text-sm">{wallet.balances.length} tokens</p>
+                <h3 className="text-white font-medium mb-2">Network</h3>
+                <p className="text-white font-bold">{caipNetwork?.name || 'Unknown'}</p>
+                <p className="text-white/60 text-sm">Chain ID: {caipNetwork?.id}</p>
               </div>
               <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
-                <h3 className="text-white font-medium mb-2">Network</h3>
-                <p className="text-white font-bold">{wallet.chainId === 1 ? 'Ethereum' : wallet.chainId === 137 ? 'Polygon' : 'BSC'}</p>
-                <p className="text-white/60 text-sm">Chain ID: {wallet.chainId}</p>
+                <h3 className="text-white font-medium mb-2">Status</h3>
+                <p className="text-green-400 font-bold">Connected</p>
+                <p className="text-white/60 text-sm">Ready to convert</p>
               </div>
             </div>
 
@@ -317,11 +330,10 @@ export function StablePayReown() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {wallet.balances.map((token) => (
-                        <SelectItem key={token.address} value={token.symbol}>
-                          {token.symbol} - {token.formattedBalance} (${(token.usdValue || 0).toFixed(2)})
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="ETH">ETH - Ethereum</SelectItem>
+                      <SelectItem value="MATIC">MATIC - Polygon</SelectItem>
+                      <SelectItem value="BNB">BNB - Binance Coin</SelectItem>
+                      <SelectItem value="USDC">USDC - USD Coin</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -387,7 +399,14 @@ export function StablePayReown() {
                 disabled={!state.amount || !bankDetails.accountNumber || state.isProcessing}
                 className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
               >
-                {state.isProcessing ? 'Processing Conversion...' : 'Convert to INR'}
+                {state.isProcessing ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    Processing Conversion...
+                  </div>
+                ) : (
+                  'Convert to INR'
+                )}
               </Button>
             </div>
           </CardContent>
@@ -435,15 +454,15 @@ export function StablePayReown() {
               <Button 
                 onClick={() => setState(prev => ({ ...prev, step: 'convert' }))}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
               >
                 New Conversion
               </Button>
               <Button 
-                onClick={() => window.open(`https://etherscan.io/address/${wallet.address}`, '_blank')}
-                className="flex-1"
+                onClick={() => open({ view: 'Account' })}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
               >
-                View on Explorer <ExternalLink className="w-4 h-4 ml-2" />
+                View Wallet <ExternalLink className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </CardContent>

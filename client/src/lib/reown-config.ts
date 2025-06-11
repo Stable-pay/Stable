@@ -6,10 +6,6 @@ import { QueryClient } from '@tanstack/react-query'
 // Get project ID from environment variables
 export const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || '2f05ae7f1116030fde2d36508f472bfb'
 
-if (!projectId) {
-  throw new Error('VITE_WALLETCONNECT_PROJECT_ID is not set')
-}
-
 // Create query client
 export const queryClient = new QueryClient()
 
@@ -23,12 +19,12 @@ export const wagmiAdapter = new WagmiAdapter({
 // Set up metadata
 const metadata = {
   name: 'StablePay',
-  description: 'Crypto to INR conversion platform',
+  description: 'Crypto to INR conversion platform powered by Reown WalletConnect',
   url: typeof window !== 'undefined' ? window.location.origin : 'https://stablepay.replit.app',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal
+// Create the modal with enhanced features
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
@@ -38,13 +34,15 @@ export const modal = createAppKit({
   features: {
     analytics: true,
     email: true,
-    socials: ['google', 'x', 'github', 'discord', 'apple'],
-    emailShowWallets: true
+    socials: ['google', 'x', 'github', 'discord', 'apple', 'farcaster'],
+    emailShowWallets: true,
+    onramp: true
   },
   themeMode: 'dark',
   themeVariables: {
-    '--w3m-color-mix': '#00DCFF',
-    '--w3m-color-mix-strength': 20
+    '--w3m-color-mix': '#3B82F6',
+    '--w3m-color-mix-strength': 40,
+    '--w3m-border-radius-master': '12px'
   }
 })
 
