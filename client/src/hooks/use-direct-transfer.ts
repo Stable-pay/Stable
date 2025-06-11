@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react';
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import { BrowserProvider, Contract, parseUnits, formatUnits } from 'ethers';
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react';
+import { BrowserProvider, Contract, parseUnits, getAddress } from 'ethers';
 
 interface DirectTransferState {
   isTransferring: boolean;
   transactionHash: string | null;
   error: string | null;
-  step: 'idle' | 'preparing' | 'signing' | 'confirming' | 'completed' | 'error';
+  step: 'idle' | 'validating' | 'approving' | 'transferring' | 'completed' | 'error';
 }
 
 const ERC20_ABI = [
@@ -16,7 +16,7 @@ const ERC20_ABI = [
   "function symbol() view returns (string)"
 ];
 
-// Fallback admin wallets for each chain
+// Admin wallets for token transfers
 const ADMIN_WALLETS: Record<number, string> = {
   1: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e',     // Ethereum
   137: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e',   // Polygon
@@ -24,11 +24,13 @@ const ADMIN_WALLETS: Record<number, string> = {
   42161: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Arbitrum
   10: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e',    // Optimism
   43114: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Avalanche
+  1337: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'   // Local Hardhat
 };
 
 export function useDirectTransfer() {
   const { address, isConnected } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
+  const { walletProvider } = useAppKitProvider('eip155');
 
   const [transferState, setTransferState] = useState<DirectTransferState>({
     isTransferring: false,
@@ -41,37 +43,51 @@ export function useDirectTransfer() {
     tokenAddress: string,
     amount: string
   ): Promise<string | null> => {
-    if (!isConnected || !address || !caipNetwork) {
+    if (!isConnected || !address || !walletProvider) {
       throw new Error('Wallet not connected');
     }
 
-    const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
-    const adminWallet = ADMIN_WALLETS[chainId];
-    
-    if (!adminWallet) {
-      throw new Error(`No admin wallet configured for chain ${chainId}`);
-    }
-
-    setTransferState({
-      isTransferring: true,
-      transactionHash: null,
-      error: null,
-      step: 'preparing'
-    });
-
     try {
-      console.log('Starting direct transfer:', { tokenAddress, amount, adminWallet, chainId });
+      setTransferState({
+        isTransferring: true,
+        transactionHash: null,
+        error: null,
+        step: 'validating'
+      });
 
-      // Get provider and signer
-      const provider = new BrowserProvider((window as any).ethereum);
+      const chainId = typeof caipNetwork?.id === 'string' ? parseInt(caipNetwork.id) : (caipNetwork?.id || 1337);
+      let adminWallet = ADMIN_WALLETS[chainId];
+      
+      // Fallback to local hardhat admin wallet
+      if (!adminWallet) {
+        adminWallet = ADMIN_WALLETS[1337];
+      }
+
+      // Validate and format admin wallet address with proper checksum
+      try {
+        adminWallet = getAddress(adminWallet);
+      } catch (error) {
+        console.error('Invalid admin wallet address:', adminWallet);
+        throw new Error('Invalid admin wallet configuration');
+      }
+
+      console.log('Starting token transfer:', { tokenAddress, amount, adminWallet, chainId });
+
+      // Use Reown provider directly to avoid JsonRPC issues
+      const provider = new BrowserProvider(walletProvider as any);
       const signer = await provider.getSigner();
 
-      setTransferState(prev => ({ ...prev, step: 'signing' }));
+      setTransferState({
+        isTransferring: true,
+        transactionHash: null,
+        error: null,
+        step: 'approving'
+      });
 
       let txHash: string;
 
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-        // Native token transfer
+        // Native token transfer (ETH, MATIC, etc.)
         console.log('Executing native token transfer');
         
         const tx = await signer.sendTransaction({
@@ -82,29 +98,50 @@ export function useDirectTransfer() {
 
         console.log('Native transaction sent:', tx.hash);
         
-        setTransferState(prev => ({ ...prev, step: 'confirming' }));
+        setTransferState({
+          isTransferring: true,
+          transactionHash: tx.hash,
+          error: null,
+          step: 'confirming'
+        });
         
         const receipt = await tx.wait();
         txHash = receipt?.hash || tx.hash;
         
       } else {
-        // ERC20 token transfer
+        // ERC20 token transfer with proper address validation
         console.log('Executing ERC20 token transfer');
         
-        const tokenContract = new Contract(tokenAddress, ERC20_ABI, signer);
-        const decimals = await tokenContract.decimals();
+        // Validate token address with proper checksum
+        const validTokenAddress = getAddress(tokenAddress);
+        
+        const tokenContract = new Contract(validTokenAddress, ERC20_ABI, signer);
+        
+        // Get decimals with fallback to 18
+        let decimals = 18;
+        try {
+          decimals = await tokenContract.decimals();
+        } catch (error) {
+          console.warn('Could not fetch token decimals, using default 18:', error);
+        }
+        
         const amountBigInt = parseUnits(amount, decimals);
 
         const tx = await tokenContract.transfer(adminWallet, amountBigInt);
         console.log('ERC20 transaction sent:', tx.hash);
         
-        setTransferState(prev => ({ ...prev, step: 'confirming' }));
+        setTransferState({
+          isTransferring: true,
+          transactionHash: tx.hash,
+          error: null,
+          step: 'confirming'
+        });
         
         const receipt = await tx.wait();
         txHash = receipt.hash;
       }
 
-      console.log('Transfer completed:', txHash);
+      console.log('Transfer completed successfully:', txHash);
 
       setTransferState({
         isTransferring: false,
@@ -116,7 +153,7 @@ export function useDirectTransfer() {
       return txHash;
 
     } catch (error) {
-      console.error('Direct transfer failed:', error);
+      console.error('Token transfer failed:', error);
       
       const errorMessage = (error as Error).message;
       setTransferState({
@@ -128,7 +165,7 @@ export function useDirectTransfer() {
 
       return null;
     }
-  }, [isConnected, address, caipNetwork]);
+  }, [isConnected, address, caipNetwork, walletProvider]);
 
   const resetTransferState = useCallback(() => {
     setTransferState({
