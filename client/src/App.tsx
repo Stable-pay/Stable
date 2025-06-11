@@ -1,6 +1,7 @@
 import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./lib/queryClient";
+import { WagmiProvider } from 'wagmi';
+import { queryClient, config } from "@/lib/reown-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { StablePayNav } from "@/components/layout/stablepay-nav";
@@ -14,13 +15,13 @@ import Remittance from "@/pages/remittance";
 import NotFound from "@/pages/not-found";
 import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
-import { StablePayParticle } from "@/pages/stablepay-particle";
+import { StablePayReown } from "@/pages/stablepay-reown";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={StablePayParticle} />
+      <Route path="/" component={StablePayReown} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />
