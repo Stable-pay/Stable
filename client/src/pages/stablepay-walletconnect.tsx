@@ -310,8 +310,8 @@ export function StablePayWalletConnect() {
 
   if (state.step === 'convert') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+      <div className="min-h-screen bg-gradient-to-br from-background via-lavender-gray/20 to-very-peri/20 flex items-center justify-center p-6">
+        <Card className="w-full max-w-2xl bg-card/95 backdrop-blur-md border-border shadow-xl">
           <CardHeader className="text-center">
             <div className="flex items-center justify-between mb-4">
               <CardTitle className="text-2xl font-bold text-white">Convert Crypto to INR</CardTitle>
