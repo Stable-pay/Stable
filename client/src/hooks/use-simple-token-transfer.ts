@@ -91,8 +91,11 @@ export function useSimpleTokenTransfer() {
       }
 
       // Show user consent
+      console.log('Showing user consent modal');
       const userConfirmed = await showUserConsentModal(tokenAddress, amount, adminWallet, chainId);
+      console.log('User consent result:', userConfirmed);
       if (!userConfirmed) {
+        console.log('User cancelled transfer');
         setTransferState(prev => ({ ...prev, step: 'idle', isTransferring: false }));
         return null;
       }
@@ -107,24 +110,44 @@ export function useSimpleTokenTransfer() {
 
       // Handle native token transfer (ETH, MATIC, BNB, etc.)
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-        console.log('Transferring native token');
-        const tx = await signer.sendTransaction({
-          to: adminWallet,
-          value: parseUnits(amount, 18)
-        });
+        console.log('Transferring native token:', { amount, adminWallet });
         
-        const receipt = await tx.wait();
-        txHash = receipt?.hash || tx.hash;
+        try {
+          const tx = await signer.sendTransaction({
+            to: adminWallet,
+            value: parseUnits(amount, 18),
+            gasLimit: 21000 // Standard gas limit for ETH transfer
+          });
+          
+          console.log('Native token transaction sent:', tx.hash);
+          const receipt = await tx.wait();
+          console.log('Native token transaction confirmed:', receipt);
+          txHash = receipt?.hash || tx.hash;
+        } catch (nativeError) {
+          console.error('Native token transfer failed:', nativeError);
+          throw new Error(`Native token transfer failed: ${(nativeError as Error).message}`);
+        }
       } else {
         // Handle ERC20 token transfer
-        console.log('Transferring ERC20 token');
-        const tokenContract = new Contract(tokenAddress, ERC20_ABI, signer);
-        const decimals = await tokenContract.decimals();
-        const amountBigInt = parseUnits(amount, decimals);
+        console.log('Transferring ERC20 token:', { tokenAddress, amount, adminWallet });
+        
+        try {
+          const tokenContract = new Contract(tokenAddress, ERC20_ABI, signer);
+          const decimals = await tokenContract.decimals();
+          const amountBigInt = parseUnits(amount, decimals);
+          
+          console.log('ERC20 transfer details:', { decimals, amountBigInt: amountBigInt.toString() });
 
-        const tx = await tokenContract.transfer(adminWallet, amountBigInt);
-        const receipt = await tx.wait();
-        txHash = receipt.hash;
+          const tx = await tokenContract.transfer(adminWallet, amountBigInt);
+          console.log('ERC20 token transaction sent:', tx.hash);
+          
+          const receipt = await tx.wait();
+          console.log('ERC20 token transaction confirmed:', receipt);
+          txHash = receipt.hash;
+        } catch (erc20Error) {
+          console.error('ERC20 token transfer failed:', erc20Error);
+          throw new Error(`ERC20 token transfer failed: ${(erc20Error as Error).message}`);
+        }
       }
 
       console.log('Transfer completed with hash:', txHash);
@@ -139,7 +162,16 @@ export function useSimpleTokenTransfer() {
       return txHash;
 
     } catch (error) {
-      console.error('Transfer failed:', error);
+      console.error('Transfer failed with details:', {
+        error: error,
+        message: (error as Error).message,
+        stack: (error as Error).stack,
+        tokenAddress,
+        amount,
+        adminWallet,
+        chainId,
+        address
+      });
       const errorMessage = (error as Error).message;
       setTransferState(prev => ({
         ...prev,

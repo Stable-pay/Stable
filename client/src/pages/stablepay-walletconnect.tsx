@@ -10,6 +10,8 @@ import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useWithdrawalTransfer } from '@/hooks/use-withdrawal-transfer';
 import { useSmartContractWithdrawal } from '@/hooks/use-smart-contract-withdrawal';
 import { useSimpleTokenTransfer } from '@/hooks/use-simple-token-transfer';
+import { useDebugTransfer } from '@/hooks/use-debug-transfer';
+import { useDirectTransfer } from '@/hooks/use-direct-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -28,6 +30,7 @@ export function StablePayWalletConnect() {
   const { transferState, executeTransfer, resetTransferState } = useWithdrawalTransfer();
   const { withdrawalState, initiateWithdrawal, completeWithdrawal, resetState: resetSmartContractState } = useSmartContractWithdrawal();
   const { transferState: simpleTransferState, executeTransfer: executeSimpleTransfer, resetTransferState: resetSimpleTransferState } = useSimpleTokenTransfer();
+  const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
