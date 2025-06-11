@@ -99,11 +99,9 @@ export function StablePayMinimal() {
         throw new Error('Please connect your wallet first');
       }
 
-      if (!caipNetwork?.id) {
+      if (!chainId) {
         throw new Error('Network not detected. Please switch to a supported network');
       }
-
-      const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
       const adminWallet = ADMIN_WALLETS[chainId];
       
       if (!adminWallet) {
@@ -324,7 +322,7 @@ export function StablePayMinimal() {
             </div>
 
             <Button 
-              onClick={() => open()}
+              onClick={() => connectors[0] && connect({ connector: connectors[0] })}
               className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
             >
               Connect Wallet
@@ -344,7 +342,7 @@ export function StablePayMinimal() {
               <CardTitle className="text-2xl font-bold text-white">Identity Verification</CardTitle>
               <div className="flex gap-2">
                 <Button
-                  onClick={() => open({ view: 'Account' })}
+                  onClick={() => disconnect()}
                   variant="outline"
                   size="sm"
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20"
@@ -353,13 +351,12 @@ export function StablePayMinimal() {
                   {address?.slice(0, 6)}...{address?.slice(-4)}
                 </Button>
                 <Button
-                  onClick={() => open({ view: 'Networks' })}
                   variant="outline"
                   size="sm"
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                 >
                   <Network className="w-4 h-4 mr-2" />
-                  {caipNetwork?.name || 'Network'}
+                  Chain {chainId}
                 </Button>
               </div>
             </div>
@@ -375,7 +372,7 @@ export function StablePayMinimal() {
                     <div>
                       <p className="text-white font-medium">Wallet Connected</p>
                       <p className="text-white/60 text-sm">{address?.slice(0, 12)}...{address?.slice(-6)}</p>
-                      <p className="text-white/60 text-sm">Network: {caipNetwork?.name}</p>
+                      <p className="text-white/60 text-sm">Network: Chain {chainId}</p>
                     </div>
                   </div>
                 </div>
@@ -461,13 +458,13 @@ export function StablePayMinimal() {
                   <RefreshCw className={`w-4 h-4 ${balancesLoading ? 'animate-spin' : ''}`} />
                 </Button>
                 <Button
-                  onClick={() => open({ view: 'Account' })}
+                  onClick={() => disconnect()}
                   variant="outline"
                   size="sm"
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                 >
-                  <User className="w-4 h-4 mr-2" />
-                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Disconnect
                 </Button>
               </div>
             </div>
