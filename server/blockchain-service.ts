@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 // Direct blockchain RPC service for live data
 export class BlockchainService {
   private readonly rpcEndpoints: Record<number, string> = {
-    1: 'https://eth-mainnet.g.alchemy.com/v2/demo', // Ethereum
+    1: 'https://cloudflare-eth.com', // Ethereum
     137: 'https://polygon-rpc.com', // Polygon
     56: 'https://bsc-dataseed.binance.org', // BSC
     42161: 'https://arb1.arbitrum.io/rpc', // Arbitrum

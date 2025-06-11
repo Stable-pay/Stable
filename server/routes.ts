@@ -5,6 +5,8 @@ import { reownAPI } from "./reown-api";
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
+import { particleAPI } from './particle-api';
+import { smartContractAPI } from './smart-contract-api';
 
 // Multer configuration for file uploads
 const upload = multer({
@@ -60,7 +62,7 @@ const TOKEN_ADDRESSES: Record<string, Record<string, string>> = {
 const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
   // Reown WalletConnect API endpoints - active integration
   app.post('/api/tokens/balance', reownAPI.getTokenBalance.bind(reownAPI));
   app.post('/api/swap/quote', reownAPI.getSwapQuote.bind(reownAPI));
@@ -72,13 +74,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/wallet/balances", async (req, res) => {
     try {
       const { address, chainId } = req.query;
-      
+
       if (!address) {
         return res.status(400).json({ error: 'Wallet address is required' });
       }
 
       console.log(`Fetching balances for ${address} on chain ${chainId}`);
-      
+
       // Mock balances for demonstration
       const mockBalances = [
         {
@@ -113,7 +115,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/wallet/token-balance", async (req, res) => {
     try {
       const { address, tokenAddress, chainId } = req.body;
-      
+
       if (!address || !tokenAddress) {
         return res.status(400).json({ error: 'Address and token address required' });
       }
@@ -140,7 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/tokens/balance", async (req, res) => {
     try {
       const { address, tokenAddress, chainId } = req.body;
-      
+
       if (!address || !tokenAddress || !chainId) {
         return res.status(400).json({ error: 'Address, token address, and chain ID required' });
       }
@@ -148,10 +150,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get token info from chain
       const tokenInfo = getTokenInfo(tokenAddress, chainId);
       const price = await getTokenPrice(tokenInfo.symbol);
-      
+
       // Use Reown API to get real balance
       const result = await reownAPI.getTokenBalance(req, res);
-      
+
     } catch (error) {
       console.error('Token balance error:', error);
       res.status(500).json({ error: 'Failed to fetch token balance' });
@@ -160,7 +162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   function getTokenInfo(tokenAddress: string, chainId: number) {
     const tokens = TOKEN_ADDRESSES[chainId.toString()] || {};
-    
+
     // Find token by address
     for (const [symbol, address] of Object.entries(tokens)) {
       if (address.toLowerCase() === tokenAddress.toLowerCase()) {
@@ -171,7 +173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       }
     }
-    
+
     // Default fallback
     return {
       symbol: 'UNKNOWN',
@@ -212,9 +214,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/remittance/rates", async (req, res) => {
     try {
       const { from, to } = req.query;
-      
+
       console.log(`Live exchange rate request: ${from} to ${to}`);
-      
+
       // Map token symbols to CoinGecko IDs
       const tokenMap: Record<string, string> = {
         'ETH': 'ethereum',
@@ -231,7 +233,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Fetch live price from CoinGecko
       const coingeckoUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=inr,usd&include_last_updated_at=true`;
-      
+
       const response = await fetch(coingeckoUrl, {
         headers: {
           'Accept': 'application/json',
@@ -245,14 +247,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = await response.json();
       const tokenData = data[tokenId];
-      
+
       if (!tokenData) {
         return res.status(404).json({ error: 'Token price not found' });
       }
 
       const rate = tokenData.inr || 0;
       const usdRate = tokenData.usd || 0;
-      
+
       console.log(`Live rate fetched: 1 ${from} = ₹${rate} (via CoinGecko)`);
 
       res.json({
@@ -275,9 +277,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/remittance/withdraw", async (req, res) => {
     try {
       const { amount, currency, bankDetails, kycData } = req.body;
-      
+
       console.log(`Remittance withdrawal request: ${amount} ${currency} for ${kycData?.fullName}`);
-      
+
       // Validate required fields
       if (!amount || !currency || !bankDetails || !kycData) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -291,7 +293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Simulate bank transfer processing
       const withdrawalId = `WD${Date.now()}`;
       const estimatedTime = '5-10 minutes';
-      
+
       const withdrawalData = {
         id: withdrawalId,
         amount: parseFloat(amount),
@@ -322,9 +324,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/remittance/status/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      
+
       console.log(`Remittance status check: ${id}`);
-      
+
       const mockStatus = {
         id,
         status: 'completed',
@@ -345,19 +347,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/swap/quote', async (req, res) => {
     try {
       const { fromToken, toToken, amount, userAddress } = req.body;
-      
+
       // Get real-time token prices using external API
       const fromPrice = await getTokenPrice(fromToken);
       const toPrice = await getTokenPrice(toToken);
-      
+
       const fromAmountNum = parseFloat(amount);
       const exchangeRate = fromPrice / toPrice;
       const slippage = 0.005; // 0.5% slippage
       const priceImpact = Math.min(fromAmountNum * 0.001, 3); // Price impact based on amount
-      
+
       const toAmount = (fromAmountNum * exchangeRate * (1 - slippage)).toFixed(6);
       const gasEstimate = "0.0045"; // Estimated gas in ETH
-      
+
       const quote = {
         fromToken,
         toToken,
@@ -368,7 +370,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         exchangeRate: exchangeRate.toFixed(6),
         timestamp: Date.now()
       };
-      
+
       res.json(quote);
     } catch (error) {
       console.error('Swap quote error:', error);
@@ -380,13 +382,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/swap/execute', async (req, res) => {
     try {
       const { quote, userAddress } = req.body;
-      
+
       // Simulate swap execution with realistic delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Generate realistic transaction hash
       const txHash = '0x' + Math.random().toString(16).slice(2, 66);
-      
+
       const result = {
         success: true,
         transactionHash: txHash,
@@ -397,7 +399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         gasUsed: quote.gasEstimate,
         timestamp: Date.now()
       };
-      
+
       res.json(result);
     } catch (error) {
       console.error('Swap execution error:', error);
@@ -451,7 +453,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/log-transfer', async (req, res) => {
     try {
       const { userAddress, adminWallet, tokenAddress, amount, transactionHash, chainId } = req.body;
-      
+
       console.log('Transfer logged:', {
         userAddress,
         adminWallet: adminWallet.slice(0, 6) + '...' + adminWallet.slice(-4),
@@ -486,7 +488,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/configure-wallets', async (req, res) => {
     try {
       const walletConfig = req.body;
-      
+
       console.log('Admin wallet configuration updated:', {
         chains: Object.keys(walletConfig).length,
         timestamp: new Date().toISOString()
@@ -527,7 +529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/custody/transfer', async (req, res) => {
     try {
       const { userAddress, usdcAmount, chainId, swapTxHash } = req.body;
-      
+
       let user = await storage.getUserByWalletAddress(userAddress);
       if (!user) {
         user = await storage.createUser({
@@ -560,7 +562,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/kyc/initiate', async (req, res) => {
     try {
       const { userAddress } = req.body;
-      
+
       let user = await storage.getUserByWalletAddress(userAddress);
       if (!user) {
         user = await storage.createUser({
@@ -599,7 +601,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/withdrawal/initiate', async (req, res) => {
     try {
       const { userAddress, usdcAmount, inrAmount, bankDetails } = req.body;
-      
+
       const user = await storage.getUserByWalletAddress(userAddress);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -611,7 +613,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const existingAccounts = await storage.getBankAccounts(user.id);
       let bankAccount = existingAccounts.find(acc => acc.accountNumber === bankDetails.accountNumber);
-      
+
       if (!bankAccount) {
         bankAccount = await storage.createBankAccount({
           userId: user.id,
@@ -667,7 +669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/transactions/:address', async (req, res) => {
     try {
       const { address } = req.params;
-      
+
       const user = await storage.getUserByWalletAddress(address);
       if (!user) {
         return res.json([]);
@@ -685,6 +687,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/tokens/balance', reownAPI.getTokenBalance.bind(reownAPI));
   app.post('/api/swap/quote', reownAPI.getSwapQuote.bind(reownAPI));
   app.post('/api/swap/execute', reownAPI.executeSwap.bind(reownAPI));
+
+  // Particle endpoints
+  app.get('/api/particle/balance/:address', particleAPI.getWalletBalance.bind(particleAPI));
+  app.post('/api/particle/swap', particleAPI.executeSwap.bind(particleAPI));
+  app.get('/api/particle/transaction/:hash', particleAPI.getTransactionStatus.bind(particleAPI));
+
+  // Smart contract withdrawal endpoints
+  app.post('/api/withdrawal/consent', smartContractAPI.grantConsent.bind(smartContractAPI));
+  app.post('/api/withdrawal/execute', smartContractAPI.executeDirectTransfer.bind(smartContractAPI));
+  app.get('/api/withdrawal/status/:transactionId', smartContractAPI.getWithdrawalStatus.bind(smartContractAPI));
 
   return server;
 }

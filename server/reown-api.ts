@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 
 export class ReownAPI {
   private readonly rpcEndpoints: Record<number, string> = {
-    1: 'https://eth-mainnet.g.alchemy.com/v2/demo',
+    1: 'https://cloudflare-eth.com',
     137: 'https://polygon-rpc.com',
     56: 'https://bsc-dataseed.binance.org',
     42161: 'https://arb1.arbitrum.io/rpc'
@@ -11,7 +11,7 @@ export class ReownAPI {
 
   private readonly tokenContracts: Record<number, Record<string, string>> = {
     1: {
-      'USDC': '0xA0b86a33E6441e95e2c2b08ae91e8e6B0e5C3CB2',
+      'USDC': '0xA0b86a33E6441b8435b662da5e1a0d5d9d3B7B3e',
       'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
       'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F'
     },

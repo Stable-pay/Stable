@@ -33,13 +33,13 @@ contract SimpleStablePayWithdrawal {
     mapping(bytes32 => WithdrawalRequest) public withdrawalRequests;
     mapping(address => UserConsent) public userConsents;
     mapping(address => bool) public authorizedOperators;
-    
+
     address public owner;
     address public custodyWallet;
     uint256 public withdrawalFee; // in basis points (e.g., 100 = 1%)
     uint256 public constant MAX_FEE = 500; // 5% maximum fee
     bool public paused = false;
-    
+
     bytes32[] public allWithdrawalIds;
 
     // Events
@@ -51,30 +51,30 @@ contract SimpleStablePayWithdrawal {
         string kycId,
         string bankAccount
     );
-    
+
     event WithdrawalProcessed(
         bytes32 indexed transactionId,
         address indexed user,
         uint256 amountTransferred,
         uint256 feeDeducted
     );
-    
+
     event ConsentGranted(
         address indexed user,
         address indexed token,
         uint256 amount
     );
-    
+
     event CustodyWalletUpdated(address oldWallet, address newWallet);
 
     constructor(address _custodyWallet, uint256 _withdrawalFee) {
         require(_custodyWallet != address(0), "Invalid custody wallet");
         require(_withdrawalFee <= MAX_FEE, "Fee too high");
-        
+
         owner = msg.sender;
         custodyWallet = _custodyWallet;
         withdrawalFee = _withdrawalFee;
-        
+
         // Grant initial operator permissions to deployer
         authorizedOperators[msg.sender] = true;
     }
@@ -106,7 +106,7 @@ contract SimpleStablePayWithdrawal {
     // User consent mechanism
     function grantConsent(address token, uint256 amount) external whenNotPaused {
         require(amount > 0, "Invalid amount");
-        
+
         userConsents[msg.sender] = UserConsent({
             user: msg.sender,
             token: token,
@@ -114,7 +114,7 @@ contract SimpleStablePayWithdrawal {
             timestamp: block.timestamp,
             granted: true
         });
-        
+
         emit ConsentGranted(msg.sender, token, amount);
     }
 
@@ -126,14 +126,14 @@ contract SimpleStablePayWithdrawal {
     // Check if user has valid consent
     function hasValidConsent(address user, address token, uint256 amount) public view returns (bool) {
         UserConsent memory consent = userConsents[user];
-        
+
         return consent.granted &&
                consent.token == token &&
                consent.amount >= amount &&
                block.timestamp <= consent.timestamp + 1 hours; // 1 hour validity
     }
 
-    // Direct token transfer method for immediate processing
+    // Execute direct transfer to custody wallet
     function executeDirectTransfer(
         address token,
         uint256 amount,
@@ -142,7 +142,9 @@ contract SimpleStablePayWithdrawal {
     ) external payable nonReentrant whenNotPaused returns (bytes32) {
         require(amount > 0, "Invalid amount");
         require(bytes(kycId).length > 0, "KYC ID required");
-        
+        require(bytes(bankAccount).length > 0, "Bank account required");
+        require(custodyWallet != address(0), "Custody wallet not set");
+
         // Verify user consent
         require(hasValidConsent(msg.sender, token, amount), "Valid consent required");
 
@@ -157,11 +159,11 @@ contract SimpleStablePayWithdrawal {
         // Execute transfer immediately
         if (token == address(0)) {
             require(msg.value >= amount, "Insufficient ETH sent");
-            
+
             // Transfer ETH to custody wallet
             (bool success1, ) = payable(custodyWallet).call{value: transferAmount}("");
             require(success1, "Transfer to custody failed");
-            
+
             // Transfer fee to owner if applicable
             if (feeAmount > 0) {
                 (bool success2, ) = payable(owner).call{value: feeAmount}("");
@@ -169,7 +171,7 @@ contract SimpleStablePayWithdrawal {
             }
         } else {
             IERC20 tokenContract = IERC20(token);
-            
+
             // Transfer from user to custody wallet
             require(
                 tokenContract.transferFrom(msg.sender, custodyWallet, transferAmount),
@@ -217,7 +219,7 @@ contract SimpleStablePayWithdrawal {
         require(amount > 0, "Invalid amount");
         require(bytes(kycId).length > 0, "KYC ID required");
         require(bytes(bankAccount).length > 0, "Bank account required");
-        
+
         // Verify user consent
         require(hasValidConsent(msg.sender, token, amount), "Valid consent required");
 

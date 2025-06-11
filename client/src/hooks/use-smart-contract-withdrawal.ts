@@ -53,14 +53,14 @@ export function useSmartContractWithdrawal() {
 
     const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
     const contractAddress = CONTRACT_ADDRESSES[chainId];
-    
+
     if (!contractAddress || contractAddress === '0x0000000000000000000000000000000000000000') {
       throw new Error(`Smart contract not deployed on chain ${chainId}`);
     }
 
     const provider = new BrowserProvider((window as any).ethereum);
     const signer = await provider.getSigner();
-    
+
     return new Contract(contractAddress, STABLEPAY_CONTRACT_ABI, signer);
   }, [isConnected, address, caipNetwork]);
 
@@ -195,13 +195,13 @@ export function useSmartContractWithdrawal() {
       );
 
       const receipt = await tx.wait();
-      
+
       // Extract request ID from events
       const withdrawalRequestedTopic = '0x' + contract.interface.getEvent('WithdrawalRequested').topicHash.slice(2);
       const event = receipt.logs.find((log: any) => 
         log.topics[0] === withdrawalRequestedTopic
       );
-      
+
       const requestId = event ? event.topics[1] : null;
 
       console.log('Withdrawal requested:', { transactionHash: receipt.hash, requestId });
@@ -228,38 +228,74 @@ export function useSmartContractWithdrawal() {
     }
   }, [getContract]);
 
-  const initiateWithdrawal = useCallback(async (
+  const initiateWithdrawal = async (
     tokenAddress: string,
     amount: string,
     kycId: string,
     bankAccount: string,
-    useDirectTransfer: boolean = true
+    directTransfer: boolean = false
   ): Promise<string | null> => {
     try {
-      // First, grant consent
-      const consentGranted = await grantConsent(tokenAddress, amount);
-      if (!consentGranted) {
-        throw new Error('Failed to grant consent');
+      setWithdrawalState(prev => ({ ...prev, step: 'processing', isProcessing: true }));
+      setWithdrawalState(prev => ({ ...prev, error: null }));
+
+      if (!address) {
+        throw new Error('Wallet not connected');
       }
 
-      // Then execute withdrawal
-      if (useDirectTransfer) {
-        return await executeDirectWithdrawal(tokenAddress, amount, kycId, bankAccount);
-      } else {
-        return await requestWithdrawal(tokenAddress, amount, kycId, bankAccount);
+      // Grant consent first
+      const consentResponse = await fetch('/api/withdrawal/consent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tokenAddress,
+          amount,
+          chainId: 1 // Default to Ethereum
+        })
+      });
+
+      if (!consentResponse.ok) {
+        const consentError = await consentResponse.json();
+        throw new Error(consentError.error || 'Failed to grant consent');
       }
 
-    } catch (error) {
-      console.error('Withdrawal initiation failed:', error);
-      setWithdrawalState(prev => ({
-        ...prev,
-        step: 'error',
-        error: (error as Error).message,
-        isProcessing: false
-      }));
+      // Execute direct transfer
+      const transferResponse = await fetch('/api/withdrawal/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tokenAddress,
+          amount,
+          kycId,
+          bankAccount,
+          userAddress: address,
+          chainId: 1
+        })
+      });
+
+      if (!transferResponse.ok) {
+        const transferError = await transferResponse.json();
+        throw new Error(transferError.error || 'Failed to execute transfer');
+      }
+
+      const result = await transferResponse.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Transfer failed');
+      }
+
+      setWithdrawalState(prev => ({ ...prev, step: 'completed', transactionHash: result.transfer.transactionId, isProcessing: false }));
+      
+
+      return result.transfer.transactionId;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Withdrawal failed';
+      setWithdrawalState(prev => ({ ...prev, error: errorMessage, step: 'error', isProcessing: false }));
+      
+      console.error('Withdrawal initiation failed:', err);
       return null;
     }
-  }, [grantConsent, executeDirectWithdrawal, requestWithdrawal]);
+  };
 
   const resetState = useCallback(() => {
     setWithdrawalState({
