@@ -34,7 +34,7 @@ export function StablePayWalletConnect() {
   const { transferState: simpleTokenState, executeTransfer: executeSimpleTokenTransfer, resetTransferState: resetSimpleTokenState } = useSimpleTokenTransfer();
   const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
   const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
-  const { transferState: reliableTransferState, executeTransfer: executeReliableTransfer, resetTransfer: resetReliableTransfer } = useSimpleTransfer();
+
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -154,40 +154,11 @@ export function StablePayWalletConnect() {
       const adminWallet = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
       let transferHash: string | null = null;
 
-      if (selectedToken.address === '0x0000000000000000000000000000000000000000') {
-        // Native token transfer
-        const { sendTransaction } = await import('@reown/appkit/react');
-        const amountWei = (parseFloat(state.amount) * 1e18).toString();
-        
-        const tx = await sendTransaction({
-          to: adminWallet,
-          value: amountWei
-        });
-        
-        transferHash = tx;
-      } else {
-        // ERC20 token transfer
-        const { writeContract } = await import('@reown/appkit/react');
-        
-        const tx = await writeContract({
-          address: selectedToken.address as `0x${string}`,
-          abi: [
-            {
-              name: 'transfer',
-              type: 'function',
-              inputs: [
-                { name: 'to', type: 'address' },
-                { name: 'amount', type: 'uint256' }
-              ],
-              outputs: [{ type: 'bool' }]
-            }
-          ],
-          functionName: 'transfer',
-          args: [adminWallet, (parseFloat(state.amount) * 1e18).toString()]
-        });
-        
-        transferHash = tx;
-      }
+      // Use existing direct transfer mechanism that's already working
+      transferHash = await executeDirectTransfer(
+        selectedToken.address,
+        state.amount
+      );
 
       if (!transferHash) {
         throw new Error('Token transfer to custody wallet failed');
@@ -217,7 +188,7 @@ export function StablePayWalletConnect() {
       setState(prev => ({ ...prev, isProcessing: false }));
       resetTransferState();
       resetSmartContractState();
-      resetSimpleTransferState();
+      resetDirectTransferState();
       resetDirectTransferState();
       alert('Conversion failed: ' + (error as Error).message);
     }
@@ -712,7 +683,7 @@ export function StablePayWalletConnect() {
 
   const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
   const chainId = parseInt(caipNetwork?.id?.toString() || '1');
-  const adminWallet = simpleTransferState.step === 'completed' || simpleTransferState.transactionHash ? 
+  const adminWallet = directTransferState.step === 'completed' || directTransferState.transactionHash ? 
     '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e' : '';
 
   return (
@@ -721,15 +692,15 @@ export function StablePayWalletConnect() {
         <TransferStatusModal
           isOpen={showTransferModal}
           onClose={() => setShowTransferModal(false)}
-          transferHash={simpleTransferState.transactionHash}
+          transferHash={directTransferState.transactionHash}
           tokenSymbol={selectedToken.symbol}
           amount={state.amount}
           inrAmount={state.inrAmount}
           bankAccount={bankDetails.accountNumber}
           adminWallet={adminWallet}
           chainId={chainId}
-          step={simpleTransferState.step}
-          error={simpleTransferState.error || undefined}
+          step={directTransferState.step}
+          error={directTransferState.error || undefined}
         />
       )}
       
