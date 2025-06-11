@@ -7,6 +7,7 @@ import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalL
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useDirectWalletTransfer } from '@/hooks/use-direct-wallet-transfer';
+import { ConsentModal } from '@/components/consent-modal';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -39,6 +40,8 @@ export function StablePayClean() {
     ifscCode: '',
     accountHolderName: ''
   });
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [userConsent, setUserConsent] = useState(false);
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
 
@@ -81,6 +84,12 @@ export function StablePayClean() {
   };
 
   const handleConversion = async () => {
+    // Check if user has given consent
+    if (!userConsent) {
+      setShowConsentModal(true);
+      return;
+    }
+
     try {
       setState(prev => ({ ...prev, isProcessing: true }));
 
