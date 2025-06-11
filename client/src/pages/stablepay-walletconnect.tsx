@@ -146,12 +146,10 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Check if smart contract is available, fallback to direct transfer
-      const isSmartContractAvailable = withdrawalState.step !== 'error';
-      
+      // Always try smart contract withdrawal first
       let transferHash: string | null = null;
       
-      if (isSmartContractAvailable) {
+      try {
         // Use smart contract withdrawal system
         console.log('Using smart contract withdrawal system');
         transferHash = await initiateWithdrawal(
@@ -161,14 +159,21 @@ export function StablePayWalletConnect() {
           bankDetails.accountNumber,
           true // Use direct transfer method
         );
-      } else {
+      } catch (contractError) {
+        console.warn('Smart contract withdrawal failed, attempting fallback:', contractError);
+        
         // Fallback to direct transfer
         console.log('Fallback to direct transfer system');
         setShowDirectTransferModal(true);
-        transferHash = await executeDirectTransfer(
-          selectedToken.address,
-          state.amount
-        );
+        try {
+          transferHash = await executeDirectTransfer(
+            selectedToken.address,
+            state.amount
+          );
+        } catch (directError) {
+          console.error('Direct transfer also failed:', directError);
+          throw new Error(`Both transfer methods failed. Contract: ${(contractError as Error).message}, Direct: ${(directError as Error).message}`);
+        }
       }
 
       if (!transferHash) {
