@@ -36,42 +36,6 @@
         "IERC20",
         "SimpleStablePayWithdrawal"
       ]
-    },
-    "/home/runner/workspace/contracts/SimpleAutoConsentWithdrawal.sol": {
-      "lastModificationDate": 1749640081708,
-      "contentHash": "ccfe0201e58a1bbbc48eb4f127fbf270",
-      "sourceName": "contracts/SimpleAutoConsentWithdrawal.sol",
-      "solcConfig": {
-        "version": "0.8.19",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC20",
-        "SimpleAutoConsentWithdrawal"
-      ]
     }
   }
 }

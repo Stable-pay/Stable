@@ -126,13 +126,6 @@ export function useSmartContractWithdrawal() {
 
       console.log('Executing direct withdrawal:', { tokenAddress, amount, kycId, bankAccount });
 
-      // Step 1: Grant consent first (required by contract)
-      console.log('Granting consent for withdrawal...');
-      const consentTx = await contract.grantConsent(tokenAddress, amountBigInt);
-      await consentTx.wait();
-      console.log('Consent granted successfully');
-
-      // Step 2: Execute the transfer
       let tx;
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         // Native token transfer - send ETH value

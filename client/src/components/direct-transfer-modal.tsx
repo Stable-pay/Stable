@@ -9,7 +9,7 @@ interface DirectTransferModalProps {
     isTransferring: boolean;
     transactionHash: string | null;
     error: string | null;
-    step: 'idle' | 'validating' | 'approving' | 'transferring' | 'completed' | 'error';
+    step: 'idle' | 'preparing' | 'signing' | 'confirming' | 'completed' | 'error';
   };
   tokenSymbol: string;
   amount: string;
@@ -30,11 +30,11 @@ const getExplorerUrl = (chainId: number, txHash: string): string => {
 
 const getStepMessage = (step: string): string => {
   switch (step) {
-    case 'validating':
-      return 'Validating transaction details...';
-    case 'approving':
+    case 'preparing':
+      return 'Preparing transaction...';
+    case 'signing':
       return 'Please sign the transaction in your wallet';
-    case 'transferring':
+    case 'confirming':
       return 'Transaction sent, waiting for confirmation...';
     case 'completed':
       return 'Transfer completed successfully!';

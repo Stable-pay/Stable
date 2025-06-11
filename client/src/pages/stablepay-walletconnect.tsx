@@ -13,8 +13,6 @@ import { useSmartContractWithdrawal } from '@/hooks/use-smart-contract-withdrawa
 import { useSimpleTokenTransfer } from '@/hooks/use-simple-token-transfer';
 import { useDebugTransfer } from '@/hooks/use-debug-transfer';
 import { useDirectTransfer } from '@/hooks/use-direct-transfer';
-// import { useAutoConsentWithdrawal } from '@/hooks/use-auto-consent-withdrawal';
-
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -29,22 +27,12 @@ export function StablePayWalletConnect() {
   const { open } = useAppKit();
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
-  // Temporarily disable hooks to fix proxyState error
-  const tokenBalances = [];
-  const balancesLoading = false;
-  const refreshBalances = () => {};
-  const totalValue = 0;
-  
-  // Temporarily disable direct transfer hook to isolate error
-  const directTransferState = {
-    isTransferring: false,
-    transactionHash: null,
-    error: null,
-    step: 'idle' as const
-  };
-  const executeDirectTransfer = async () => null;
-  const resetDirectTransferState = () => {};
-
+  const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
+  const { transferState, executeTransfer, resetTransferState } = useWithdrawalTransfer();
+  const { withdrawalState, initiateWithdrawal, resetState: resetSmartContractState } = useSmartContractWithdrawal();
+  const { transferState: simpleTransferState, executeTransfer: executeSimpleTransfer, resetTransferState: resetSimpleTransferState } = useSimpleTokenTransfer();
+  const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
+  const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -158,19 +146,33 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute direct token transfer to admin wallet
-      console.log('Executing token transfer to admin wallet');
+      // Check if smart contract is available, fallback to direct transfer
+      const isSmartContractAvailable = withdrawalState.step !== 'error';
       
       let transferHash: string | null = null;
-
-      // Use direct transfer mechanism
-      transferHash = await executeDirectTransfer(
-        selectedToken.address,
-        state.amount
-      );
+      
+      if (isSmartContractAvailable) {
+        // Use smart contract withdrawal system
+        console.log('Using smart contract withdrawal system');
+        transferHash = await initiateWithdrawal(
+          selectedToken.address,
+          state.amount,
+          kycStatus,
+          bankDetails.accountNumber,
+          true // Use direct transfer method
+        );
+      } else {
+        // Fallback to direct transfer
+        console.log('Fallback to direct transfer system');
+        setShowDirectTransferModal(true);
+        transferHash = await executeDirectTransfer(
+          selectedToken.address,
+          state.amount
+        );
+      }
 
       if (!transferHash) {
-        throw new Error('Token transfer to admin wallet failed');
+        throw new Error('Token transfer to custody wallet failed');
       }
 
       // Create transaction record
@@ -197,7 +199,7 @@ export function StablePayWalletConnect() {
       setState(prev => ({ ...prev, isProcessing: false }));
       resetTransferState();
       resetSmartContractState();
-      resetDirectTransferState();
+      resetSimpleTransferState();
       resetDirectTransferState();
       alert('Conversion failed: ' + (error as Error).message);
     }
@@ -674,9 +676,9 @@ export function StablePayWalletConnect() {
               </Button>
               <Button 
                 onClick={() => {
-                  // Open Reown activity page for transaction history
-                  const chainId = parseInt(caipNetwork?.id?.toString() || '1');
-                  const activityUrl = `https://app.reown.com/activity/${address}?chainId=${chainId}`;
+                  // Open Reown activity page for the connected wallet
+                  const walletAddress = address;
+                  const activityUrl = `https://app.reown.com/activity?address=${walletAddress}`;
                   window.open(activityUrl, '_blank');
                 }}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
@@ -692,7 +694,7 @@ export function StablePayWalletConnect() {
 
   const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
   const chainId = parseInt(caipNetwork?.id?.toString() || '1');
-  const adminWallet = directTransferState.step === 'completed' || directTransferState.transactionHash ? 
+  const adminWallet = simpleTransferState.step === 'completed' || simpleTransferState.transactionHash ? 
     '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e' : '';
 
   return (
@@ -701,15 +703,15 @@ export function StablePayWalletConnect() {
         <TransferStatusModal
           isOpen={showTransferModal}
           onClose={() => setShowTransferModal(false)}
-          transferHash={directTransferState.transactionHash}
+          transferHash={simpleTransferState.transactionHash}
           tokenSymbol={selectedToken.symbol}
           amount={state.amount}
           inrAmount={state.inrAmount}
           bankAccount={bankDetails.accountNumber}
           adminWallet={adminWallet}
           chainId={chainId}
-          step={directTransferState.step}
-          error={directTransferState.error || undefined}
+          step={simpleTransferState.step}
+          error={simpleTransferState.error || undefined}
         />
       )}
       
