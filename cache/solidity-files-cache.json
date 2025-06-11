@@ -72,42 +72,6 @@
         "IERC20",
         "SimpleAutoConsentWithdrawal"
       ]
-    },
-    "/home/runner/workspace/contracts/SimpleTokenWithdrawal.sol": {
-      "lastModificationDate": 1749645136837,
-      "contentHash": "480e52c3f024addde6b8d8847bdbc2f4",
-      "sourceName": "contracts/SimpleTokenWithdrawal.sol",
-      "solcConfig": {
-        "version": "0.8.19",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC20",
-        "SimpleTokenWithdrawal"
-      ]
     }
   }
 }

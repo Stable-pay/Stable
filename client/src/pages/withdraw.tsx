@@ -1,5 +1,5 @@
-import TokenWithdrawal from './token-withdrawal';
+import AnimatedWithdraw from './animated-withdraw';
 
 export default function Withdraw() {
-  return <TokenWithdrawal />;
+  return <AnimatedWithdraw />;
 }

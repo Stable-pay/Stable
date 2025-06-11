@@ -5,27 +5,32 @@ import { queryClient, config } from "@/lib/reown-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { StablePayNav } from "@/components/layout/stablepay-nav";
+import AnimatedHome from "@/pages/animated-home";
 import Swap from "@/pages/swap";
 import KYC from "@/pages/kyc";
 import Withdraw from "@/pages/withdraw";
 import Dashboard from "@/pages/dashboard";
+import { StablePayDashboard } from "@/pages/stablepay-dashboard";
 import Remittance from "@/pages/remittance";
 import NotFound from "@/pages/not-found";
+import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
+import { StablePayWalletConnect } from "@/pages/stablepay-walletconnect";
 import { AdminConfig } from "@/pages/admin-config";
-import TokenWithdrawal from "@/pages/token-withdrawal";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={TokenWithdrawal} />
+      <Route path="/" component={StablePayWalletConnect} />
       <Route path="/admin" component={AdminConfig} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
-      <Route path="/withdraw" component={TokenWithdrawal} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/withdraw" component={Withdraw} />
+      <Route path="/dashboard" component={StablePayDashboard} />
       <Route path="/remittance" component={Remittance} />
+      <Route path="/home" component={AnimatedHome} />
+      <Route path="/convert" component={StablePayConversion} />
       <Route component={NotFound} />
     </Switch>
   );
