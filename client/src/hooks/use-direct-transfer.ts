@@ -45,7 +45,7 @@ export function useDirectTransfer() {
       throw new Error('Wallet not connected');
     }
 
-    const chainId = parseInt(caipNetwork.id);
+    const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
     const adminWallet = ADMIN_WALLETS[chainId];
     
     if (!adminWallet) {

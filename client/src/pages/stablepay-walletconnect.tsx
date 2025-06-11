@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { TransferStatusModal } from '@/components/transfer-status-modal';
+import { DirectTransferModal } from '@/components/direct-transfer-modal';
 import { useAppKit, useAppKitAccount, useAppKitState, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useWithdrawalTransfer } from '@/hooks/use-withdrawal-transfer';
@@ -31,6 +32,7 @@ export function StablePayWalletConnect() {
   const { withdrawalState, initiateWithdrawal, completeWithdrawal, resetState: resetSmartContractState } = useSmartContractWithdrawal();
   const { transferState: simpleTransferState, executeTransfer: executeSimpleTransfer, resetTransferState: resetSimpleTransferState } = useSimpleTokenTransfer();
   const { debugState, debugTransfer, resetDebug } = useDebugTransfer();
+  const { transferState: directTransferState, executeDirectTransfer, resetTransferState: resetDirectTransferState } = useDirectTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -143,13 +145,10 @@ export function StablePayWalletConnect() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute simplified token transfer
-      const transferHash = await executeSimpleTransfer(
+      // Execute direct token transfer
+      const transferHash = await executeDirectTransfer(
         selectedToken.address,
-        state.amount,
-        () => {
-          console.log('User consented to transfer, proceeding with conversion...');
-        }
+        state.amount
       );
 
       if (!transferHash) {
@@ -181,6 +180,7 @@ export function StablePayWalletConnect() {
       resetTransferState();
       resetSmartContractState();
       resetSimpleTransferState();
+      resetDirectTransferState();
       alert('Conversion failed: ' + (error as Error).message);
     }
   };
