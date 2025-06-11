@@ -505,6 +505,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get admin wallets endpoint
+  app.get('/api/admin/get-wallets', async (req: Request, res: Response) => {
+    try {
+      const wallets = (global as any).adminWallets || {};
+      res.json({ 
+        success: true, 
+        wallets 
+      });
+    } catch (error) {
+      console.error('Get admin wallets error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to get admin wallets' 
+      });
+    }
+  });
+
   const server = createServer(app);
   // StablePay custody transfer endpoint
   app.post('/api/custody/transfer', async (req, res) => {

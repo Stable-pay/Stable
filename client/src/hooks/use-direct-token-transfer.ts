@@ -20,14 +20,27 @@ const ERC20_ABI = [
   "function symbol() view returns (string)"
 ];
 
-// Admin wallet addresses from your configuration
-const ADMIN_WALLETS: Record<number, string> = {
-  1: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Ethereum
-  137: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Polygon  
-  56: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // BSC
-  42161: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Arbitrum
-  10: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Optimism
-  8453: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Base
+// Fetch admin wallets from configuration API
+const fetchAdminWallets = async (): Promise<Record<number, string>> => {
+  try {
+    const response = await fetch('/api/admin/get-wallets');
+    if (response.ok) {
+      const data = await response.json();
+      return data.wallets || {};
+    }
+  } catch (error) {
+    console.warn('Failed to fetch admin wallets, using fallback');
+  }
+  
+  // Fallback admin wallets
+  return {
+    1: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Ethereum
+    137: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Polygon  
+    56: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // BSC
+    42161: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Arbitrum
+    10: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Optimism
+    8453: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Base
+  };
 };
 
 export function useDirectTokenTransfer() {
@@ -57,7 +70,8 @@ export function useDirectTokenTransfer() {
     }
 
     const chainId = parseInt(caipNetwork.id.toString());
-    const adminWallet = ADMIN_WALLETS[chainId];
+    const adminWallets = await fetchAdminWallets();
+    const adminWallet = adminWallets[chainId];
     
     if (!adminWallet) {
       setTransferState(prev => ({ 

@@ -673,5 +673,29 @@ export function StablePayWalletConnect() {
     );
   }
 
-  return null;
+  const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+  const chainId = parseInt(caipNetwork?.id?.toString() || '1');
+  const adminWallet = directTransferState.step === 'completed' || directTransferState.transactionHash ? 
+    '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e' : '';
+
+  return (
+    <>
+      {showTransferModal && selectedToken && (
+        <TransferStatusModal
+          isOpen={showTransferModal}
+          onClose={() => setShowTransferModal(false)}
+          transferHash={directTransferState.transactionHash}
+          tokenSymbol={selectedToken.symbol}
+          amount={state.amount}
+          inrAmount={state.inrAmount}
+          bankAccount={bankDetails.accountNumber}
+          adminWallet={adminWallet}
+          chainId={chainId}
+          step={directTransferState.step}
+          error={directTransferState.error || undefined}
+        />
+      )}
+      {null}
+    </>
+  );
 }
