@@ -6,7 +6,9 @@ interface TransferState {
   isTransferring: boolean;
   transactionHash: string | null;
   error: string | null;
-  step: 'idle' | 'transferring' | 'completed' | 'error';
+  step: 'idle' | 'checking-allowance' | 'requesting-approval' | 'approving' | 'transferring' | 'completed' | 'error';
+  needsApproval: boolean;
+  approvalHash: string | null;
 }
 
 // Admin wallet addresses for each chain
@@ -20,11 +22,15 @@ const ADMIN_WALLETS: Record<number, string> = {
   1337: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // Local hardhat
 };
 
-// ERC20 ABI for token transfers
+// ERC20 ABI for token transfers and approvals
 const ERC20_ABI = [
   'function transfer(address to, uint256 amount) returns (bool)',
+  'function approve(address spender, uint256 amount) returns (bool)',
+  'function allowance(address owner, address spender) view returns (uint256)',
   'function balanceOf(address account) view returns (uint256)',
-  'function decimals() view returns (uint8)'
+  'function decimals() view returns (uint8)',
+  'function symbol() view returns (string)',
+  'function name() view returns (string)'
 ];
 
 export function useDirectWalletTransfer() {
@@ -36,7 +42,9 @@ export function useDirectWalletTransfer() {
     isTransferring: false,
     transactionHash: null,
     error: null,
-    step: 'idle'
+    step: 'idle',
+    needsApproval: false,
+    approvalHash: null
   });
 
   const transferToAdmin = useCallback(async (
