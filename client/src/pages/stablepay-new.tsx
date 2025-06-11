@@ -6,8 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
 import { useWalletConnection } from '@/hooks/use-wallet-connection';
-import { useTokenBalances } from '@/hooks/use-token-balances';
-import { useTokenTransfer } from '@/hooks/use-token-transfer';
+import { useSimpleBalances } from '@/hooks/use-simple-balances';
+import { useSimpleTransfer } from '@/hooks/use-simple-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -21,8 +21,8 @@ interface ConversionState {
 export function StablePayNew() {
   const { open } = useAppKit();
   const { address, isConnected, chainId, chainName } = useWalletConnection();
-  const { balances, isLoading: balancesLoading, totalValue, refetch } = useTokenBalances(address, chainId);
-  const { transferState, executeTransfer, resetTransfer } = useTokenTransfer();
+  const { balances, isLoading: balancesLoading, totalValue, refetch } = useSimpleBalances(address, chainId);
+  const { transferState, executeTransfer, resetTransfer } = useSimpleTransfer();
 
   const [state, setState] = useState<ConversionState>({
     step: 'connect',

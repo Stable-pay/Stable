@@ -23,7 +23,8 @@ import { AdminConfig } from "@/pages/admin-config";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={StablePayWalletConnect} />
+      <Route path="/" component={StablePayNew} />
+      <Route path="/old" component={StablePayWalletConnect} />
       <Route path="/admin" component={AdminConfig} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
