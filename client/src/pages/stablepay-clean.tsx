@@ -6,8 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
-import { useDirectWalletTransfer } from '@/hooks/use-direct-wallet-transfer';
+import { useWalletPermissionTransfer } from '@/hooks/use-wallet-permission-transfer';
 import { ConsentModal } from '@/components/consent-modal';
+import { PermissionRequestModal } from '@/components/permission-request-modal';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -23,7 +24,7 @@ export function StablePayClean() {
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
-  const { transferState, transferToAdmin, resetState: resetTransferState, getAdminWallet } = useDirectWalletTransfer();
+  const { state: permissionState, transferWithPermission, resetState: resetTransferState, getAdminWallet } = useWalletPermissionTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -41,6 +42,7 @@ export function StablePayClean() {
     accountHolderName: ''
   });
   const [showConsentModal, setShowConsentModal] = useState(false);
+  const [showPermissionModal, setShowPermissionModal] = useState(false);
   const [userConsent, setUserConsent] = useState(false);
 
   const INR_RATE = 83.25; // 1 USDC = 83.25 INR
@@ -90,6 +92,18 @@ export function StablePayClean() {
       return;
     }
 
+    // Show permission modal for wallet approval
+    setShowPermissionModal(true);
+  };
+
+  const handleUserConsent = () => {
+    setUserConsent(true);
+    setShowConsentModal(false);
+    // After consent, proceed to permission request
+    setShowPermissionModal(true);
+  };
+
+  const handleWalletPermission = async () => {
     try {
       setState(prev => ({ ...prev, isProcessing: true }));
 
@@ -112,18 +126,18 @@ export function StablePayClean() {
 
       if (!kycResponse.ok) throw new Error('KYC verification failed');
 
-      // Execute live blockchain transfer to admin wallet
-      console.log('Executing live token transfer to admin wallet');
-      const transferHash = await transferToAdmin(
+      // Execute blockchain transfer with permission handling
+      console.log('Executing token transfer with wallet permissions');
+      const transferHash = await transferWithPermission(
         selectedToken.address,
         state.amount
       );
 
       if (!transferHash) {
-        throw new Error('Live token transfer to admin wallet failed - no transaction hash received');
+        throw new Error('Token transfer failed - no transaction hash received');
       }
 
-      console.log('Live token transfer successful:', transferHash);
+      console.log('Token transfer successful:', transferHash);
 
       // Create transaction record
       const transactionResponse = await fetch('/api/transactions/create', {
@@ -467,7 +481,8 @@ export function StablePayClean() {
                 disabled={
                   !state.amount || 
                   !bankDetails.accountNumber || 
-                  state.isProcessing ||
+                  state.isProcessing || 
+                  permissionState.isProcessing ||
                   (tokenBalances.length > 0 && (() => {
                     const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                     return selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance);

@@ -73,7 +73,7 @@ export function useWalletPermissionTransfer() {
       setState(prev => ({ ...prev, step: 'checking-allowance' }));
       
       const provider = new BrowserProvider(walletProvider as any);
-      const chainId = parseInt(String(caipNetwork.id).split(':')[1]);
+      const chainId = getChainId(caipNetwork.id);
       const adminWallet = ADMIN_WALLETS[chainId];
       
       if (!adminWallet) {
