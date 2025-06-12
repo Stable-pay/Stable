@@ -34,7 +34,7 @@ export function VerificationMonitor() {
       const verificationResponse = await fetch('/.well-known/walletconnect.txt');
       if (verificationResponse.ok) {
         const content = await verificationResponse.text();
-        newStatus.domainVerification = content.trim() === '6ba49384-9b1e-4504-abd7-c9a17883825d=bdfb91a78d29e4375966ed260be77e6a9799cdb3dfd9698ebc34910901875e6c' ? 'verified' : 'pending';
+        newStatus.domainVerification = content.trim() === '6ba49384-9b1e-4504-abd7-c9a17883825d' ? 'verified' : 'pending';
       } else {
         newStatus.domainVerification = 'pending';
       }

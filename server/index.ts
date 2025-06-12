@@ -45,7 +45,7 @@ app.use((req, res, next) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'public, max-age=3600');
-    res.send('6ba49384-9b1e-4504-abd7-c9a17883825d=bdfb91a78d29e4375966ed260be77e6a9799cdb3dfd9698ebc34910901875e6c');
+    res.send('6ba49384-9b1e-4504-abd7-c9a17883825d');
   });
 
   // Serve other .well-known files statically

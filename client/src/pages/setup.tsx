@@ -16,7 +16,7 @@ export default function Setup() {
   const { toast } = useToast();
   const [currentDomain] = useState(window.location.origin);
   const [projectId] = useState('6ba49384-9b1e-4504-abd7-c9a17883825d');
-  const [expectedContent] = useState('6ba49384-9b1e-4504-abd7-c9a17883825d=bdfb91a78d29e4375966ed260be77e6a9799cdb3dfd9698ebc34910901875e6c');
+  const [expectedContent] = useState('6ba49384-9b1e-4504-abd7-c9a17883825d');
   const [verificationStatus, setVerificationStatus] = useState<'checking' | 'verified' | 'pending'>('checking');
 
   useEffect(() => {
