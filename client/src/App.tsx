@@ -17,12 +17,14 @@ import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
 import { StablePayMinimal } from "@/pages/stablepay-minimal";
 import { AdminConfig } from "@/pages/admin-config";
+import Development from "@/pages/development";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={StablePayMinimal} />
+      <Route path="/" component={Development} />
+      <Route path="/production" component={StablePayMinimal} />
       <Route path="/admin" component={AdminConfig} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
