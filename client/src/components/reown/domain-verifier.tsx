@@ -23,7 +23,7 @@ export function DomainVerifier() {
   const [isChecking, setIsChecking] = useState(false);
 
   const currentDomain = window.location.origin;
-  const expectedContent = '6ba49384-9b1e-4504-abd7-c9a17883825d=a960fcfcc04f45cd58e81d5ab23661c3e6d6b0b0f28a815e61d84ccaa1e9bc81';
+  const expectedContent = '6ba49384-9b1e-4504-abd7-c9a17883825d=bdfb91a78d29e4375966ed260be77e6a9799cdb3dfd9698ebc34910901875e6c';
   const verificationUrl = `${currentDomain}/.well-known/walletconnect.txt`;
 
   const runVerification = async () => {
