@@ -137,12 +137,12 @@ export function ReadyStatus() {
                 </Button>
               </div>
               <div className="flex items-center justify-between p-2 bg-slate-100 rounded">
-                <span className="text-sm text-slate-600">Project ID:</span>
-                <code className="text-sm font-mono text-slate-800">{projectId}</code>
+                <span className="text-sm text-slate-600">Verification:</span>
+                <code className="text-xs font-mono text-slate-800 truncate max-w-32">{expectedContent}</code>
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => navigator.clipboard.writeText(projectId)}
+                  onClick={() => navigator.clipboard.writeText(expectedContent)}
                 >
                   <Copy className="h-3 w-3" />
                 </Button>
