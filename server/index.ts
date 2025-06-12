@@ -45,7 +45,7 @@ app.use((req, res, next) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'public, max-age=3600');
-    res.send('6ba49384-9b1e-4504-abd7-c9a17883825d');
+    res.send(process.env.WALLETCONNECT_PROJECT_ID || '421930fbeb871d753327b56943afe3ad');
   });
 
   // Serve other .well-known files statically
