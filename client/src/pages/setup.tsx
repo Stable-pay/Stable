@@ -15,7 +15,8 @@ import { CheckCircle, Copy, ExternalLink, Settings, AlertTriangle, Info, Clock }
 export default function Setup() {
   const { toast } = useToast();
   const [currentDomain] = useState(window.location.origin);
-  const [projectId] = useState('6dfca9af31141b1fb9220aa7db3eee37');
+  const [projectId] = useState('6ba49384-9b1e-4504-abd7-c9a17883825d');
+  const [expectedContent] = useState('6ba49384-9b1e-4504-abd7-c9a17883825d=bdfb91a78d29e4375966ed260be77e6a9799cdb3dfd9698ebc34910901875e6c');
   const [verificationStatus, setVerificationStatus] = useState<'checking' | 'verified' | 'pending'>('checking');
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function Setup() {
         const response = await fetch('/.well-known/walletconnect.txt');
         if (response.ok) {
           const content = await response.text();
-          if (content.trim() === projectId) {
+          if (content.trim() === expectedContent) {
             setVerificationStatus('verified');
           } else {
             setVerificationStatus('pending');
