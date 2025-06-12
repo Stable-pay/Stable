@@ -9,7 +9,7 @@ export function ReadyStatus() {
   const [httpsAvailable, setHttpsAvailable] = useState(false);
 
   const currentDomain = window.location.origin;
-  const projectId = '6dfca9af31141b1fb9220aa7db3eee37';
+  const expectedContent = '6ba49384-9b1e-4504-abd7-c9a17883825d=a960fcfcc04f45cd58e81d5ab23661c3e6d6b0b0f28a815e61d84ccaa1e9bc81';
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -20,7 +20,7 @@ export function ReadyStatus() {
         
         if (response.ok) {
           const content = await response.text();
-          const isCorrect = content.trim() === projectId;
+          const isCorrect = content.trim() === expectedContent;
           setVerificationStatus(isCorrect ? 'ready' : 'pending');
         } else {
           setVerificationStatus('pending');

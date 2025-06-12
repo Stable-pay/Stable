@@ -23,7 +23,7 @@ export function DomainVerifier() {
   const [isChecking, setIsChecking] = useState(false);
 
   const currentDomain = window.location.origin;
-  const projectId = '6dfca9af31141b1fb9220aa7db3eee37';
+  const expectedContent = '6ba49384-9b1e-4504-abd7-c9a17883825d=a960fcfcc04f45cd58e81d5ab23661c3e6d6b0b0f28a815e61d84ccaa1e9bc81';
   const verificationUrl = `${currentDomain}/.well-known/walletconnect.txt`;
 
   const runVerification = async () => {
@@ -40,7 +40,7 @@ export function DomainVerifier() {
       
       if (response.ok) {
         const content = await response.text();
-        result.correctContent = content.trim() === projectId;
+        result.correctContent = content.trim() === expectedContent;
         result.httpsAccessible = currentDomain.startsWith('https://');
         
         if (result.correctContent && result.httpsAccessible) {
@@ -180,12 +180,12 @@ export function DomainVerifier() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-600 uppercase tracking-wide">Project ID</label>
+            <label className="text-xs font-medium text-slate-600 uppercase tracking-wide">Verification Content</label>
             <div className="flex items-center space-x-2 mt-1">
-              <code className="flex-1 bg-white/80 border rounded px-3 py-2 text-sm font-mono text-slate-700">
-                {projectId}
+              <code className="flex-1 bg-white/80 border rounded px-3 py-2 text-sm font-mono text-slate-700 text-xs">
+                {expectedContent}
               </code>
-              <Button variant="outline" size="sm" onClick={() => navigator.clipboard.writeText(projectId)}>
+              <Button variant="outline" size="sm" onClick={() => navigator.clipboard.writeText(expectedContent)}>
                 <Copy className="h-4 w-4" />
               </Button>
             </div>
