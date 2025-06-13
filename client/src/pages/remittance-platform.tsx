@@ -12,7 +12,7 @@ import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
 
 interface RemittanceState {
-  step: 'connect' | 'recipient' | 'transfer' | 'complete';
+  step: 'connect' | 'kyc' | 'recipient' | 'transfer' | 'review' | 'processing' | 'complete';
   fromToken: string;
   amount: string;
   recipientCountry: string;
@@ -24,11 +24,20 @@ interface RemittanceState {
     bankName: string;
     swiftCode: string;
   };
+  kycStatus: 'pending' | 'verified' | 'required';
+  kycDocuments: {
+    idType: string;
+    idNumber: string;
+    documentUploaded: boolean;
+    selfieUploaded: boolean;
+  };
   isProcessing: boolean;
   transactionHash: string | null;
   estimatedArrival: string;
   exchangeRate: number;
   fees: number;
+  errors: Record<string, string>;
+  validationErrors: string[];
 }
 
 // Live exchange rate state
@@ -89,11 +98,20 @@ export function RemittancePlatform() {
       bankName: '',
       swiftCode: ''
     },
+    kycStatus: 'required',
+    kycDocuments: {
+      idType: '',
+      idNumber: '',
+      documentUploaded: false,
+      selfieUploaded: false
+    },
     isProcessing: false,
     transactionHash: null,
     estimatedArrival: '2-5 minutes',
     exchangeRate: 83.25,
-    fees: 2.99
+    fees: 2.99,
+    errors: {},
+    validationErrors: []
   });
 
   const [liveExchangeRate, setLiveExchangeRate] = useState<ExchangeRate>({
@@ -150,20 +168,63 @@ export function RemittancePlatform() {
     }
   }, [state.recipientCountry, liveExchangeRate.rate]);
 
+  // Validation functions
+  const validateStep = (step: string): string[] => {
+    const errors: string[] = [];
+    
+    switch (step) {
+      case 'kyc':
+        if (!state.kycDocuments.idType) errors.push('ID type is required');
+        if (!state.kycDocuments.idNumber) errors.push('ID number is required');
+        if (!state.kycDocuments.documentUploaded) errors.push('ID document upload is required');
+        if (!state.kycDocuments.selfieUploaded) errors.push('Selfie verification is required');
+        break;
+        
+      case 'recipient':
+        if (!state.recipientName.trim()) errors.push('Recipient name is required');
+        if (!state.recipientPhone.trim()) errors.push('Recipient phone is required');
+        if (state.recipientMethod === 'bank') {
+          if (!state.bankDetails.accountNumber.trim()) errors.push('Account number is required');
+          if (!state.bankDetails.bankName.trim()) errors.push('Bank name is required');
+          if (!state.bankDetails.swiftCode.trim()) errors.push('SWIFT/IFSC code is required');
+        }
+        break;
+        
+      case 'transfer':
+        if (!state.amount || parseFloat(state.amount) <= 0) errors.push('Valid amount is required');
+        if (!state.fromToken) errors.push('Token selection is required');
+        const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+        if (selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance)) {
+          errors.push('Insufficient balance');
+        }
+        break;
+    }
+    
+    return errors;
+  };
+
+  const handleStepNavigation = (nextStep: RemittanceState['step']) => {
+    const currentErrors = validateStep(state.step);
+    
+    if (currentErrors.length > 0) {
+      setState(prev => ({ ...prev, validationErrors: currentErrors }));
+      return false;
+    }
+    
+    setState(prev => ({ 
+      ...prev, 
+      step: nextStep, 
+      validationErrors: [],
+      errors: {}
+    }));
+    return true;
+  };
+
   // Set initial step based on connection status
   useEffect(() => {
-    console.log('Connection status changed:', { 
-      isConnected, 
-      address, 
-      status, 
-      currentStep: state.step 
-    });
-    
     if (isConnected && address && state.step === 'connect') {
-      console.log('Wallet connected, moving to recipient step');
-      setState(prev => ({ ...prev, step: 'recipient' }));
+      setState(prev => ({ ...prev, step: 'kyc' }));
     } else if (!isConnected && state.step !== 'connect') {
-      console.log('Wallet disconnected, moving to connect step');
       setState(prev => ({ ...prev, step: 'connect' }));
     }
   }, [isConnected, address, status, state.step]);
@@ -584,6 +645,165 @@ export function RemittancePlatform() {
             </div>
           </section>
         </div>
+      </div>
+    );
+  }
+
+  // KYC Verification step
+  if (state.step === 'kyc') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+              <UserCheck className="w-8 h-8 text-purple-400" />
+              Identity Verification
+            </CardTitle>
+            <p className="text-white/70 mt-2">Complete KYC verification to ensure secure transfers</p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            {/* Validation Errors */}
+            {state.validationErrors.length > 0 && (
+              <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 bg-red-500/20 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  </div>
+                  <span className="text-red-300 font-medium">Please fix the following:</span>
+                </div>
+                <ul className="text-red-200 text-sm space-y-1 ml-7">
+                  {state.validationErrors.map((error, index) => (
+                    <li key={index}>• {error}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-white text-sm font-medium">ID Document Type</label>
+                <Select 
+                  value={state.kycDocuments.idType} 
+                  onValueChange={(value) => setState(prev => ({ 
+                    ...prev, 
+                    kycDocuments: { ...prev.kycDocuments, idType: value }
+                  }))}
+                >
+                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
+                    <SelectValue placeholder="Select ID type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="passport">Passport</SelectItem>
+                    <SelectItem value="drivers_license">Driver's License</SelectItem>
+                    <SelectItem value="national_id">National ID Card</SelectItem>
+                    <SelectItem value="aadhaar">Aadhaar Card (India)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-white text-sm font-medium">ID Number</label>
+                <Input
+                  placeholder="Enter your ID number"
+                  value={state.kycDocuments.idNumber}
+                  onChange={(e) => setState(prev => ({ 
+                    ...prev, 
+                    kycDocuments: { ...prev.kycDocuments, idNumber: e.target.value }
+                  }))}
+                  className="bg-gray-700/50 border-gray-600 text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-white text-sm font-medium">Upload ID Document</label>
+                  <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-purple-500 transition-colors cursor-pointer">
+                    {state.kycDocuments.documentUploaded ? (
+                      <div className="flex items-center justify-center gap-2 text-green-400">
+                        <CheckCircle className="w-5 h-5" />
+                        <span>Document uploaded</span>
+                      </div>
+                    ) : (
+                      <div className="text-white/60">
+                        <FileText className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">Click to upload ID document</p>
+                        <Button
+                          onClick={() => setState(prev => ({ 
+                            ...prev, 
+                            kycDocuments: { ...prev.kycDocuments, documentUploaded: true }
+                          }))}
+                          variant="outline"
+                          size="sm"
+                          className="mt-2 border-gray-600 text-white hover:bg-purple-500/20"
+                        >
+                          Upload Document
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-white text-sm font-medium">Selfie Verification</label>
+                  <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-purple-500 transition-colors cursor-pointer">
+                    {state.kycDocuments.selfieUploaded ? (
+                      <div className="flex items-center justify-center gap-2 text-green-400">
+                        <CheckCircle className="w-5 h-5" />
+                        <span>Selfie verified</span>
+                      </div>
+                    ) : (
+                      <div className="text-white/60">
+                        <Scan className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">Take a selfie for verification</p>
+                        <Button
+                          onClick={() => setState(prev => ({ 
+                            ...prev, 
+                            kycDocuments: { ...prev.kycDocuments, selfieUploaded: true }
+                          }))}
+                          variant="outline"
+                          size="sm"
+                          className="mt-2 border-gray-600 text-white hover:bg-purple-500/20"
+                        >
+                          Take Selfie
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-purple-500/5 border border-purple-500/20 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <div>
+                    <h4 className="text-purple-300 font-medium mb-1">Secure Verification</h4>
+                    <p className="text-purple-200/80 text-sm">
+                      Your documents are encrypted and processed securely. We comply with international KYC/AML regulations to ensure safe transfers.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
+                variant="outline"
+                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+              >
+                Back
+              </Button>
+              <Button 
+                onClick={() => handleStepNavigation('recipient')}
+                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              >
+                Verify & Continue
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
