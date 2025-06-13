@@ -822,12 +822,12 @@ export function RemittancePlatform() {
                 <div className="flex gap-2">
                   <Button 
                     onClick={() => {
-                      open({ view: 'WalletReceive' });
+                      open({ view: 'Account' });
                     }}
                     variant="outline"
                     className="flex-1 border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
                   >
-                    Receive Crypto
+                    View Wallet
                   </Button>
                   <Button 
                     onClick={() => {
