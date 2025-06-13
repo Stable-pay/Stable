@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Mail, UserCheck, Wallet, Shield, Zap, Chrome, Apple } from 'lucide-react';
+import { ArrowRight, Mail, UserCheck, Wallet, Shield, Zap } from 'lucide-react';
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
 
 interface SocialWalletCreatorProps {
@@ -72,97 +72,54 @@ export function SocialWalletCreator({ onWalletCreated, isVisible }: SocialWallet
   }
 
   return (
-    <Card className="w-full max-w-lg mx-auto bg-gradient-to-br from-white to-gray-50 border border-gray-200 shadow-xl">
-      <CardHeader className="text-center pb-6 bg-gradient-to-r from-emerald-600 to-blue-600 text-white rounded-t-lg">
+    <Card className="w-full max-w-lg mx-auto bg-card border-border shadow-xl">
+      <CardHeader className="text-center pb-6 bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-t-lg">
         <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2">
           <UserCheck className="w-8 h-8" />
           Create Your Wallet
         </CardTitle>
-        <p className="text-emerald-100 mt-2">
-          Choose your preferred sign-up method to create a secure Web3 wallet
+        <p className="text-primary-foreground/90 mt-2">
+          Create a secure Web3 wallet with social login - no seed phrase required
         </p>
       </CardHeader>
       
-      <CardContent className="p-6 space-y-4">
-        {/* Social Login Options */}
-        <div className="space-y-3">
+      <CardContent className="p-6 space-y-6">
+        {/* Single Wallet Creation Button */}
+        <div className="space-y-4">
           <Button 
-            onClick={() => handleSocialLogin('Google')}
-            variant="outline"
-            className="w-full h-14 bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-blue-300 text-gray-700 transition-all duration-200 group"
+            onClick={() => handleSocialLogin('Wallet Creation')}
+            className="w-full h-16 bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group border-0"
           >
-            <div className="w-6 h-6 mr-3 bg-white rounded-full flex items-center justify-center border">
-              <span className="text-blue-600 text-sm font-bold">G</span>
-            </div>
-            Continue with Google
-            <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
+            <Wallet className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+            Create Wallet with Social Login
+            <ArrowRight className="w-5 h-5 ml-auto group-hover:translate-x-1 transition-transform" />
           </Button>
 
-          <Button 
-            onClick={() => handleSocialLogin('Apple')}
-            variant="outline"
-            className="w-full h-14 bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-gray-400 text-gray-700 transition-all duration-200 group"
-          >
-            <Apple className="w-6 h-6 mr-3 text-gray-800" />
-            Continue with Apple
-            <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-          </Button>
-
-          <Button 
-            onClick={() => handleSocialLogin('Email')}
-            variant="outline"
-            className="w-full h-14 bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-emerald-300 text-gray-700 transition-all duration-200 group"
-          >
-            <Mail className="w-6 h-6 mr-3 text-emerald-600" />
-            Continue with Email
-            <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-          </Button>
-
-          <Button 
-            onClick={() => handleSocialLogin('Discord')}
-            variant="outline"
-            className="w-full h-14 bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-indigo-300 text-gray-700 transition-all duration-200 group"
-          >
-            <div className="w-6 h-6 mr-3 bg-indigo-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">D</span>
-            </div>
-            Continue with Discord
-            <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-          </Button>
-
-          <Button 
-            onClick={() => handleSocialLogin('GitHub')}
-            variant="outline"
-            className="w-full h-14 bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-gray-400 text-gray-700 transition-all duration-200 group"
-          >
-            <div className="w-6 h-6 mr-3 bg-gray-900 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">G</span>
-            </div>
-            Continue with GitHub
-            <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <p className="text-center text-muted-foreground text-sm">
+            Choose from Google, Apple, Email, Discord, or other providers in the next step
+          </p>
         </div>
 
         {/* Benefits */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-lg border border-emerald-200">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-600" />
-              <span className="text-emerald-800 text-sm font-medium">Self-custodial - you control your keys</span>
+        <div className="p-4 bg-muted rounded-lg border border-border">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Shield className="w-5 h-5 text-secondary flex-shrink-0" />
+              <span className="text-foreground text-sm font-medium">Self-custodial - you control your private keys</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-blue-600" />
-              <span className="text-blue-800 text-sm font-medium">Instant wallet creation</span>
+            <div className="flex items-center gap-3">
+              <Zap className="w-5 h-5 text-secondary flex-shrink-0" />
+              <span className="text-foreground text-sm font-medium">Instant creation with social authentication</span>
             </div>
-            <div className="flex items-center gap-2">
-              <UserCheck className="w-4 h-4 text-purple-600" />
-              <span className="text-purple-800 text-sm font-medium">No seed phrase to remember</span>
+            <div className="flex items-center gap-3">
+              <UserCheck className="w-5 h-5 text-secondary flex-shrink-0" />
+              <span className="text-foreground text-sm font-medium">No seed phrase to memorize or store</span>
             </div>
           </div>
         </div>
 
-        <div className="text-center text-gray-500 text-xs">
-          <p>Powered by Reown AppKit • Secure authentication • Self-custodial wallet</p>
+        <div className="text-center text-muted-foreground text-xs">
+          <p>Powered by Reown AppKit • Enterprise-grade security • Self-custodial</p>
         </div>
       </CardContent>
     </Card>

@@ -104,64 +104,67 @@
 }
 
 :root {
-  /* Premium StablePay Light Theme */
+  /* Professional Finance App - Navy Blue & Emerald Green Only */
   --background: 255 255 255; /* Pure white */
-  --foreground: 15 23 42; /* Deep navy text */
+  --foreground: 30 41 59; /* Deep navy #1E293B */
   --muted: 248 250 252; /* Light gray background */
   --muted-foreground: 71 85 105; /* Medium gray text */
   --popover: 255 255 255;
-  --popover-foreground: 15 23 42;
+  --popover-foreground: 30 41 59;
   --card: 255 255 255;
-  --card-foreground: 15 23 42;
+  --card-foreground: 30 41 59;
   --border: 241 245 249; /* Light border */
   --input: 248 250 252;
-  --primary: 6 182 212; /* Premium cyan for trust/finance */
+  --primary: 30 41 59; /* Navy Blue #1E293B - Primary brand color */
   --primary-foreground: 255 255 255;
-  --secondary: 16 185 129; /* Success green */
+  --secondary: 16 185 129; /* Emerald Green #10B981 - Secondary accent */
   --secondary-foreground: 255 255 255;
-  --accent: 139 92 246; /* Purple accent */
+  --accent: 16 185 129; /* Emerald Green for accents */
   --accent-foreground: 255 255 255;
   --destructive: 239 68 68;
   --destructive-foreground: 255 255 255;
-  --ring: 6 182 212;
+  --ring: 16 185 129; /* Emerald focus ring */
   --radius: 0.75rem;
-  --chart-1: 6 182 212; /* Cyan */
-  --chart-2: 16 185 129; /* Green */
-  --chart-3: 139 92 246; /* Purple */
-  --chart-4: 245 158 11; /* Amber */
-  --chart-5: 236 72 153; /* Pink */
+  --chart-1: 30 41 59; /* Navy */
+  --chart-2: 16 185 129; /* Emerald */
+  --chart-3: 71 85 105; /* Gray for tertiary */
+  --chart-4: 30 41 59; /* Navy variant */
+  --chart-5: 16 185 129; /* Emerald variant */
   
-  /* Custom variables for StablePay */
-  --success: 16 185 129;
-  --warning: 245 158 11;
-  --info: 6 182 212;
+  /* Custom variables for Professional Finance App */
+  --success: 16 185 129; /* Emerald Green */
+  --warning: 30 41 59; /* Navy for warning states */
+  --info: 16 185 129; /* Emerald for info */
+  --finance-navy: 30 41 59;
+  --finance-emerald: 16 185 129;
 }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 239 84% 67%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 142 76% 36%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 38 92% 50%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 239 84% 67%;
-  --chart-1: 239 84% 67%;
-  --chart-2: 142 76% 36%;
-  --chart-3: 38 92% 50%;
-  --chart-4: 346 77% 49%;
-  --chart-5: 262 83% 58%;
+  /* Professional Finance App Dark Mode - Navy & Emerald */
+  --background: 15 23 42; /* Dark navy #0F172A */
+  --foreground: 248 250 252; /* Almost white text */
+  --muted: 30 41 59; /* Medium navy #1E293B */
+  --muted-foreground: 148 163 184; /* Light gray text */
+  --popover: 15 23 42;
+  --popover-foreground: 248 250 252;
+  --card: 30 41 59; /* Navy cards */
+  --card-foreground: 248 250 252;
+  --border: 51 65 85; /* Lighter navy border #334155 */
+  --input: 30 41 59;
+  --primary: 16 185 129; /* Emerald primary in dark mode */
+  --primary-foreground: 15 23 42; /* Navy text on emerald */
+  --secondary: 30 41 59; /* Navy secondary */
+  --secondary-foreground: 248 250 252;
+  --accent: 16 185 129; /* Emerald accent */
+  --accent-foreground: 15 23 42;
+  --destructive: 239 68 68;
+  --destructive-foreground: 248 250 252;
+  --ring: 16 185 129; /* Emerald focus ring */
+  --chart-1: 16 185 129; /* Emerald */
+  --chart-2: 30 41 59; /* Navy */
+  --chart-3: 148 163 184; /* Gray */
+  --chart-4: 16 185 129; /* Emerald variant */
+  --chart-5: 30 41 59; /* Navy variant */
 }
 
 @layer base {

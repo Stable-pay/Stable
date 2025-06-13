@@ -8,12 +8,13 @@ import { Separator } from '@/components/ui/separator';
 import { ArrowRight, Globe, Send, Clock, CheckCircle, Wallet, Shield, CreditCard, Phone, Building, MapPin, Users, TrendingUp, Star, Zap, RefreshCw, FileText, Scan, UserCheck, Key, Database, Lock } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
+import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
 
 interface RemittanceState {
-  step: 'connect' | 'create-wallet' | 'social-signup' | 'buy-crypto' | 'kyc' | 'recipient' | 'transfer' | 'review' | 'processing' | 'complete';
+  step: 'connect' | 'create-wallet' | 'social-signup' | 'buy-crypto' | 'kyc' | 'recipient' | 'travel-rule' | 'transfer' | 'review' | 'processing' | 'complete';
   fromToken: string;
   amount: string;
   recipientCountry: string;
@@ -32,6 +33,22 @@ interface RemittanceState {
     documentUploaded: boolean;
     selfieUploaded: boolean;
   };
+  travelRuleData: {
+    originatorName: string;
+    originatorAddress: string;
+    originatorCountry: string;
+    originatorIdType: string;
+    originatorIdNumber: string;
+    beneficiaryName: string;
+    beneficiaryAddress: string;
+    beneficiaryAccountNumber: string;
+    beneficiaryBankName: string;
+    beneficiaryBankCode: string;
+    transactionPurpose: string;
+    sourceOfFunds: string;
+    relationshipToBeneficiary: string;
+    complianceVerified: boolean;
+  } | null;
   walletCreationType: 'existing' | 'new';
   socialProvider: string;
   buyCryptoAmount: string;
