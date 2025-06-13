@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, Globe, Send, Clock, CheckCircle, Wallet, Shield, CreditCard, Phone, Building, MapPin, Users, TrendingUp, Star, Zap, RefreshCw } from 'lucide-react';
+import { ArrowRight, Globe, Send, Clock, CheckCircle, Wallet, Shield, CreditCard, Phone, Building, MapPin, Users, TrendingUp, Star, Zap, RefreshCw, FileText, Scan, UserCheck, Key, Database, Lock } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
@@ -31,16 +31,32 @@ interface RemittanceState {
   fees: number;
 }
 
-// Primary remittance corridor - India (others coming soon)
+// Live exchange rate state
+interface ExchangeRate {
+  rate: number;
+  lastUpdated: string;
+  change24h: number;
+  isLoading: boolean;
+}
+
+// Primary remittance corridor - India with live rates
 const REMITTANCE_CORRIDORS = {
-  'US-IN': { rate: 83.25, fees: 2.99, currency: 'INR', flag: '🇮🇳', name: 'India', available: true },
-  'US-PH': { rate: 56.45, fees: 2.99, currency: 'PHP', flag: '🇵🇭', name: 'Philippines', available: false },
-  'US-MX': { rate: 17.82, fees: 2.99, currency: 'MXN', flag: '🇲🇽', name: 'Mexico', available: false },
-  'US-NG': { rate: 1580.50, fees: 2.99, currency: 'NGN', flag: '🇳🇬', name: 'Nigeria', available: false },
-  'US-BD': { rate: 123.75, fees: 2.99, currency: 'BDT', flag: '🇧🇩', name: 'Bangladesh', available: false },
-  'US-PK': { rate: 278.50, fees: 2.99, currency: 'PKR', flag: '🇵🇰', name: 'Pakistan', available: false },
-  'US-VN': { rate: 24850, fees: 2.99, currency: 'VND', flag: '🇻🇳', name: 'Vietnam', available: false },
-  'US-KE': { rate: 129.80, fees: 2.99, currency: 'KES', flag: '🇰🇪', name: 'Kenya', available: false }
+  'US-IN': { 
+    baseRate: 83.25, 
+    fees: 2.99, 
+    currency: 'INR', 
+    flag: '🇮🇳', 
+    name: 'India', 
+    available: true,
+    apiSymbol: 'USD_INR'
+  },
+  'US-PH': { baseRate: 56.45, fees: 2.99, currency: 'PHP', flag: '🇵🇭', name: 'Philippines', available: false, apiSymbol: 'USD_PHP' },
+  'US-MX': { baseRate: 17.82, fees: 2.99, currency: 'MXN', flag: '🇲🇽', name: 'Mexico', available: false, apiSymbol: 'USD_MXN' },
+  'US-NG': { baseRate: 1580.50, fees: 2.99, currency: 'NGN', flag: '🇳🇬', name: 'Nigeria', available: false, apiSymbol: 'USD_NGN' },
+  'US-BD': { baseRate: 123.75, fees: 2.99, currency: 'BDT', flag: '🇧🇩', name: 'Bangladesh', available: false, apiSymbol: 'USD_BDT' },
+  'US-PK': { baseRate: 278.50, fees: 2.99, currency: 'PKR', flag: '🇵🇰', name: 'Pakistan', available: false, apiSymbol: 'USD_PKR' },
+  'US-VN': { baseRate: 24850, fees: 2.99, currency: 'VND', flag: '🇻🇳', name: 'Vietnam', available: false, apiSymbol: 'USD_VND' },
+  'US-KE': { baseRate: 129.80, fees: 2.99, currency: 'KES', flag: '🇰🇪', name: 'Kenya', available: false, apiSymbol: 'USD_KES' }
 };
 
 // Admin wallet addresses for remittance platform
@@ -80,17 +96,59 @@ export function RemittancePlatform() {
     fees: 2.99
   });
 
+  const [liveExchangeRate, setLiveExchangeRate] = useState<ExchangeRate>({
+    rate: 83.25,
+    lastUpdated: new Date().toISOString(),
+    change24h: 0.45,
+    isLoading: false
+  });
+
+  // Fetch live USD to INR exchange rate
+  const fetchLiveExchangeRate = async () => {
+    try {
+      setLiveExchangeRate(prev => ({ ...prev, isLoading: true }));
+      
+      // Using exchangerate-api.com for live rates
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+      const data = await response.json();
+      
+      if (data.rates && data.rates.INR) {
+        const newRate = data.rates.INR;
+        const change = ((newRate - liveExchangeRate.rate) / liveExchangeRate.rate) * 100;
+        
+        setLiveExchangeRate({
+          rate: newRate,
+          lastUpdated: new Date().toISOString(),
+          change24h: change,
+          isLoading: false
+        });
+        
+        setState(prev => ({ ...prev, exchangeRate: newRate }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch live exchange rate:', error);
+      setLiveExchangeRate(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  // Fetch live rates on component mount and every 30 seconds
+  useEffect(() => {
+    fetchLiveExchangeRate();
+    const interval = setInterval(fetchLiveExchangeRate, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Update exchange rate and fees when country changes
   useEffect(() => {
     const corridor = REMITTANCE_CORRIDORS[state.recipientCountry as keyof typeof REMITTANCE_CORRIDORS];
     if (corridor) {
       setState(prev => ({
         ...prev,
-        exchangeRate: corridor.rate,
+        exchangeRate: liveExchangeRate.rate || corridor.baseRate,
         fees: corridor.fees
       }));
     }
-  }, [state.recipientCountry]);
+  }, [state.recipientCountry, liveExchangeRate.rate]);
 
   // Set initial step based on connection status
   useEffect(() => {
@@ -212,19 +270,39 @@ export function RemittancePlatform() {
                 <span className="text-white/80">2-5 minutes. Always.</span>
               </p>
 
-              {/* Stats */}
+              {/* Live Stats */}
               <div className="flex flex-wrap justify-center gap-8 mb-12">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-1">₹83.25</div>
-                  <div className="text-sm text-white/60">Live exchange rate</div>
+                <div className="text-center group">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <div className="text-3xl font-bold text-white">
+                      ₹{liveExchangeRate.rate.toFixed(2)}
+                    </div>
+                    {liveExchangeRate.isLoading ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white/60"></div>
+                    ) : (
+                      <div className={`text-sm px-2 py-1 rounded-full ${
+                        liveExchangeRate.change24h >= 0 
+                          ? 'bg-green-500/20 text-green-400' 
+                          : 'bg-red-500/20 text-red-400'
+                      }`}>
+                        {liveExchangeRate.change24h >= 0 ? '+' : ''}{liveExchangeRate.change24h.toFixed(2)}%
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-sm text-white/60">Live USD → INR rate</div>
+                  <div className="text-xs text-white/40 mt-1">
+                    Updated {new Date(liveExchangeRate.lastUpdated).toLocaleTimeString()}
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-white mb-1">$2.99</div>
-                  <div className="text-sm text-white/60">Fixed transfer fee</div>
+                  <div className="text-sm text-white/60">Fixed network fee</div>
+                  <div className="text-xs text-white/40 mt-1">No hidden charges</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-white mb-1">2-5min</div>
-                  <div className="text-sm text-white/60">Delivery time</div>
+                  <div className="text-sm text-white/60">Settlement time</div>
+                  <div className="text-xs text-white/40 mt-1">Blockchain powered</div>
                 </div>
               </div>
 
@@ -298,40 +376,40 @@ export function RemittancePlatform() {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-4 gap-6">
                 {/* Step 1 */}
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-8 rounded-2xl bg-white/[0.02] border border-white/10">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-6">
-                      <span className="text-white font-bold text-lg">01</span>
+                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Wallet className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Connect wallet</h3>
-                    <p className="text-white/60 leading-relaxed mb-6">
-                      Connect any Web3 wallet with your crypto holdings. MetaMask, Coinbase Wallet, or any WalletConnect compatible wallet.
+                    <h3 className="text-lg font-semibold text-white mb-3">Connect wallet</h3>
+                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                      Connect your self-custodial Web3 wallet. Keep full control of your assets.
                     </p>
-                    <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl">
-                      <p className="text-blue-300 text-sm">
-                        <strong>Tip:</strong> Ensure you have USDT, USDC, ETH, or other supported tokens ready
+                    <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded-lg">
+                      <p className="text-blue-300 text-xs">
+                        <strong>Self-custody:</strong> Your keys, your crypto
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Step 2 */}
+                {/* Step 2 - KYC */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-8 rounded-2xl bg-white/[0.02] border border-white/10">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-6">
-                      <span className="text-white font-bold text-lg">02</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <UserCheck className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Enter details</h3>
-                    <p className="text-white/60 leading-relaxed mb-6">
-                      Add your recipient's information and preferred delivery method. Bank transfer, mobile wallet, or cash pickup.
+                    <h3 className="text-lg font-semibold text-white mb-3">Verify identity</h3>
+                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                      Quick KYC for recipient verification. Upload ID, capture selfie. Compliant with regulations.
                     </p>
-                    <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
-                      <p className="text-green-300 text-sm">
-                        <strong>Secure:</strong> All data is encrypted and never stored on our servers
+                    <div className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg">
+                      <p className="text-purple-300 text-xs">
+                        <strong>Secure:</strong> Encrypted verification process
                       </p>
                     </div>
                   </div>
@@ -339,18 +417,37 @@ export function RemittancePlatform() {
 
                 {/* Step 3 */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-8 rounded-2xl bg-white/[0.02] border border-white/10">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mb-6">
-                      <span className="text-white font-bold text-lg">03</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Send className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Send instantly</h3>
-                    <p className="text-white/60 leading-relaxed mb-6">
-                      Confirm the transaction in your wallet. Your recipient receives Indian Rupees in 2-5 minutes.
+                    <h3 className="text-lg font-semibold text-white mb-3">Send crypto</h3>
+                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                      Enter amount and recipient details. Choose delivery method: bank, mobile money, or cash pickup.
                     </p>
-                    <div className="p-4 bg-orange-500/5 border border-orange-500/20 rounded-xl">
-                      <p className="text-orange-300 text-sm">
-                        <strong>Fast:</strong> Blockchain settlement faster than traditional banking
+                    <div className="p-3 bg-green-500/5 border border-green-500/20 rounded-lg">
+                      <p className="text-green-300 text-xs">
+                        <strong>Flexible:</strong> Multiple delivery options
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 4 */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-3">Instant settlement</h3>
+                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                      Blockchain settlement in 2-5 minutes. Recipient gets INR directly to their preferred method.
+                    </p>
+                    <div className="p-3 bg-orange-500/5 border border-orange-500/20 rounded-lg">
+                      <p className="text-orange-300 text-xs">
+                        <strong>Lightning:</strong> Faster than traditional rails
                       </p>
                     </div>
                   </div>
@@ -359,14 +456,46 @@ export function RemittancePlatform() {
             </div>
           </section>
 
-          {/* Comparison Section */}
+          {/* Web3 Benefits Section */}
           <section className="px-6 py-20 border-t border-white/5">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-white mb-4">Why choose us</h2>
+                <h2 className="text-4xl font-bold text-white mb-4">Web3 off-ramping benefits</h2>
                 <p className="text-xl text-white/60">
-                  Traditional banking vs blockchain technology
+                  Self-custodial wallets + instant settlement = financial freedom
                 </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-16">
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-500/5 to-purple-500/5 border border-blue-500/20">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4">
+                    <Key className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-3">Your keys, your crypto</h3>
+                  <p className="text-white/60 text-sm leading-relaxed">
+                    Complete control over your assets. No bank can freeze, limit, or control your transactions. True financial sovereignty.
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-green-500/5 to-emerald-500/5 border border-green-500/20">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4">
+                    <Database className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-3">Decentralized settlement</h3>
+                  <p className="text-white/60 text-sm leading-relaxed">
+                    No single point of failure. Blockchain networks operate 24/7 across thousands of nodes worldwide.
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-orange-500/5 to-yellow-500/5 border border-orange-500/20">
+                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mb-4">
+                    <Lock className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-3">Cryptographic security</h3>
+                  <p className="text-white/60 text-sm leading-relaxed">
+                    Military-grade encryption protects every transaction. Immutable ledger provides permanent audit trail.
+                  </p>
+                </div>
               </div>
               
               <div className="grid md:grid-cols-2 gap-8">
@@ -375,32 +504,38 @@ export function RemittancePlatform() {
                     <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
                       <Building className="w-5 h-5 text-red-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Traditional banks</h3>
+                    <h3 className="text-lg font-semibold text-white">Traditional remittance</h3>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                         <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                       </div>
-                      <span>3-7 business days processing</span>
+                      <span>Banks control your money</span>
                     </div>
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                         <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                       </div>
-                      <span>High fees up to $25+</span>
+                      <span>3-7 day settlement times</span>
                     </div>
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                         <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                       </div>
-                      <span>Complex paperwork required</span>
+                      <span>Hidden fees up to 8% total cost</span>
                     </div>
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                         <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                       </div>
-                      <span>Limited operating hours</span>
+                      <span>Centralized points of failure</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      </div>
+                      <span>Limited to business hours</span>
                     </div>
                   </div>
                 </div>
@@ -410,32 +545,38 @@ export function RemittancePlatform() {
                     <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
                       <Zap className="w-5 h-5 text-green-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">RemitPay</h3>
+                    <h3 className="text-lg font-semibold text-white">Web3 off-ramping</h3>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span>2-5 minute transfers</span>
+                      <span>Self-custodial wallet control</span>
                     </div>
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span>Fixed $2.99 fee, no hidden costs</span>
+                      <span>2-5 minute blockchain settlement</span>
                     </div>
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span>Zero paperwork needed</span>
+                      <span>Transparent $2.99 flat fee</span>
                     </div>
                     <div className="flex items-start gap-3 text-white/70">
                       <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                       </div>
-                      <span>Available 24/7 worldwide</span>
+                      <span>Decentralized infrastructure</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-green-400" />
+                      </div>
+                      <span>Available 24/7 globally</span>
                     </div>
                   </div>
                 </div>
