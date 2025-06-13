@@ -18,15 +18,13 @@ import { StablePayMain } from "@/pages/stablepay-main";
 import { StablePayMinimal } from "@/pages/stablepay-minimal";
 import { RemittancePlatform } from "@/pages/remittance-platform";
 import { AdminConfig } from "@/pages/admin-config";
-import EnhancedRemittancePlatform from "@/pages/enhanced-remittance-platform";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={EnhancedRemittancePlatform} />
+      <Route path="/" component={RemittancePlatform} />
       <Route path="/admin" component={AdminConfig} />
-      <Route path="/original" component={RemittancePlatform} />
       <Route path="/swap" component={Swap} />
       <Route path="/kyc" component={KYC} />
       <Route path="/withdraw" component={Withdraw} />
