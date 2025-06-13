@@ -7,6 +7,18 @@ import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalL
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
+import { useReownPay } from '@/hooks/use-reown-pay';
+// Import admin wallet configuration
+const ADMIN_WALLETS: Record<number, string> = {
+  1: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Ethereum
+  137: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Polygon
+  56: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // BSC
+  42161: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Arbitrum
+};
+
+const getAdminWallet = (chainId: number): string | null => {
+  return ADMIN_WALLETS[chainId] || null;
+};
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -37,6 +49,9 @@ export function StablePayMinimal() {
   
   // Reown transfer functionality with built-in Send integration
   const { transferState, transferToAdmin, openAccountModal, resetTransferState } = useReownTransfer();
+  
+  // Reown Pay with Exchange functionality
+  const { payState, openPayModal, initiatePayment, resetPayState } = useReownPay();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -563,14 +578,37 @@ export function StablePayMinimal() {
                   )}
                 </Button>
 
-                <Button 
-                  onClick={openAccountModal}
-                  variant="outline"
-                  className="w-full h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Open Reown Send
-                </Button>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    onClick={openAccountModal}
+                    variant="outline"
+                    className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-1" />
+                    Send
+                  </Button>
+                  
+                  <Button 
+                    onClick={() => {
+                      const currentChainId = caipNetwork?.id || 1;
+                      const adminWallet = getAdminWallet(currentChainId);
+                      if (adminWallet) {
+                        openPayModal({
+                          recipient: adminWallet,
+                          amount: state.amount,
+                          token: state.fromToken,
+                          chainId: currentChainId
+                        });
+                      }
+                    }}
+                    variant="outline"
+                    className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    disabled={payState.isInitiating}
+                  >
+                    <Banknote className="w-4 h-4 mr-1" />
+                    Pay
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>

@@ -39,6 +39,15 @@ export function useReownTransfer() {
     adminWallet: string,
     decimals: number
   ): Promise<string> => {
+    console.log('Starting Reown transfer with params:', {
+      tokenAddress,
+      amount,
+      adminWallet,
+      decimals,
+      isConnected,
+      address
+    });
+
     try {
       if (!isConnected || !address) {
         throw new Error('Please connect your wallet first');
@@ -57,13 +66,17 @@ export function useReownTransfer() {
         ? tokenAddress 
         : getAddress(tokenAddress);
 
+      console.log('Validated addresses:', { validatedAdmin, validatedToken });
+
       setTransferState(prev => ({ ...prev, step: 'confirming' }));
 
       let txHash: string;
 
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         // Native token transfer using Reown/Wagmi
+        console.log('Executing native token transfer...');
         const amountWei = parseEther(amount);
+        console.log('Amount in Wei:', amountWei.toString());
         
         txHash = await sendTransactionAsync({
           to: validatedAdmin as `0x${string}`,
@@ -71,7 +84,9 @@ export function useReownTransfer() {
         });
       } else {
         // ERC20 token transfer using Reown/Wagmi
+        console.log('Executing ERC20 token transfer...');
         const amountWei = parseUnits(amount, decimals);
+        console.log('Amount in Wei:', amountWei.toString());
         
         txHash = await writeContractAsync({
           address: validatedToken as `0x${string}`,
@@ -91,6 +106,8 @@ export function useReownTransfer() {
           args: [validatedAdmin as `0x${string}`, amountWei]
         });
       }
+
+      console.log('Transaction successful:', txHash);
 
       setTransferState({
         isTransferring: false,
