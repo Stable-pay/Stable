@@ -95,19 +95,25 @@ export function useWalletBalances() {
           });
 
           if (response.ok) {
-            const data = await response.json();
-            if (data.success && data.balance && parseFloat(data.balance.formattedBalance) > 0) {
-              balances.push({
-                symbol: data.balance.symbol,
-                name: data.balance.name,
-                address: data.balance.address,
-                balance: data.balance.balance,
-                decimals: data.balance.decimals,
-                chainId: data.balance.chainId,
-                formattedBalance: data.balance.formattedBalance,
-                usdValue: data.balance.usdValue || 0
-              });
+            try {
+              const data = await response.json();
+              if (data.success && data.balance && parseFloat(data.balance.formattedBalance) > 0) {
+                balances.push({
+                  symbol: data.balance.symbol,
+                  name: data.balance.name,
+                  address: data.balance.address,
+                  balance: data.balance.balance,
+                  decimals: data.balance.decimals,
+                  chainId: data.balance.chainId,
+                  formattedBalance: data.balance.formattedBalance,
+                  usdValue: data.balance.usdValue || 0
+                });
+              }
+            } catch (parseError) {
+              console.warn(`Failed to parse response for ${token.symbol}:`, parseError);
             }
+          } else {
+            console.warn(`API request failed for ${token.symbol}: ${response.status}`);
           }
         } catch (error) {
           console.warn(`Failed to fetch ${token.symbol} balance:`, error);
@@ -162,14 +168,39 @@ function getNativeName(chainId: number): string {
 
 async function getTokenPrice(symbol: string): Promise<number> {
   try {
-    const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${getCoingeckoId(symbol)}&vs_currencies=usd`);
+    const coingeckoId = getCoingeckoId(symbol);
+    const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=usd`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'StablePay/1.0'
+      }
+    });
+    
+    if (!response.ok) {
+      console.warn(`CoinGecko API returned ${response.status} for ${symbol}`);
+      return getFallbackPrice(symbol);
+    }
+    
     const data = await response.json();
-    const id = getCoingeckoId(symbol);
-    return data[id]?.usd || 0;
+    return data[coingeckoId]?.usd || getFallbackPrice(symbol);
   } catch (error) {
     console.warn(`Failed to fetch price for ${symbol}:`, error);
-    return 0;
+    return getFallbackPrice(symbol);
   }
+}
+
+function getFallbackPrice(symbol: string): number {
+  const fallbackPrices: Record<string, number> = {
+    'ETH': 2300,
+    'MATIC': 0.85,
+    'BNB': 340,
+    'USDC': 1.0,
+    'USDT': 1.0,
+    'DAI': 1.0,
+    'BUSD': 1.0
+  };
+  return fallbackPrices[symbol] || 0;
 }
 
 function getCoingeckoId(symbol: string): string {

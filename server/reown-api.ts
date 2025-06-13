@@ -47,7 +47,9 @@ export class ReownAPI {
         });
       }
 
-      const provider = new ethers.JsonRpcProvider(rpcUrl);
+      const provider = new ethers.JsonRpcProvider(rpcUrl, undefined, {
+        staticNetwork: true
+      });
       
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         // Native token balance
@@ -78,29 +80,37 @@ export class ReownAPI {
           'function name() view returns (string)'
         ], provider);
         
-        const [balance, decimals, symbol, name] = await Promise.all([
-          contract.balanceOf(address),
-          contract.decimals(),
-          contract.symbol(),
-          contract.name()
-        ]);
-        
-        const formattedBalance = ethers.formatUnits(balance, decimals);
-        const price = await this.getTokenPrice(symbol);
-        
-        res.json({
-          success: true,
-          balance: {
-            symbol: symbol,
-            name: name,
-            address: tokenAddress,
-            balance: balance.toString(),
-            decimals: Number(decimals),
-            chainId: chainId,
-            formattedBalance: formattedBalance,
-            usdValue: parseFloat(formattedBalance) * price
-          }
-        });
+        try {
+          const [balance, decimals, symbol, name] = await Promise.all([
+            contract.balanceOf(address).catch(() => BigInt(0)),
+            contract.decimals().catch(() => 18),
+            contract.symbol().catch(() => 'UNKNOWN'),
+            contract.name().catch(() => 'Unknown Token')
+          ]);
+          
+          const formattedBalance = ethers.formatUnits(balance, decimals);
+          const price = await this.getTokenPrice(symbol).catch(() => 0);
+          
+          res.json({
+            success: true,
+            balance: {
+              symbol: symbol,
+              name: name,
+              address: tokenAddress,
+              balance: balance.toString(),
+              decimals: Number(decimals),
+              chainId: chainId,
+              formattedBalance: formattedBalance,
+              usdValue: parseFloat(formattedBalance) * price
+            }
+          });
+        } catch (contractError) {
+          console.error('Contract interaction failed:', contractError);
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid token contract'
+          });
+        }
       }
     } catch (error) {
       console.error('Token balance fetch error:', error);
@@ -257,14 +267,39 @@ export class ReownAPI {
 
   private async getTokenPrice(symbol: string): Promise<number> {
     try {
-      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${this.getCoingeckoId(symbol)}&vs_currencies=usd`);
+      const coingeckoId = this.getCoingeckoId(symbol);
+      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=usd`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'StablePay/1.0'
+        }
+      });
+      
+      if (!response.ok) {
+        console.warn(`CoinGecko API returned ${response.status} for ${symbol}`);
+        return this.getFallbackPrice(symbol);
+      }
+      
       const data = await response.json();
-      const id = this.getCoingeckoId(symbol);
-      return data[id]?.usd || 0;
+      return data[coingeckoId]?.usd || this.getFallbackPrice(symbol);
     } catch (error) {
       console.warn(`Failed to fetch price for ${symbol}:`, error);
-      return 0;
+      return this.getFallbackPrice(symbol);
     }
+  }
+
+  private getFallbackPrice(symbol: string): number {
+    const fallbackPrices: Record<string, number> = {
+      'ETH': 2300,
+      'MATIC': 0.85,
+      'BNB': 340,
+      'USDC': 1.0,
+      'USDT': 1.0,
+      'DAI': 1.0,
+      'BUSD': 1.0
+    };
+    return fallbackPrices[symbol] || 0;
   }
 
   private getCoingeckoId(symbol: string): string {
