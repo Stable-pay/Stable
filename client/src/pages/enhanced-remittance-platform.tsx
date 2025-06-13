@@ -1004,6 +1004,534 @@ export default function EnhancedRemittancePlatform() {
     );
   }
 
+  // Step 6: Recipient Details
+  if (state.step === 'recipient') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-3xl bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+              <Users className="w-8 h-8 text-purple-400" />
+              Recipient Information
+            </CardTitle>
+            <p className="text-white/70 mt-2">Enter details for your recipient in India</p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-white font-semibold text-lg">Personal Details</h3>
+                
+                <div>
+                  <label className="text-white text-sm font-medium block mb-2">Full Name *</label>
+                  <Input
+                    value={state.recipientName}
+                    onChange={(e) => setState(prev => ({ ...prev, recipientName: e.target.value }))}
+                    placeholder="Recipient's full name"
+                    className="bg-gray-700/50 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-white text-sm font-medium block mb-2">Mobile Number *</label>
+                  <Input
+                    value={state.recipientPhone}
+                    onChange={(e) => setState(prev => ({ ...prev, recipientPhone: e.target.value }))}
+                    placeholder="+91 98765 43210"
+                    className="bg-gray-700/50 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-white text-sm font-medium block mb-2">Delivery Method *</label>
+                  <Select value={state.recipientMethod} onValueChange={(value: any) => 
+                    setState(prev => ({ ...prev, recipientMethod: value }))
+                  }>
+                    <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
+                      <SelectValue placeholder="Select delivery method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="bank">Bank Transfer</SelectItem>
+                      <SelectItem value="mobile">Mobile Wallet</SelectItem>
+                      <SelectItem value="cash">Cash Pickup</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-white font-semibold text-lg">
+                  {state.recipientMethod === 'bank' ? 'Bank Details' : 
+                   state.recipientMethod === 'mobile' ? 'Mobile Wallet' : 'Pickup Location'}
+                </h3>
+                
+                {state.recipientMethod === 'bank' && (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-white text-sm font-medium block mb-2">Account Number *</label>
+                      <Input
+                        value={state.bankDetails.accountNumber}
+                        onChange={(e) => setState(prev => ({
+                          ...prev,
+                          bankDetails: { ...prev.bankDetails, accountNumber: e.target.value }
+                        }))}
+                        placeholder="Account number"
+                        className="bg-gray-700/50 border-gray-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-white text-sm font-medium block mb-2">Bank Name *</label>
+                      <Input
+                        value={state.bankDetails.bankName}
+                        onChange={(e) => setState(prev => ({
+                          ...prev,
+                          bankDetails: { ...prev.bankDetails, bankName: e.target.value }
+                        }))}
+                        placeholder="State Bank of India"
+                        className="bg-gray-700/50 border-gray-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-white text-sm font-medium block mb-2">IFSC Code *</label>
+                      <Input
+                        value={state.bankDetails.swiftCode}
+                        onChange={(e) => setState(prev => ({
+                          ...prev,
+                          bankDetails: { ...prev.bankDetails, swiftCode: e.target.value }
+                        }))}
+                        placeholder="SBIN0001234"
+                        className="bg-gray-700/50 border-gray-600 text-white"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {state.recipientMethod === 'mobile' && (
+                  <div className="space-y-3">
+                    <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                      <h4 className="text-blue-300 font-medium mb-2">Supported Wallets</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="text-blue-200 text-sm">• Paytm</div>
+                        <div className="text-blue-200 text-sm">• PhonePe</div>
+                        <div className="text-blue-200 text-sm">• Google Pay</div>
+                        <div className="text-blue-200 text-sm">• Amazon Pay</div>
+                      </div>
+                    </div>
+                    <div className="text-white/70 text-sm">
+                      Funds will be credited directly to the mobile number provided above.
+                    </div>
+                  </div>
+                )}
+
+                {state.recipientMethod === 'cash' && (
+                  <div className="space-y-3">
+                    <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                      <h4 className="text-orange-300 font-medium mb-2">Cash Pickup Network</h4>
+                      <div className="text-orange-200 text-sm">
+                        Available at 25,000+ locations across India including banks, 
+                        post offices, and authorized agents.
+                      </div>
+                    </div>
+                    <div className="text-white/70 text-sm">
+                      Recipient will receive SMS with pickup code and nearest locations.
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+              <h4 className="text-green-300 font-medium mb-2">Transfer Summary</h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <div className="text-white/70">You send</div>
+                  <div className="text-white font-medium">${state.fiatAmount || '0'} USD</div>
+                </div>
+                <div>
+                  <div className="text-white/70">Recipient gets</div>
+                  <div className="text-white font-medium">
+                    ₹{state.fiatAmount ? (parseFloat(state.fiatAmount) * liveExchangeRate.rate).toFixed(2) : '0'} INR
+                  </div>
+                </div>
+                <div>
+                  <div className="text-white/70">Exchange rate</div>
+                  <div className="text-white font-medium">1 USD = ₹{liveExchangeRate.rate.toFixed(2)}</div>
+                </div>
+                <div>
+                  <div className="text-white/70">Total fees</div>
+                  <div className="text-white font-medium">${state.fees.toFixed(2)}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setState(prev => ({ ...prev, step: 'kyc' }))}
+                variant="outline"
+                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+              >
+                Back
+              </Button>
+              <Button 
+                onClick={() => setState(prev => ({ ...prev, step: 'review' }))}
+                disabled={!state.recipientName || !state.recipientPhone || 
+                         (state.recipientMethod === 'bank' && (!state.bankDetails.accountNumber || !state.bankDetails.bankName || !state.bankDetails.swiftCode))}
+                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              >
+                Review Transfer
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Step 7: Review & Confirm
+  if (state.step === 'review') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-4xl bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+              <FileText className="w-8 h-8 text-blue-400" />
+              Review Your Transfer
+            </CardTitle>
+            <p className="text-white/70 mt-2">Verify all details before confirming your remittance</p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-white font-semibold text-lg border-b border-white/20 pb-2">
+                  Transfer Details
+                </h3>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-white/70">You send</span>
+                    <span className="text-white font-medium">${state.fiatAmount} USD</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Exchange rate</span>
+                    <span className="text-white font-medium">1 USD = ₹{liveExchangeRate.rate.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Network fee</span>
+                    <span className="text-white font-medium">${state.fees.toFixed(2)}</span>
+                  </div>
+                  <Separator className="bg-white/20" />
+                  <div className="flex justify-between text-lg">
+                    <span className="text-white font-medium">Recipient gets</span>
+                    <span className="text-green-400 font-bold">
+                      ₹{state.fiatAmount ? (parseFloat(state.fiatAmount) * liveExchangeRate.rate).toFixed(2) : '0'} INR
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Clock className="w-4 h-4 text-blue-400" />
+                    <span className="text-blue-300 font-medium">Estimated Arrival</span>
+                  </div>
+                  <div className="text-blue-200">{state.estimatedArrival}</div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-white font-semibold text-lg border-b border-white/20 pb-2">
+                  Recipient Details
+                </h3>
+                
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-white/70 text-sm">Name</div>
+                    <div className="text-white font-medium">{state.recipientName}</div>
+                  </div>
+                  <div>
+                    <div className="text-white/70 text-sm">Mobile</div>
+                    <div className="text-white font-medium">{state.recipientPhone}</div>
+                  </div>
+                  <div>
+                    <div className="text-white/70 text-sm">Method</div>
+                    <div className="text-white font-medium capitalize">
+                      {state.recipientMethod === 'bank' ? 'Bank Transfer' : 
+                       state.recipientMethod === 'mobile' ? 'Mobile Wallet' : 'Cash Pickup'}
+                    </div>
+                  </div>
+                  {state.recipientMethod === 'bank' && (
+                    <div>
+                      <div className="text-white/70 text-sm">Bank Details</div>
+                      <div className="text-white font-medium">{state.bankDetails.bankName}</div>
+                      <div className="text-white/70 text-xs font-mono">
+                        {state.bankDetails.accountNumber} • {state.bankDetails.swiftCode}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {state.travelRuleRequired && (
+              <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  <span className="text-green-300 font-medium">Travel Rule Compliance Complete</span>
+                </div>
+                <div className="text-green-200/80 text-sm">
+                  Originator information verified and cryptographically signed. 
+                  Transaction meets all regulatory requirements.
+                </div>
+              </div>
+            )}
+
+            <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+              <h4 className="text-purple-300 font-medium mb-2">Security & Compliance</h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span className="text-white/80">KYC Verified</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span className="text-white/80">Wallet Authenticated</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span className="text-white/80">Encrypted Transfer</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span className="text-white/80">Regulated Exchange</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setState(prev => ({ ...prev, step: 'recipient' }))}
+                variant="outline"
+                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+              >
+                Back to Edit
+              </Button>
+              <Button 
+                onClick={() => setState(prev => ({ 
+                  ...prev, 
+                  step: 'processing',
+                  isProcessing: true,
+                  transactionHash: `0x${Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('')}`
+                }))}
+                disabled={state.isProcessing}
+                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+              >
+                {state.isProcessing ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    Processing...
+                  </div>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5 mr-2" />
+                    Confirm & Send
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Step 8: Processing
+  if (state.step === 'processing') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+              <div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-400 border-t-transparent"></div>
+              Processing Transfer
+            </CardTitle>
+            <p className="text-white/70 mt-2">Your remittance is being processed on the blockchain</p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                <div className="animate-pulse w-3 h-3 bg-blue-400 rounded-full"></div>
+                <div>
+                  <div className="text-blue-300 font-medium">Transaction Initiated</div>
+                  <div className="text-blue-200/80 text-sm">Creating blockchain transaction...</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                <div className="animate-pulse w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div>
+                  <div className="text-yellow-300 font-medium">Travel Rule Record Created</div>
+                  <div className="text-yellow-200/80 text-sm">Compliance data recorded on-chain...</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+                <div className="animate-pulse w-3 h-3 bg-purple-400 rounded-full"></div>
+                <div>
+                  <div className="text-purple-300 font-medium">Network Confirmation</div>
+                  <div className="text-purple-200/80 text-sm">Waiting for blockchain confirmation...</div>
+                </div>
+              </div>
+            </div>
+
+            {state.transactionHash && (
+              <div className="p-4 bg-gray-700/30 rounded-lg">
+                <div className="text-white/70 text-sm mb-2">Transaction Hash</div>
+                <div className="text-white font-mono text-sm break-all">
+                  {state.transactionHash}
+                </div>
+              </div>
+            )}
+
+            <div className="text-center">
+              <Button
+                onClick={() => setState(prev => ({ ...prev, step: 'complete', isProcessing: false }))}
+                className="h-12 px-8 bg-green-600 hover:bg-green-700"
+              >
+                Simulate Completion
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Step 9: Complete
+  if (state.step === 'complete') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-3xl bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-10 h-10 text-green-400" />
+            </div>
+            <CardTitle className="text-3xl font-bold text-white">Transfer Complete!</CardTitle>
+            <p className="text-white/70 mt-2">Your money has been successfully sent to India</p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-white font-semibold text-lg">Transaction Summary</h3>
+                
+                <div className="space-y-3 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Amount Sent</span>
+                    <span className="text-white font-medium">${state.fiatAmount} USD</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Amount Received</span>
+                    <span className="text-green-400 font-bold">
+                      ₹{state.fiatAmount ? (parseFloat(state.fiatAmount) * liveExchangeRate.rate).toFixed(2) : '0'} INR
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Recipient</span>
+                    <span className="text-white font-medium">{state.recipientName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Delivery Method</span>
+                    <span className="text-white font-medium capitalize">
+                      {state.recipientMethod === 'bank' ? 'Bank Transfer' : 
+                       state.recipientMethod === 'mobile' ? 'Mobile Wallet' : 'Cash Pickup'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-white font-semibold text-lg">Transaction Details</h3>
+                
+                <div className="space-y-3">
+                  {state.transactionHash && (
+                    <div className="p-3 bg-gray-700/30 rounded-lg">
+                      <div className="text-white/70 text-xs mb-1">Transaction Hash</div>
+                      <div className="text-white font-mono text-sm break-all">
+                        {state.transactionHash.slice(0, 10)}...{state.transactionHash.slice(-8)}
+                      </div>
+                    </div>
+                  )}
+
+                  {state.travelRuleRecordId && (
+                    <div className="p-3 bg-blue-500/10 rounded-lg">
+                      <div className="text-blue-300 text-xs mb-1">Travel Rule Record</div>
+                      <div className="text-blue-200 font-mono text-sm">
+                        TR-{state.travelRuleRecordId}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="p-3 bg-purple-500/10 rounded-lg">
+                    <div className="text-purple-300 text-xs mb-1">Completed At</div>
+                    <div className="text-purple-200 text-sm">
+                      {new Date().toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+              <h4 className="text-blue-300 font-medium mb-2">What happens next?</h4>
+              <div className="space-y-2 text-sm text-blue-200/80">
+                <div>• Your recipient will receive an SMS notification</div>
+                <div>• {state.recipientMethod === 'bank' ? 'Funds will be credited to their bank account within 5-10 minutes' : 
+                       state.recipientMethod === 'mobile' ? 'Mobile wallet will be credited instantly' : 
+                       'Pickup code and locations will be shared via SMS'}</div>
+                <div>• You'll receive email confirmation with transaction details</div>
+                <div>• Transaction records are stored securely on the blockchain</div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setState(prev => ({ 
+                  ...prev, 
+                  step: 'social_auth',
+                  // Reset state for new transaction
+                  socialProvider: null,
+                  socialUser: null,
+                  walletType: null,
+                  walletAddress: '',
+                  isWalletCreated: false,
+                  needsCryptoPurchase: false,
+                  fiatAmount: '',
+                  recipientName: '',
+                  recipientPhone: '',
+                  transactionHash: null,
+                  travelRuleRecordId: null
+                }))}
+                variant="outline"
+                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+              >
+                Send Another Transfer
+              </Button>
+              <Button 
+                onClick={() => window.open('/dashboard', '_blank')}
+                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                <TrendingUp className="w-5 h-5 mr-2" />
+                View Dashboard
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   // Default fallback
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
