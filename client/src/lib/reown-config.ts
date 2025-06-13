@@ -41,7 +41,8 @@ export const modal = createAppKit({
     email: true,
     socials: ['google', 'github', 'apple', 'discord', 'farcaster'],
     emailShowWallets: true,
-    onramp: true
+    onramp: true,
+    send: true
   },
   themeMode: 'dark',
   themeVariables: {

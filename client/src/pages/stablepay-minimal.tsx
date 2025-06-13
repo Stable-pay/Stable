@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
-import { useDirectWalletTransfer } from '@/hooks/use-direct-wallet-transfer';
+import { useReownTransfer } from '@/hooks/use-reown-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -35,8 +35,8 @@ export function StablePayMinimal() {
   const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   
-  // Direct wallet transfer functionality
-  const { transferState, transferToAddress, resetTransferState } = useDirectWalletTransfer();
+  // Reown transfer functionality with built-in Send integration
+  const { transferState, transferToAdmin, openAccountModal, resetTransferState } = useReownTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
