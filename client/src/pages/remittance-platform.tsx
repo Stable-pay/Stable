@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, Globe, Send, Clock, CheckCircle, Wallet, Shield, CreditCard, Phone, Building, MapPin, Users, TrendingUp, Star, Zap, RefreshCw, FileText, Scan, UserCheck, Key, Database, Lock } from 'lucide-react';
-import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitProvider, useAppKitState } from '@reown/appkit/react';
+import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
+import { WalletCreationModal } from '@/components/reown/wallet-creation-modal';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -127,6 +128,8 @@ export function RemittancePlatform() {
     change24h: 0.45,
     isLoading: false
   });
+
+  const [showWalletCreationModal, setShowWalletCreationModal] = useState(false);
 
   // Fetch live USD to INR exchange rate
   const fetchLiveExchangeRate = async () => {
@@ -722,12 +725,11 @@ export function RemittancePlatform() {
             <div className="space-y-4">
               <h3 className="text-white font-semibold text-lg text-center">Choose your sign-up method</h3>
               
-              {/* Single button to open Reown AppKit with social login options for new wallet creation */}
+              {/* Enhanced wallet creation button that opens custom modal */}
               <Button 
                 onClick={() => {
                   setState(prev => ({ ...prev, walletCreationType: 'new' }));
-                  // Open AppKit with focus on wallet creation and social logins
-                  open();
+                  setShowWalletCreationModal(true);
                 }}
                 className="w-full h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg font-semibold transition-all duration-200 group"
               >

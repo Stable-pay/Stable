@@ -11,8 +11,11 @@ export const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID
 
 // Validate project ID
 if (!projectId) {
-  console.warn('VITE_WALLETCONNECT_PROJECT_ID is not set. Wallet connections may not work properly.');
+  console.error('VITE_WALLETCONNECT_PROJECT_ID is not set. Wallet connections will not work.');
+  throw new Error('Missing VITE_WALLETCONNECT_PROJECT_ID environment variable');
 }
+
+console.log('Reown AppKit initializing with project ID:', projectId.substring(0, 8) + '...');
 
 // Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({
@@ -45,11 +48,6 @@ export const modal = createAppKit({
     swaps: true,
     history: true
   },
-  enableOnramp: true,
-  enableWalletConnect: true,
-  enableInjected: true,
-  enableEIP6963: true,
-  enableCoinbase: true,
   themeMode: 'dark',
   themeVariables: {
     '--w3m-color-mix': '#3b82f6',
