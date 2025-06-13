@@ -261,27 +261,167 @@ export function RemittancePlatform() {
             </Card>
           </div>
 
-          {/* Supported Countries */}
-          <div className="text-center">
-            <h3 className="text-2xl font-semibold text-white mb-6">Available Now & Coming Soon</h3>
-            <div className="flex flex-wrap justify-center gap-4">
-              {Object.values(REMITTANCE_CORRIDORS).map((country, index) => (
-                <div key={index} className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                  country.available 
-                    ? 'bg-green-500/20 border border-green-500/30' 
-                    : 'bg-gray-500/20 border border-gray-500/30'
-                }`}>
-                  <span className="text-2xl">{country.flag}</span>
-                  <span className={`font-medium ${country.available ? 'text-green-300' : 'text-gray-400'}`}>
-                    {country.name}
-                  </span>
-                  {!country.available && (
-                    <Badge variant="secondary" className="ml-2 text-xs bg-gray-600/50 text-gray-300">
-                      Soon
-                    </Badge>
-                  )}
+          {/* How to Use Section */}
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold text-white mb-4">How It Works</h3>
+              <p className="text-xl text-white/80">
+                Because apparently sending money in 2025 shouldn't take 7 business days
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              {/* Step 1 */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-white text-2xl font-bold">1</span>
                 </div>
-              ))}
+                <h4 className="text-xl font-semibold text-white mb-4">Connect Your Wallet</h4>
+                <p className="text-white/70 mb-4">
+                  Click the shiny button above and connect any Web3 wallet. MetaMask, Coinbase, or whatever fancy wallet you prefer.
+                </p>
+                <div className="text-sm text-blue-300 bg-blue-500/10 p-3 rounded-lg">
+                  <strong>Pro tip:</strong> Make sure you have some crypto (USDT, ETH, etc.) ready to send. We're not magicians.
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-white text-2xl font-bold">2</span>
+                </div>
+                <h4 className="text-xl font-semibold text-white mb-4">Add Recipient Details</h4>
+                <p className="text-white/70 mb-4">
+                  Enter your recipient's info in India. Full name, phone number, and how they want to receive the money.
+                </p>
+                <div className="text-sm text-green-300 bg-green-500/10 p-3 rounded-lg">
+                  <strong>Fun fact:</strong> We support bank transfers, mobile wallets, and cash pickup. Because choice is good.
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-white text-2xl font-bold">3</span>
+                </div>
+                <h4 className="text-xl font-semibold text-white mb-4">Send & Relax</h4>
+                <p className="text-white/70 mb-4">
+                  Hit send, confirm in your wallet, and watch the magic happen. Your recipient gets rupees in 2-5 minutes.
+                </p>
+                <div className="text-sm text-orange-300 bg-orange-500/10 p-3 rounded-lg">
+                  <strong>Reality check:</strong> While banks are still processing your last transfer from 2023, we're already done.
+                </div>
+              </div>
+            </div>
+
+            {/* Features Comparison */}
+            <div className="bg-white/5 backdrop-blur-md rounded-xl p-8 border border-white/10">
+              <h4 className="text-2xl font-bold text-white text-center mb-8">
+                Traditional Banks vs. Our Platform (No Contest)
+              </h4>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h5 className="text-lg font-semibold text-red-400 flex items-center gap-2">
+                    <span className="text-2xl">🏦</span>
+                    Traditional Banks
+                  </h5>
+                  <div className="space-y-3 text-white/70">
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400">❌</span>
+                      <span>3-7 business days (because time is money, except yours)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400">❌</span>
+                      <span>Hidden fees up to $25+ (surprise charges are fun!)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400">❌</span>
+                      <span>Paperwork that could deforest Amazon</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400">❌</span>
+                      <span>Exchange rates from the stone age</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400">❌</span>
+                      <span>Open only during "business hours" (9-5, because emergencies wait)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h5 className="text-lg font-semibold text-green-400 flex items-center gap-2">
+                    <span className="text-2xl">⚡</span>
+                    Our Web3 Platform
+                  </h5>
+                  <div className="space-y-3 text-white/70">
+                    <div className="flex items-center gap-3">
+                      <span className="text-green-400">✅</span>
+                      <span>2-5 minutes (faster than your coffee order)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-green-400">✅</span>
+                      <span>Transparent $2.99 fee (no surprises, we promise)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-green-400">✅</span>
+                      <span>Zero paperwork (trees everywhere rejoice)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-green-400">✅</span>
+                      <span>Live market rates (because math doesn't lie)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-green-400">✅</span>
+                      <span>24/7 availability (emergencies don't schedule appointments)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="mt-16">
+              <h4 className="text-2xl font-bold text-white text-center mb-8">
+                Frequently Asked Questions
+                <br />
+                <span className="text-lg text-white/60">(The ones you're too embarrassed to ask)</span>
+              </h4>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
+                  <h5 className="text-lg font-semibold text-white mb-3">Is this actually legal?</h5>
+                  <p className="text-white/70">
+                    Yes, surprisingly. We use blockchain technology, which is about as regulated as it gets these days. 
+                    Your money is safe, and so are we.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
+                  <h5 className="text-lg font-semibold text-white mb-3">What if something goes wrong?</h5>
+                  <p className="text-white/70">
+                    Every transaction is recorded on the blockchain forever. It's like having a receipt that can't be lost, 
+                    deleted, or "accidentally" shredded.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
+                  <h5 className="text-lg font-semibold text-white mb-3">Why only India right now?</h5>
+                  <p className="text-white/70">
+                    We're perfectionists. Rather than half-heartedly support 50 countries, we're nailing India first. 
+                    Quality over quantity, you know?
+                  </p>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
+                  <h5 className="text-lg font-semibold text-white mb-3">How do you make money?</h5>
+                  <p className="text-white/70">
+                    Simple $2.99 fee per transfer. No hidden charges, no percentage cuts, no monthly subscriptions. 
+                    Revolutionary concept, we know.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
