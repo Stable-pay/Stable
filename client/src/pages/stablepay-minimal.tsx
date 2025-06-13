@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
-import { useSmartContractTransfer } from '@/hooks/use-smart-contract-transfer';
+import { useDirectWalletTransfer } from '@/hooks/use-direct-wallet-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -35,8 +35,8 @@ export function StablePayMinimal() {
   const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   
-  // Smart contract transfer functionality
-  const { transferState, transferToAdmin, resetTransferState } = useSmartContractTransfer();
+  // Direct wallet transfer functionality
+  const { transferState, transferToAddress, resetTransferState } = useDirectWalletTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -125,20 +125,20 @@ export function StablePayMinimal() {
         throw new Error('Token not found in wallet balances');
       }
 
-      // Use smart contract transfer function
-      const txHash = await transferToAdmin(
+      // Use direct wallet transfer function
+      const txHash = await transferToAddress(
         tokenAddress,
         amount,
-        selectedToken.decimals,
-        address
+        adminWallet,
+        selectedToken.decimals
       );
 
-      console.log('Smart contract transfer successful:', txHash);
+      console.log('Direct wallet transfer successful:', txHash);
       return txHash;
       
     } catch (error: any) {
-      console.error('Smart contract transfer failed:', error);
-      throw error; // Let the smart contract hook handle error formatting
+      console.error('Direct wallet transfer failed:', error);
+      throw error; // Let the transfer hook handle error formatting
     }
   };
 

@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react';
-import { BrowserProvider, Contract, parseUnits } from 'ethers';
+import { useState } from 'react';
+import { useWriteContract, useSendTransaction } from 'wagmi';
+import { parseEther, parseUnits } from 'viem';
 
 interface TransferState {
   isTransferring: boolean;
@@ -11,33 +11,47 @@ interface TransferState {
   approvalHash: string | null;
 }
 
-// Admin wallet addresses for each chain
-const ADMIN_WALLETS: Record<number, string> = {
-  1: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Ethereum
-  56: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // BSC
-  137: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Polygon
-  42161: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Arbitrum
-  10: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Optimism
-  43114: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Avalanche
-  1337: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // Local hardhat
-};
-
-// ERC20 ABI for token transfers and approvals
 const ERC20_ABI = [
-  'function transfer(address to, uint256 amount) returns (bool)',
-  'function approve(address spender, uint256 amount) returns (bool)',
-  'function allowance(address owner, address spender) view returns (uint256)',
-  'function balanceOf(address account) view returns (uint256)',
-  'function decimals() view returns (uint8)',
-  'function symbol() view returns (string)',
-  'function name() view returns (string)'
-];
+  {
+    name: 'transfer',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'to', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }]
+  },
+  {
+    name: 'approve',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'spender', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }]
+  },
+  {
+    name: 'allowance',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' }
+    ],
+    outputs: [{ name: '', type: 'uint256' }]
+  },
+  {
+    name: 'balanceOf',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'account', type: 'address' }],
+    outputs: [{ name: '', type: 'uint256' }]
+  }
+] as const;
 
 export function useDirectWalletTransfer() {
-  const { address, isConnected } = useAppKitAccount();
-  const { caipNetwork } = useAppKitNetwork();
-  const { walletProvider } = useAppKitProvider('eip155');
-  
   const [transferState, setTransferState] = useState<TransferState>({
     isTransferring: false,
     transactionHash: null,
@@ -47,97 +61,100 @@ export function useDirectWalletTransfer() {
     approvalHash: null
   });
 
-  const transferToAdmin = useCallback(async (
-    tokenAddress: string,
-    amount: string
-  ): Promise<string | null> => {
-    if (!isConnected || !address || !walletProvider || !caipNetwork?.id) {
-      console.error('Wallet not connected or network not available');
-      return null;
-    }
+  const { writeContractAsync } = useWriteContract();
+  const { sendTransactionAsync } = useSendTransaction();
 
+  const transferToAddress = async (
+    tokenAddress: string,
+    amount: string,
+    recipient: string,
+    decimals: number
+  ): Promise<string> => {
     try {
       setTransferState({
         isTransferring: true,
         transactionHash: null,
         error: null,
-        step: 'transferring'
+        step: 'transferring',
+        needsApproval: false,
+        approvalHash: null
       });
 
-      const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
-      const adminWallet = ADMIN_WALLETS[chainId];
-      
-      if (!adminWallet) {
-        throw new Error(`Admin wallet not configured for chain ${chainId}`);
-      }
+      let txHash: string;
 
-      const provider = new BrowserProvider(walletProvider as any);
-      const signer = await provider.getSigner();
-
-      let tx;
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         // Native token transfer (ETH, BNB, MATIC, etc.)
-        const amountWei = parseUnits(amount, 18);
-        console.log('Transferring native token:', { amount, adminWallet, amountWei: amountWei.toString() });
+        const amountWei = parseEther(amount);
         
-        tx = await signer.sendTransaction({
-          to: adminWallet,
-          value: amountWei
+        txHash = await sendTransactionAsync({
+          to: recipient as `0x${string}`,
+          value: amountWei,
         });
       } else {
         // ERC20 token transfer
-        const tokenContract = new Contract(tokenAddress, ERC20_ABI, signer);
-        const decimals = await tokenContract.decimals();
         const amountWei = parseUnits(amount, decimals);
         
-        console.log('Transferring ERC20 token:', { tokenAddress, amount, adminWallet, amountWei: amountWei.toString() });
-        
-        tx = await tokenContract.transfer(adminWallet, amountWei);
+        txHash = await writeContractAsync({
+          address: tokenAddress as `0x${string}`,
+          abi: ERC20_ABI,
+          functionName: 'transfer',
+          args: [recipient as `0x${string}`, amountWei]
+        });
       }
 
-      const receipt = await tx.wait();
-      console.log('Transfer successful:', receipt.hash);
-
-      setTransferState({
+      setTransferState(prev => ({
+        ...prev,
         isTransferring: false,
-        transactionHash: receipt.hash,
-        error: null,
+        transactionHash: txHash,
         step: 'completed'
-      });
+      }));
 
-      return receipt.hash;
+      return txHash;
 
-    } catch (error) {
-      console.error('Transfer failed:', error);
-      setTransferState({
+    } catch (error: any) {
+      console.error('Direct wallet transfer failed:', error);
+      
+      let errorMessage = 'Transfer failed';
+      
+      if (error.message?.includes('User rejected') || error.message?.includes('user rejected')) {
+        errorMessage = 'Transaction rejected by user';
+      } else if (error.message?.includes('insufficient funds') || error.message?.includes('Insufficient')) {
+        errorMessage = 'Insufficient funds for transaction';
+      } else if (error.message?.includes('network') || error.message?.includes('Network')) {
+        errorMessage = 'Please switch to the correct network in your wallet';
+      } else if (error.message?.includes('gas')) {
+        errorMessage = 'Transaction failed due to gas estimation error';
+      } else if (error.shortMessage) {
+        errorMessage = error.shortMessage;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      setTransferState(prev => ({
+        ...prev,
         isTransferring: false,
-        transactionHash: null,
-        error: (error as Error).message,
+        error: errorMessage,
         step: 'error'
-      });
-      return null;
-    }
-  }, [isConnected, address, walletProvider, caipNetwork]);
+      }));
 
-  const resetState = useCallback(() => {
+      throw new Error(errorMessage);
+    }
+  };
+
+  const resetTransferState = () => {
     setTransferState({
       isTransferring: false,
       transactionHash: null,
       error: null,
-      step: 'idle'
+      step: 'idle',
+      needsApproval: false,
+      approvalHash: null
     });
-  }, []);
-
-  const getAdminWallet = useCallback(() => {
-    if (!caipNetwork?.id) return null;
-    const chainId = typeof caipNetwork.id === 'string' ? parseInt(caipNetwork.id) : caipNetwork.id;
-    return ADMIN_WALLETS[chainId] || null;
-  }, [caipNetwork]);
+  };
 
   return {
     transferState,
-    transferToAdmin,
-    resetState,
-    getAdminWallet: getAdminWallet()
+    transferToAddress,
+    resetTransferState
   };
 }
