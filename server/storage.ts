@@ -45,6 +45,184 @@ export interface IStorage {
   createCustodyWallet(wallet: InsertCustodyWallet): Promise<CustodyWallet>;
 }
 
+export class DatabaseStorage implements IStorage {
+  // User operations (Replit Auth compatible)
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
+  async getUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.walletAddress, walletAddress));
+    return user;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  // KYC operations
+  async getKycDocuments(userId: string): Promise<KycDocument[]> {
+    return await db.select().from(kycDocuments).where(eq(kycDocuments.userId, parseInt(userId)));
+  }
+
+  async createKycDocument(document: InsertKycDocument): Promise<KycDocument> {
+    const [created] = await db.insert(kycDocuments).values(document).returning();
+    return created;
+  }
+
+  async updateKycDocument(id: number, updates: Partial<KycDocument>): Promise<KycDocument | undefined> {
+    const [updated] = await db
+      .update(kycDocuments)
+      .set(updates)
+      .where(eq(kycDocuments.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Bank account operations
+  async getBankAccounts(userId: string): Promise<BankAccount[]> {
+    return await db.select().from(bankAccounts).where(eq(bankAccounts.userId, parseInt(userId)));
+  }
+
+  async createBankAccount(account: InsertBankAccount): Promise<BankAccount> {
+    const [created] = await db.insert(bankAccounts).values(account).returning();
+    return created;
+  }
+
+  async updateBankAccount(id: number, updates: Partial<BankAccount>): Promise<BankAccount | undefined> {
+    const [updated] = await db
+      .update(bankAccounts)
+      .set(updates)
+      .where(eq(bankAccounts.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Transaction operations
+  async getTransactions(userId: string): Promise<Transaction[]> {
+    return await db.select().from(transactions).where(eq(transactions.userId, userId));
+  }
+
+  async getTransaction(id: number): Promise<Transaction | undefined> {
+    const [transaction] = await db.select().from(transactions).where(eq(transactions.id, id));
+    return transaction;
+  }
+
+  async createTransaction(transaction: InsertTransaction): Promise<Transaction> {
+    const [created] = await db.insert(transactions).values(transaction).returning();
+    return created;
+  }
+
+  async updateTransaction(id: number, updates: Partial<Transaction>): Promise<Transaction | undefined> {
+    const [updated] = await db
+      .update(transactions)
+      .set(updates)
+      .where(eq(transactions.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Travel Rule operations
+  async getTravelRuleRecord(transactionId: number): Promise<TravelRuleRecord | undefined> {
+    const [record] = await db.select().from(travelRuleRecords).where(eq(travelRuleRecords.transactionId, transactionId));
+    return record;
+  }
+
+  async createTravelRuleRecord(record: InsertTravelRuleRecord): Promise<TravelRuleRecord> {
+    const [created] = await db.insert(travelRuleRecords).values(record).returning();
+    return created;
+  }
+
+  async updateTravelRuleRecord(id: number, updates: Partial<TravelRuleRecord>): Promise<TravelRuleRecord | undefined> {
+    const [updated] = await db
+      .update(travelRuleRecords)
+      .set(updates)
+      .where(eq(travelRuleRecords.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Crypto Purchase operations
+  async getCryptoPurchaseOrders(userId: string): Promise<CryptoPurchaseOrder[]> {
+    return await db.select().from(cryptoPurchaseOrders).where(eq(cryptoPurchaseOrders.userId, userId));
+  }
+
+  async getCryptoPurchaseOrder(id: number): Promise<CryptoPurchaseOrder | undefined> {
+    const [order] = await db.select().from(cryptoPurchaseOrders).where(eq(cryptoPurchaseOrders.id, id));
+    return order;
+  }
+
+  async createCryptoPurchaseOrder(order: InsertCryptoPurchaseOrder): Promise<CryptoPurchaseOrder> {
+    const [created] = await db.insert(cryptoPurchaseOrders).values(order).returning();
+    return created;
+  }
+
+  async updateCryptoPurchaseOrder(id: number, updates: Partial<CryptoPurchaseOrder>): Promise<CryptoPurchaseOrder | undefined> {
+    const [updated] = await db
+      .update(cryptoPurchaseOrders)
+      .set(updates)
+      .where(eq(cryptoPurchaseOrders.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Social Wallet operations
+  async getSocialWallet(userId: string): Promise<SocialWallet | undefined> {
+    const [wallet] = await db.select().from(socialWallets).where(eq(socialWallets.userId, userId));
+    return wallet;
+  }
+
+  async createSocialWallet(wallet: InsertSocialWallet): Promise<SocialWallet> {
+    const [created] = await db.insert(socialWallets).values(wallet).returning();
+    return created;
+  }
+
+  async updateSocialWallet(id: number, updates: Partial<SocialWallet>): Promise<SocialWallet | undefined> {
+    const [updated] = await db
+      .update(socialWallets)
+      .set(updates)
+      .where(eq(socialWallets.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Custody wallet operations
+  async getCustodyWallets(): Promise<CustodyWallet[]> {
+    return await db.select().from(custodyWallets);
+  }
+
+  async getCustodyWalletByNetwork(network: string): Promise<CustodyWallet | undefined> {
+    const [wallet] = await db.select().from(custodyWallets).where(eq(custodyWallets.network, network));
+    return wallet;
+  }
+
+  async createCustodyWallet(wallet: InsertCustodyWallet): Promise<CustodyWallet> {
+    const [created] = await db.insert(custodyWallets).values(wallet).returning();
+    return created;
+  }
+}
+
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private kycDocuments: Map<number, KycDocument>;
@@ -249,4 +427,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
