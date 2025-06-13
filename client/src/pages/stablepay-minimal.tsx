@@ -144,6 +144,8 @@ export function StablePayMinimal() {
 
   const handleConversion = async () => {
     try {
+      // Reset any previous transfer state
+      resetTransferState();
       setState(prev => ({ ...prev, isProcessing: true }));
 
       // Pre-flight checks
@@ -540,6 +542,7 @@ export function StablePayMinimal() {
                     !state.amount || 
                     !bankDetails.accountNumber || 
                     state.isProcessing ||
+                    transferState.isTransferring ||
                     (tokenBalances.length > 0 && (() => {
                       const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
                       return selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance);
@@ -547,10 +550,13 @@ export function StablePayMinimal() {
                   }
                   className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {state.isProcessing ? (
+                  {(state.isProcessing || transferState.isTransferring) ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Executing Blockchain Transfer...
+                      {transferState.step === 'preparing' && 'Preparing Transfer...'}
+                      {transferState.step === 'confirming' && 'Confirm in Wallet...'}
+                      {transferState.step === 'completed' && 'Transfer Complete!'}
+                      {transferState.step === 'idle' && 'Executing Blockchain Transfer...'}
                     </div>
                   ) : (
                     'Convert to INR'
