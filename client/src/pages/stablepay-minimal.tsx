@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, Shield, Banknote, Clock, CheckCircle, Wallet, Zap, ExternalLink, LogOut, User, Network, RefreshCw } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
+import { useSmartContractTransfer } from '@/hooks/use-smart-contract-transfer';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -33,6 +34,9 @@ export function StablePayMinimal() {
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
+  
+  // Smart contract transfer functionality
+  const { transferState, transferToAdmin, resetTransferState } = useSmartContractTransfer();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -109,79 +113,32 @@ export function StablePayMinimal() {
         throw new Error(`This network (Chain ID: ${chainId}) is not supported yet`);
       }
 
-      console.log('Starting token transfer:', { tokenAddress, amount, adminWallet, chainId, address });
+      console.log('Starting smart contract transfer:', { tokenAddress, amount, adminWallet, chainId, address });
 
-      // Get the wallet provider from the global scope
-      const ethereum = (window as any).ethereum || (globalThis as any).ethereum;
-      
-      if (!ethereum) {
-        throw new Error('No Web3 wallet detected. Please install MetaMask or another compatible wallet.');
+      // Find token details
+      const selectedToken = tokenBalances.find(token => 
+        token.address.toLowerCase() === tokenAddress.toLowerCase() || 
+        (tokenAddress === '0x0000000000000000000000000000000000000000' && token.address === '0x0000000000000000000000000000000000000000')
+      );
+
+      if (!selectedToken) {
+        throw new Error('Token not found in wallet balances');
       }
 
-      // Ensure we're connected to the correct network
-      try {
-        await ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${chainId.toString(16)}` }],
-        });
-      } catch (switchError: any) {
-        if (switchError.code === 4902) {
-          throw new Error(`Please add chain ${chainId} to your wallet`);
-        }
-        // If switch fails for other reasons, continue anyway
-      }
+      // Use smart contract transfer function
+      const txHash = await transferToAdmin(
+        tokenAddress,
+        amount,
+        selectedToken.decimals,
+        address
+      );
 
-      let txHash: string;
-
-      if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-        // Native token transfer (ETH, BNB, MATIC, etc.)
-        const amountWei = `0x${Math.floor(parseFloat(amount) * 1e18).toString(16)}`;
-        
-        txHash = await ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            from: address,
-            to: adminWallet,
-            value: amountWei,
-            gas: '0x5208' // 21000 gas for simple transfers
-          }]
-        });
-      } else {
-        // ERC20 token transfer
-        const amountWei = Math.floor(parseFloat(amount) * 1e18).toString(16).padStart(64, '0');
-        const transferData = `0xa9059cbb000000000000000000000000${adminWallet.slice(2).toLowerCase()}${amountWei}`;
-        
-        txHash = await ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            from: address,
-            to: tokenAddress,
-            data: transferData,
-            gas: '0x13880' // 80000 gas for ERC20 transfers
-          }]
-        });
-      }
-
-      if (!txHash) {
-        throw new Error('No transaction hash received');
-      }
-
-      console.log('Token transfer successful:', txHash);
+      console.log('Smart contract transfer successful:', txHash);
       return txHash;
       
     } catch (error: any) {
-      console.error('Direct transfer failed:', error);
-      
-      // Handle specific error codes
-      if (error.code === 4001) {
-        throw new Error('Transaction rejected by user');
-      } else if (error.code === -32603) {
-        throw new Error('Insufficient funds for transaction');
-      } else if (error.code === -32602) {
-        throw new Error('Invalid transaction parameters');
-      } else {
-        throw new Error(`Transfer failed: ${error.message || 'Unknown error'}`);
-      }
+      console.error('Smart contract transfer failed:', error);
+      throw error; // Let the smart contract hook handle error formatting
     }
   };
 
