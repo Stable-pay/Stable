@@ -8,17 +8,7 @@ import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/rea
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
-// Import admin wallet configuration
-const ADMIN_WALLETS: Record<number, string> = {
-  1: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Ethereum
-  137: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Polygon
-  56: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // BSC
-  42161: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Arbitrum
-};
 
-const getAdminWallet = (chainId: number): string | null => {
-  return ADMIN_WALLETS[chainId] || null;
-};
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -590,14 +580,16 @@ export function StablePayMinimal() {
                   
                   <Button 
                     onClick={() => {
-                      const currentChainId = caipNetwork?.id || 1;
-                      const adminWallet = getAdminWallet(currentChainId);
+                      const chainId = typeof caipNetwork?.id === 'string' 
+                        ? parseInt(caipNetwork.id) 
+                        : caipNetwork?.id || 1;
+                      const adminWallet = ADMIN_WALLETS[chainId];
                       if (adminWallet) {
                         openPayModal({
                           recipient: adminWallet,
                           amount: state.amount,
                           token: state.fromToken,
-                          chainId: currentChainId
+                          chainId: chainId
                         });
                       }
                     }}
