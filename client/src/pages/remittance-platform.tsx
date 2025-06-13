@@ -728,55 +728,44 @@ export function RemittancePlatform() {
             <div className="space-y-4">
               <h3 className="text-white font-semibold text-lg text-center">Choose your sign-up method</h3>
               
-              {/* Direct wallet creation with social login - Enhanced debugging */}
+              {/* Enhanced wallet creation button with improved visibility */}
               <Button 
                 onClick={async () => {
-                  console.log('=== WALLET CREATION DEBUG ===');
-                  console.log('1. Button clicked for wallet creation');
-                  console.log('2. isConnected:', isConnected);
-                  console.log('3. address:', address);
-                  console.log('4. AppKit status:', status);
-                  
                   setState(prev => ({ ...prev, walletCreationType: 'new' }));
-                  
                   try {
-                    console.log('5. Opening AppKit modal...');
                     await open();
-                    console.log('6. AppKit modal opened successfully');
                   } catch (error) {
-                    console.error('7. Error opening AppKit:', error);
-                    // Fallback: Show a notification to user about the issue
-                    alert('Wallet creation temporarily unavailable. Please try connecting an existing wallet or refresh the page.');
+                    console.error('Error opening AppKit:', error);
                   }
                 }}
-                className="w-full h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg font-semibold transition-all duration-200 group"
+                className="w-full h-16 bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 hover:from-emerald-500 hover:via-blue-500 hover:to-purple-500 text-white text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group border border-white/20"
               >
-                <UserCheck className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                <UserCheck className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform text-white" />
                 Create Wallet with Social Login
-                <ArrowRight className="w-5 h-5 ml-auto group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 ml-auto group-hover:translate-x-1 transition-transform text-white" />
               </Button>
 
-              <div className="text-center text-white/70 text-sm">
-                <p>Choose from Google, Apple, Email, Discord, or other social providers</p>
+              <div className="text-center text-emerald-200 text-sm font-medium">
+                <p>✨ Choose from Google, Apple, Email, Discord, or other social providers</p>
               </div>
 
-              <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+              <div className="p-4 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-purple-500/20 rounded-lg border border-emerald-400/30 backdrop-blur-sm">
                 <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
+                  <Shield className="w-5 h-5 text-emerald-300 mt-0.5" />
                   <div>
-                    <h4 className="text-blue-300 font-medium mb-1">Secure & Self-Custodial</h4>
-                    <p className="text-blue-200/80 text-sm">
+                    <h4 className="text-emerald-200 font-semibold mb-1">🔒 Secure & Self-Custodial</h4>
+                    <p className="text-emerald-100/90 text-sm">
                       Your wallet is created securely with your chosen method. You maintain full control of your private keys and assets. No one else can access your funds.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="text-center text-white/60 text-sm">
+              <div className="text-center text-white/80 text-sm">
                 <p>Already have a wallet? 
                   <Button 
                     variant="link" 
-                    className="text-blue-400 hover:text-blue-300 p-0 ml-1"
+                    className="text-emerald-300 hover:text-emerald-200 p-0 ml-1 font-medium underline-offset-4 hover:underline"
                     onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
                   >
                     Connect existing wallet

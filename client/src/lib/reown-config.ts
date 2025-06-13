@@ -29,7 +29,7 @@ export const wagmiAdapter = new WagmiAdapter({
 const metadata = {
   name: 'RemitPay - Web3 Remittance Platform',
   description: 'Send crypto to India instantly with live exchange rates and Web3 off-ramping',
-  url: typeof window !== 'undefined' ? window.location.origin : 'https://fc0fcb6c-8722-458b-9985-8a31854bcfb6-00-9b41tf5yjab1.spock.replit.dev:3000',
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://stablepay.replit.app',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
