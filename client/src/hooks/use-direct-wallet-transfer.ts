@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useWriteContract, useSendTransaction } from 'wagmi';
-import { parseEther, parseUnits } from 'viem';
+import { parseEther, parseUnits, getAddress } from 'viem';
 
 interface TransferState {
   isTransferring: boolean;
@@ -82,12 +82,18 @@ export function useDirectWalletTransfer() {
 
       let txHash: string;
 
+      // Validate and checksum addresses
+      const validatedRecipient = getAddress(recipient);
+      const validatedTokenAddress = tokenAddress === '0x0000000000000000000000000000000000000000' 
+        ? tokenAddress 
+        : getAddress(tokenAddress);
+
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         // Native token transfer (ETH, BNB, MATIC, etc.)
         const amountWei = parseEther(amount);
         
         txHash = await sendTransactionAsync({
-          to: recipient as `0x${string}`,
+          to: validatedRecipient as `0x${string}`,
           value: amountWei,
         });
       } else {
@@ -95,10 +101,10 @@ export function useDirectWalletTransfer() {
         const amountWei = parseUnits(amount, decimals);
         
         txHash = await writeContractAsync({
-          address: tokenAddress as `0x${string}`,
+          address: validatedTokenAddress as `0x${string}`,
           abi: ERC20_ABI,
           functionName: 'transfer',
-          args: [recipient as `0x${string}`, amountWei]
+          args: [validatedRecipient as `0x${string}`, amountWei]
         });
       }
 

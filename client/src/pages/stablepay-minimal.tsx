@@ -18,14 +18,14 @@ interface ConversionState {
   transactionHash: string | null;
 }
 
-// Admin wallet addresses for each chain
+// Admin wallet addresses for each chain (with proper checksums)
 const ADMIN_WALLETS: Record<number, string> = {
-  1: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Ethereum
-  56: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // BSC
-  137: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Polygon
-  42161: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Arbitrum
-  10: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Optimism
-  43114: '0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e', // Avalanche
+  1: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Ethereum
+  56: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // BSC
+  137: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Polygon
+  42161: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Arbitrum
+  10: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Optimism
+  43114: '0x742d35Cc6dF6A18647d95D5aE274C4D81dB7e88E', // Avalanche
   1337: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // Local hardhat
 };
 
