@@ -23,13 +23,13 @@ export const wagmiAdapter = new WagmiAdapter({
 
 // Set up metadata
 const metadata = {
-  name: 'StablePay',
-  description: 'Crypto to INR conversion platform',
+  name: 'RemitPay - Web3 Remittance Platform',
+  description: 'Send crypto to India instantly with live exchange rates and Web3 off-ramping',
   url: typeof window !== 'undefined' ? window.location.origin : 'https://stablepay.replit.app',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal with enhanced configuration
+// Create the modal with enhanced configuration for social login and onramp
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId: projectId!,
@@ -39,16 +39,19 @@ export const modal = createAppKit({
   features: {
     analytics: true,
     email: true,
-    socials: ['google', 'github', 'apple', 'discord', 'farcaster'],
+    socials: ['google', 'apple', 'discord', 'github', 'x'],
     emailShowWallets: true,
     onramp: true,
-    send: true,
-    pay: true
+    swaps: true,
+    history: true
   },
   themeMode: 'dark',
   themeVariables: {
+    '--w3m-color-mix': '#3b82f6',
+    '--w3m-color-mix-strength': 20,
     '--w3m-accent': '#3b82f6',
-    '--w3m-border-radius-master': '12px'
+    '--w3m-border-radius-master': '12px',
+    '--w3m-font-family': 'Inter, system-ui, sans-serif'
   }
 })
 

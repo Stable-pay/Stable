@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, Globe, Send, Clock, CheckCircle, Wallet, Shield, CreditCard, Phone, Building, MapPin, Users, TrendingUp, Star, Zap, RefreshCw, FileText, Scan, UserCheck, Key, Database, Lock } from 'lucide-react';
-import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitProvider, useAppKitState } from '@reown/appkit/react';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -83,6 +83,7 @@ export function RemittancePlatform() {
   const { open } = useAppKit();
   const { address, isConnected, status } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
+  const { selectedNetworkId } = useAppKitState();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   
   const { transferState, transferToAdmin, openAccountModal, resetTransferState } = useReownTransfer();
@@ -709,70 +710,21 @@ export function RemittancePlatform() {
             <div className="space-y-4">
               <h3 className="text-white font-semibold text-lg text-center">Choose your sign-up method</h3>
               
-              <div className="grid grid-cols-1 gap-3">
-                {/* Google Login */}
-                <Button 
-                  onClick={() => {
-                    setState(prev => ({ ...prev, socialProvider: 'google', step: 'social-signup' }));
-                    open({ view: 'Connect' });
-                  }}
-                  variant="outline"
-                  className="h-14 bg-white/5 border-white/20 text-white hover:bg-white/10 transition-all duration-200 group"
-                >
-                  <div className="w-6 h-6 mr-3 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-black text-sm font-bold">G</span>
-                  </div>
-                  Continue with Google
-                  <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-                </Button>
+              {/* Single button to open Reown AppKit with social login options */}
+              <Button 
+                onClick={() => {
+                  setState(prev => ({ ...prev, walletCreationType: 'new' }));
+                  open({ view: 'Connect' });
+                }}
+                className="w-full h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg font-semibold transition-all duration-200 group"
+              >
+                <UserCheck className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                Create Wallet with Social Login
+                <ArrowRight className="w-5 h-5 ml-auto group-hover:translate-x-1 transition-transform" />
+              </Button>
 
-                {/* Apple Login */}
-                <Button 
-                  onClick={() => {
-                    setState(prev => ({ ...prev, socialProvider: 'apple', step: 'social-signup' }));
-                    open({ view: 'Connect' });
-                  }}
-                  variant="outline"
-                  className="h-14 bg-white/5 border-white/20 text-white hover:bg-white/10 transition-all duration-200 group"
-                >
-                  <div className="w-6 h-6 mr-3 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-black text-sm font-bold"></span>
-                  </div>
-                  Continue with Apple
-                  <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-                </Button>
-
-                {/* Email Login */}
-                <Button 
-                  onClick={() => {
-                    setState(prev => ({ ...prev, socialProvider: 'email', step: 'social-signup' }));
-                    open({ view: 'Connect' });
-                  }}
-                  variant="outline"
-                  className="h-14 bg-white/5 border-white/20 text-white hover:bg-white/10 transition-all duration-200 group"
-                >
-                  <div className="w-6 h-6 mr-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">@</span>
-                  </div>
-                  Continue with Email
-                  <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-                </Button>
-
-                {/* Discord Login */}
-                <Button 
-                  onClick={() => {
-                    setState(prev => ({ ...prev, socialProvider: 'discord', step: 'social-signup' }));
-                    open({ view: 'Connect' });
-                  }}
-                  variant="outline"
-                  className="h-14 bg-white/5 border-white/20 text-white hover:bg-white/10 transition-all duration-200 group"
-                >
-                  <div className="w-6 h-6 mr-3 bg-indigo-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">D</span>
-                  </div>
-                  Continue with Discord
-                  <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
-                </Button>
+              <div className="text-center text-white/70 text-sm">
+                <p>Choose from Google, Apple, Email, Discord, or other social providers</p>
               </div>
 
               <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
@@ -815,74 +767,9 @@ export function RemittancePlatform() {
     );
   }
 
-  // Social Signup step
-  if (state.step === 'social-signup') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-              <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-400 border-t-transparent"></div>
-              Creating Your Wallet
-            </CardTitle>
-            <p className="text-white/70 mt-2">Setting up your secure Web3 wallet with {state.socialProvider}</p>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div className="p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/20">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-white">Authenticating with {state.socialProvider}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-white/70">Generating secure private keys...</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                    <span className="text-white/50">Setting up wallet address...</span>
-                  </div>
-                </div>
-              </div>
+  // This step is now handled by Reown AppKit directly - no separate social signup step needed
 
-              <div className="p-4 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                <div className="flex items-start gap-3">
-                  <Key className="w-5 h-5 text-yellow-400 mt-0.5" />
-                  <div>
-                    <h4 className="text-yellow-300 font-medium mb-1">Your Keys, Your Control</h4>
-                    <p className="text-yellow-200/80 text-sm">
-                      We're creating a self-custodial wallet for you. This means you have complete control over your funds. Keep your recovery phrase safe!
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Simulate wallet creation process */}
-              <div className="text-center">
-                <Button 
-                  onClick={() => setState(prev => ({ ...prev, step: 'buy-crypto' }))}
-                  className="h-12 px-8 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
-                >
-                  Wallet Created! Continue to Buy Crypto
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Buy Crypto step
+  // Buy Crypto step - integrated with Reown AppKit onramp
   if (state.step === 'buy-crypto') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
@@ -907,82 +794,52 @@ export function RemittancePlatform() {
                 </p>
               </div>
 
-              <div className="space-y-3">
-                <label className="text-white text-sm font-medium">Amount to Buy (USD)</label>
-                <Input
-                  type="number"
-                  placeholder="50.00"
-                  value={state.buyCryptoAmount}
-                  onChange={(e) => setState(prev => ({ ...prev, buyCryptoAmount: e.target.value }))}
-                  className="bg-gray-700/50 border-gray-600 text-white text-xl h-14"
-                />
-                <div className="flex gap-2">
-                  {['25', '50', '100', '250'].map((amount) => (
-                    <Button
-                      key={amount}
-                      onClick={() => setState(prev => ({ ...prev, buyCryptoAmount: amount }))}
-                      variant="outline"
-                      size="sm"
-                      className="border-gray-600 text-white hover:bg-gray-700/50"
-                    >
-                      ${amount}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-white text-sm font-medium">Select Cryptocurrency</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {['USDT', 'USDC', 'ETH', 'BTC'].map((crypto) => (
-                    <Button
-                      key={crypto}
-                      onClick={() => setState(prev => ({ ...prev, fromToken: crypto }))}
-                      variant={state.fromToken === crypto ? "default" : "outline"}
-                      className={`h-12 ${state.fromToken === crypto 
-                        ? 'bg-blue-600 hover:bg-blue-700' 
-                        : 'border-gray-600 text-white hover:bg-gray-700/50'}`}
-                    >
-                      {crypto}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
               <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                <h4 className="text-blue-300 font-medium mb-2">Payment Methods</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span className="text-white">Credit/Debit Card (Instant)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span className="text-white">Bank Transfer (1-3 days)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span className="text-white">Apple Pay / Google Pay</span>
-                  </div>
-                </div>
+                <h4 className="text-blue-300 font-medium mb-3">Buy Crypto with Reown</h4>
+                <p className="text-blue-200/80 text-sm mb-4">
+                  Use our integrated onramp to purchase cryptocurrency directly to your wallet with credit cards, bank transfers, or digital payments.
+                </p>
+                
+                <Button 
+                  onClick={() => {
+                    // Open Reown AppKit onramp view
+                    open({ view: 'OnRampProviders' });
+                  }}
+                  className="w-full h-14 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-lg font-semibold"
+                >
+                  <CreditCard className="w-5 h-5 mr-2" />
+                  Open Crypto Purchase
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
               </div>
 
-              {state.buyCryptoAmount && (
-                <div className="p-4 bg-gray-700/30 rounded-lg border border-gray-600/30">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-white/70">You're buying:</span>
-                    <span className="text-white font-medium">${state.buyCryptoAmount} USD</span>
-                  </div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-white/70">Processing fee:</span>
-                    <span className="text-white font-medium">$2.99</span>
-                  </div>
-                  <div className="flex justify-between text-lg font-semibold border-t border-gray-600 pt-2">
-                    <span className="text-white">Total:</span>
-                    <span className="text-green-400">${(parseFloat(state.buyCryptoAmount || '0') + 2.99).toFixed(2)}</span>
-                  </div>
+              <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                <h4 className="text-purple-300 font-medium mb-2">Alternative: Already have crypto?</h4>
+                <p className="text-purple-200/80 text-sm mb-3">
+                  If you already have cryptocurrency in another wallet, you can receive or transfer it to your new wallet.
+                </p>
+                
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => {
+                      open({ view: 'WalletReceive' });
+                    }}
+                    variant="outline"
+                    className="flex-1 border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+                  >
+                    Receive Crypto
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      setState(prev => ({ ...prev, step: 'kyc' }));
+                    }}
+                    variant="outline"
+                    className="flex-1 border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+                  >
+                    Skip for Now
+                  </Button>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className="flex gap-3">
@@ -993,21 +850,10 @@ export function RemittancePlatform() {
               >
                 Back
               </Button>
-              <Button 
-                onClick={() => {
-                  // Simulate crypto purchase and connection
-                  setState(prev => ({ ...prev, step: 'kyc' }));
-                }}
-                disabled={!state.buyCryptoAmount || parseFloat(state.buyCryptoAmount) < 10}
-                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
-              >
-                Buy Crypto & Continue
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
             </div>
 
             <div className="text-center text-white/60 text-xs">
-              <p>Powered by secure payment processors • SSL encrypted • Minimum $10 purchase</p>
+              <p>Powered by Reown AppKit • Secure payment processing • Multiple payment methods supported</p>
             </div>
           </CardContent>
         </Card>
