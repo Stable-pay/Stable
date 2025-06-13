@@ -402,9 +402,9 @@ export function RemittancePlatform() {
                       setState(prev => ({ ...prev, walletCreationType: 'existing' }));
                       open({ view: 'Connect' });
                     }}
-                    className="h-14 px-6 text-lg font-semibold bg-white text-black hover:bg-white/90 transition-all duration-200 shadow-2xl shadow-white/10 group"
+                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-white shadow-xl hover:shadow-2xl shadow-emerald-500/30 transition-all duration-300 group border border-white/30"
                   >
-                    <Wallet className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                    <Wallet className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform text-white" />
                     Connect Wallet
                   </Button>
                   
@@ -417,28 +417,27 @@ export function RemittancePlatform() {
                         step: 'create-wallet'
                       }));
                     }}
-                    variant="outline"
-                    className="h-14 px-6 text-lg font-semibold border-2 border-white/40 text-white hover:bg-white/10 hover:border-white/60 transition-all duration-200 shadow-2xl shadow-white/10 backdrop-blur-sm group"
+                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-500 hover:via-pink-500 hover:to-rose-500 text-white shadow-xl hover:shadow-2xl shadow-purple-500/30 transition-all duration-300 group border border-white/30"
                   >
-                    <UserCheck className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                    <UserCheck className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform text-white" />
                     Create Wallet
                   </Button>
                 </div>
                 
                 <div className="text-center space-y-3">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto text-sm">
-                    <div className="text-white/70">
-                      <div className="font-medium text-white mb-1">Already have crypto?</div>
-                      <div>Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
+                    <div className="p-4 bg-emerald-500/10 rounded-lg border border-emerald-400/20">
+                      <div className="font-semibold text-emerald-300 mb-2">Already have crypto?</div>
+                      <div className="text-emerald-100/90">Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
                     </div>
-                    <div className="text-white/70">
-                      <div className="font-medium text-white mb-1">New to crypto?</div>
-                      <div>Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
+                    <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-400/20">
+                      <div className="font-semibold text-purple-300 mb-2">New to crypto?</div>
+                      <div className="text-purple-100/90">Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
                     </div>
                   </div>
                   
-                  <div className="text-white/50 text-xs">
-                    Secure • Self-custodial • Your keys, your crypto
+                  <div className="text-white/70 text-sm font-medium">
+                    🔐 Secure • 🎯 Self-custodial • 🔑 Your keys, your crypto
                   </div>
                 </div>
                 
@@ -827,11 +826,11 @@ export function RemittancePlatform() {
                     // Open Reown AppKit onramp view
                     open({ view: 'OnRampProviders' });
                   }}
-                  className="w-full h-14 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-lg font-semibold"
+                  className="w-full h-14 bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:from-emerald-500 hover:via-green-500 hover:to-teal-500 text-white text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20"
                 >
-                  <CreditCard className="w-5 h-5 mr-2" />
+                  <CreditCard className="w-5 h-5 mr-2 text-white" />
                   Open Crypto Purchase
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-5 h-5 ml-2 text-white" />
                 </Button>
               </div>
 
