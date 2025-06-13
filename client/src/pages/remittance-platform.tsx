@@ -160,270 +160,288 @@ export function RemittancePlatform() {
     }
   };
 
-  // Landing page for wallet connection
+  // Landing page for wallet connection - Reown.com inspired design
   if (!isConnected || state.step === 'connect') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen bg-black relative overflow-hidden">
+        {/* Background Gradient Effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/50 via-purple-950/30 to-black"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        
+        <div className="relative z-10 min-h-screen flex flex-col">
+          {/* Navigation Header */}
+          <header className="w-full px-6 py-4 border-b border-white/5">
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-white font-semibold text-lg">RemitPay</span>
+              </div>
+              <div className="hidden md:flex items-center gap-6 text-sm text-white/70">
+                <span>How it works</span>
+                <span>Security</span>
+                <span>Support</span>
+              </div>
+            </div>
+          </header>
+
           {/* Hero Section */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-6">
-              <Globe className="w-5 h-5 text-blue-400" />
-              <span className="text-white text-sm font-medium">World's First Web3 Remittance Platform</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Send Money to
-              <br />
-              <span className="bg-gradient-to-r from-orange-400 to-green-400 bg-clip-text text-transparent">
-                🇮🇳 India Instantly
-              </span>
-            </h1>
-            
-            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Send crypto from anywhere and your family receives Indian Rupees in minutes. 
-              Zero bank delays, maximum security. More countries launching soon.
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <Badge variant="secondary" className="bg-green-500/20 text-green-300 border-green-500/30">
-                <Clock className="w-4 h-4 mr-1" />
-                2-5 minute transfers
-              </Badge>
-              <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30">
-                <Shield className="w-4 h-4 mr-1" />
-                Bank-grade security
-              </Badge>
-              <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                Best exchange rates
-              </Badge>
-            </div>
-
-            <div className="space-y-4">
-              <Button 
-                onClick={() => {
-                  console.log('Opening wallet connection modal...');
-                  open({ view: 'Connect' });
-                }}
-                size="lg"
-                className="h-14 px-8 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25"
-              >
-                <Wallet className="w-5 h-5 mr-2" />
-                Connect Wallet to Start
-              </Button>
+          <main className="flex-1 flex items-center justify-center px-6 py-20">
+            <div className="max-w-4xl mx-auto text-center">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 px-4 py-2 rounded-full mb-8">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-white/80 text-sm font-medium">World's first Web3 remittance platform</span>
+              </div>
               
-              {status === 'reconnecting' && (
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent mx-auto mb-2"></div>
-                  <p className="text-white/70 text-sm">Connecting to wallet...</p>
-                </div>
-              )}
+              {/* Main Heading */}
+              <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
+                <span className="text-white">Send money to</span>
+                <br />
+                <span className="bg-gradient-to-r from-orange-400 via-yellow-400 to-green-400 bg-clip-text text-transparent">
+                  India instantly
+                </span>
+              </h1>
               
-              {status === 'disconnected' && address && (
-                <div className="text-center">
-                  <p className="text-orange-400 text-sm">Wallet disconnected. Please reconnect to continue.</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <Card className="bg-white/5 backdrop-blur-md border-white/10">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-6 h-6 text-blue-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Lightning Fast</h3>
-                <p className="text-white/70">Transfers complete in 2-5 minutes instead of 3-7 business days</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 backdrop-blur-md border-white/10">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-6 h-6 text-green-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Ultra Secure</h3>
-                <p className="text-white/70">Blockchain technology ensures your transfers are safe and transparent</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 backdrop-blur-md border-white/10">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🇮🇳</span>
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">India Focus</h3>
-                <p className="text-white/70">Live now for India transfers, more countries launching soon</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* How to Use Section */}
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h3 className="text-3xl font-bold text-white mb-4">How It Works</h3>
-              <p className="text-xl text-white/80">
-                Because apparently sending money in 2025 shouldn't take 7 business days
+              {/* Subtitle */}
+              <p className="text-xl md:text-2xl text-white/60 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                Skip the banks. Send crypto, receive rupees. 
+                <br />
+                <span className="text-white/80">2-5 minutes. Always.</span>
               </p>
+
+              {/* Stats */}
+              <div className="flex flex-wrap justify-center gap-8 mb-12">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white mb-1">₹83.25</div>
+                  <div className="text-sm text-white/60">Live exchange rate</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white mb-1">$2.99</div>
+                  <div className="text-sm text-white/60">Fixed transfer fee</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white mb-1">2-5min</div>
+                  <div className="text-sm text-white/60">Delivery time</div>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <div className="space-y-6">
+                <Button 
+                  onClick={() => {
+                    console.log('Opening wallet connection modal...');
+                    open({ view: 'Connect' });
+                  }}
+                  className="h-14 px-12 text-lg font-semibold bg-white text-black hover:bg-white/90 transition-all duration-200 shadow-2xl shadow-white/10"
+                >
+                  Connect wallet
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                
+                {status === 'reconnecting' && (
+                  <div className="flex items-center justify-center gap-2 text-white/60">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white/60"></div>
+                    <span className="text-sm">Connecting...</span>
+                  </div>
+                )}
+                
+                {status === 'disconnected' && address && (
+                  <div className="text-orange-400 text-sm">
+                    Wallet disconnected. Please reconnect to continue.
+                  </div>
+                )}
+              </div>
             </div>
+          </main>
 
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
-              {/* Step 1 */}
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-white text-2xl font-bold">1</span>
+          {/* Features Section */}
+          <section className="px-6 pb-20">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Zap className="w-6 h-6 text-blue-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Lightning fast</h3>
+                  <p className="text-white/60 text-sm leading-relaxed">Complete transfers in minutes, not days. Because your family shouldn't wait.</p>
                 </div>
-                <h4 className="text-xl font-semibold text-white mb-4">Connect Your Wallet</h4>
-                <p className="text-white/70 mb-4">
-                  Click the shiny button above and connect any Web3 wallet. MetaMask, Coinbase, or whatever fancy wallet you prefer.
-                </p>
-                <div className="text-sm text-blue-300 bg-blue-500/10 p-3 rounded-lg">
-                  <strong>Pro tip:</strong> Make sure you have some crypto (USDT, ETH, etc.) ready to send. We're not magicians.
-                </div>
-              </div>
 
-              {/* Step 2 */}
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-white text-2xl font-bold">2</span>
+                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Shield className="w-6 h-6 text-green-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Bank-grade security</h3>
+                  <p className="text-white/60 text-sm leading-relaxed">Blockchain technology with enterprise-level security standards.</p>
                 </div>
-                <h4 className="text-xl font-semibold text-white mb-4">Add Recipient Details</h4>
-                <p className="text-white/70 mb-4">
-                  Enter your recipient's info in India. Full name, phone number, and how they want to receive the money.
-                </p>
-                <div className="text-sm text-green-300 bg-green-500/10 p-3 rounded-lg">
-                  <strong>Fun fact:</strong> We support bank transfers, mobile wallets, and cash pickup. Because choice is good.
-                </div>
-              </div>
 
-              {/* Step 3 */}
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-white text-2xl font-bold">3</span>
-                </div>
-                <h4 className="text-xl font-semibold text-white mb-4">Send & Relax</h4>
-                <p className="text-white/70 mb-4">
-                  Hit send, confirm in your wallet, and watch the magic happen. Your recipient gets rupees in 2-5 minutes.
-                </p>
-                <div className="text-sm text-orange-300 bg-orange-500/10 p-3 rounded-lg">
-                  <strong>Reality check:</strong> While banks are still processing your last transfer from 2023, we're already done.
+                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="w-6 h-6 text-orange-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Best rates</h3>
+                  <p className="text-white/60 text-sm leading-relaxed">Live market rates with transparent, fixed fees. No hidden charges.</p>
                 </div>
               </div>
             </div>
+          </section>
 
-            {/* Features Comparison */}
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-8 border border-white/10">
-              <h4 className="text-2xl font-bold text-white text-center mb-8">
-                Traditional Banks vs. Our Platform (No Contest)
-              </h4>
+          {/* How it Works Section */}
+          <section className="px-6 py-20 border-t border-white/5">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">How it works</h2>
+                <p className="text-xl text-white/60 max-w-2xl mx-auto">
+                  Three simple steps to send money across borders instantly
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-8">
+                {/* Step 1 */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-8 rounded-2xl bg-white/[0.02] border border-white/10">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-6">
+                      <span className="text-white font-bold text-lg">01</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-4">Connect wallet</h3>
+                    <p className="text-white/60 leading-relaxed mb-6">
+                      Connect any Web3 wallet with your crypto holdings. MetaMask, Coinbase Wallet, or any WalletConnect compatible wallet.
+                    </p>
+                    <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl">
+                      <p className="text-blue-300 text-sm">
+                        <strong>Tip:</strong> Ensure you have USDT, USDC, ETH, or other supported tokens ready
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-8 rounded-2xl bg-white/[0.02] border border-white/10">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-6">
+                      <span className="text-white font-bold text-lg">02</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-4">Enter details</h3>
+                    <p className="text-white/60 leading-relaxed mb-6">
+                      Add your recipient's information and preferred delivery method. Bank transfer, mobile wallet, or cash pickup.
+                    </p>
+                    <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
+                      <p className="text-green-300 text-sm">
+                        <strong>Secure:</strong> All data is encrypted and never stored on our servers
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 3 */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-8 rounded-2xl bg-white/[0.02] border border-white/10">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mb-6">
+                      <span className="text-white font-bold text-lg">03</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-4">Send instantly</h3>
+                    <p className="text-white/60 leading-relaxed mb-6">
+                      Confirm the transaction in your wallet. Your recipient receives Indian Rupees in 2-5 minutes.
+                    </p>
+                    <div className="p-4 bg-orange-500/5 border border-orange-500/20 rounded-xl">
+                      <p className="text-orange-300 text-sm">
+                        <strong>Fast:</strong> Blockchain settlement faster than traditional banking
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Comparison Section */}
+          <section className="px-6 py-20 border-t border-white/5">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-white mb-4">Why choose us</h2>
+                <p className="text-xl text-white/60">
+                  Traditional banking vs blockchain technology
+                </p>
+              </div>
               
               <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <h5 className="text-lg font-semibold text-red-400 flex items-center gap-2">
-                    <span className="text-2xl">🏦</span>
-                    Traditional Banks
-                  </h5>
-                  <div className="space-y-3 text-white/70">
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400">❌</span>
-                      <span>3-7 business days (because time is money, except yours)</span>
+                <div className="p-8 rounded-2xl bg-red-500/5 border border-red-500/20">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                      <Building className="w-5 h-5 text-red-400" />
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400">❌</span>
-                      <span>Hidden fees up to $25+ (surprise charges are fun!)</span>
+                    <h3 className="text-lg font-semibold text-white">Traditional banks</h3>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      </div>
+                      <span>3-7 business days processing</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400">❌</span>
-                      <span>Paperwork that could deforest Amazon</span>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      </div>
+                      <span>High fees up to $25+</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400">❌</span>
-                      <span>Exchange rates from the stone age</span>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      </div>
+                      <span>Complex paperwork required</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400">❌</span>
-                      <span>Open only during "business hours" (9-5, because emergencies wait)</span>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      </div>
+                      <span>Limited operating hours</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h5 className="text-lg font-semibold text-green-400 flex items-center gap-2">
-                    <span className="text-2xl">⚡</span>
-                    Our Web3 Platform
-                  </h5>
-                  <div className="space-y-3 text-white/70">
-                    <div className="flex items-center gap-3">
-                      <span className="text-green-400">✅</span>
-                      <span>2-5 minutes (faster than your coffee order)</span>
+                <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/20">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                      <Zap className="w-5 h-5 text-green-400" />
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-green-400">✅</span>
-                      <span>Transparent $2.99 fee (no surprises, we promise)</span>
+                    <h3 className="text-lg font-semibold text-white">RemitPay</h3>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-green-400" />
+                      </div>
+                      <span>2-5 minute transfers</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-green-400">✅</span>
-                      <span>Zero paperwork (trees everywhere rejoice)</span>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-green-400" />
+                      </div>
+                      <span>Fixed $2.99 fee, no hidden costs</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-green-400">✅</span>
-                      <span>Live market rates (because math doesn't lie)</span>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-green-400" />
+                      </div>
+                      <span>Zero paperwork needed</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-green-400">✅</span>
-                      <span>24/7 availability (emergencies don't schedule appointments)</span>
+                    <div className="flex items-start gap-3 text-white/70">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-green-400" />
+                      </div>
+                      <span>Available 24/7 worldwide</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* FAQ Section */}
-            <div className="mt-16">
-              <h4 className="text-2xl font-bold text-white text-center mb-8">
-                Frequently Asked Questions
-                <br />
-                <span className="text-lg text-white/60">(The ones you're too embarrassed to ask)</span>
-              </h4>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
-                  <h5 className="text-lg font-semibold text-white mb-3">Is this actually legal?</h5>
-                  <p className="text-white/70">
-                    Yes, surprisingly. We use blockchain technology, which is about as regulated as it gets these days. 
-                    Your money is safe, and so are we.
-                  </p>
-                </div>
-
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
-                  <h5 className="text-lg font-semibold text-white mb-3">What if something goes wrong?</h5>
-                  <p className="text-white/70">
-                    Every transaction is recorded on the blockchain forever. It's like having a receipt that can't be lost, 
-                    deleted, or "accidentally" shredded.
-                  </p>
-                </div>
-
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
-                  <h5 className="text-lg font-semibold text-white mb-3">Why only India right now?</h5>
-                  <p className="text-white/70">
-                    We're perfectionists. Rather than half-heartedly support 50 countries, we're nailing India first. 
-                    Quality over quantity, you know?
-                  </p>
-                </div>
-
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-6 border border-white/10">
-                  <h5 className="text-lg font-semibold text-white mb-3">How do you make money?</h5>
-                  <p className="text-white/70">
-                    Simple $2.99 fee per transfer. No hidden charges, no percentage cuts, no monthly subscriptions. 
-                    Revolutionary concept, we know.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          </section>
         </div>
       </div>
     );
