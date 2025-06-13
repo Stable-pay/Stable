@@ -127,6 +127,7 @@ export function RemittancePlatform() {
       documentUploaded: false,
       selfieUploaded: false
     },
+    travelRuleData: null,
     walletCreationType: 'existing',
     socialProvider: '',
     buyCryptoAmount: '',
@@ -1301,10 +1302,10 @@ export function RemittancePlatform() {
                 Back
               </Button>
               <Button 
-                onClick={() => handleStepNavigation('review')}
-                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                onClick={() => handleStepNavigation('travel-rule')}
+                className="flex-1 h-12 text-lg font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground"
               >
-                Review Transfer
+                Continue to Compliance
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
@@ -1314,82 +1315,144 @@ export function RemittancePlatform() {
     );
   }
 
+  // Travel Rule Compliance step
+  if (state.step === 'travel-rule') {
+    return (
+      <TravelRuleForm
+        amount={state.amount}
+        currency="USD"
+        onSubmit={(travelRuleData) => {
+          setState(prev => ({ 
+            ...prev, 
+            travelRuleData: {
+              originatorName: travelRuleData.originatorName,
+              originatorAddress: travelRuleData.originatorAddress,
+              originatorCountry: travelRuleData.originatorCountry,
+              originatorIdType: travelRuleData.originatorIdType,
+              originatorIdNumber: travelRuleData.originatorIdNumber,
+              beneficiaryName: travelRuleData.beneficiaryName,
+              beneficiaryAddress: travelRuleData.beneficiaryAddress,
+              beneficiaryAccountNumber: travelRuleData.beneficiaryAccountNumber,
+              beneficiaryBankName: travelRuleData.beneficiaryBankName,
+              beneficiaryBankCode: travelRuleData.beneficiaryBankCode,
+              transactionPurpose: travelRuleData.transactionPurpose,
+              sourceOfFunds: travelRuleData.sourceOfFunds,
+              relationshipToBeneficiary: travelRuleData.relationshipToBeneficiary,
+              complianceVerified: true
+            },
+            step: 'review' 
+          }));
+        }}
+        onBack={() => setState(prev => ({ ...prev, step: 'transfer' }))}
+        isSubmitting={state.isProcessing}
+      />
+    );
+  }
+
   // Review step
   if (state.step === 'review') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-              <CheckCircle className="w-8 h-8 text-green-400" />
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="w-full max-w-2xl border-border">
+          <CardHeader className="text-center bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-t-lg">
+            <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2">
+              <CheckCircle className="w-8 h-8" />
               Review Transfer
             </CardTitle>
-            <p className="text-white/70 mt-2">Confirm all details before sending</p>
+            <p className="text-primary-foreground/90 mt-2">Confirm all details before sending</p>
           </CardHeader>
           
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 p-6">
             {/* Transfer Summary */}
             <div className="space-y-4">
-              <div className="p-4 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
-                <h3 className="text-white font-semibold mb-3">Transfer Summary</h3>
+              <div className="p-4 bg-muted rounded-lg border border-border">
+                <h3 className="text-foreground font-semibold mb-3">Transfer Summary</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-white/70">Send Amount:</span>
-                    <span className="text-white font-medium">${state.amount} USD</span>
+                    <span className="text-muted-foreground">Send Amount:</span>
+                    <span className="text-foreground font-medium">${state.amount} USD</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/70">Network Fee:</span>
-                    <span className="text-white font-medium">${state.fees} USD</span>
+                    <span className="text-muted-foreground">Network Fee:</span>
+                    <span className="text-foreground font-medium">${state.fees} USD</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/70">Exchange Rate:</span>
-                    <span className="text-white font-medium">1 USD = {state.exchangeRate.toFixed(2)} {corridor?.currency}</span>
+                    <span className="text-muted-foreground">Exchange Rate:</span>
+                    <span className="text-foreground font-medium">1 USD = {state.exchangeRate.toFixed(2)} {corridor?.currency}</span>
                   </div>
-                  <Separator className="bg-white/20" />
+                  <Separator className="bg-border" />
                   <div className="flex justify-between text-lg">
-                    <span className="text-white font-semibold">Total Cost:</span>
-                    <span className="text-white font-bold">${totalCost.toFixed(2)} USD</span>
+                    <span className="text-foreground font-semibold">Total Cost:</span>
+                    <span className="text-foreground font-bold">${totalCost.toFixed(2)} USD</span>
                   </div>
                   <div className="flex justify-between text-lg">
-                    <span className="text-green-400 font-semibold">Recipient Gets:</span>
-                    <span className="text-green-400 font-bold">{receivedAmount.toFixed(2)} {corridor?.currency}</span>
+                    <span className="text-secondary font-semibold">Recipient Gets:</span>
+                    <span className="text-secondary font-bold">{receivedAmount.toFixed(2)} {corridor?.currency}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                <h3 className="text-white font-semibold mb-3">Recipient Details</h3>
+              <div className="p-4 bg-muted rounded-lg border border-border">
+                <h3 className="text-foreground font-semibold mb-3">Recipient Details</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-white/70">Name:</span>
-                    <span className="text-white font-medium">{state.recipientName}</span>
+                    <span className="text-muted-foreground">Name:</span>
+                    <span className="text-foreground font-medium">{state.recipientName}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/70">Phone:</span>
-                    <span className="text-white font-medium">{state.recipientPhone}</span>
+                    <span className="text-muted-foreground">Phone:</span>
+                    <span className="text-foreground font-medium">{state.recipientPhone}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/70">Country:</span>
-                    <span className="text-white font-medium">{corridor?.flag} {corridor?.name}</span>
+                    <span className="text-muted-foreground">Country:</span>
+                    <span className="text-foreground font-medium">{corridor?.flag} {corridor?.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/70">Method:</span>
-                    <span className="text-white font-medium capitalize">{state.recipientMethod} Transfer</span>
+                    <span className="text-muted-foreground">Method:</span>
+                    <span className="text-foreground font-medium capitalize">{state.recipientMethod} Transfer</span>
                   </div>
                   {state.recipientMethod === 'bank' && (
                     <>
                       <div className="flex justify-between">
-                        <span className="text-white/70">Bank:</span>
-                        <span className="text-white font-medium">{state.bankDetails.bankName}</span>
+                        <span className="text-muted-foreground">Bank:</span>
+                        <span className="text-foreground font-medium">{state.bankDetails.bankName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-white/70">Account:</span>
-                        <span className="text-white font-medium">***{state.bankDetails.accountNumber.slice(-4)}</span>
+                        <span className="text-muted-foreground">Account:</span>
+                        <span className="text-foreground font-medium">***{state.bankDetails.accountNumber.slice(-4)}</span>
                       </div>
                     </>
                   )}
                 </div>
               </div>
+
+              {/* Travel Rule Compliance Summary */}
+              {state.travelRuleData && (
+                <div className="p-4 bg-muted rounded-lg border border-border">
+                  <h3 className="text-foreground font-semibold mb-3 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-secondary" />
+                    Compliance Verified
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Originator:</span>
+                      <span className="text-foreground font-medium">{state.travelRuleData.originatorName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Purpose:</span>
+                      <span className="text-foreground font-medium capitalize">{state.travelRuleData.transactionPurpose.replace('_', ' ')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Source of Funds:</span>
+                      <span className="text-foreground font-medium capitalize">{state.travelRuleData.sourceOfFunds.replace('_', ' ')}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <CheckCircle className="w-4 h-4 text-secondary" />
+                      <span className="text-secondary text-sm font-medium">Travel Rule requirements completed</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
                 <div className="flex items-center gap-2 mb-2">

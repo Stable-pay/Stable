@@ -25,11 +25,11 @@ export const wagmiAdapter = new WagmiAdapter({
   networks: [mainnet, polygon, bsc, arbitrum]
 })
 
-// Set up metadata with proper domain configuration
+// Set up metadata with dynamic domain configuration
 const metadata = {
   name: 'RemitPay - Web3 Remittance Platform',
   description: 'Send crypto to India instantly with live exchange rates and Web3 off-ramping',
-  url: 'https://stablepay.replit.app',
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://stablepay.replit.app',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
