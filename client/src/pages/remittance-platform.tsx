@@ -1530,15 +1530,13 @@ export function RemittancePlatform() {
         </div>
       </div>
 
-      {/* Enhanced Wallet Creation Modal */}
-      <WalletCreationModal
-        isOpen={showWalletCreationModal}
-        onClose={() => setShowWalletCreationModal(false)}
-        onWalletCreated={() => {
-          setShowWalletCreationModal(false);
-          setState(prev => ({ ...prev, step: 'buy-crypto' }));
-        }}
-      />
+      {/* Debug info for wallet creation */}
+      {showWalletCreationModal && (
+        <div className="fixed top-4 right-4 bg-black/80 text-white p-4 rounded-lg z-50">
+          <p>Debug: Wallet creation modal state active</p>
+          <button onClick={() => setShowWalletCreationModal(false)} className="text-red-400">Close</button>
+        </div>
+      )}
     </>
   );
 }
