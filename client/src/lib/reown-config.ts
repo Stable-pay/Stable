@@ -25,11 +25,11 @@ export const wagmiAdapter = new WagmiAdapter({
   networks: [mainnet, polygon, bsc, arbitrum]
 })
 
-// Set up metadata
+// Set up metadata with proper domain configuration
 const metadata = {
   name: 'RemitPay - Web3 Remittance Platform',
   description: 'Send crypto to India instantly with live exchange rates and Web3 off-ramping',
-  url: typeof window !== 'undefined' ? window.location.origin : 'https://stablepay.replit.app',
+  url: 'https://stablepay.replit.app',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
@@ -40,22 +40,23 @@ export const modal = createAppKit({
   networks: [mainnet, polygon, bsc, arbitrum],
   defaultNetwork: mainnet,
   metadata,
-  features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'apple', 'discord', 'github', 'x'],
-    emailShowWallets: false,
-    onramp: true,
-    swaps: true,
-    history: true
-  },
+  allowUnsupportedChain: false,
+  allWallets: 'SHOW',
+  featuredWalletIds: [],
+  includeWalletIds: [],
+  excludeWalletIds: [],
+  enableWalletConnect: true,
+  enableInjected: true,
+  enableEIP6963: true,
+  enableCoinbase: true,
   themeMode: 'dark',
   themeVariables: {
-    '--w3m-color-mix': '#3b82f6',
-    '--w3m-color-mix-strength': 20,
-    '--w3m-accent': '#3b82f6',
+    '--w3m-color-mix': '#059669',
+    '--w3m-color-mix-strength': 40,
+    '--w3m-accent': '#10b981',
     '--w3m-border-radius-master': '12px',
-    '--w3m-font-family': 'Inter, system-ui, sans-serif'
+    '--w3m-font-family': 'Inter, system-ui, sans-serif',
+    '--w3m-font-size-master': '14px'
   }
 })
 

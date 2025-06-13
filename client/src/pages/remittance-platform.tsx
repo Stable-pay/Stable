@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, Globe, Send, Clock, CheckCircle, Wallet, Shield, CreditCard, Phone, Building, MapPin, Users, TrendingUp, Star, Zap, RefreshCw, FileText, Scan, UserCheck, Key, Database, Lock } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
-import { SimpleWalletConnector } from '@/components/reown/simple-wallet-connector';
+import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -710,80 +710,38 @@ export function RemittancePlatform() {
     );
   }
 
-  // Create Wallet step - Social login options
+  // Create Wallet step - Enhanced social login integration
   if (state.step === 'create-wallet') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-              <UserCheck className="w-8 h-8 text-blue-400" />
-              Create Your Wallet
-            </CardTitle>
-            <p className="text-white/70 mt-2">Sign up with your preferred method to create a secure Web3 wallet</p>
-          </CardHeader>
+        <div className="w-full max-w-lg">
+          <SocialWalletCreator 
+            isVisible={true}
+            onWalletCreated={() => {
+              setState(prev => ({ ...prev, step: 'buy-crypto', walletCreationType: 'new' }));
+            }}
+          />
           
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-white font-semibold text-lg text-center">Choose your sign-up method</h3>
-              
-              {/* Enhanced wallet creation button with improved visibility */}
+          <div className="text-center mt-6 space-y-4">
+            <p className="text-white/80 text-sm">Already have a wallet? 
               <Button 
-                onClick={async () => {
-                  setState(prev => ({ ...prev, walletCreationType: 'new' }));
-                  try {
-                    await open();
-                  } catch (error) {
-                    console.error('Error opening AppKit:', error);
-                  }
-                }}
-                className="w-full h-16 bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 hover:from-emerald-500 hover:via-blue-500 hover:to-purple-500 text-white text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group border border-white/20"
-              >
-                <UserCheck className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform text-white" />
-                Create Wallet with Social Login
-                <ArrowRight className="w-5 h-5 ml-auto group-hover:translate-x-1 transition-transform text-white" />
-              </Button>
-
-              <div className="text-center text-emerald-200 text-sm font-medium">
-                <p>✨ Choose from Google, Apple, Email, Discord, or other social providers</p>
-              </div>
-
-              <div className="p-4 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-purple-500/20 rounded-lg border border-emerald-400/30 backdrop-blur-sm">
-                <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-emerald-300 mt-0.5" />
-                  <div>
-                    <h4 className="text-emerald-200 font-semibold mb-1">🔒 Secure & Self-Custodial</h4>
-                    <p className="text-emerald-100/90 text-sm">
-                      Your wallet is created securely with your chosen method. You maintain full control of your private keys and assets. No one else can access your funds.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-center text-white/80 text-sm">
-                <p>Already have a wallet? 
-                  <Button 
-                    variant="link" 
-                    className="text-emerald-300 hover:text-emerald-200 p-0 ml-1 font-medium underline-offset-4 hover:underline"
-                    onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
-                  >
-                    Connect existing wallet
-                  </Button>
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <Button 
+                variant="link" 
+                className="text-emerald-300 hover:text-emerald-200 p-0 ml-1 font-medium underline-offset-4 hover:underline"
                 onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
-                variant="outline"
-                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
               >
-                Back
+                Connect existing wallet
               </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </p>
+            
+            <Button 
+              onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
+              variant="outline"
+              className="border-emerald-400/50 text-emerald-200 hover:bg-emerald-500/20 hover:border-emerald-300 transition-all duration-200"
+            >
+              ← Back to Connect
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
