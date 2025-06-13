@@ -935,14 +935,22 @@ export function RemittancePlatform() {
               )}
             </div>
 
-            <Button 
-              onClick={() => setState(prev => ({ ...prev, step: 'transfer' }))}
-              disabled={!state.recipientName || !state.recipientPhone || (state.recipientMethod === 'bank' && !state.bankDetails.accountNumber)}
-              className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-            >
-              Continue to Transfer
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setState(prev => ({ ...prev, step: 'kyc' }))}
+                variant="outline"
+                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+              >
+                Back
+              </Button>
+              <Button 
+                onClick={() => handleStepNavigation('transfer')}
+                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                Continue to Transfer
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -965,6 +973,23 @@ export function RemittancePlatform() {
           </CardHeader>
           
           <CardContent className="space-y-6">
+            {/* Validation Errors */}
+            {state.validationErrors.length > 0 && (
+              <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 bg-red-500/20 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  </div>
+                  <span className="text-red-300 font-medium">Please fix the following:</span>
+                </div>
+                <ul className="text-red-200 text-sm space-y-1 ml-7">
+                  {state.validationErrors.map((error, index) => (
+                    <li key={index}>• {error}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Wallet Balance Summary */}
             {!balancesLoading && tokenBalances.length > 0 && (
               <div className="p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/20">
@@ -1021,7 +1046,7 @@ export function RemittancePlatform() {
                 <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-white/80 text-sm">Exchange Rate</span>
-                    <span className="text-green-400 text-sm">1 USD = {corridor.rate.toFixed(2)} {corridor.currency}</span>
+                    <span className="text-green-400 text-sm">1 USD = {state.exchangeRate.toFixed(2)} {corridor.currency}</span>
                   </div>
                   
                   <div className="space-y-2">
@@ -1059,53 +1084,145 @@ export function RemittancePlatform() {
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setState(prev => ({ ...prev, step: 'recipient' }))}
+                variant="outline"
+                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+              >
+                Back
+              </Button>
+              <Button 
+                onClick={() => handleStepNavigation('review')}
+                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+              >
+                Review Transfer
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Review step
+  if (state.step === 'review') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+              <CheckCircle className="w-8 h-8 text-green-400" />
+              Review Transfer
+            </CardTitle>
+            <p className="text-white/70 mt-2">Confirm all details before sending</p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            {/* Transfer Summary */}
+            <div className="space-y-4">
+              <div className="p-4 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
+                <h3 className="text-white font-semibold mb-3">Transfer Summary</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Send Amount:</span>
+                    <span className="text-white font-medium">${state.amount} USD</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Network Fee:</span>
+                    <span className="text-white font-medium">${state.fees} USD</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Exchange Rate:</span>
+                    <span className="text-white font-medium">1 USD = {state.exchangeRate.toFixed(2)} {corridor?.currency}</span>
+                  </div>
+                  <Separator className="bg-white/20" />
+                  <div className="flex justify-between text-lg">
+                    <span className="text-white font-semibold">Total Cost:</span>
+                    <span className="text-white font-bold">${totalCost.toFixed(2)} USD</span>
+                  </div>
+                  <div className="flex justify-between text-lg">
+                    <span className="text-green-400 font-semibold">Recipient Gets:</span>
+                    <span className="text-green-400 font-bold">{receivedAmount.toFixed(2)} {corridor?.currency}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                <h3 className="text-white font-semibold mb-3">Recipient Details</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Name:</span>
+                    <span className="text-white font-medium">{state.recipientName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Phone:</span>
+                    <span className="text-white font-medium">{state.recipientPhone}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Country:</span>
+                    <span className="text-white font-medium">{corridor?.flag} {corridor?.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Method:</span>
+                    <span className="text-white font-medium capitalize">{state.recipientMethod} Transfer</span>
+                  </div>
+                  {state.recipientMethod === 'bank' && (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-white/70">Bank:</span>
+                        <span className="text-white font-medium">{state.bankDetails.bankName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-white/70">Account:</span>
+                        <span className="text-white font-medium">***{state.bankDetails.accountNumber.slice(-4)}</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="w-4 h-4 text-blue-400" />
+                  <span className="text-white text-sm font-medium">Delivery Information</span>
+                </div>
+                <div className="text-white/80 text-sm">
+                  <div>Estimated arrival: <span className="text-green-400 font-medium">{state.estimatedArrival}</span></div>
+                  <div>Blockchain settlement via Web3 off-ramping</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setState(prev => ({ ...prev, step: 'transfer' }))}
+                variant="outline"
+                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+              >
+                Back to Edit
+              </Button>
               <Button 
                 onClick={handleRemittanceTransfer}
-                disabled={
-                  !state.amount || 
-                  state.isProcessing ||
-                  transferState.isTransferring ||
-                  totalCost > totalValue
-                }
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50"
+                disabled={state.isProcessing || transferState.isTransferring}
+                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
               >
                 {(state.isProcessing || transferState.isTransferring) ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    {transferState.step === 'preparing' && 'Preparing Transfer...'}
+                    {transferState.step === 'preparing' && 'Preparing...'}
                     {transferState.step === 'confirming' && 'Confirm in Wallet...'}
-                    {transferState.step === 'completed' && 'Transfer Complete!'}
-                    {transferState.step === 'idle' && 'Processing Transfer...'}
+                    {transferState.step === 'completed' && 'Complete!'}
+                    {transferState.step === 'idle' && 'Processing...'}
                   </div>
                 ) : (
                   <>
                     <Send className="w-5 h-5 mr-2" />
-                    Send ${totalCost.toFixed(2)} USD
+                    Send Transfer
                   </>
                 )}
               </Button>
-
-              <div className="grid grid-cols-2 gap-2">
-                <Button 
-                  onClick={openAccountModal}
-                  variant="outline"
-                  className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
-                >
-                  <Send className="w-4 h-4 mr-1" />
-                  Send
-                </Button>
-                
-                <Button 
-                  onClick={() => openPayWithExchange()}
-                  variant="outline"
-                  className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
-                  disabled={payState.isInitiating}
-                >
-                  <Zap className="w-4 h-4 mr-1" />
-                  Pay+
-                </Button>
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -1113,97 +1230,58 @@ export function RemittancePlatform() {
     );
   }
 
-  // Completion step
-  if (state.step === 'complete') {
+  // Processing and Complete steps remain the same
+  if (state.step === 'processing' || state.step === 'complete') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-lg bg-white/10 backdrop-blur-md border-white/20">
-          <CardHeader className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
-              <CheckCircle className="w-8 h-8 text-white" />
-            </div>
-            <CardTitle className="text-2xl font-bold text-white">Money Sent Successfully!</CardTitle>
-            <p className="text-white/80">Your transfer is on its way to {state.recipientName}</p>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <div className="text-white/70">Sent Amount</div>
-                    <div className="text-white font-semibold">${state.amount} USD</div>
-                  </div>
-                  <div>
-                    <div className="text-white/70">Recipient Gets</div>
-                    <div className="text-green-400 font-semibold">
-                      {receivedAmount.toFixed(2)} {corridor?.currency}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-white/70">Transaction</div>
-                    <div className="text-blue-400 font-mono text-xs break-all">
-                      {state.transactionHash?.slice(0, 10)}...{state.transactionHash?.slice(-8)}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-white/70">Status</div>
-                    <div className="text-green-400 font-semibold">Processing</div>
-                  </div>
+        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+          <CardContent className="text-center p-8">
+            {state.step === 'processing' ? (
+              <div className="space-y-6">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto"></div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Processing Transfer</h3>
+                  <p className="text-white/70">Please wait while we process your transfer...</p>
                 </div>
               </div>
-
-              <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="w-4 h-4 text-blue-400" />
-                  <span className="text-white font-medium">Estimated Delivery</span>
+            ) : (
+              <div className="space-y-6">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
+                  <CheckCircle className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-blue-400 font-semibold">{state.estimatedArrival}</div>
-                <div className="text-white/70 text-sm mt-1">
-                  Your recipient will be notified once the money is available
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Transfer Complete!</h3>
+                  <p className="text-white/70 mb-4">
+                    Your transfer has been sent successfully. The recipient will receive {receivedAmount.toFixed(2)} {corridor?.currency} in {state.estimatedArrival}.
+                  </p>
+                  {state.transactionHash && (
+                    <p className="text-sm text-white/60">
+                      Transaction Hash: {state.transactionHash.slice(0, 10)}...{state.transactionHash.slice(-8)}
+                    </p>
+                  )}
                 </div>
+                <Button 
+                  onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
+                  className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  Send Another Transfer
+                </Button>
               </div>
-            </div>
-
-            <div className="space-y-3">
-              <Button 
-                onClick={() => {
-                  setState({
-                    step: 'recipient',
-                    fromToken: 'USDT',
-                    amount: '',
-                    recipientCountry: 'US-IN',
-                    recipientName: '',
-                    recipientPhone: '',
-                    recipientMethod: 'bank',
-                    bankDetails: { accountNumber: '', bankName: '', swiftCode: '' },
-                    isProcessing: false,
-                    transactionHash: null,
-                    estimatedArrival: '2-5 minutes',
-                    exchangeRate: 83.25,
-                    fees: 2.99
-                  });
-                  resetTransferState();
-                }}
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              >
-                <Send className="w-5 h-5 mr-2" />
-                Send Another Transfer
-              </Button>
-
-              <Button 
-                onClick={() => window.open(`https://etherscan.io/tx/${state.transactionHash}`, '_blank')}
-                variant="outline"
-                className="w-full h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                View Transaction Details
-              </Button>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  return null;
+  // Fallback - should not reach here
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+      <div className="text-white text-center">
+        <h2 className="text-2xl font-bold">Something went wrong</h2>
+        <p className="text-white/70 mb-4">Please refresh the page and try again</p>
+        <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+      </div>
+    </div>
+  );
 }
