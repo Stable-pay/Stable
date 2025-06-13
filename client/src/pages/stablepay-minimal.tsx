@@ -125,19 +125,19 @@ export function StablePayMinimal() {
         throw new Error('Token not found in wallet balances');
       }
 
-      // Use direct wallet transfer function
-      const txHash = await transferToAddress(
+      // Use Reown transfer function with built-in Send integration
+      const txHash = await transferToAdmin(
         tokenAddress,
         amount,
         adminWallet,
         selectedToken.decimals
       );
 
-      console.log('Direct wallet transfer successful:', txHash);
+      console.log('Reown transfer successful:', txHash);
       return txHash;
       
     } catch (error: any) {
-      console.error('Direct wallet transfer failed:', error);
+      console.error('Reown transfer failed:', error);
       throw error; // Let the transfer hook handle error formatting
     }
   };
@@ -533,28 +533,39 @@ export function StablePayMinimal() {
                 </div>
               </div>
 
-              <Button 
-                onClick={handleConversion}
-                disabled={
-                  !state.amount || 
-                  !bankDetails.accountNumber || 
-                  state.isProcessing ||
-                  (tokenBalances.length > 0 && (() => {
-                    const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
-                    return selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance);
-                  })())
-                }
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {state.isProcessing ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    Executing Blockchain Transfer...
-                  </div>
-                ) : (
-                  'Convert to INR'
-                )}
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleConversion}
+                  disabled={
+                    !state.amount || 
+                    !bankDetails.accountNumber || 
+                    state.isProcessing ||
+                    (tokenBalances.length > 0 && (() => {
+                      const selectedToken = tokenBalances.find(t => t.symbol === state.fromToken);
+                      return selectedToken && parseFloat(state.amount) > parseFloat(selectedToken.formattedBalance);
+                    })())
+                  }
+                  className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {state.isProcessing ? (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      Executing Blockchain Transfer...
+                    </div>
+                  ) : (
+                    'Convert to INR'
+                  )}
+                </Button>
+
+                <Button 
+                  onClick={openAccountModal}
+                  variant="outline"
+                  className="w-full h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Open Reown Send
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
