@@ -11,13 +11,13 @@ export const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID
 
 // Validate project ID
 if (!projectId) {
-  console.warn('VITE_WALLETCONNECT_PROJECT_ID is not set. Using demo mode.');
+  console.warn('VITE_WALLETCONNECT_PROJECT_ID is not set. Wallet connections may not work properly.');
 }
 
 // Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({
   ssr: false,
-  projectId: projectId || 'demo',
+  projectId: projectId!,
   networks: [mainnet, polygon, bsc, arbitrum]
 })
 
@@ -25,25 +25,29 @@ export const wagmiAdapter = new WagmiAdapter({
 const metadata = {
   name: 'StablePay',
   description: 'Crypto to INR conversion platform',
-  url: typeof window !== 'undefined' ? window.location.origin : 'https://stablepay.app',
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://stablepay.replit.app',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal with basic configuration to avoid config errors
+// Create the modal with enhanced configuration
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
-  projectId: projectId || 'demo',
+  projectId: projectId!,
   networks: [mainnet, polygon, bsc, arbitrum],
   defaultNetwork: mainnet,
   metadata,
   features: {
-    analytics: false,
-    email: false,
-    socials: [],
-    emailShowWallets: false,
-    onramp: false
+    analytics: true,
+    email: true,
+    socials: ['google', 'github', 'apple', 'discord', 'farcaster'],
+    emailShowWallets: true,
+    onramp: true
   },
-  themeMode: 'dark'
+  themeMode: 'dark',
+  themeVariables: {
+    '--w3m-accent': '#3b82f6',
+    '--w3m-border-radius-master': '12px'
+  }
 })
 
 export const config = wagmiAdapter.wagmiConfig
