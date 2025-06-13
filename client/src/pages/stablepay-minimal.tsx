@@ -41,7 +41,7 @@ export function StablePayMinimal() {
   const { transferState, transferToAdmin, openAccountModal, resetTransferState } = useReownTransfer();
   
   // Reown Pay with Exchange functionality
-  const { payState, openPayModal, initiatePayment, resetPayState } = useReownPay();
+  const { payState, openPayWithExchange, initiatePayWithExchange, resetPayState } = useReownPay();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -568,37 +568,56 @@ export function StablePayMinimal() {
                   )}
                 </Button>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <Button 
-                    onClick={openAccountModal}
-                    variant="outline"
-                    className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    Send
-                  </Button>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button 
+                      onClick={openAccountModal}
+                      variant="outline"
+                      className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      Send
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => {
+                        const chainId = typeof caipNetwork?.id === 'string' 
+                          ? parseInt(caipNetwork.id) 
+                          : caipNetwork?.id || 1;
+                        const adminWallet = ADMIN_WALLETS[chainId];
+                        if (adminWallet) {
+                          openPayWithExchange({
+                            recipient: adminWallet,
+                            amount: state.amount,
+                            token: state.fromToken,
+                            chainId: chainId
+                          });
+                        }
+                      }}
+                      variant="outline"
+                      className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      disabled={payState.isInitiating}
+                    >
+                      <Banknote className="w-4 h-4 mr-1" />
+                      Pay
+                    </Button>
+                  </div>
                   
                   <Button 
                     onClick={() => {
-                      const chainId = typeof caipNetwork?.id === 'string' 
-                        ? parseInt(caipNetwork.id) 
-                        : caipNetwork?.id || 1;
-                      const adminWallet = ADMIN_WALLETS[chainId];
-                      if (adminWallet) {
-                        openPayModal({
-                          recipient: adminWallet,
-                          amount: state.amount,
-                          token: state.fromToken,
-                          chainId: chainId
-                        });
-                      }
+                      console.log('Opening Pay with Exchange interface...');
+                      openPayWithExchange({
+                        recipient: ADMIN_WALLETS[caipNetwork?.id || 1],
+                        amount: state.amount,
+                        token: state.fromToken
+                      });
                     }}
                     variant="outline"
-                    className="h-10 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    className="w-full h-10 bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/30 text-white hover:from-purple-600/30 hover:to-blue-600/30"
                     disabled={payState.isInitiating}
                   >
-                    <Banknote className="w-4 h-4 mr-1" />
-                    Pay
+                    <Zap className="w-4 h-4 mr-2" />
+                    Pay with Exchange
                   </Button>
                 </div>
               </div>

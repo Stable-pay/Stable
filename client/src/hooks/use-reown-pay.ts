@@ -17,7 +17,7 @@ export function useReownPay() {
     paymentId: null
   });
 
-  const openPayModal = async (options?: {
+  const openPayWithExchange = async (options?: {
     recipient?: string;
     amount?: string;
     token?: string;
@@ -34,16 +34,18 @@ export function useReownPay() {
         paymentId: null
       });
 
-      // Open Pay modal with options
+      console.log('Opening Pay with Exchange with options:', options);
+
+      // According to Reown Pay documentation, the Pay feature is accessible
+      // through the Account modal when pay: true is enabled in features
       await open({ 
-        view: 'OnRampProviders',
-        ...options 
+        view: 'Account'
       });
 
       setPayState(prev => ({ ...prev, isInitiating: false }));
 
     } catch (error: any) {
-      console.error('Failed to open Pay modal:', error);
+      console.error('Failed to open Pay with Exchange:', error);
       
       setPayState({
         isInitiating: false,
@@ -53,7 +55,7 @@ export function useReownPay() {
     }
   };
 
-  const initiatePayment = async (
+  const initiatePayWithExchange = async (
     recipient: string,
     amount: string,
     token: string = 'USDT',
@@ -70,14 +72,13 @@ export function useReownPay() {
         paymentId: null
       });
 
-      // Open Pay modal with pre-filled details
+      // According to Reown Pay with Exchange docs, the payment flow
+      // is handled through the Account modal with Pay features enabled
       await open({ 
-        view: 'OnRampProviders'
+        view: 'Account'
       });
 
-      // Note: The actual payment flow will be handled by Reown's Pay interface
-      // This hook provides the integration point
-      
+      // Payment will be handled by Reown's interface
       setPayState({
         isInitiating: false,
         error: null,
@@ -85,7 +86,7 @@ export function useReownPay() {
       });
 
     } catch (error: any) {
-      console.error('Payment initiation failed:', error);
+      console.error('Pay with Exchange failed:', error);
       
       setPayState({
         isInitiating: false,
@@ -107,8 +108,8 @@ export function useReownPay() {
 
   return {
     payState,
-    openPayModal,
-    initiatePayment,
+    openPayWithExchange,
+    initiatePayWithExchange,
     resetPayState,
     isConnected,
     address
