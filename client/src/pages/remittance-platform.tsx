@@ -233,6 +233,9 @@ export function RemittancePlatform() {
   // Set initial step based on connection status
   useEffect(() => {
     if (isConnected && address) {
+      // Close wallet creation modal if it's open
+      setShowWalletCreationModal(false);
+      
       // If user just connected/created wallet
       if (state.step === 'connect' || state.step === 'create-wallet') {
         if (state.walletCreationType === 'new') {
@@ -1503,12 +1506,24 @@ export function RemittancePlatform() {
 
   // Fallback - should not reach here
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-      <div className="text-white text-center">
-        <h2 className="text-2xl font-bold">Something went wrong</h2>
-        <p className="text-white/70 mb-4">Please refresh the page and try again</p>
-        <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <h2 className="text-2xl font-bold">Something went wrong</h2>
+          <p className="text-white/70 mb-4">Please refresh the page and try again</p>
+          <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+        </div>
       </div>
-    </div>
+
+      {/* Enhanced Wallet Creation Modal */}
+      <WalletCreationModal
+        isOpen={showWalletCreationModal}
+        onClose={() => setShowWalletCreationModal(false)}
+        onWalletCreated={() => {
+          setShowWalletCreationModal(false);
+          setState(prev => ({ ...prev, step: 'buy-crypto' }));
+        }}
+      />
+    </>
   );
 }
