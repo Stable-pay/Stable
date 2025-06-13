@@ -31,16 +31,16 @@ interface RemittanceState {
   fees: number;
 }
 
-// Supported remittance corridors with real exchange rates
+// Primary remittance corridor - India (others coming soon)
 const REMITTANCE_CORRIDORS = {
-  'US-IN': { rate: 83.25, fees: 2.99, currency: 'INR', flag: '🇮🇳', name: 'India' },
-  'US-PH': { rate: 56.45, fees: 2.99, currency: 'PHP', flag: '🇵🇭', name: 'Philippines' },
-  'US-MX': { rate: 17.82, fees: 2.99, currency: 'MXN', flag: '🇲🇽', name: 'Mexico' },
-  'US-NG': { rate: 1580.50, fees: 2.99, currency: 'NGN', flag: '🇳🇬', name: 'Nigeria' },
-  'US-BD': { rate: 123.75, fees: 2.99, currency: 'BDT', flag: '🇧🇩', name: 'Bangladesh' },
-  'US-PK': { rate: 278.50, fees: 2.99, currency: 'PKR', flag: '🇵🇰', name: 'Pakistan' },
-  'US-VN': { rate: 24850, fees: 2.99, currency: 'VND', flag: '🇻🇳', name: 'Vietnam' },
-  'US-KE': { rate: 129.80, fees: 2.99, currency: 'KES', flag: '🇰🇪', name: 'Kenya' }
+  'US-IN': { rate: 83.25, fees: 2.99, currency: 'INR', flag: '🇮🇳', name: 'India', available: true },
+  'US-PH': { rate: 56.45, fees: 2.99, currency: 'PHP', flag: '🇵🇭', name: 'Philippines', available: false },
+  'US-MX': { rate: 17.82, fees: 2.99, currency: 'MXN', flag: '🇲🇽', name: 'Mexico', available: false },
+  'US-NG': { rate: 1580.50, fees: 2.99, currency: 'NGN', flag: '🇳🇬', name: 'Nigeria', available: false },
+  'US-BD': { rate: 123.75, fees: 2.99, currency: 'BDT', flag: '🇧🇩', name: 'Bangladesh', available: false },
+  'US-PK': { rate: 278.50, fees: 2.99, currency: 'PKR', flag: '🇵🇰', name: 'Pakistan', available: false },
+  'US-VN': { rate: 24850, fees: 2.99, currency: 'VND', flag: '🇻🇳', name: 'Vietnam', available: false },
+  'US-KE': { rate: 129.80, fees: 2.99, currency: 'KES', flag: '🇰🇪', name: 'Kenya', available: false }
 };
 
 // Admin wallet addresses for remittance platform
@@ -94,12 +94,21 @@ export function RemittancePlatform() {
 
   // Set initial step based on connection status
   useEffect(() => {
-    if (isConnected && state.step === 'connect') {
+    console.log('Connection status changed:', { 
+      isConnected, 
+      address, 
+      status, 
+      currentStep: state.step 
+    });
+    
+    if (isConnected && address && state.step === 'connect') {
+      console.log('Wallet connected, moving to recipient step');
       setState(prev => ({ ...prev, step: 'recipient' }));
     } else if (!isConnected && state.step !== 'connect') {
+      console.log('Wallet disconnected, moving to connect step');
       setState(prev => ({ ...prev, step: 'connect' }));
     }
-  }, [isConnected, state.step]);
+  }, [isConnected, address, status, state.step]);
 
   const corridor = REMITTANCE_CORRIDORS[state.recipientCountry as keyof typeof REMITTANCE_CORRIDORS];
   const receivedAmount = parseFloat(state.amount || '0') * state.exchangeRate;
@@ -164,16 +173,16 @@ export function RemittancePlatform() {
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Send Money
+              Send Money to
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Instantly Worldwide
+              <span className="bg-gradient-to-r from-orange-400 to-green-400 bg-clip-text text-transparent">
+                🇮🇳 India Instantly
               </span>
             </h1>
             
             <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Skip traditional banks. Send crypto and receive local currency in minutes, 
-              not days. Powered by blockchain technology for maximum security and speed.
+              Send crypto from anywhere and your family receives Indian Rupees in minutes. 
+              Zero bank delays, maximum security. More countries launching soon.
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 mb-12">
@@ -191,14 +200,32 @@ export function RemittancePlatform() {
               </Badge>
             </div>
 
-            <Button 
-              onClick={() => open({ view: 'Connect' })}
-              size="lg"
-              className="h-14 px-8 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25"
-            >
-              <Wallet className="w-5 h-5 mr-2" />
-              Connect Wallet to Start
-            </Button>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => {
+                  console.log('Opening wallet connection modal...');
+                  open({ view: 'Connect' });
+                }}
+                size="lg"
+                className="h-14 px-8 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25"
+              >
+                <Wallet className="w-5 h-5 mr-2" />
+                Connect Wallet to Start
+              </Button>
+              
+              {status === 'reconnecting' && (
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent mx-auto mb-2"></div>
+                  <p className="text-white/70 text-sm">Connecting to wallet...</p>
+                </div>
+              )}
+              
+              {status === 'disconnected' && address && (
+                <div className="text-center">
+                  <p className="text-orange-400 text-sm">Wallet disconnected. Please reconnect to continue.</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Features Grid */}
@@ -225,23 +252,34 @@ export function RemittancePlatform() {
 
             <Card className="bg-white/5 backdrop-blur-md border-white/10">
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Globe className="w-6 h-6 text-purple-400" />
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🇮🇳</span>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Global Reach</h3>
-                <p className="text-white/70">Send to 8+ countries with more corridors coming soon</p>
+                <h3 className="text-xl font-semibold text-white mb-2">India Focus</h3>
+                <p className="text-white/70">Live now for India transfers, more countries launching soon</p>
               </CardContent>
             </Card>
           </div>
 
           {/* Supported Countries */}
           <div className="text-center">
-            <h3 className="text-2xl font-semibold text-white mb-6">Send Money To</h3>
+            <h3 className="text-2xl font-semibold text-white mb-6">Available Now & Coming Soon</h3>
             <div className="flex flex-wrap justify-center gap-4">
               {Object.values(REMITTANCE_CORRIDORS).map((country, index) => (
-                <div key={index} className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg">
+                <div key={index} className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                  country.available 
+                    ? 'bg-green-500/20 border border-green-500/30' 
+                    : 'bg-gray-500/20 border border-gray-500/30'
+                }`}>
                   <span className="text-2xl">{country.flag}</span>
-                  <span className="text-white font-medium">{country.name}</span>
+                  <span className={`font-medium ${country.available ? 'text-green-300' : 'text-gray-400'}`}>
+                    {country.name}
+                  </span>
+                  {!country.available && (
+                    <Badge variant="secondary" className="ml-2 text-xs bg-gray-600/50 text-gray-300">
+                      Soon
+                    </Badge>
+                  )}
                 </div>
               ))}
             </div>
@@ -274,11 +312,18 @@ export function RemittancePlatform() {
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(REMITTANCE_CORRIDORS).map(([key, country]) => (
-                      <SelectItem key={key} value={key}>
+                      <SelectItem key={key} value={key} disabled={!country.available}>
                         <div className="flex items-center gap-2">
                           <span>{country.flag}</span>
-                          <span>{country.name}</span>
+                          <span className={country.available ? 'text-white' : 'text-gray-400'}>
+                            {country.name}
+                          </span>
                           <Badge variant="secondary" className="ml-2">{country.currency}</Badge>
+                          {!country.available && (
+                            <Badge variant="secondary" className="ml-1 text-xs bg-gray-600/50 text-gray-300">
+                              Soon
+                            </Badge>
+                          )}
                         </div>
                       </SelectItem>
                     ))}
