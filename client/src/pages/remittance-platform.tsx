@@ -229,13 +229,25 @@ export function RemittancePlatform() {
 
   // Set initial step based on connection status
   useEffect(() => {
-    if (isConnected && address && (state.step === 'connect' || state.step === 'create-wallet' || state.step === 'social-signup' || state.step === 'buy-crypto')) {
-      // If user successfully connected or created wallet, move to KYC
-      setState(prev => ({ ...prev, step: 'kyc' }));
-    } else if (!isConnected && state.step !== 'connect' && state.step !== 'create-wallet' && state.step !== 'social-signup' && state.step !== 'buy-crypto') {
+    if (isConnected && address) {
+      // If user just connected/created wallet
+      if (state.step === 'connect' || state.step === 'create-wallet') {
+        if (state.walletCreationType === 'new') {
+          // New wallet created via social login, guide to buy crypto first
+          setState(prev => ({ ...prev, step: 'buy-crypto' }));
+        } else {
+          // Existing wallet connected, skip to KYC
+          setState(prev => ({ ...prev, step: 'kyc' }));
+        }
+      }
+      // If user is on buy-crypto step and has funds, proceed to KYC
+      else if (state.step === 'buy-crypto' && totalValue > 0) {
+        setState(prev => ({ ...prev, step: 'kyc' }));
+      }
+    } else if (!isConnected && state.step !== 'connect' && state.step !== 'create-wallet' && state.step !== 'buy-crypto') {
       setState(prev => ({ ...prev, step: 'connect' }));
     }
-  }, [isConnected, address, status, state.step]);
+  }, [isConnected, address, status, state.step, state.walletCreationType, totalValue]);
 
   const corridor = REMITTANCE_CORRIDORS[state.recipientCountry as keyof typeof REMITTANCE_CORRIDORS];
   const receivedAmount = parseFloat(state.amount || '0') * state.exchangeRate;
@@ -710,11 +722,12 @@ export function RemittancePlatform() {
             <div className="space-y-4">
               <h3 className="text-white font-semibold text-lg text-center">Choose your sign-up method</h3>
               
-              {/* Single button to open Reown AppKit with social login options */}
+              {/* Single button to open Reown AppKit with social login options for new wallet creation */}
               <Button 
                 onClick={() => {
                   setState(prev => ({ ...prev, walletCreationType: 'new' }));
-                  open({ view: 'Connect' });
+                  // Open AppKit with focus on wallet creation and social logins
+                  open();
                 }}
                 className="w-full h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg font-semibold transition-all duration-200 group"
               >

@@ -40,11 +40,16 @@ export const modal = createAppKit({
     analytics: true,
     email: true,
     socials: ['google', 'apple', 'discord', 'github', 'x'],
-    emailShowWallets: true,
+    emailShowWallets: false,
     onramp: true,
     swaps: true,
     history: true
   },
+  enableOnramp: true,
+  enableWalletConnect: true,
+  enableInjected: true,
+  enableEIP6963: true,
+  enableCoinbase: true,
   themeMode: 'dark',
   themeVariables: {
     '--w3m-color-mix': '#3b82f6',
