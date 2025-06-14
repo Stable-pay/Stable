@@ -1290,23 +1290,10 @@ export function RemittancePlatform() {
               </div>
             )}
 
-            {/* Wallet Balance Summary */}
-            {!balancesLoading && tokenBalances.length > 0 && (
-              <div className="p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/20">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white/80 text-sm">Your Wallet Balance</span>
-                  <Button 
-                    onClick={refreshBalances}
-                    variant="ghost" 
-                    size="sm"
-                    className="text-blue-400 hover:text-blue-300"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                  </Button>
-                </div>
-                <div className="text-white text-2xl font-bold">${totalValue.toFixed(2)} USD</div>
-              </div>
-            )}
+            {/* Enhanced Multi-Chain Wallet Balance Display */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4">
+              <WalletBalanceDisplay showAllChains={true} compact={false} />
+            </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
@@ -1328,11 +1315,14 @@ export function RemittancePlatform() {
                   </SelectTrigger>
                   <SelectContent>
                     {tokenBalances.map((token) => (
-                      <SelectItem key={token.symbol} value={token.symbol}>
+                      <SelectItem key={`${token.symbol}-${token.chainId}`} value={token.symbol}>
                         <div className="flex items-center justify-between w-full">
-                          <span>{token.symbol}</span>
+                          <div className="flex items-center gap-2">
+                            <span>{token.symbol}</span>
+                            <span className="text-xs bg-gray-600 px-1 rounded">{token.chainName}</span>
+                          </div>
                           <span className="text-sm text-gray-400 ml-2">
-                            {token.formattedBalance} available
+                            {parseFloat(token.formattedBalance).toFixed(4)} available
                           </span>
                         </div>
                       </SelectItem>
