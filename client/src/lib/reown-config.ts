@@ -32,7 +32,7 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal with social login enabled
+// Create the modal with enhanced features for compliance
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId: projectId || 'demo-project-id',
@@ -48,7 +48,10 @@ export const modal = createAppKit({
     analytics: true,
     email: true,
     socials: ['google', 'apple', 'github', 'discord'],
-    emailShowWallets: true
+    emailShowWallets: true,
+    swaps: true,
+    onramp: true,
+    history: true
   },
   enableWalletConnect: true,
   enableInjected: true,

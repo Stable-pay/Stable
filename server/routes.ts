@@ -7,6 +7,7 @@ import multer from "multer";
 import path from "path";
 
 import { smartContractAPI } from './smart-contract-api';
+import { travelRuleAPI } from './travel-rule';
 
 // Multer configuration for file uploads
 const upload = multer({
