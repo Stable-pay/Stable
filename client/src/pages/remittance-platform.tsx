@@ -108,7 +108,7 @@ export function RemittancePlatform() {
   const { payState, openPayWithExchange, initiatePayWithExchange, resetPayState } = useReownPay();
   
   const [state, setState] = useState<RemittanceState>({
-    step: 'connect',
+    step: 'connect' as const,
     fromToken: 'USDT',
     amount: '',
     recipientCountry: 'US-IN',
@@ -157,7 +157,7 @@ export function RemittancePlatform() {
       setState(prev => ({ 
         ...prev, 
         step: 'transfer',
-        walletCreationType: state.step === 'create-wallet' ? 'new' : 'existing'
+        walletCreationType: prev.step === 'create-wallet' ? 'new' : 'existing'
       }));
     }
   }, [isConnected, address, state.step]);
@@ -742,7 +742,7 @@ export function RemittancePlatform() {
   }
 
   // Unified Connect/Create Wallet step
-  if (state.step === 'create-wallet' || state.step === 'connect') {
+  if (state.step === 'connect' || state.step === 'create-wallet') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <Card className="w-full max-w-lg border-border shadow-xl">
@@ -823,7 +823,7 @@ export function RemittancePlatform() {
             <div className="flex gap-3">
               {state.step === 'create-wallet' && (
                 <Button 
-                  onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
+                  onClick={() => setState(prev => ({ ...prev, step: 'connect' as const }))}
                   variant="outline"
                   className="flex-1"
                 >
@@ -832,7 +832,7 @@ export function RemittancePlatform() {
               )}
               {state.step === 'connect' && (
                 <Button 
-                  onClick={() => setState(prev => ({ ...prev, step: 'create-wallet' }))}
+                  onClick={() => setState(prev => ({ ...prev, step: 'create-wallet' as const }))}
                   variant="outline"
                   className="flex-1"
                 >

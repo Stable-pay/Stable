@@ -1,0 +1,125 @@
+# StablePay - Multi-Chain Crypto-to-Fiat Platform
+
+## Overview
+
+StablePay is a comprehensive Web3 remittance and token swapping platform that enables users to convert crypto tokens to USDC and withdraw as INR (Indian Rupees). The platform integrates multiple blockchain networks, Web3 wallet providers, and implements KYC-compliant fiat withdrawals with smart contract-based custody wallets.
+
+## System Architecture
+
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript and Vite for fast development and production builds
+- **UI Framework**: Radix UI components with shadcn/ui design system and Tailwind CSS
+- **Animation**: Framer Motion for smooth transitions and micro-interactions
+- **Routing**: Wouter for lightweight client-side routing
+- **State Management**: React hooks and TanStack Query for server state management
+
+### Backend Architecture
+- **Runtime**: Node.js with Express.js server
+- **Build System**: ESBuild for fast bundling and TypeScript compilation
+- **API Design**: RESTful endpoints with typed request/response interfaces
+- **File Handling**: Multer for KYC document uploads with validation
+
+### Blockchain Integration
+- **Primary Wallet**: Particle Network for Account Abstraction and gasless transactions
+- **Secondary Wallet**: Reown (WalletConnect) AppKit for multi-wallet support
+- **Smart Contracts**: Hardhat development environment with OpenZeppelin contracts
+- **Networks**: Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, Avalanche support
+
+## Key Components
+
+### Wallet Infrastructure
+- **Particle Network**: Account Abstraction wallets with social login capabilities
+- **Reown AppKit**: WalletConnect v2 integration for MetaMask, Coinbase Wallet, etc.
+- **Multi-Chain Support**: Unified interface across 7+ blockchain networks
+- **Balance Fetching**: Real-time token balance queries via RPC endpoints
+
+### Smart Contract System
+- **SimpleStablePayWithdrawal**: Core withdrawal contract with user consent mechanism
+- **StablePayTransfer**: Admin-controlled token transfer system
+- **Custody Wallets**: Multi-chain admin wallet addresses for token storage
+- **Fee Management**: Configurable service fees with maximum limits
+
+### KYC & Compliance
+- **Document Upload**: Aadhaar, PAN, selfie verification system
+- **Travel Rule**: Compliance forms for international remittances
+- **Bank Integration**: Indian bank account verification and INR transfers
+- **Tier System**: KYC levels 1-3 with increasing transaction limits
+
+### DEX Integration
+- **Price Feeds**: CoinGecko API for real-time token pricing
+- **Swap Quotes**: Multi-DEX aggregation for best rates
+- **Gasless Swaps**: Sponsored transactions through Particle Network
+- **USDC Conversion**: Automatic conversion pipeline to stable assets
+
+## Data Flow
+
+### Token Swap Flow
+1. User connects wallet via Particle Network or Reown
+2. Real-time balance fetching across supported chains
+3. Token swap quote generation using price APIs
+4. Smart contract execution with gasless options
+5. Automatic transfer to custody wallet
+6. USDC conversion and INR rate calculation
+
+### Withdrawal Flow
+1. User consent via smart contract interaction
+2. KYC verification and bank account validation
+3. Smart contract withdrawal execution
+4. Token transfer to admin custody wallet
+5. Off-chain INR bank transfer processing
+6. Transaction monitoring and status updates
+
+### Remittance Flow
+1. Social wallet creation or existing wallet connection
+2. Crypto purchase integration for new users
+3. Travel rule compliance form completion
+4. Multi-chain token transfer with live tracking
+5. Recipient notification and cash pickup/bank transfer
+
+## External Dependencies
+
+### Blockchain Infrastructure
+- **Particle Network**: Account Abstraction, social login, gasless transactions
+- **Reown AppKit**: WalletConnect v2 protocol for wallet connections
+- **Hardhat**: Smart contract development and deployment tooling
+- **OpenZeppelin**: Secure smart contract templates and utilities
+
+### APIs and Services
+- **CoinGecko**: Real-time cryptocurrency price data
+- **Multiple RPC Providers**: Ethereum, Polygon, BSC, Arbitrum endpoints
+- **PancakeSwap API**: DEX integration for token swapping
+- **Alchemy/Infura**: Blockchain RPC services for production
+
+### Development Tools
+- **TanStack Query**: Server state management and caching
+- **Drizzle ORM**: Type-safe database operations
+- **shadcn/ui**: Pre-built accessible UI components
+- **Framer Motion**: Animation library for smooth UX
+
+## Deployment Strategy
+
+### Development Environment
+- **Replit**: Integrated development environment with PostgreSQL
+- **Hot Reload**: Vite development server with instant updates
+- **Environment Variables**: Secure API key management
+- **Database**: PostgreSQL with Drizzle migrations
+
+### Production Deployment
+- **Build Process**: Vite production build with ESBuild optimization
+- **Server**: Express.js with static file serving
+- **Database**: PostgreSQL with connection pooling
+- **Smart Contracts**: Multi-chain deployment via Hardhat scripts
+
+### Environment Configuration
+- **Particle Network**: Project ID, client key, server key configuration
+- **WalletConnect**: Project ID for Reown AppKit integration
+- **Database**: PostgreSQL connection string management
+- **RPC Endpoints**: Multi-chain blockchain connectivity
+
+## Changelog
+
+- June 14, 2025. Initial setup
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
