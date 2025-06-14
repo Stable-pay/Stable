@@ -37,19 +37,20 @@ interface RemittanceState {
     selfieUploaded: boolean;
   };
   travelRuleData: {
-    originatorName: string;
-    originatorAddress: string;
-    originatorCountry: string;
-    originatorIdType: string;
-    originatorIdNumber: string;
-    beneficiaryName: string;
-    beneficiaryAddress: string;
-    beneficiaryAccountNumber: string;
-    beneficiaryBankName: string;
-    beneficiaryBankCode: string;
-    transactionPurpose: string;
-    sourceOfFunds: string;
-    relationshipToBeneficiary: string;
+    originatorName?: string;
+    originatorAddress?: string;
+    originatorCountry?: string;
+    originatorIdType?: string;
+    originatorIdNumber?: string;
+    beneficiaryName?: string;
+    beneficiaryAddress?: string;
+    beneficiaryAccountNumber?: string;
+    beneficiaryBankName?: string;
+    beneficiaryBankCode?: string;
+    transactionPurpose?: string;
+    sourceOfFunds?: string;
+    relationshipToBeneficiary?: string;
+    reference?: string;
     complianceVerified: boolean;
   } | null;
   walletCreationType: 'existing' | 'new';
@@ -1416,7 +1417,6 @@ export function RemittancePlatform() {
             ...prev, 
             step: 'review',
             travelRuleData: { 
-              ...prev.travelRuleData, 
               reference,
               complianceVerified: true 
             }
@@ -1518,11 +1518,15 @@ export function RemittancePlatform() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Purpose:</span>
-                      <span className="text-foreground font-medium capitalize">{state.travelRuleData.transactionPurpose.replace('_', ' ')}</span>
+                      <span className="text-foreground font-medium capitalize">
+                        {state.travelRuleData?.transactionPurpose?.replace('_', ' ') || 'Family support'}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Source of Funds:</span>
-                      <span className="text-foreground font-medium capitalize">{state.travelRuleData.sourceOfFunds.replace('_', ' ')}</span>
+                      <span className="text-foreground font-medium capitalize">
+                        {state.travelRuleData?.sourceOfFunds?.replace('_', ' ') || 'Employment income'}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
                       <CheckCircle className="w-4 h-4 text-secondary" />

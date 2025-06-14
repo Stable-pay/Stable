@@ -116,9 +116,35 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - **Database**: PostgreSQL connection string management
 - **RPC Endpoints**: Multi-chain blockchain connectivity
 
+## Travel Rule Compliance
+
+### Implementation Details
+- **FATF Compliance**: Full Travel Rule implementation for cross-border transactions exceeding $1000 USD
+- **Dynamic Thresholds**: Automatic calculation based on currency and jurisdiction pairs
+- **Risk Assessment**: Three-tier risk evaluation (low/medium/high) with enhanced due diligence
+- **Sanctions Screening**: Built-in checks against restricted countries and PEP lists
+- **Multi-Step Process**: Comprehensive data collection for originator, beneficiary, and transaction details
+
+### Compliance Features
+- **Originator Information**: Full name, address, country, date of birth, national ID collection
+- **Beneficiary Details**: Recipient name, address, bank information, account details
+- **Transaction Data**: Purpose classification, source of funds verification, compliance declarations
+- **Automated Validation**: Real-time threshold checking and jurisdiction-specific requirements
+- **Reference Generation**: Unique compliance reference numbers for audit trails
+
+### API Endpoints
+- `POST /api/travel-rule/submit` - Submit complete travel rule data
+- `GET /api/travel-rule/:reference` - Retrieve stored compliance information
+- `POST /api/travel-rule/validate` - Check if travel rule is required for transaction
+- `GET /travel-rule` - Reown AppKit integration endpoint
+
 ## Changelog
 
-- June 14, 2025. Initial setup
+- June 14, 2025: Initial setup
+- June 14, 2025: Implemented comprehensive Travel Rule compliance according to Reown AppKit documentation
+- June 14, 2025: Added multi-step compliance workflow with FATF requirements
+- June 14, 2025: Enhanced platform with sanctions screening and PEP checks
+- June 14, 2025: Integrated dynamic threshold calculation and risk assessment
 
 ## User Preferences
 
