@@ -9,6 +9,7 @@ import { ArrowRight, Globe, Send, Clock, CheckCircle, Wallet, Shield, CreditCard
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
+import { TravelRuleCompliance } from '@/components/compliance/travel-rule-compliance';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -1406,33 +1407,22 @@ export function RemittancePlatform() {
   // Travel Rule Compliance step
   if (state.step === 'travel-rule') {
     return (
-      <TravelRuleForm
-        amount={state.amount}
+      <TravelRuleCompliance
+        walletAddress={address || ''}
+        transactionAmount={parseFloat(state.amount) || 0}
         currency="USD"
-        onSubmit={(travelRuleData) => {
+        onComplianceComplete={(reference) => {
           setState(prev => ({ 
             ...prev, 
-            travelRuleData: {
-              originatorName: travelRuleData.originatorName,
-              originatorAddress: travelRuleData.originatorAddress,
-              originatorCountry: travelRuleData.originatorCountry,
-              originatorIdType: travelRuleData.originatorIdType,
-              originatorIdNumber: travelRuleData.originatorIdNumber,
-              beneficiaryName: travelRuleData.beneficiaryName,
-              beneficiaryAddress: travelRuleData.beneficiaryAddress,
-              beneficiaryAccountNumber: travelRuleData.beneficiaryAccountNumber,
-              beneficiaryBankName: travelRuleData.beneficiaryBankName,
-              beneficiaryBankCode: travelRuleData.beneficiaryBankCode,
-              transactionPurpose: travelRuleData.transactionPurpose,
-              sourceOfFunds: travelRuleData.sourceOfFunds,
-              relationshipToBeneficiary: travelRuleData.relationshipToBeneficiary,
-              complianceVerified: true
-            },
-            step: 'review' 
+            step: 'review',
+            travelRuleData: { 
+              ...prev.travelRuleData, 
+              reference,
+              complianceVerified: true 
+            }
           }));
         }}
-        onBack={() => setState(prev => ({ ...prev, step: 'transfer' }))}
-        isSubmitting={state.isProcessing}
+        isVisible={true}
       />
     );
   }

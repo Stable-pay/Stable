@@ -695,6 +695,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/withdrawal/execute', smartContractAPI.executeDirectTransfer.bind(smartContractAPI));
   app.get('/api/withdrawal/status/:transactionId', smartContractAPI.getWithdrawalStatus.bind(smartContractAPI));
 
+  // Travel Rule compliance endpoints
+  app.post('/api/travel-rule/submit', travelRuleAPI.submitTravelRule.bind(travelRuleAPI));
+  app.get('/api/travel-rule/:reference', travelRuleAPI.getTravelRule.bind(travelRuleAPI));
+  app.post('/api/travel-rule/validate', travelRuleAPI.validateTravelRule.bind(travelRuleAPI));
+
+  // Travel Rule endpoint for Reown AppKit integration
+  app.get('/travel-rule', (req, res) => {
+    res.json({
+      name: 'StablePay Travel Rule Compliance',
+      description: 'Financial crime compliance for cross-border cryptocurrency transfers',
+      url: `${req.protocol}://${req.get('host')}/travel-rule`,
+      icon: 'https://stablepay.replit.app/icon.png',
+      compliance: {
+        fatf: true,
+        jurisdictions: ['US', 'EU', 'UK', 'CA', 'AU', 'SG', 'IN'],
+        threshold: 1000,
+        currency: 'USD'
+      }
+    });
+  });
+
   const server = createServer(app);
   return server;
 }
