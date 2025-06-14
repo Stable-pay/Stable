@@ -149,6 +149,19 @@ export function RemittancePlatform() {
 
   const [showWalletCreationModal, setShowWalletCreationModal] = useState(false);
 
+  // Monitor wallet connection and auto-advance flow
+  useEffect(() => {
+    if (isConnected && address && (state.step === 'connect' || state.step === 'create-wallet')) {
+      console.log('Wallet connected successfully:', address);
+      // Auto-advance to transfer step when wallet is connected
+      setState(prev => ({ 
+        ...prev, 
+        step: 'transfer',
+        walletCreationType: state.step === 'create-wallet' ? 'new' : 'existing'
+      }));
+    }
+  }, [isConnected, address, state.step]);
+
   // Fetch live USD to INR exchange rate
   const fetchLiveExchangeRate = async () => {
     try {
@@ -728,38 +741,111 @@ export function RemittancePlatform() {
     );
   }
 
-  // Create Wallet step - Enhanced social login integration
-  if (state.step === 'create-wallet') {
+  // Unified Connect/Create Wallet step
+  if (state.step === 'create-wallet' || state.step === 'connect') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <div className="w-full max-w-lg">
-          <SocialWalletCreator 
-            isVisible={true}
-            onWalletCreated={() => {
-              setState(prev => ({ ...prev, step: 'buy-crypto', walletCreationType: 'new' }));
-            }}
-          />
-          
-          <div className="text-center mt-6 space-y-4">
-            <p className="text-white/80 text-sm">Already have a wallet? 
-              <Button 
-                variant="link" 
-                className="text-emerald-300 hover:text-emerald-200 p-0 ml-1 font-medium underline-offset-4 hover:underline"
-                onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
-              >
-                Connect existing wallet
-              </Button>
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="w-full max-w-lg border-border shadow-xl">
+          <CardHeader className="text-center pb-6 bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-t-lg">
+            <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2">
+              <Wallet className="w-8 h-8" />
+              {state.step === 'create-wallet' ? 'Create Your Wallet' : 'Connect Your Wallet'}
+            </CardTitle>
+            <p className="text-primary-foreground/90 mt-2">
+              {state.step === 'create-wallet' 
+                ? 'Create a secure Web3 wallet with social login or connect an existing one'
+                : 'Connect your existing wallet or create a new one to get started'
+              }
             </p>
-            
-            <Button 
-              onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
-              variant="outline"
-              className="border-emerald-400/50 text-emerald-200 hover:bg-emerald-500/20 hover:border-emerald-300 transition-all duration-200"
-            >
-              ← Back to Connect
-            </Button>
-          </div>
-        </div>
+          </CardHeader>
+          
+          <CardContent className="p-6 space-y-6">
+            {/* Connection Status */}
+            {isConnected && address && (
+              <div className="p-4 bg-secondary/10 rounded-lg border border-secondary/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="w-5 h-5 text-secondary" />
+                  <span className="text-foreground font-semibold">Wallet Connected</span>
+                </div>
+                <p className="text-muted-foreground text-sm">
+                  Address: {address.slice(0, 6)}...{address.slice(-4)}
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  Proceeding to transfer setup...
+                </p>
+              </div>
+            )}
+
+            {/* Unified Wallet Connection Button */}
+            {!isConnected && (
+              <div className="space-y-4">
+                <Button 
+                  onClick={async () => {
+                    try {
+                      console.log('Opening wallet connection modal...');
+                      await open();
+                    } catch (error) {
+                      console.error('Error opening wallet modal:', error);
+                    }
+                  }}
+                  className="w-full h-16 bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group border-0"
+                >
+                  <Wallet className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                  {state.step === 'create-wallet' ? 'Create or Connect Wallet' : 'Connect Wallet'}
+                  <ArrowRight className="w-5 h-5 ml-auto group-hover:translate-x-1 transition-transform" />
+                </Button>
+
+                <p className="text-center text-muted-foreground text-sm">
+                  Choose from MetaMask, WalletConnect, Google, Apple, Email, or other providers
+                </p>
+              </div>
+            )}
+
+            {/* Features */}
+            <div className="p-4 bg-muted rounded-lg border border-border">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-secondary flex-shrink-0" />
+                  <span className="text-foreground text-sm font-medium">Secure wallet connections & social login</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Zap className="w-5 h-5 text-secondary flex-shrink-0" />
+                  <span className="text-foreground text-sm font-medium">Instant setup with multiple options</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <UserCheck className="w-5 h-5 text-secondary flex-shrink-0" />
+                  <span className="text-foreground text-sm font-medium">Self-custodial - you control your keys</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex gap-3">
+              {state.step === 'create-wallet' && (
+                <Button 
+                  onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  ← Back to Connect
+                </Button>
+              )}
+              {state.step === 'connect' && (
+                <Button 
+                  onClick={() => setState(prev => ({ ...prev, step: 'create-wallet' }))}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Create New Wallet
+                </Button>
+              )}
+            </div>
+
+            <div className="text-center text-muted-foreground text-xs">
+              <p>Powered by Reown AppKit • Enterprise-grade security • Multi-chain support</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
