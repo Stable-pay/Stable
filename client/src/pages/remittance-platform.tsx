@@ -10,6 +10,7 @@ import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { TravelRuleCompliance } from '@/components/compliance/travel-rule-compliance';
+import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
