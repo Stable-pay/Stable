@@ -13,8 +13,10 @@ import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
 
+type StepType = 'connect' | 'create-wallet' | 'social-signup' | 'buy-crypto' | 'kyc' | 'recipient' | 'travel-rule' | 'transfer' | 'review' | 'processing' | 'complete';
+
 interface RemittanceState {
-  step: 'connect' | 'create-wallet' | 'social-signup' | 'buy-crypto' | 'kyc' | 'recipient' | 'travel-rule' | 'transfer' | 'review' | 'processing' | 'complete';
+  step: StepType;
   fromToken: string;
   amount: string;
   recipientCountry: string;
@@ -151,12 +153,12 @@ export function RemittancePlatform() {
 
   // Monitor wallet connection and auto-advance flow
   useEffect(() => {
-    if (isConnected && address && (state.step === 'connect' || state.step === 'create-wallet')) {
+    if (isConnected && address && ['connect', 'create-wallet'].includes(state.step)) {
       console.log('Wallet connected successfully:', address);
       // Auto-advance to transfer step when wallet is connected
       setState(prev => ({ 
         ...prev, 
-        step: 'transfer',
+        step: 'transfer' as const,
         walletCreationType: prev.step === 'create-wallet' ? 'new' : 'existing'
       }));
     }
@@ -742,7 +744,7 @@ export function RemittancePlatform() {
   }
 
   // Unified Connect/Create Wallet step
-  if (state.step === 'connect' || state.step === 'create-wallet') {
+  if (['connect', 'create-wallet'].includes(state.step)) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <Card className="w-full max-w-lg border-border shadow-xl">
@@ -830,7 +832,7 @@ export function RemittancePlatform() {
                   ← Back to Connect
                 </Button>
               )}
-              {state.step === 'connect' && (
+              {state.step !== 'create-wallet' && (
                 <Button 
                   onClick={() => setState(prev => ({ ...prev, step: 'create-wallet' as const }))}
                   variant="outline"
