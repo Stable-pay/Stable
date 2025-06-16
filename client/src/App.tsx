@@ -18,13 +18,14 @@ import { StablePayMain } from "@/pages/stablepay-main";
 import { StablePayMinimal } from "@/pages/stablepay-minimal";
 import { RemittancePlatform } from "@/pages/remittance-platform";
 import { LandingPage } from "@/pages/landing-page";
+import { UnifiedStablePay } from "@/pages/unified-stablepay";
 import { AdminConfig } from "@/pages/admin-config";
 
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={UnifiedStablePay} />
       <Route path="/app" component={RemittancePlatform} />
       <Route path="/admin" component={AdminConfig} />
       <Route path="/swap" component={Swap} />

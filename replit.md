@@ -158,6 +158,8 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Fixed text visibility issues in KYC forms, success indicators, and error messages using only purple/cream
 - June 16, 2025: Updated Web3 benefits comparison section with proper brand colors and enhanced PWA visibility
 - June 16, 2025: Made navigation links functional with scroll-to-section behavior for "How it works" and "Benefits"
+- June 16, 2025: Created unified single-page experience merging landing page and main application with seamless content flow
+- June 16, 2025: Implemented scroll-based navigation with fixed header and section highlighting for improved user experience
 
 ## User Preferences
 
