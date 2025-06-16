@@ -559,14 +559,14 @@ export function RemittancePlatform() {
                       <Wallet className="w-8 h-8 text-primary-foreground" />
                     </div>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">1</span>
-                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Connect wallet</h3>
+                      <span className="w-8 h-8 bg-[#6667AB] text-[#FCFBF4] rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                      <h3 className="text-xl font-bold text-[#FCFBF4] group-hover:text-[#FCFBF4] transition-colors">Connect wallet</h3>
                     </div>
-                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
+                    <p className="text-[#FCFBF4]/80 leading-relaxed mb-6 group-hover:text-[#FCFBF4] transition-colors">
                       Connect your self-custodial Web3 wallet. Keep full control of your assets.
                     </p>
-                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
-                      <p className="text-primary text-sm font-medium">
+                    <div className="p-4 bg-[#6667AB]/15 border border-[#6667AB]/40 rounded-xl group-hover:bg-[#6667AB]/20 transition-all duration-300">
+                      <p className="text-[#FCFBF4] text-sm font-medium">
                         <strong>Self-custody:</strong> Your keys, your crypto
                       </p>
                     </div>
@@ -582,14 +582,14 @@ export function RemittancePlatform() {
                       <UserCheck className="w-8 h-8 text-primary-foreground" />
                     </div>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">2</span>
-                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Verify identity</h3>
+                      <span className="w-8 h-8 bg-[#6667AB] text-[#FCFBF4] rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                      <h3 className="text-xl font-bold text-[#FCFBF4] group-hover:text-[#FCFBF4] transition-colors">Verify identity</h3>
                     </div>
-                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
+                    <p className="text-[#FCFBF4]/80 leading-relaxed mb-6 group-hover:text-[#FCFBF4] transition-colors">
                       Quick KYC for recipient verification. Upload ID, capture selfie. Compliant with regulations.
                     </p>
-                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
-                      <p className="text-primary text-sm font-medium">
+                    <div className="p-4 bg-[#6667AB]/15 border border-[#6667AB]/40 rounded-xl group-hover:bg-[#6667AB]/20 transition-all duration-300">
+                      <p className="text-[#FCFBF4] text-sm font-medium">
                         <strong>Secure:</strong> Encrypted verification process
                       </p>
                     </div>
@@ -605,14 +605,14 @@ export function RemittancePlatform() {
                       <Send className="w-8 h-8 text-primary-foreground" />
                     </div>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">3</span>
-                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Send crypto</h3>
+                      <span className="w-8 h-8 bg-[#6667AB] text-[#FCFBF4] rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                      <h3 className="text-xl font-bold text-[#FCFBF4] group-hover:text-[#FCFBF4] transition-colors">Send crypto</h3>
                     </div>
-                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
+                    <p className="text-[#FCFBF4]/80 leading-relaxed mb-6 group-hover:text-[#FCFBF4] transition-colors">
                       Enter amount and recipient details. Choose delivery method: bank, mobile money, or cash pickup.
                     </p>
-                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
-                      <p className="text-primary text-sm font-medium">
+                    <div className="p-4 bg-[#6667AB]/15 border border-[#6667AB]/40 rounded-xl group-hover:bg-[#6667AB]/20 transition-all duration-300">
+                      <p className="text-[#FCFBF4] text-sm font-medium">
                         <strong>Flexible:</strong> Multiple delivery options
                       </p>
                     </div>
@@ -628,14 +628,14 @@ export function RemittancePlatform() {
                       <Zap className="w-8 h-8 text-primary-foreground" />
                     </div>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">4</span>
-                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Instant settlement</h3>
+                      <span className="w-8 h-8 bg-[#6667AB] text-[#FCFBF4] rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                      <h3 className="text-xl font-bold text-[#FCFBF4] group-hover:text-[#FCFBF4] transition-colors">Instant settlement</h3>
                     </div>
-                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
+                    <p className="text-[#FCFBF4]/80 leading-relaxed mb-6 group-hover:text-[#FCFBF4] transition-colors">
                       Blockchain settlement in 2-5 minutes. Recipient gets INR directly to their preferred method.
                     </p>
-                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
-                      <p className="text-primary text-sm font-medium">
+                    <div className="p-4 bg-[#6667AB]/15 border border-[#6667AB]/40 rounded-xl group-hover:bg-[#6667AB]/20 transition-all duration-300">
+                      <p className="text-[#FCFBF4] text-sm font-medium">
                         <strong>Lightning:</strong> Faster than traditional rails
                       </p>
                     </div>
@@ -650,8 +650,8 @@ export function RemittancePlatform() {
           <section className="px-6 py-20 border-t border-background/10">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-background mb-4">Web3 off-ramping benefits</h2>
-                <p className="text-xl text-background/60">
+                <h2 className="text-4xl font-bold text-[#FCFBF4] mb-4">Web3 off-ramping benefits</h2>
+                <p className="text-xl text-[#FCFBF4]/80">
                   Self-custodial wallets + instant settlement = financial freedom
                 </p>
               </div>
@@ -661,8 +661,8 @@ export function RemittancePlatform() {
                   <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4">
                     <Key className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-background mb-3">Your keys, your crypto</h3>
-                  <p className="text-background/60 text-sm leading-relaxed">
+                  <h3 className="text-lg font-semibold text-[#FCFBF4] mb-3">Your keys, your crypto</h3>
+                  <p className="text-[#FCFBF4]/70 text-sm leading-relaxed">
                     Complete control over your assets. No bank can freeze, limit, or control your transactions. True financial sovereignty.
                   </p>
                 </div>
@@ -671,8 +671,8 @@ export function RemittancePlatform() {
                   <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4">
                     <Database className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-background mb-3">Decentralized settlement</h3>
-                  <p className="text-background/60 text-sm leading-relaxed">
+                  <h3 className="text-lg font-semibold text-[#FCFBF4] mb-3">Decentralized settlement</h3>
+                  <p className="text-[#FCFBF4]/70 text-sm leading-relaxed">
                     No single point of failure. Blockchain networks operate 24/7 across thousands of nodes worldwide.
                   </p>
                 </div>
@@ -681,8 +681,8 @@ export function RemittancePlatform() {
                   <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4">
                     <Lock className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-background mb-3">Cryptographic security</h3>
-                  <p className="text-background/60 text-sm leading-relaxed">
+                  <h3 className="text-lg font-semibold text-[#FCFBF4] mb-3">Cryptographic security</h3>
+                  <p className="text-[#FCFBF4]/70 text-sm leading-relaxed">
                     Military-grade encryption protects every transaction. Immutable ledger provides permanent audit trail.
                   </p>
                 </div>
