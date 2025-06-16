@@ -478,8 +478,8 @@ export function RemittancePlatform() {
                 </div>
                 
                 {status === 'reconnecting' && (
-                  <div className="flex items-center justify-center gap-2 text-white/60">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white/60"></div>
+                  <div className="flex items-center justify-center gap-2 text-background/60">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-background/20 border-t-background/60"></div>
                     <span className="text-sm">Connecting...</span>
                   </div>
                 )}
@@ -497,57 +497,57 @@ export function RemittancePlatform() {
           <section className="px-6 pb-20">
             <div className="max-w-6xl mx-auto">
               <div className="grid md:grid-cols-3 gap-6">
-                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <Zap className="w-6 h-6 text-blue-400" />
+                <div className="group p-6 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/10 transition-all duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary/20 to-primary/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Zap className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Lightning fast</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">Complete transfers in minutes, not days. Because your family shouldn't wait.</p>
+                  <h3 className="text-lg font-semibold text-background mb-2">Lightning fast</h3>
+                  <p className="text-background/60 text-sm leading-relaxed">Complete transfers in minutes, not days. Because your family shouldn't wait.</p>
                 </div>
 
-                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <Shield className="w-6 h-6 text-green-400" />
+                <div className="group p-6 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/10 transition-all duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary/20 to-primary/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Shield className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Bank-grade security</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">Blockchain technology with enterprise-level security standards.</p>
+                  <h3 className="text-lg font-semibold text-background mb-2">Bank-grade security</h3>
+                  <p className="text-background/60 text-sm leading-relaxed">Blockchain technology with enterprise-level security standards.</p>
                 </div>
 
-                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <TrendingUp className="w-6 h-6 text-orange-400" />
+                <div className="group p-6 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/10 transition-all duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary/20 to-primary/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Best rates</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">Live market rates with transparent, fixed fees. No hidden charges.</p>
+                  <h3 className="text-lg font-semibold text-background mb-2">Best rates</h3>
+                  <p className="text-background/60 text-sm leading-relaxed">Live market rates with transparent, fixed fees. No hidden charges.</p>
                 </div>
               </div>
             </div>
           </section>
 
           {/* How it Works Section */}
-          <section className="px-6 py-20 border-t border-white/5">
+          <section className="px-6 py-20 border-t border-background/10">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">How it works</h2>
-                <p className="text-xl text-white/60 max-w-2xl mx-auto">
-                  Three simple steps to send money across borders instantly
+                <h2 className="text-4xl md:text-5xl font-bold text-background mb-4">How it works</h2>
+                <p className="text-xl text-background/60 max-w-2xl mx-auto">
+                  Four simple steps to send money across borders instantly
                 </p>
               </div>
 
               <div className="grid md:grid-cols-4 gap-6">
                 {/* Step 1 */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Wallet className="w-6 h-6 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Wallet className="w-6 h-6 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-3">Connect wallet</h3>
-                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                    <h3 className="text-lg font-semibold text-background mb-3">Connect wallet</h3>
+                    <p className="text-background/60 text-sm leading-relaxed mb-4">
                       Connect your self-custodial Web3 wallet. Keep full control of your assets.
                     </p>
-                    <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded-lg">
-                      <p className="text-blue-300 text-xs">
+                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                      <p className="text-primary text-xs">
                         <strong>Self-custody:</strong> Your keys, your crypto
                       </p>
                     </div>
@@ -556,17 +556,17 @@ export function RemittancePlatform() {
 
                 {/* Step 2 - KYC */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <UserCheck className="w-6 h-6 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <UserCheck className="w-6 h-6 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-3">Verify identity</h3>
-                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                    <h3 className="text-lg font-semibold text-background mb-3">Verify identity</h3>
+                    <p className="text-background/60 text-sm leading-relaxed mb-4">
                       Quick KYC for recipient verification. Upload ID, capture selfie. Compliant with regulations.
                     </p>
-                    <div className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg">
-                      <p className="text-purple-300 text-xs">
+                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                      <p className="text-primary text-xs">
                         <strong>Secure:</strong> Encrypted verification process
                       </p>
                     </div>
@@ -575,17 +575,17 @@ export function RemittancePlatform() {
 
                 {/* Step 3 */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Send className="w-6 h-6 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Send className="w-6 h-6 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-3">Send crypto</h3>
-                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                    <h3 className="text-lg font-semibold text-background mb-3">Send crypto</h3>
+                    <p className="text-background/60 text-sm leading-relaxed mb-4">
                       Enter amount and recipient details. Choose delivery method: bank, mobile money, or cash pickup.
                     </p>
-                    <div className="p-3 bg-green-500/5 border border-green-500/20 rounded-lg">
-                      <p className="text-green-300 text-xs">
+                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                      <p className="text-primary text-xs">
                         <strong>Flexible:</strong> Multiple delivery options
                       </p>
                     </div>
@@ -594,17 +594,17 @@ export function RemittancePlatform() {
 
                 {/* Step 4 */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Zap className="w-6 h-6 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Zap className="w-6 h-6 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-3">Instant settlement</h3>
-                    <p className="text-white/60 text-sm leading-relaxed mb-4">
+                    <h3 className="text-lg font-semibold text-background mb-3">Instant settlement</h3>
+                    <p className="text-background/60 text-sm leading-relaxed mb-4">
                       Blockchain settlement in 2-5 minutes. Recipient gets INR directly to their preferred method.
                     </p>
-                    <div className="p-3 bg-orange-500/5 border border-orange-500/20 rounded-lg">
-                      <p className="text-orange-300 text-xs">
+                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                      <p className="text-primary text-xs">
                         <strong>Lightning:</strong> Faster than traditional rails
                       </p>
                     </div>
