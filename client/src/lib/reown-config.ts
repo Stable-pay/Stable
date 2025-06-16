@@ -62,7 +62,20 @@ const metadata = {
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId: projectId || 'demo-project-id',
-  networks: [mainnet, polygon, bsc, arbitrum],
+  networks: [
+    mainnet, 
+    polygon, 
+    bsc, 
+    arbitrum, 
+    optimism, 
+    base, 
+    avalanche, 
+    fantom, 
+    celo, 
+    moonbeam, 
+    gnosis, 
+    zkSync
+  ],
   defaultNetwork: mainnet,
   metadata,
   themeMode: 'light',

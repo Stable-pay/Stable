@@ -840,19 +840,25 @@ export function UnifiedLanding() {
                   </Card>
                 </motion.div>
 
-                {/* Travel Rule and KYC Components */}
+                {/* Enhanced Indian KYC Flow */}
                 {currentStep === 'swap' && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-8 space-y-6"
                   >
-                    <TravelRuleForm 
-                      onSubmit={(data) => {
-                        console.log('Travel rule data:', data);
+                    <EnhancedIndianKYCFlow 
+                      onComplete={(data) => {
+                        console.log('Enhanced KYC completed:', data);
                         setCurrentStep('complete');
                       }}
                       onBack={() => setCurrentStep('wallet-connected')}
+                      originatorInfo={{
+                        name: address ? `User ${address.slice(0, 6)}...${address.slice(-4)}` : '',
+                        address: '',
+                        phone: '',
+                        email: ''
+                      }}
                       amount={remittanceState.amount}
                       currency={remittanceState.fromToken}
                     />

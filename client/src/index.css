@@ -247,6 +247,16 @@
   .mobile-fab {
     @apply fixed bottom-20 right-4 w-14 h-14 rounded-full shadow-lg z-40 flex items-center justify-center;
   }
+
+  /* Premium Button Styling */
+  .btn-premium {
+    @apply bg-gradient-to-r from-[#6667AB] to-[#6667AB]/90 hover:from-[#6667AB]/95 hover:to-[#6667AB]/85 text-[#FCFBF4] font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-out border-2 border-[#6667AB]/50 hover:border-[#6667AB]/70;
+  }
+
+  /* Button text visibility fix */
+  .btn-premium, .btn-premium:hover, .btn-premium:active, .btn-premium:focus {
+    color: #FCFBF4 !important;
+  }
   
   /* Modal Optimizations */
   .mobile-modal {
