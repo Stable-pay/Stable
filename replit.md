@@ -152,6 +152,8 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Complete mobile-responsive PWA rebuild with comprehensive mobile-first design patterns
 - June 16, 2025: Added PWA manifest, service worker, and mobile navigation components
 - June 16, 2025: Implemented mobile utilities, safe area handling, and touch optimization
+- June 16, 2025: Fixed layout constraints and text visibility issues - removed max-width limitations for full page display
+- June 16, 2025: Enhanced form contrast with white backgrounds and proper purple text visibility throughout all steps
 
 ## User Preferences
 
