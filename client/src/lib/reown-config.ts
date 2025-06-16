@@ -15,54 +15,9 @@ import {
   zkSync
 } from '@reown/appkit/networks'
 
-// Define Solana network configurations
-const solanaMainnet = {
-  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  name: 'Solana',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com',
-  rpcUrl: 'https://api.mainnet-beta.solana.com'
-}
-
-const bitcoinMainnet = {
-  id: 'btc:000000000019d6689c085ae165831e93',
-  name: 'Bitcoin',
-  currency: 'BTC', 
-  explorerUrl: 'https://blockstream.info',
-  rpcUrl: 'https://blockstream.info/api'
-}
-
-const cosmosHub = {
-  id: 'cosmos:cosmoshub-4',
-  name: 'Cosmos Hub',
-  currency: 'ATOM',
-  explorerUrl: 'https://www.mintscan.io/cosmos',
-  rpcUrl: 'https://cosmos-rpc.quickapi.com'
-}
-
-const nearProtocol = {
-  id: 'near:mainnet',
-  name: 'Near Protocol',
-  currency: 'NEAR',
-  explorerUrl: 'https://explorer.near.org',
-  rpcUrl: 'https://rpc.mainnet.near.org'
-}
-
-const polkadotMainnet = {
-  id: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
-  name: 'Polkadot',
-  currency: 'DOT',
-  explorerUrl: 'https://polkadot.subscan.io',
-  rpcUrl: 'https://rpc.polkadot.io'
-}
-
-const tronMainnet = {
-  id: 'tron:0x2b6653dc',
-  name: 'Tron',
-  currency: 'TRX',
-  explorerUrl: 'https://tronscan.org',
-  rpcUrl: 'https://api.trongrid.io'
-}
+// Define additional network configurations (Reown AppKit will handle these via WalletConnect)
+// For now, we'll focus on EVM chains that are fully supported
+// Non-EVM chains like Solana, Bitcoin will be handled via wallet-specific connections
 import { QueryClient } from '@tanstack/react-query'
 
 // Create query client
@@ -107,7 +62,7 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal with enhanced features for compliance
+// Create the modal with comprehensive multi-chain support
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId: projectId || 'demo-project-id',
@@ -129,8 +84,10 @@ export const modal = createAppKit({
   metadata,
   themeMode: 'light',
   themeVariables: {
-    '--w3m-accent': '#10b981',
-    '--w3m-border-radius-master': '12px'
+    '--w3m-accent': '#6667AB',
+    '--w3m-border-radius-master': '12px',
+    '--w3m-color-mix': '#FCFBF4',
+    '--w3m-color-mix-strength': 20
   },
   features: {
     analytics: true,
@@ -139,12 +96,23 @@ export const modal = createAppKit({
     emailShowWallets: true,
     swaps: true,
     onramp: true,
-    history: true
+    history: true,
+    allWallets: true
   },
   enableWalletConnect: true,
   enableInjected: true,
   enableEIP6963: true,
-  enableCoinbase: true
+  enableCoinbase: true,
+  // Enable multi-chain connectivity
+  allowUnsupportedChain: false,
+  // Enable all wallets including Solana wallets through WalletConnect
+  includeWalletIds: [
+    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
+    '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
+    '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927', // Ledger
+    '163d2cf19babf05eb8962e9748f9ebe613ed52ebf9c8107c9a0f104bfcf161b3', // Phantom
+    'c3ccaf5353b174f4b7e1b4e114885a12bcab0ca6a7e59c5e6b9d7b8b9a1a6b8e'  // Solflare
+  ]
 })
 
 export const config = wagmiAdapter.wagmiConfig

@@ -186,6 +186,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Added originator sign-in request for travel rule with smart contract wallet ownership verification
 - June 16, 2025: Implemented wallet signature requirement before INR conversion to prove sender ownership
 - June 16, 2025: Enhanced CSS with global button visibility fixes using !important declarations and brand colors
+- June 16, 2025: Added comprehensive multi-chain support including Solana (SOL), Bitcoin (BTC), Cosmos (ATOM), Near (NEAR), Polkadot (DOT), and Tron (TRX)
+- June 16, 2025: Expanded from 12 EVM chains to 18+ total networks including major non-EVM blockchains
+- June 16, 2025: Added Solana SPL tokens support (USDC, USDT, RAY, SRM, MNGO, STEP, ORCA, SAMO)
+- June 16, 2025: Configured custom wallet integrations for Phantom, Solflare, and TronLink wallets
+- June 16, 2025: Updated Reown AppKit with multi-chain connectivity and non-EVM network support
 
 ## User Preferences
 
