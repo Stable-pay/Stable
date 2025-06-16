@@ -1025,7 +1025,7 @@ export function RemittancePlatform() {
 
             <div className="mobile-spacing">
               <div className="mobile-form-field">
-                <label className="mobile-form-label text-[#6667AB]">ID Document Type</label>
+                <label className="mobile-form-label text-[#6667AB] font-semibold">ID Document Type</label>
                 <Select 
                   value={state.kycDocuments.idType} 
                   onValueChange={(value) => setState(prev => ({ 
@@ -1033,20 +1033,20 @@ export function RemittancePlatform() {
                     kycDocuments: { ...prev.kycDocuments, idType: value }
                   }))}
                 >
-                  <SelectTrigger className="mobile-input bg-[#FCFBF4] border-[#6667AB]/20 text-[#6667AB]">
+                  <SelectTrigger className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium">
                     <SelectValue placeholder="Select ID type" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="passport">Passport</SelectItem>
-                    <SelectItem value="drivers_license">Driver's License</SelectItem>
-                    <SelectItem value="national_id">National ID Card</SelectItem>
-                    <SelectItem value="aadhaar">Aadhaar Card (India)</SelectItem>
+                  <SelectContent className="bg-white border-[#6667AB]/20">
+                    <SelectItem value="passport" className="text-[#6667AB] hover:bg-[#6667AB]/10">Passport</SelectItem>
+                    <SelectItem value="drivers_license" className="text-[#6667AB] hover:bg-[#6667AB]/10">Driver's License</SelectItem>
+                    <SelectItem value="national_id" className="text-[#6667AB] hover:bg-[#6667AB]/10">National ID Card</SelectItem>
+                    <SelectItem value="aadhaar" className="text-[#6667AB] hover:bg-[#6667AB]/10">Aadhaar Card (India)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="mobile-form-field">
-                <label className="mobile-form-label text-[#6667AB]">ID Number</label>
+                <label className="mobile-form-label text-[#6667AB] font-semibold">ID Number</label>
                 <Input
                   placeholder="Enter your ID number"
                   value={state.kycDocuments.idNumber}
@@ -1054,23 +1054,23 @@ export function RemittancePlatform() {
                     ...prev, 
                     kycDocuments: { ...prev.kycDocuments, idNumber: e.target.value }
                   }))}
-                  className="mobile-input bg-[#FCFBF4] border-[#6667AB]/20 text-[#6667AB]"
+                  className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium placeholder:text-[#6667AB]/50"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-white text-sm font-medium">Upload ID Document</label>
-                  <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-purple-500 transition-colors cursor-pointer">
+                <div className="mobile-form-field">
+                  <label className="mobile-form-label text-[#6667AB] font-semibold">Upload ID Document</label>
+                  <div className="border-2 border-dashed border-[#6667AB]/30 rounded-lg p-6 text-center hover:border-[#6667AB]/50 transition-colors cursor-pointer bg-white">
                     {state.kycDocuments.documentUploaded ? (
-                      <div className="flex items-center justify-center gap-2 text-green-400">
+                      <div className="flex items-center justify-center gap-2 text-green-600">
                         <CheckCircle className="w-5 h-5" />
-                        <span>Document uploaded</span>
+                        <span className="font-medium">Document uploaded</span>
                       </div>
                     ) : (
-                      <div className="text-white/60">
+                      <div className="text-[#6667AB]/70">
                         <FileText className="w-8 h-8 mx-auto mb-2" />
-                        <p className="text-sm">Click to upload ID document</p>
+                        <p className="text-sm font-medium">Click to upload ID document</p>
                         <Button
                           onClick={() => setState(prev => ({ 
                             ...prev, 
@@ -1078,7 +1078,7 @@ export function RemittancePlatform() {
                           }))}
                           variant="outline"
                           size="sm"
-                          className="mt-2 border-gray-600 text-white hover:bg-purple-500/20"
+                          className="mt-2 border-[#6667AB]/30 text-[#6667AB] hover:bg-[#6667AB]/10"
                         >
                           Upload Document
                         </Button>
@@ -1087,18 +1087,18 @@ export function RemittancePlatform() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-white text-sm font-medium">Selfie Verification</label>
-                  <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-purple-500 transition-colors cursor-pointer">
+                <div className="mobile-form-field">
+                  <label className="mobile-form-label text-[#6667AB] font-semibold">Selfie Verification</label>
+                  <div className="border-2 border-dashed border-[#6667AB]/30 rounded-lg p-6 text-center hover:border-[#6667AB]/50 transition-colors cursor-pointer bg-white">
                     {state.kycDocuments.selfieUploaded ? (
-                      <div className="flex items-center justify-center gap-2 text-green-400">
+                      <div className="flex items-center justify-center gap-2 text-green-600">
                         <CheckCircle className="w-5 h-5" />
-                        <span>Selfie verified</span>
+                        <span className="font-medium">Selfie verified</span>
                       </div>
                     ) : (
-                      <div className="text-white/60">
+                      <div className="text-[#6667AB]/70">
                         <Scan className="w-8 h-8 mx-auto mb-2" />
-                        <p className="text-sm">Take a selfie for verification</p>
+                        <p className="text-sm font-medium">Take a selfie for verification</p>
                         <Button
                           onClick={() => setState(prev => ({ 
                             ...prev, 
@@ -1106,7 +1106,7 @@ export function RemittancePlatform() {
                           }))}
                           variant="outline"
                           size="sm"
-                          className="mt-2 border-gray-600 text-white hover:bg-purple-500/20"
+                          className="mt-2 border-[#6667AB]/30 text-[#6667AB] hover:bg-[#6667AB]/10"
                         >
                           Take Selfie
                         </Button>
@@ -1116,12 +1116,12 @@ export function RemittancePlatform() {
                 </div>
               </div>
 
-              <div className="p-4 bg-purple-500/5 border border-purple-500/20 rounded-lg">
+              <div className="p-4 bg-[#6667AB]/10 border border-[#6667AB]/30 rounded-lg">
                 <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-purple-400 mt-0.5" />
+                  <Shield className="w-5 h-5 text-[#6667AB] mt-0.5" />
                   <div>
-                    <h4 className="text-purple-300 font-medium mb-1">Secure Verification</h4>
-                    <p className="text-purple-200/80 text-sm">
+                    <h4 className="text-[#6667AB] font-semibold mb-1">Secure Verification</h4>
+                    <p className="text-[#6667AB]/80 text-sm font-medium">
                       Your documents are encrypted and processed securely. We comply with international KYC/AML regulations to ensure safe transfers.
                     </p>
                   </div>
