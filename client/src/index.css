@@ -199,13 +199,86 @@
 }
 
 @layer components {
-  /* Custom button hover effects */
+  /* Enhanced button styles with StablePay-like animations */
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300;
+    @apply relative overflow-hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    @apply transform -translate-x-full transition-transform duration-700;
+  }
+
+  .btn-primary:hover::before {
+    @apply translate-x-full;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors;
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-all duration-300;
+    @apply relative overflow-hidden;
+  }
+
+  .btn-secondary::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent;
+    @apply transform -translate-x-full transition-transform duration-700;
+  }
+
+  .btn-secondary:hover::before {
+    @apply translate-x-full;
+  }
+
+  /* Premium button with enhanced effects */
+  .btn-premium {
+    @apply relative bg-gradient-to-r from-primary to-primary/80 text-primary-foreground;
+    @apply hover:from-primary/90 hover:to-primary/70 transition-all duration-300;
+    @apply shadow-lg hover:shadow-2xl hover:shadow-primary/25;
+    @apply border border-primary/20 hover:border-primary/40;
+    @apply transform hover:scale-[1.02] active:scale-[0.98];
+    @apply overflow-hidden;
+  }
+
+  .btn-premium::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    @apply transform -translate-x-full transition-transform duration-1000;
+  }
+
+  .btn-premium:hover::after {
+    @apply translate-x-full;
+  }
+
+  /* Outline button with fill animation */
+  .btn-outline-fill {
+    @apply relative border-2 border-primary text-primary bg-transparent;
+    @apply hover:text-primary-foreground transition-colors duration-300;
+    @apply overflow-hidden;
+  }
+
+  .btn-outline-fill::before {
+    content: '';
+    @apply absolute inset-0 bg-primary transform scale-x-0 origin-left;
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  .btn-outline-fill:hover::before {
+    @apply scale-x-100;
+  }
+
+  .btn-outline-fill > * {
+    @apply relative z-10;
+  }
+
+  /* Floating action button */
+  .btn-floating {
+    @apply fixed bottom-6 right-6 w-14 h-14 rounded-full;
+    @apply bg-primary text-primary-foreground shadow-lg;
+    @apply hover:shadow-2xl hover:shadow-primary/30;
+    @apply transform hover:scale-110 active:scale-95;
+    @apply transition-all duration-300;
+    @apply animate-pulse-glow;
   }
 
   /* Network card animations */
@@ -278,8 +351,88 @@ html {
   }
 }
 
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.4);
+  }
+}
+
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out;
+}
+
+.animate-float-subtle {
+  animation: float-subtle 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 /* Mobile-first responsive typography */

@@ -438,10 +438,11 @@ export function RemittancePlatform() {
                       setState(prev => ({ ...prev, walletCreationType: 'existing' }));
                       open({ view: 'Connect' });
                     }}
-                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-xl hover:shadow-2xl shadow-primary/30 transition-all duration-300 group border border-primary/20"
+                    className="btn-premium h-16 px-8 text-lg font-bold group animate-fade-in-up"
+                    style={{ animationDelay: '0.2s' }}
                   >
-                    <Wallet className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                    Connect Wallet
+                    <Wallet className="w-6 h-6 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
+                    <span className="relative">Connect Wallet</span>
                   </Button>
                   
                   {/* Create New Wallet */}
@@ -453,22 +454,23 @@ export function RemittancePlatform() {
                         step: 'create-wallet'
                       }));
                     }}
-                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground shadow-xl hover:shadow-2xl shadow-primary/20 transition-all duration-300 group border border-primary/20"
+                    className="btn-outline-fill h-16 px-8 text-lg font-bold group animate-fade-in-up"
+                    style={{ animationDelay: '0.4s' }}
                   >
-                    <UserCheck className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                    Create Wallet
+                    <UserCheck className="w-6 h-6 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
+                    <span className="relative">Create Wallet</span>
                   </Button>
                 </div>
                 
                 <div className="text-center space-y-3">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto text-sm">
-                    <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-                      <div className="font-semibold text-primary-foreground mb-2">Already have crypto?</div>
-                      <div className="text-primary-foreground/90">Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
+                    <div className="p-6 bg-primary/10 rounded-xl border border-primary/20 group hover:bg-primary/15 transition-all duration-300 animate-slide-in-left cursor-pointer transform hover:scale-[1.02]">
+                      <div className="font-semibold text-primary-foreground mb-2 group-hover:text-primary transition-colors">Already have crypto?</div>
+                      <div className="text-primary-foreground/90 group-hover:text-primary-foreground transition-colors">Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
                     </div>
-                    <div className="p-4 bg-secondary/50 rounded-lg border border-primary/20">
-                      <div className="font-semibold text-secondary-foreground mb-2">New to crypto?</div>
-                      <div className="text-secondary-foreground/90">Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
+                    <div className="p-6 bg-secondary/50 rounded-xl border border-primary/20 group hover:bg-secondary/70 transition-all duration-300 animate-slide-in-right cursor-pointer transform hover:scale-[1.02]">
+                      <div className="font-semibold text-secondary-foreground mb-2 group-hover:text-primary transition-colors">New to crypto?</div>
+                      <div className="text-secondary-foreground/90 group-hover:text-primary transition-colors">Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
                     </div>
                   </div>
                   
@@ -497,28 +499,31 @@ export function RemittancePlatform() {
           <section className="px-6 pb-20">
             <div className="max-w-6xl mx-auto">
               <div className="grid md:grid-cols-3 gap-6">
-                <div className="group p-6 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/10 transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary/20 to-primary/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <Zap className="w-6 h-6 text-primary" />
+                <div className="group p-8 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/15 transition-all duration-500 animate-fade-in-up cursor-pointer transform hover:scale-105 hover:-translate-y-2 shadow-lg hover:shadow-2xl" style={{ animationDelay: '0.1s' }}>
+                  <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-subtle">
+                    <Zap className="w-8 h-8 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-background mb-2">Lightning fast</h3>
-                  <p className="text-background/60 text-sm leading-relaxed">Complete transfers in minutes, not days. Because your family shouldn't wait.</p>
+                  <h3 className="text-xl font-bold text-background mb-3 group-hover:text-primary transition-colors">Lightning fast</h3>
+                  <p className="text-background/70 leading-relaxed group-hover:text-background transition-colors">Complete transfers in minutes, not days. Because your family shouldn't wait.</p>
+                  <div className="mt-4 h-1 w-0 bg-primary rounded-full group-hover:w-full transition-all duration-500"></div>
                 </div>
 
-                <div className="group p-6 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/10 transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary/20 to-primary/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <Shield className="w-6 h-6 text-primary" />
+                <div className="group p-8 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/15 transition-all duration-500 animate-fade-in-up cursor-pointer transform hover:scale-105 hover:-translate-y-2 shadow-lg hover:shadow-2xl" style={{ animationDelay: '0.2s' }}>
+                  <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-subtle" style={{ animationDelay: '0.5s' }}>
+                    <Shield className="w-8 h-8 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-background mb-2">Bank-grade security</h3>
-                  <p className="text-background/60 text-sm leading-relaxed">Blockchain technology with enterprise-level security standards.</p>
+                  <h3 className="text-xl font-bold text-background mb-3 group-hover:text-primary transition-colors">Bank-grade security</h3>
+                  <p className="text-background/70 leading-relaxed group-hover:text-background transition-colors">Blockchain technology with enterprise-level security standards.</p>
+                  <div className="mt-4 h-1 w-0 bg-primary rounded-full group-hover:w-full transition-all duration-500"></div>
                 </div>
 
-                <div className="group p-6 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/10 transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary/20 to-primary/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <TrendingUp className="w-6 h-6 text-primary" />
+                <div className="group p-8 rounded-2xl bg-background/5 border border-background/10 hover:bg-background/15 transition-all duration-500 animate-fade-in-up cursor-pointer transform hover:scale-105 hover:-translate-y-2 shadow-lg hover:shadow-2xl" style={{ animationDelay: '0.3s' }}>
+                  <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-subtle" style={{ animationDelay: '1s' }}>
+                    <TrendingUp className="w-8 h-8 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-background mb-2">Best rates</h3>
-                  <p className="text-background/60 text-sm leading-relaxed">Live market rates with transparent, fixed fees. No hidden charges.</p>
+                  <h3 className="text-xl font-bold text-background mb-3 group-hover:text-primary transition-colors">Best rates</h3>
+                  <p className="text-background/70 leading-relaxed group-hover:text-background transition-colors">Live market rates with transparent, fixed fees. No hidden charges.</p>
+                  <div className="mt-4 h-1 w-0 bg-primary rounded-full group-hover:w-full transition-all duration-500"></div>
                 </div>
               </div>
             </div>
@@ -536,78 +541,94 @@ export function RemittancePlatform() {
 
               <div className="grid md:grid-cols-4 gap-6">
                 {/* Step 1 */}
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Wallet className="w-6 h-6 text-primary-foreground" />
+                <div className="relative group animate-scale-in" style={{ animationDelay: '0.2s' }}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500 animate-pulse-glow"></div>
+                  <div className="relative p-8 rounded-3xl bg-background/15 border border-background/30 hover:border-primary/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-3 shadow-xl hover:shadow-2xl backdrop-blur-sm">
+                    <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 animate-float-subtle">
+                      <Wallet className="w-8 h-8 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-background mb-3">Connect wallet</h3>
-                    <p className="text-background/60 text-sm leading-relaxed mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Connect wallet</h3>
+                    </div>
+                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
                       Connect your self-custodial Web3 wallet. Keep full control of your assets.
                     </p>
-                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
-                      <p className="text-primary text-xs">
+                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
+                      <p className="text-primary text-sm font-medium">
                         <strong>Self-custody:</strong> Your keys, your crypto
                       </p>
                     </div>
+                    <div className="absolute top-4 right-4 w-3 h-3 bg-primary rounded-full animate-pulse"></div>
                   </div>
                 </div>
 
                 {/* Step 2 - KYC */}
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <UserCheck className="w-6 h-6 text-primary-foreground" />
+                <div className="relative group animate-scale-in" style={{ animationDelay: '0.4s' }}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500 animate-pulse-glow"></div>
+                  <div className="relative p-8 rounded-3xl bg-background/15 border border-background/30 hover:border-primary/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-3 shadow-xl hover:shadow-2xl backdrop-blur-sm">
+                    <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 animate-float-subtle" style={{ animationDelay: '0.3s' }}>
+                      <UserCheck className="w-8 h-8 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-background mb-3">Verify identity</h3>
-                    <p className="text-background/60 text-sm leading-relaxed mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Verify identity</h3>
+                    </div>
+                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
                       Quick KYC for recipient verification. Upload ID, capture selfie. Compliant with regulations.
                     </p>
-                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
-                      <p className="text-primary text-xs">
+                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
+                      <p className="text-primary text-sm font-medium">
                         <strong>Secure:</strong> Encrypted verification process
                       </p>
                     </div>
+                    <div className="absolute top-4 right-4 w-3 h-3 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
                   </div>
                 </div>
 
                 {/* Step 3 */}
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Send className="w-6 h-6 text-primary-foreground" />
+                <div className="relative group animate-scale-in" style={{ animationDelay: '0.6s' }}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500 animate-pulse-glow"></div>
+                  <div className="relative p-8 rounded-3xl bg-background/15 border border-background/30 hover:border-primary/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-3 shadow-xl hover:shadow-2xl backdrop-blur-sm">
+                    <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 animate-float-subtle" style={{ animationDelay: '0.6s' }}>
+                      <Send className="w-8 h-8 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-background mb-3">Send crypto</h3>
-                    <p className="text-background/60 text-sm leading-relaxed mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Send crypto</h3>
+                    </div>
+                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
                       Enter amount and recipient details. Choose delivery method: bank, mobile money, or cash pickup.
                     </p>
-                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
-                      <p className="text-primary text-xs">
+                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
+                      <p className="text-primary text-sm font-medium">
                         <strong>Flexible:</strong> Multiple delivery options
                       </p>
                     </div>
+                    <div className="absolute top-4 right-4 w-3 h-3 bg-primary rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
                   </div>
                 </div>
 
                 {/* Step 4 */}
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                  <div className="relative p-6 rounded-2xl bg-background/10 border border-background/20 hover:border-background/30 transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Zap className="w-6 h-6 text-primary-foreground" />
+                <div className="relative group animate-scale-in" style={{ animationDelay: '0.8s' }}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500 animate-pulse-glow"></div>
+                  <div className="relative p-8 rounded-3xl bg-background/15 border border-background/30 hover:border-primary/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-3 shadow-xl hover:shadow-2xl backdrop-blur-sm">
+                    <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 animate-float-subtle" style={{ animationDelay: '0.9s' }}>
+                      <Zap className="w-8 h-8 text-primary-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold text-background mb-3">Instant settlement</h3>
-                    <p className="text-background/60 text-sm leading-relaxed mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                      <h3 className="text-xl font-bold text-background group-hover:text-primary transition-colors">Instant settlement</h3>
+                    </div>
+                    <p className="text-background/70 leading-relaxed mb-6 group-hover:text-background transition-colors">
                       Blockchain settlement in 2-5 minutes. Recipient gets INR directly to their preferred method.
                     </p>
-                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
-                      <p className="text-primary text-xs">
+                    <div className="p-4 bg-primary/15 border border-primary/40 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
+                      <p className="text-primary text-sm font-medium">
                         <strong>Lightning:</strong> Faster than traditional rails
                       </p>
                     </div>
+                    <div className="absolute top-4 right-4 w-3 h-3 bg-primary rounded-full animate-pulse" style={{ animationDelay: '1.5s' }}></div>
                   </div>
                 </div>
               </div>
@@ -1374,20 +1395,20 @@ export function RemittancePlatform() {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <Button 
                 onClick={() => setState(prev => ({ ...prev, step: 'recipient' }))}
-                variant="outline"
-                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+                className="btn-outline-fill flex-1 h-14 text-lg font-semibold group"
               >
-                Back
+                <ArrowRight className="w-5 h-5 mr-2 rotate-180 group-hover:scale-110 transition-transform" />
+                <span className="relative">Back</span>
               </Button>
               <Button 
                 onClick={() => handleStepNavigation('travel-rule')}
-                className="flex-1 h-12 text-lg font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                className="btn-premium flex-1 h-14 text-lg font-semibold group"
               >
-                Continue to Compliance
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <span className="relative">Continue to Compliance</span>
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:scale-110 group-hover:translate-x-1 transition-all duration-300" />
               </Button>
             </div>
           </CardContent>
