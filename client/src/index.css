@@ -4,58 +4,79 @@
 
 @layer base {
   :root {
-    --background: 210 11% 98%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    /* Primary Colors - Purple Theme */
+    --primary: 262 47% 55%; /* #6667AB */
+    --primary-foreground: 43 33% 97%; /* #FCFBF4 */
+    
+    /* Secondary Colors - Cream Theme */
+    --secondary: 43 33% 97%; /* #FCFBF4 */
+    --secondary-foreground: 262 47% 55%; /* #6667AB */
+    
+    /* Background Colors */
+    --background: 43 33% 97%; /* #FCFBF4 */
+    --foreground: 262 47% 55%; /* #6667AB */
+    
+    /* Muted Colors */
+    --muted: 43 20% 90%; /* Slightly darker cream */
+    --muted-foreground: 262 30% 40%; /* Darker purple */
+    
+    /* Accent Colors */
+    --accent: 262 47% 55%; /* #6667AB */
+    --accent-foreground: 43 33% 97%; /* #FCFBF4 */
+    
+    /* Destructive Colors */
+    --destructive: 0 84% 60%; /* Red for errors */
+    --destructive-foreground: 43 33% 97%; /* #FCFBF4 */
+    
+    /* Border and Input */
+    --border: 262 20% 82%; /* Light purple border */
+    --input: 262 20% 82%; /* Light purple input border */
+    --ring: 262 47% 55%; /* #6667AB focus ring */
+    
+    /* Card */
+    --card: 43 33% 97%; /* #FCFBF4 */
+    --card-foreground: 262 47% 55%; /* #6667AB */
+    
+    /* Popover */
+    --popover: 43 33% 97%; /* #FCFBF4 */
+    --popover-foreground: 262 47% 55%; /* #6667AB */
+    
+    /* Chart Colors */
+    --chart-1: 262 47% 55%; /* #6667AB */
+    --chart-2: 262 47% 65%; /* Lighter purple */
+    --chart-3: 262 47% 45%; /* Darker purple */
+    --chart-4: 262 47% 75%; /* Very light purple */
+    --chart-5: 262 47% 35%; /* Very dark purple */
+    
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Dark theme maintains purple/cream contrast */
+    --primary: 262 47% 65%; /* Lighter purple for dark mode */
+    --primary-foreground: 262 47% 15%; /* Dark purple text */
+    --secondary: 262 47% 15%; /* Dark purple background */
+    --secondary-foreground: 43 33% 97%; /* Cream text */
+    --background: 262 47% 10%; /* Very dark purple */
+    --foreground: 43 33% 97%; /* Cream text */
+    --muted: 262 30% 20%; /* Dark muted purple */
+    --muted-foreground: 43 20% 80%; /* Light cream text */
+    --accent: 262 47% 65%; /* Lighter purple accent */
+    --accent-foreground: 262 47% 15%; /* Dark purple text */
+    --destructive: 0 84% 60%; /* Red for errors */
+    --destructive-foreground: 43 33% 97%; /* Cream text */
+    --border: 262 30% 25%; /* Dark purple border */
+    --input: 262 30% 25%; /* Dark purple input border */
+    --ring: 262 47% 65%; /* Light purple focus ring */
+    --card: 262 47% 12%; /* Dark purple card */
+    --card-foreground: 43 33% 97%; /* Cream text */
+    --popover: 262 47% 12%; /* Dark purple popover */
+    --popover-foreground: 43 33% 97%; /* Cream text */
+    --chart-1: 262 47% 65%;
+    --chart-2: 262 47% 55%;
+    --chart-3: 262 47% 75%;
+    --chart-4: 262 47% 45%;
+    --chart-5: 262 47% 85%;
   }
 }
 
