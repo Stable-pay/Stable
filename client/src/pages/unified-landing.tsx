@@ -72,11 +72,8 @@ export function UnifiedLanding() {
   const [isVisible, setIsVisible] = useState(false);
   const [showWalletCreator, setShowWalletCreator] = useState(false);
   const [currentStep, setCurrentStep] = useState<StepType>('landing');
-  const [liveStats, setLiveStats] = useState({
-    volume: 2.5,
-    transactions: 10247,
-    users: 1205
-  });
+  // Exchange rate for USD to INR
+  const [usdToInrRate, setUsdToInrRate] = useState(83.25);
 
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, -50]);
@@ -97,14 +94,10 @@ export function UnifiedLanding() {
   useEffect(() => {
     setIsVisible(true);
     
-    // Simulate live stats updates
+    // Simulate live USD to INR rate updates
     const interval = setInterval(() => {
-      setLiveStats(prev => ({
-        volume: prev.volume + Math.random() * 0.1,
-        transactions: prev.transactions + Math.floor(Math.random() * 3),
-        users: prev.users + Math.floor(Math.random() * 2)
-      }));
-    }, 5000);
+      setUsdToInrRate(prev => prev + (Math.random() - 0.5) * 0.1);
+    }, 30000);
 
     return () => clearInterval(interval);
   }, []);
@@ -238,9 +231,9 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
                   >
-                    Convert Crypto to
+                    Web3 Remittance &
                     <span className="block bg-gradient-to-r from-[#FCFBF4] to-[#FCFBF4]/80 bg-clip-text text-transparent">
-                      INR Instantly
+                      Crypto Off-Ramping
                     </span>
                   </motion.h1>
                   
@@ -248,33 +241,23 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-xl md:text-2xl mb-8 text-[#FCFBF4]/90 max-w-4xl mx-auto leading-relaxed"
                   >
-                    The fastest way to off-ramp your crypto to Indian Rupees. 
-                    <strong className="text-[#FCFBF4]"> Secure, compliant, and instant transfers.</strong>
+                    Send money globally and convert crypto to fiat seamlessly. 
+                    <strong className="text-[#FCFBF4]">Multi-chain support, KYC compliant, instant INR transfers to Indian banks.</strong>
                   </motion.p>
                 </motion.div>
 
-                {/* Live Stats */}
+                {/* Live USD to INR Rate */}
                 <motion.div 
                   variants={itemVariants}
-                  className="flex justify-center gap-8 md:gap-12 mb-12"
+                  className="flex justify-center mb-12"
                 >
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold text-[#FCFBF4]">
-                      ₹{liveStats.volume.toFixed(1)}Cr+
+                  <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-2xl px-8 py-6 text-center">
+                    <div className="text-sm text-[#FCFBF4]/70 mb-2">Live Exchange Rate</div>
+                    <div className="text-3xl md:text-4xl font-bold text-[#FCFBF4] flex items-center justify-center gap-3">
+                      1 USD = ₹{usdToInrRate.toFixed(2)}
+                      <RefreshCw className="w-6 h-6 animate-spin text-[#FCFBF4]/50" />
                     </div>
-                    <div className="text-sm text-[#FCFBF4]/70">Volume Processed</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold text-[#FCFBF4]">
-                      {liveStats.transactions.toLocaleString()}+
-                    </div>
-                    <div className="text-sm text-[#FCFBF4]/70">Transactions</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold text-[#FCFBF4]">
-                      {liveStats.users.toLocaleString()}+
-                    </div>
-                    <div className="text-sm text-[#FCFBF4]/70">Happy Users</div>
+                    <div className="text-xs text-[#FCFBF4]/60 mt-1">Updates every 30 seconds</div>
                   </div>
                 </motion.div>
 
@@ -310,7 +293,7 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-4xl md:text-5xl font-bold text-center mb-16 text-[#FCFBF4]"
                   >
-                    How StablePay Works
+                    Complete Web3 Financial Platform
                   </motion.h2>
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -318,26 +301,26 @@ export function UnifiedLanding() {
                       {
                         step: "01",
                         title: "Connect Wallet",
-                        description: "Link your Web3 wallet or create a new social wallet",
+                        description: "Multi-chain wallet support: MetaMask, Coinbase, social wallets",
                         icon: <Wallet className="w-8 h-8" />
                       },
                       {
                         step: "02", 
-                        title: "Select Tokens",
-                        description: "Choose from USDC, USDT, ETH, BTC and other supported tokens",
-                        icon: <CreditCard className="w-8 h-8" />
+                        title: "Choose Service",
+                        description: "Global remittance, crypto off-ramping, or token swapping",
+                        icon: <Globe className="w-8 h-8" />
                       },
                       {
                         step: "03",
-                        title: "Complete KYC",
-                        description: "Quick identity verification for compliance and security",
+                        title: "KYC & Compliance",
+                        description: "Travel Rule compliant, RBI guidelines, instant verification",
                         icon: <UserCheck className="w-8 h-8" />
                       },
                       {
                         step: "04",
-                        title: "Get INR",
-                        description: "Receive instant INR transfers to your bank account",
-                        icon: <Zap className="w-8 h-8" />
+                        title: "Instant Transfer",
+                        description: "Bank transfers, cash pickup, mobile wallets worldwide",
+                        icon: <Send className="w-8 h-8" />
                       }
                     ].map((item, index) => (
                       <motion.div
@@ -373,40 +356,40 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-4xl md:text-5xl font-bold text-center mb-16 text-[#FCFBF4]"
                   >
-                    Why Choose StablePay
+                    Web3 Remittance & Off-Ramping Features
                   </motion.h2>
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[
                       {
-                        title: "Instant Transfers",
-                        description: "Get your INR within minutes, not days",
-                        icon: <Zap className="w-8 h-8" />
-                      },
-                      {
-                        title: "Best Exchange Rates",
-                        description: "Competitive rates with transparent pricing",
-                        icon: <TrendingUp className="w-8 h-8" />
-                      },
-                      {
-                        title: "Multi-Chain Support",
-                        description: "Works with Ethereum, Polygon, BSC, and more",
+                        title: "Global Remittance",
+                        description: "Send money to 180+ countries with crypto",
                         icon: <Globe className="w-8 h-8" />
                       },
                       {
-                        title: "Bank Grade Security",
-                        description: "256-bit encryption and regulatory compliance",
+                        title: "Crypto Off-Ramping",
+                        description: "Convert crypto to fiat instantly",
+                        icon: <RefreshCw className="w-8 h-8" />
+                      },
+                      {
+                        title: "Multi-Chain Support",
+                        description: "Ethereum, Polygon, BSC, Arbitrum, Base, Avalanche",
+                        icon: <Database className="w-8 h-8" />
+                      },
+                      {
+                        title: "Travel Rule Compliant",
+                        description: "FATF compliant for international transfers",
                         icon: <Shield className="w-8 h-8" />
                       },
                       {
-                        title: "24/7 Support",
-                        description: "Round-the-clock customer assistance",
-                        icon: <Clock className="w-8 h-8" />
+                        title: "Multiple Payout Methods",
+                        description: "Bank transfer, cash pickup, mobile wallets",
+                        icon: <Building className="w-8 h-8" />
                       },
                       {
-                        title: "KYC Compliant",
-                        description: "Fully regulated and compliant platform",
-                        icon: <CheckCircle className="w-8 h-8" />
+                        title: "Live Exchange Rates",
+                        description: "Real-time rates with transparent fees",
+                        icon: <TrendingUp className="w-8 h-8" />
                       }
                     ].map((feature, index) => (
                       <motion.div
@@ -583,11 +566,31 @@ export function UnifiedLanding() {
                   className="text-center mb-12"
                 >
                   <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#FCFBF4]">
-                    Convert Your Crypto
+                    Web3 Financial Services
                   </h1>
                   <p className="text-xl text-[#FCFBF4]/80">
-                    Select tokens and amount to convert to INR
+                    Global remittance, crypto off-ramping, and token swapping
                   </p>
+                  
+                  {/* Service Selection Tabs */}
+                  <div className="flex justify-center gap-4 mt-8 mb-8">
+                    <Button 
+                      variant={currentStep === 'wallet-connected' ? 'default' : 'outline'}
+                      onClick={() => setCurrentStep('wallet-connected')}
+                      className={currentStep === 'wallet-connected' ? 'btn-premium' : 'border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10'}
+                    >
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Off-Ramp to INR
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10"
+                      disabled
+                    >
+                      <Send className="w-4 h-4 mr-2" />
+                      Global Remittance
+                    </Button>
+                  </div>
                 </motion.div>
 
                 {/* Wallet Balance Display */}
@@ -608,12 +611,15 @@ export function UnifiedLanding() {
                 >
                   <Card className="bg-[#FCFBF4]/10 border-[#FCFBF4]/20 p-8">
                     <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl text-[#FCFBF4]">Crypto to INR Converter</CardTitle>
+                      <CardTitle className="text-2xl text-[#FCFBF4]">Crypto to INR Off-Ramping</CardTitle>
+                      <div className="text-sm text-[#FCFBF4]/70 mt-2">
+                        Live USD to INR: ₹{usdToInrRate.toFixed(2)}
+                      </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       {/* From Token Selection */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-[#FCFBF4]">From</label>
+                        <label className="text-sm font-medium text-[#FCFBF4]">From Crypto</label>
                         <div className="flex gap-4">
                           <Select value={remittanceState.fromToken} onValueChange={handleTokenChange}>
                             <SelectTrigger className="w-32 bg-[#FCFBF4] text-[#6667AB] border-[#FCFBF4]/30">
@@ -622,6 +628,7 @@ export function UnifiedLanding() {
                             <SelectContent className="bg-[#FCFBF4] border-[#6667AB]/20">
                               <SelectItem value="USDC">USDC</SelectItem>
                               <SelectItem value="USDT">USDT</SelectItem>
+                              <SelectItem value="USD">USD</SelectItem>
                               <SelectItem value="ETH">ETH</SelectItem>
                               <SelectItem value="BTC">BTC</SelectItem>
                             </SelectContent>
@@ -639,16 +646,16 @@ export function UnifiedLanding() {
                       {/* Exchange Rate Display */}
                       <div className="flex items-center justify-center py-4">
                         <div className="flex items-center gap-3 text-[#FCFBF4]/80">
-                          <RefreshCw className="w-4 h-4" />
+                          <RefreshCw className="w-4 h-4 animate-pulse" />
                           <span className="text-sm">
-                            1 {remittanceState.fromToken} = ₹{remittanceState.exchangeRate.toLocaleString()}
+                            1 {remittanceState.fromToken} = ₹{remittanceState.fromToken === 'USD' ? usdToInrRate.toFixed(2) : remittanceState.exchangeRate.toLocaleString()}
                           </span>
                         </div>
                       </div>
 
                       {/* To Amount Display */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-[#FCFBF4]">To</label>
+                        <label className="text-sm font-medium text-[#FCFBF4]">To Indian Rupees</label>
                         <div className="flex gap-4">
                           <div className="w-32 h-10 bg-[#FCFBF4]/20 border border-[#FCFBF4]/30 rounded-md flex items-center justify-center text-[#FCFBF4] font-medium">
                             INR
