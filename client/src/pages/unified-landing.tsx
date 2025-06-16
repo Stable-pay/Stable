@@ -80,7 +80,7 @@ export function UnifiedLanding() {
   // Exchange rate for USD to INR
   const [usdToInrRate, setUsdToInrRate] = useState(83.25);
   
-  // Get supported tokens with DeFi liquidity
+  // Get supported tokens with DeFi liquidity (for validation only)
   const supportedTokens = getSupportedTokens();
 
   const { scrollY } = useScroll();
@@ -258,9 +258,9 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
                   >
-                    Top 100 Crypto to
+                    Web3 Remittance &
                     <span className="block bg-gradient-to-r from-[#FCFBF4] to-[#FCFBF4]/80 bg-clip-text text-transparent">
-                      INR DeFi Swaps
+                      INR Off-Ramping Made Simple
                     </span>
                   </motion.h1>
                   
@@ -268,8 +268,8 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-xl md:text-2xl mb-8 text-[#FCFBF4]/90 max-w-4xl mx-auto leading-relaxed"
                   >
-                    Convert your top 100 cryptocurrencies to INR using DeFi swap liquidity. 
-                    <strong className="text-[#FCFBF4]">Only tokens with proven market cap and DeFi liquidity supported.</strong>
+                    Instantly move your crypto to your Indian bank account – in just a few easy steps.
+                    <strong className="text-[#FCFBF4]"> Your Crypto, Your Wallet, Your INR. On Your Terms.</strong>
                   </motion.p>
                 </motion.div>
 
@@ -336,8 +336,8 @@ export function UnifiedLanding() {
                       },
                       {
                         step: "4",
-                        title: "DeFi Swap to INR",
-                        description: "Convert your top 100 crypto to INR using DeFi liquidity at real-time rates with a flat ₹249 fee. Receive funds quickly in your bank account.",
+                        title: "Off-Ramp to INR Instantly",
+                        description: "Convert your crypto to INR at real-time rates with a flat ₹249 fee. Receive funds quickly and reliably in your bank account.",
                         icon: <Zap className="w-8 h-8" />
                       }
                     ].map((item, index) => (
@@ -380,34 +380,34 @@ export function UnifiedLanding() {
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[
                       {
-                        title: "Top 100 Cryptocurrency Support",
-                        description: "Only coins with proven market cap and DeFi liquidity",
-                        icon: <Star className="w-8 h-8" />
+                        title: "Multi-Crypto Support",
+                        description: "Bitcoin, Ethereum, USDT, USDC, and more",
+                        icon: <CreditCard className="w-8 h-8" />
                       },
                       {
-                        title: "DeFi Swap Liquidity",
-                        description: "Direct access to decentralized exchange pools",
-                        icon: <RefreshCw className="w-8 h-8" />
-                      },
-                      {
-                        title: "Multi-Chain Networks",
-                        description: "Ethereum, Solana, BSC, Polygon, Avalanche, Base",
+                        title: "Multi-Chain Enabled",
+                        description: "Ethereum, Solana, BNB Chain, and others",
                         icon: <Database className="w-8 h-8" />
                       },
                       {
-                        title: "Self-Custody Security",
-                        description: "Your wallet, your keys, your control always",
+                        title: "Self-Custody First",
+                        description: "You control your assets at every step",
                         icon: <Key className="w-8 h-8" />
                       },
                       {
-                        title: "Market Cap Validation",
-                        description: "Only cryptocurrencies ranked in top 100 by market cap",
+                        title: "Real-Time INR Conversion",
+                        description: "Competitive rates, instant processing",
+                        icon: <RefreshCw className="w-8 h-8" />
+                      },
+                      {
+                        title: "Flat Fee Structure",
+                        description: "₹249 per off-ramp transaction – no hidden charges",
                         icon: <TrendingUp className="w-8 h-8" />
                       },
                       {
-                        title: "Flat ₹249 Fee Structure",
-                        description: "No percentage fees, transparent pricing model",
-                        icon: <CreditCard className="w-8 h-8" />
+                        title: "Mobile-First Web App",
+                        description: "Seamless experience on mobile and desktop",
+                        icon: <Phone className="w-8 h-8" />
                       }
                     ].map((feature, index) => (
                       <motion.div
@@ -681,24 +681,24 @@ export function UnifiedLanding() {
                 >
                   <Card className="bg-[#FCFBF4]/10 border-[#FCFBF4]/20 p-8">
                     <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl text-[#FCFBF4]">Crypto to INR DeFi Conversion</CardTitle>
+                      <CardTitle className="text-2xl text-[#FCFBF4]">Crypto to INR Off-Ramping</CardTitle>
                       <div className="text-sm text-[#FCFBF4]/70 mt-2">
-                        Live USD to INR: ₹{usdToInrRate.toFixed(2)} • {supportedTokens.length} supported tokens
+                        Live USD to INR: ₹{usdToInrRate.toFixed(2)}
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       {/* From Token Selection */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-[#FCFBF4]">From Top 100 Crypto</label>
+                        <label className="text-sm font-medium text-[#FCFBF4]">From Crypto</label>
                         <div className="flex gap-4">
                           <Select value={remittanceState.fromToken} onValueChange={handleTokenChange}>
-                            <SelectTrigger className="w-40 bg-[#FCFBF4] text-[#6667AB] border-[#FCFBF4]/30">
-                              <SelectValue placeholder="Select token" />
+                            <SelectTrigger className="w-32 bg-[#FCFBF4] text-[#6667AB] border-[#FCFBF4]/30">
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-[#FCFBF4] border-[#6667AB]/20 max-h-60">
                               {supportedTokens.slice(0, 20).map(token => (
                                 <SelectItem key={token.symbol} value={token.symbol}>
-                                  #{token.marketCapRank} {token.symbol} - {token.name}
+                                  {token.symbol} - {token.name}
                                 </SelectItem>
                               ))}
                             </SelectContent>
