@@ -87,24 +87,17 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    // Handle asset files with proper MIME types before Vite middleware
-    app.use((req, res, next) => {
-      const url = req.originalUrl;
-      
-      if (url.includes('/assets/') && url.includes('.css')) {
-        res.setHeader('Content-Type', 'text/css; charset=utf-8');
+    // Directly serve assets with proper MIME types before Vite can intercept
+    app.get('/assets/*', express.static(path.resolve('client/dist/assets'), {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.css')) {
+          res.setHeader('Content-Type', 'text/css; charset=utf-8');
+        } else if (filePath.endsWith('.js')) {
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        }
         res.setHeader('Cache-Control', 'no-cache');
-      } else if (url.includes('/assets/') && url.includes('.js')) {
-        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-        res.setHeader('Cache-Control', 'no-cache');
-      } else if (url.endsWith('.css')) {
-        res.setHeader('Content-Type', 'text/css; charset=utf-8');
-      } else if (url.endsWith('.js') || url.endsWith('.mjs')) {
-        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
       }
-      
-      next();
-    });
+    }));
     
     await setupVite(app, server);
   } else {
