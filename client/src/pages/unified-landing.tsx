@@ -380,34 +380,34 @@ export function UnifiedLanding() {
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[
                       {
-                        title: "Multi-Crypto Support",
-                        description: "Bitcoin, Ethereum, USDT, USDC, and more",
-                        icon: <CreditCard className="w-8 h-8" />
+                        title: "Top 100 Cryptocurrency Support",
+                        description: "Only coins with proven market cap and DeFi liquidity",
+                        icon: <Star className="w-8 h-8" />
                       },
                       {
-                        title: "Multi-Chain Enabled",
-                        description: "Ethereum, Solana, BNB Chain, and others",
-                        icon: <Database className="w-8 h-8" />
-                      },
-                      {
-                        title: "Self-Custody First",
-                        description: "You control your assets at every step",
-                        icon: <Key className="w-8 h-8" />
-                      },
-                      {
-                        title: "Real-Time INR Conversion",
-                        description: "Competitive rates, instant processing",
+                        title: "DeFi Swap Liquidity",
+                        description: "Direct access to decentralized exchange pools",
                         icon: <RefreshCw className="w-8 h-8" />
                       },
                       {
-                        title: "Flat Fee Structure",
-                        description: "₹249 per off-ramp transaction – no hidden charges",
+                        title: "Multi-Chain Networks",
+                        description: "Ethereum, Solana, BSC, Polygon, Avalanche, Base",
+                        icon: <Database className="w-8 h-8" />
+                      },
+                      {
+                        title: "Self-Custody Security",
+                        description: "Your wallet, your keys, your control always",
+                        icon: <Key className="w-8 h-8" />
+                      },
+                      {
+                        title: "Market Cap Validation",
+                        description: "Only cryptocurrencies ranked in top 100 by market cap",
                         icon: <TrendingUp className="w-8 h-8" />
                       },
                       {
-                        title: "Mobile-First Web App",
-                        description: "Seamless experience on mobile and desktop",
-                        icon: <Phone className="w-8 h-8" />
+                        title: "Flat ₹249 Fee Structure",
+                        description: "No percentage fees, transparent pricing model",
+                        icon: <CreditCard className="w-8 h-8" />
                       }
                     ].map((feature, index) => (
                       <motion.div

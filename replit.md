@@ -167,6 +167,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Implemented exact user flow: Connect Wallet → Complete KYC → Add Bank Details → Off-Ramp to INR
 - June 16, 2025: Added target audience section (NRIs, Freelancers, Crypto Holders, Businesses)
 - June 16, 2025: Updated security section to remove RBI compliance references, focus on FATF/Travel Rule
+- June 16, 2025: Major architectural shift: Replaced off-ramping with DeFi swap system for top 100 cryptocurrencies
+- June 16, 2025: Implemented comprehensive top 100 cryptocurrency validation based on market cap and DeFi liquidity
+- June 16, 2025: Added unsupported token detection with user-friendly popup for token inclusion requests
+- June 16, 2025: Created shared/top-100-crypto.ts with complete cryptocurrency database and validation system
+- June 16, 2025: Updated platform messaging from "off-ramping" to "DeFi swaps" throughout interface
 
 ## User Preferences
 
