@@ -33,7 +33,8 @@ import {
   Key,
   Database,
   Lock,
-  MapPin
+  MapPin,
+  AlertCircle
 } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
@@ -1225,7 +1226,7 @@ export function UnifiedLanding() {
                                   </div>
                                   <div className="flex justify-between">
                                     <span>Network:</span>
-                                    <span>{chain?.name || 'Ethereum'}</span>
+                                    <span>Ethereum</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span>Conversion Amount:</span>

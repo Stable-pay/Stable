@@ -183,6 +183,9 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Implemented enhanced Indian KYC flow with Aadhaar OTP verification and PAN card validation
 - June 16, 2025: Added same-person transfer option to skip duplicate information entry for self-transfers to India
 - June 16, 2025: Created comprehensive bank account details collection with IFSC code and account holder verification
+- June 16, 2025: Added originator sign-in request for travel rule with smart contract wallet ownership verification
+- June 16, 2025: Implemented wallet signature requirement before INR conversion to prove sender ownership
+- June 16, 2025: Enhanced CSS with global button visibility fixes using !important declarations and brand colors
 
 ## User Preferences
 
