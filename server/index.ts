@@ -15,28 +15,11 @@ process.on('uncaughtException', (error) => {
 
 const app = express();
 
-// Add CORS headers and proper MIME types
+// Add CORS headers
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  // Set proper MIME types for static assets
-  const url = req.url || '';
-  if (url.includes('.css') || url.endsWith('.css')) {
-    res.setHeader('Content-Type', 'text/css; charset=utf-8');
-  } else if (url.includes('.js') || url.endsWith('.js') || url.includes('.mjs') || url.endsWith('.mjs')) {
-    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-  } else if (url.includes('.json') || url.endsWith('.json')) {
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  } else if (url.includes('/assets/')) {
-    // Handle Vite's asset files with proper MIME types
-    if (url.includes('-') && url.includes('.css')) {
-      res.setHeader('Content-Type', 'text/css; charset=utf-8');
-    } else if (url.includes('-') && url.includes('.js')) {
-      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-    }
-  }
   
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
@@ -104,6 +87,18 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
+    // Handle CSS files directly to prevent MIME type errors
+    app.get('*.css', (req, res, next) => {
+      res.setHeader('Content-Type', 'text/css; charset=utf-8');
+      next();
+    });
+    
+    // Handle JS files directly to prevent MIME type errors
+    app.get('*.js', (req, res, next) => {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+      next();
+    });
+    
     await setupVite(app, server);
   } else {
     serveStatic(app);
