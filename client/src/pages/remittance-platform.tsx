@@ -11,6 +11,7 @@ import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { TravelRuleCompliance } from '@/components/compliance/travel-rule-compliance';
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
+import { MobileLayout } from '@/components/layout/mobile-layout';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -341,12 +342,20 @@ export function RemittancePlatform() {
     }
   };
 
-  // Landing page for wallet connection - Reown.com inspired design
+  // Navigation handler for mobile layout
+  const handleMobileNavigation = (step: string) => {
+    setState(prev => ({ ...prev, step: step as StepType }));
+  };
+
+  // Landing page for wallet connection - Mobile-first design
   if (!isConnected || state.step === 'connect') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary via-primary/80 to-primary/60 relative overflow-hidden">
-        {/* Background Gradient Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-primary/50"></div>
+      <MobileLayout 
+        currentStep={state.step} 
+        isConnected={isConnected} 
+        onNavigate={handleMobileNavigation}
+        showNavigation={false}
+      >
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-background/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-background/5 rounded-full blur-3xl"></div>
         
@@ -378,19 +387,19 @@ export function RemittancePlatform() {
               </div>
               
               {/* Main Heading */}
-              <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
-                <span className="text-background">Send money to</span>
+              <h1 className="mobile-text-2xl font-bold mb-8 leading-tight tracking-tight">
+                <span className="text-[#FCFBF4]">Send money to</span>
                 <br />
-                <span className="bg-gradient-to-r from-background to-background/80 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#FCFBF4] to-[#FCFBF4]/80 bg-clip-text text-transparent">
                   India instantly
                 </span>
               </h1>
               
               {/* Subtitle */}
-              <p className="text-xl md:text-2xl text-background/70 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+              <p className="mobile-text-lg text-[#FCFBF4]/70 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
                 Skip the banks. Send crypto, receive rupees. 
                 <br />
-                <span className="text-background/80">2-5 minutes. Always.</span>
+                <span className="text-[#FCFBF4]/80">2-5 minutes. Always.</span>
               </p>
 
               {/* Live Stats */}
@@ -1598,44 +1607,51 @@ export function RemittancePlatform() {
   // Processing and Complete steps remain the same
   if (state.step === 'processing' || state.step === 'complete') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
-          <CardContent className="text-center p-8">
-            {state.step === 'processing' ? (
-              <div className="space-y-6">
-                <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto"></div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Processing Transfer</h3>
-                  <p className="text-white/70">Please wait while we process your transfer...</p>
+      <MobileLayout 
+        currentStep={state.step} 
+        isConnected={isConnected} 
+        onNavigate={(step) => setState(prev => ({ ...prev, step: step as StepType }))}
+        showNavigation={false}
+      >
+        <div className="flex items-center justify-center min-h-screen">
+          <Card className="mobile-card bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 w-full max-w-md">
+            <CardContent className="text-center mobile-form-section">
+              {state.step === 'processing' ? (
+                <div className="mobile-spacing">
+                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#6667AB] border-t-transparent mx-auto"></div>
+                  <div>
+                    <h3 className="mobile-text-xl font-bold text-[#6667AB] mb-2">Processing Transfer</h3>
+                    <p className="text-[#6667AB]/70">Please wait while we process your transfer...</p>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
-                  <CheckCircle className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Transfer Complete!</h3>
-                  <p className="text-white/70 mb-4">
-                    Your transfer has been sent successfully. The recipient will receive {receivedAmount.toFixed(2)} {corridor?.currency} in {state.estimatedArrival}.
-                  </p>
-                  {state.transactionHash && (
-                    <p className="text-sm text-white/60">
-                      Transaction Hash: {state.transactionHash.slice(0, 10)}...{state.transactionHash.slice(-8)}
+              ) : (
+                <div className="mobile-spacing">
+                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="mobile-text-xl font-bold text-[#6667AB] mb-2">Transfer Complete!</h3>
+                    <p className="text-[#6667AB]/70 mb-4">
+                      Your transfer has been sent successfully. The recipient will receive {receivedAmount.toFixed(2)} {corridor?.currency} in {state.estimatedArrival}.
                     </p>
-                  )}
+                    {state.transactionHash && (
+                      <p className="text-sm text-[#6667AB]/60">
+                        Transaction Hash: {state.transactionHash.slice(0, 10)}...{state.transactionHash.slice(-8)}
+                      </p>
+                    )}
+                  </div>
+                  <Button 
+                    onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
+                    className="mobile-button w-full bg-[#6667AB] text-[#FCFBF4] hover:bg-[#6667AB]/90"
+                  >
+                    Send Another Transfer
+                  </Button>
                 </div>
-                <Button 
-                  onClick={() => setState(prev => ({ ...prev, step: 'connect' }))}
-                  className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                >
-                  Send Another Transfer
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </MobileLayout>
     );
   }
 
