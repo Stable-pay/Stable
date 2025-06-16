@@ -40,6 +40,8 @@ import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
+import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } from '@/../../shared/top-100-crypto';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // Core remittance state and types
 type StepType = 'landing' | 'wallet-connected' | 'swap' | 'kyc' | 'transfer' | 'complete';
@@ -73,8 +75,13 @@ export function UnifiedLanding() {
   const [isVisible, setIsVisible] = useState(false);
   const [showWalletCreator, setShowWalletCreator] = useState(false);
   const [currentStep, setCurrentStep] = useState<StepType>('landing');
+  const [showUnsupportedTokenModal, setShowUnsupportedTokenModal] = useState(false);
+  const [unsupportedTokenSymbol, setUnsupportedTokenSymbol] = useState('');
   // Exchange rate for USD to INR
   const [usdToInrRate, setUsdToInrRate] = useState(83.25);
+  
+  // Get supported tokens with DeFi liquidity
+  const supportedTokens = getSupportedTokens();
 
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, -50]);
@@ -132,8 +139,15 @@ export function UnifiedLanding() {
     });
   };
 
-  // Handle token selection
+  // Handle token selection with validation
   const handleTokenChange = (token: string) => {
+    // Check if token is supported in top 100 with DeFi liquidity
+    if (!isTokenSupported(token)) {
+      setUnsupportedTokenSymbol(token);
+      setShowUnsupportedTokenModal(true);
+      return;
+    }
+
     setRemittanceState(prev => {
       const amount = parseFloat(prev.amount) || 0;
       let rate = EXCHANGE_RATES[`${token}-INR` as keyof typeof EXCHANGE_RATES] || 83.25;
@@ -244,9 +258,9 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
                   >
-                    Web3 Remittance &
+                    Top 100 Crypto to
                     <span className="block bg-gradient-to-r from-[#FCFBF4] to-[#FCFBF4]/80 bg-clip-text text-transparent">
-                      INR Off-Ramping Made Simple
+                      INR DeFi Swaps
                     </span>
                   </motion.h1>
                   
@@ -254,8 +268,8 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-xl md:text-2xl mb-8 text-[#FCFBF4]/90 max-w-4xl mx-auto leading-relaxed"
                   >
-                    Instantly move your crypto to your Indian bank account – in just a few easy steps.
-                    <strong className="text-[#FCFBF4]"> Your Crypto, Your Wallet, Your INR. On Your Terms.</strong>
+                    Convert your top 100 cryptocurrencies to INR using DeFi swap liquidity. 
+                    <strong className="text-[#FCFBF4]">Only tokens with proven market cap and DeFi liquidity supported.</strong>
                   </motion.p>
                 </motion.div>
 
@@ -322,8 +336,8 @@ export function UnifiedLanding() {
                       },
                       {
                         step: "4",
-                        title: "Off-Ramp to INR Instantly",
-                        description: "Convert your crypto to INR at real-time rates with a flat ₹249 fee. Receive funds quickly and reliably in your bank account.",
+                        title: "DeFi Swap to INR",
+                        description: "Convert your top 100 crypto to INR using DeFi liquidity at real-time rates with a flat ₹249 fee. Receive funds quickly in your bank account.",
                         icon: <Zap className="w-8 h-8" />
                       }
                     ].map((item, index) => (
@@ -667,26 +681,26 @@ export function UnifiedLanding() {
                 >
                   <Card className="bg-[#FCFBF4]/10 border-[#FCFBF4]/20 p-8">
                     <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl text-[#FCFBF4]">Crypto to INR Off-Ramping</CardTitle>
+                      <CardTitle className="text-2xl text-[#FCFBF4]">Crypto to INR DeFi Conversion</CardTitle>
                       <div className="text-sm text-[#FCFBF4]/70 mt-2">
-                        Live USD to INR: ₹{usdToInrRate.toFixed(2)}
+                        Live USD to INR: ₹{usdToInrRate.toFixed(2)} • {supportedTokens.length} supported tokens
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       {/* From Token Selection */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-[#FCFBF4]">From Crypto</label>
+                        <label className="text-sm font-medium text-[#FCFBF4]">From Top 100 Crypto</label>
                         <div className="flex gap-4">
                           <Select value={remittanceState.fromToken} onValueChange={handleTokenChange}>
-                            <SelectTrigger className="w-32 bg-[#FCFBF4] text-[#6667AB] border-[#FCFBF4]/30">
-                              <SelectValue />
+                            <SelectTrigger className="w-40 bg-[#FCFBF4] text-[#6667AB] border-[#FCFBF4]/30">
+                              <SelectValue placeholder="Select token" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#FCFBF4] border-[#6667AB]/20">
-                              <SelectItem value="USDC">USDC</SelectItem>
-                              <SelectItem value="USDT">USDT</SelectItem>
-                              <SelectItem value="USD">USD</SelectItem>
-                              <SelectItem value="ETH">ETH</SelectItem>
-                              <SelectItem value="BTC">BTC</SelectItem>
+                            <SelectContent className="bg-[#FCFBF4] border-[#6667AB]/20 max-h-60">
+                              {supportedTokens.slice(0, 20).map(token => (
+                                <SelectItem key={token.symbol} value={token.symbol}>
+                                  #{token.marketCapRank} {token.symbol} - {token.name}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                           <Input
@@ -830,6 +844,60 @@ export function UnifiedLanding() {
             isVisible={showWalletCreator}
           />
         )}
+
+        {/* Unsupported Token Modal */}
+        <Dialog open={showUnsupportedTokenModal} onOpenChange={setShowUnsupportedTokenModal}>
+          <DialogContent className="bg-[#FCFBF4] border-[#6667AB]/20 text-[#6667AB] max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-[#6667AB] flex items-center gap-2">
+                <Database className="w-6 h-6" />
+                Token Not Supported
+              </DialogTitle>
+              <DialogDescription className="text-[#6667AB]/80 mt-4">
+                <strong>{unsupportedTokenSymbol}</strong> is not currently supported for DeFi swaps to INR.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 mt-4">
+              <div className="bg-[#6667AB]/10 border border-[#6667AB]/20 rounded-lg p-4">
+                <h4 className="font-semibold text-[#6667AB] mb-2">Why isn't this token supported?</h4>
+                <ul className="text-sm text-[#6667AB]/70 space-y-1">
+                  <li>• Only top 100 cryptocurrencies by market cap</li>
+                  <li>• Token must have sufficient DeFi liquidity</li>
+                  <li>• Must be available on supported networks</li>
+                </ul>
+              </div>
+
+              <div className="bg-[#6667AB]/5 border border-[#6667AB]/20 rounded-lg p-4">
+                <h4 className="font-semibold text-[#6667AB] mb-2">Request Token Support</h4>
+                <p className="text-sm text-[#6667AB]/70 mb-3">
+                  We regularly review and add new tokens based on market demand and liquidity.
+                </p>
+                <Button 
+                  onClick={() => {
+                    // Submit token request
+                    console.log(`Token support requested: ${unsupportedTokenSymbol}`);
+                    setShowUnsupportedTokenModal(false);
+                    // Show success toast or confirmation
+                  }}
+                  className="w-full bg-[#6667AB] hover:bg-[#6667AB]/90 text-[#FCFBF4]"
+                >
+                  Submit Request for {unsupportedTokenSymbol}
+                </Button>
+              </div>
+
+              <div className="text-center">
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowUnsupportedTokenModal(false)}
+                  className="border-[#6667AB]/20 text-[#6667AB] hover:bg-[#6667AB]/10"
+                >
+                  Choose Different Token
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </motion.div>
     </div>
   );
