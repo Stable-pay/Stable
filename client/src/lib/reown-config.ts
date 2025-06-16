@@ -35,6 +35,18 @@ if (!projectId) {
   console.warn('VITE_WALLETCONNECT_PROJECT_ID is not set. Using demo mode.');
 }
 
+// Enhanced domain configuration for Replit environments
+const getDynamicDomain = () => {
+  if (typeof window === 'undefined') return 'https://stablepay.replit.app';
+  
+  const currentOrigin = window.location.origin;
+  // Handle Replit dev domains
+  if (currentOrigin.includes('replit.dev') || currentOrigin.includes('repl.co')) {
+    return currentOrigin;
+  }
+  return currentOrigin;
+};
+
 console.log('Reown AppKit initializing with project ID:', projectId ? projectId.substring(0, 8) + '...' : 'Demo mode');
 console.log('Current domain:', typeof window !== 'undefined' ? window.location.origin : 'SSR mode');
 
@@ -69,9 +81,9 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal with comprehensive multi-chain support
+// Simplified configuration focusing on EVM chains with enhanced wallet support
 export const modal = createAppKit({
-  adapters: [wagmiAdapter, solanaAdapter],
+  adapters: [wagmiAdapter],
   projectId: projectId || 'demo-project-id',
   networks: [
     mainnet, 
@@ -85,13 +97,15 @@ export const modal = createAppKit({
     celo, 
     moonbeam, 
     gnosis, 
-    zkSync,
-    solana,
-    solanaTestnet,
-    solanaDevnet
+    zkSync
   ],
   defaultNetwork: mainnet,
-  metadata,
+  metadata: {
+    name: 'StablePay',
+    description: 'Multi-chain crypto to INR platform',
+    url: getDynamicDomain(),
+    icons: ['https://avatars.githubusercontent.com/u/179229932']
+  },
   themeMode: 'light',
   themeVariables: {
     '--w3m-accent': '#6667AB',
@@ -100,12 +114,12 @@ export const modal = createAppKit({
     '--w3m-color-mix-strength': 20
   },
   features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'apple', 'github', 'discord'],
-    emailShowWallets: true,
-    swaps: true,
-    onramp: true,
+    analytics: false,
+    email: false,
+    socials: [],
+    emailShowWallets: false,
+    swaps: false,
+    onramp: false,
     history: true,
     allWallets: true
   },
@@ -113,15 +127,25 @@ export const modal = createAppKit({
   enableInjected: true,
   enableEIP6963: true,
   enableCoinbase: true,
-  // Enable multi-chain connectivity
-  allowUnsupportedChain: false,
-  // Enable all wallets including Solana wallets through WalletConnect
-  includeWalletIds: [
-    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
-    '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
-    '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927', // Ledger
-    '163d2cf19babf05eb8962e9748f9ebe613ed52ebf9c8107c9a0f104bfcf161b3', // Phantom
-    'c3ccaf5353b174f4b7e1b4e114885a12bcab0ca6a7e59c5e6b9d7b8b9a1a6b8e'  // Solflare
+  allowUnsupportedChain: true,
+  // Enhanced wallet support
+  customWallets: [
+    {
+      id: 'phantom',
+      name: 'Phantom',
+      image_url: 'https://phantom.app/img/phantom-logo.png',
+      mobile_link: 'phantom://browse',
+      desktop_link: 'https://phantom.app/download',
+      webapp_link: 'https://phantom.app/ul/browse'
+    },
+    {
+      id: 'solflare',
+      name: 'Solflare', 
+      image_url: 'https://solflare.com/favicon.ico',
+      mobile_link: 'solflare://browse',
+      desktop_link: 'https://solflare.com/download',
+      webapp_link: 'https://solflare.com/ul/browse'
+    }
   ]
 })
 

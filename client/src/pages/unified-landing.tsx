@@ -40,6 +40,7 @@ import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
+import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -82,6 +83,8 @@ export function UnifiedLanding() {
   const [currentStep, setCurrentStep] = useState<StepType>('landing');
   const [showUnsupportedTokenModal, setShowUnsupportedTokenModal] = useState(false);
   const [unsupportedTokenSymbol, setUnsupportedTokenSymbol] = useState('');
+  const [showSolanaConnector, setShowSolanaConnector] = useState(false);
+  const [solanaWallet, setSolanaWallet] = useState<any>(null);
   
   // Enhanced KYC state
   const [kycStep, setKycStep] = useState<'recipient-check' | 'aadhaar-verification' | 'pan-verification' | 'wallet-verification' | 'complete'>('recipient-check');
