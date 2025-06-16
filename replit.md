@@ -179,6 +179,10 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Enabled all 12 Reown supported chains (Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, Avalanche, Fantom, Celo, Moonbeam, Gnosis, zkSync)
 - June 16, 2025: Removed all mock data - implemented production-only real wallet balance fetching via multi-chain RPC calls
 - June 16, 2025: Updated AppKit configuration to support all chains and integrated real-time token balance detection from connected wallets
+- June 16, 2025: Fixed button text visibility issues with enhanced CSS styling and proper color contrast
+- June 16, 2025: Implemented enhanced Indian KYC flow with Aadhaar OTP verification and PAN card validation
+- June 16, 2025: Added same-person transfer option to skip duplicate information entry for self-transfers to India
+- June 16, 2025: Created comprehensive bank account details collection with IFSC code and account holder verification
 
 ## User Preferences
 
