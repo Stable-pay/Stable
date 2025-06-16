@@ -145,6 +145,8 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 14, 2025: Added multi-step compliance workflow with FATF requirements
 - June 14, 2025: Enhanced platform with sanctions screening and PEP checks
 - June 14, 2025: Integrated dynamic threshold calculation and risk assessment
+- June 16, 2025: Complete UI/UX rebuild using only primary color #6667AB (purple) and secondary color #FCFBF4 (cream/off-white)
+- June 16, 2025: Updated entire color system, removed all third colors, created cohesive professional finance app design
 
 ## User Preferences
 

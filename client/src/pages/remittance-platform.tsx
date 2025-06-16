@@ -615,42 +615,42 @@ export function RemittancePlatform() {
           </section>
 
           {/* Web3 Benefits Section */}
-          <section className="px-6 py-20 border-t border-white/5">
+          <section className="px-6 py-20 border-t border-background/10">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-white mb-4">Web3 off-ramping benefits</h2>
-                <p className="text-xl text-white/60">
+                <h2 className="text-4xl font-bold text-background mb-4">Web3 off-ramping benefits</h2>
+                <p className="text-xl text-background/60">
                   Self-custodial wallets + instant settlement = financial freedom
                 </p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6 mb-16">
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-500/5 to-purple-500/5 border border-blue-500/20">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4">
-                    <Key className="w-6 h-6 text-white" />
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/30">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4">
+                    <Key className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-3">Your keys, your crypto</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">
+                  <h3 className="text-lg font-semibold text-background mb-3">Your keys, your crypto</h3>
+                  <p className="text-background/60 text-sm leading-relaxed">
                     Complete control over your assets. No bank can freeze, limit, or control your transactions. True financial sovereignty.
                   </p>
                 </div>
 
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-green-500/5 to-emerald-500/5 border border-green-500/20">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4">
-                    <Database className="w-6 h-6 text-white" />
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/30">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4">
+                    <Database className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-3">Decentralized settlement</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">
+                  <h3 className="text-lg font-semibold text-background mb-3">Decentralized settlement</h3>
+                  <p className="text-background/60 text-sm leading-relaxed">
                     No single point of failure. Blockchain networks operate 24/7 across thousands of nodes worldwide.
                   </p>
                 </div>
 
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-orange-500/5 to-yellow-500/5 border border-orange-500/20">
-                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mb-4">
-                    <Lock className="w-6 h-6 text-white" />
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/30">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mb-4">
+                    <Lock className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-3">Cryptographic security</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">
+                  <h3 className="text-lg font-semibold text-background mb-3">Cryptographic security</h3>
+                  <p className="text-background/60 text-sm leading-relaxed">
                     Military-grade encryption protects every transaction. Immutable ledger provides permanent audit trail.
                   </p>
                 </div>
