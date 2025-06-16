@@ -327,11 +327,11 @@ html {
 
 /* KYC document upload areas */
 .upload-area {
-  @apply border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-primary hover:bg-primary/5 transition-all cursor-pointer;
+  @apply border-2 border-dashed border-border rounded-lg p-6 hover:border-primary hover:bg-primary/5 transition-all cursor-pointer;
 }
 
 .upload-area.uploaded {
-  @apply border-secondary bg-secondary/5 border-solid;
+  @apply border-primary bg-primary/10 border-solid;
 }
 
 /* Status badges */

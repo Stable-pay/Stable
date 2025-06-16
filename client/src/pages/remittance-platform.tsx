@@ -344,11 +344,11 @@ export function RemittancePlatform() {
   // Landing page for wallet connection - Reown.com inspired design
   if (!isConnected || state.step === 'connect') {
     return (
-      <div className="min-h-screen bg-black relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-primary via-primary/80 to-primary/60 relative overflow-hidden">
         {/* Background Gradient Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/50 via-purple-950/30 to-black"></div>
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-primary/50"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-background/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-background/5 rounded-full blur-3xl"></div>
         
         <div className="relative z-10 min-h-screen flex flex-col">
           {/* Navigation Header */}
@@ -405,8 +405,8 @@ export function RemittancePlatform() {
                     ) : (
                       <div className={`text-sm px-2 py-1 rounded-full ${
                         liveExchangeRate.change24h >= 0 
-                          ? 'bg-green-500/20 text-green-400' 
-                          : 'bg-red-500/20 text-red-400'
+                          ? 'bg-primary/20 text-primary' 
+                          : 'bg-destructive/20 text-destructive'
                       }`}>
                         {liveExchangeRate.change24h >= 0 ? '+' : ''}{liveExchangeRate.change24h.toFixed(2)}%
                       </div>
@@ -438,7 +438,7 @@ export function RemittancePlatform() {
                       setState(prev => ({ ...prev, walletCreationType: 'existing' }));
                       open({ view: 'Connect' });
                     }}
-                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-white shadow-xl hover:shadow-2xl shadow-emerald-500/30 transition-all duration-300 group border border-white/30"
+                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-xl hover:shadow-2xl shadow-primary/30 transition-all duration-300 group border border-primary/20"
                   >
                     <Wallet className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform text-white" />
                     Connect Wallet
@@ -453,7 +453,7 @@ export function RemittancePlatform() {
                         step: 'create-wallet'
                       }));
                     }}
-                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-500 hover:via-pink-500 hover:to-rose-500 text-white shadow-xl hover:shadow-2xl shadow-purple-500/30 transition-all duration-300 group border border-white/30"
+                    className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground shadow-xl hover:shadow-2xl shadow-primary/20 transition-all duration-300 group border border-primary/20"
                   >
                     <UserCheck className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform text-white" />
                     Create Wallet
@@ -462,13 +462,13 @@ export function RemittancePlatform() {
                 
                 <div className="text-center space-y-3">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto text-sm">
-                    <div className="p-4 bg-emerald-500/10 rounded-lg border border-emerald-400/20">
-                      <div className="font-semibold text-emerald-300 mb-2">Already have crypto?</div>
-                      <div className="text-emerald-100/90">Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
+                    <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                      <div className="font-semibold text-primary-foreground mb-2">Already have crypto?</div>
+                      <div className="text-primary-foreground/90">Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
                     </div>
-                    <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-400/20">
-                      <div className="font-semibold text-purple-300 mb-2">New to crypto?</div>
-                      <div className="text-purple-100/90">Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
+                    <div className="p-4 bg-secondary/50 rounded-lg border border-primary/20">
+                      <div className="font-semibold text-secondary-foreground mb-2">New to crypto?</div>
+                      <div className="text-secondary-foreground/90">Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
                     </div>
                   </div>
                   
@@ -485,7 +485,7 @@ export function RemittancePlatform() {
                 )}
                 
                 {status === 'disconnected' && address && (
-                  <div className="text-orange-400 text-sm">
+                  <div className="text-destructive text-sm">
                     Wallet disconnected. Please reconnect to continue.
                   </div>
                 )}
