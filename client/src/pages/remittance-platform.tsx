@@ -13,6 +13,7 @@ import { TravelRuleCompliance } from '@/components/compliance/travel-rule-compli
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
 import { MobileLayout } from '@/components/layout/mobile-layout';
 import { UniversalPageLayout } from '@/components/layout/universal-page-layout';
+import { StepWithBenefits } from '@/components/layout/step-with-benefits';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -997,14 +998,13 @@ export function RemittancePlatform() {
   // KYC Verification step
   if (state.step === 'kyc') {
     return (
-      <UniversalPageLayout
+      <StepWithBenefits
         title="Identity Verification"
         subtitle="Complete KYC verification to ensure secure transfers"
         badge="Secure & compliant verification process"
-        showDisconnect={true}
         onDisconnect={() => setState(prev => ({ ...prev, step: 'connect' }))}
       >
-        <Card className="w-full max-w-2xl bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
+        <Card className="w-full bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
           <CardContent className="mobile-form-section">
             {/* Validation Errors */}
             {state.validationErrors.length > 0 && (
@@ -1147,31 +1147,21 @@ export function RemittancePlatform() {
             </div>
           </CardContent>
         </Card>
-      </UniversalPageLayout>
+      </StepWithBenefits>
     );
   }
 
   // Recipient details step
   if (state.step === 'recipient') {
     return (
-      <UniversalPageLayout
+      <StepWithBenefits
         title="Recipient Details"
         subtitle="Who are you sending money to?"
         badge="Secure recipient information"
-        showDisconnect={true}
         onDisconnect={() => setState(prev => ({ ...prev, step: 'connect' }))}
       >
-        <Card className="w-full max-w-2xl bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
+        <Card className="w-full bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
           <CardContent className="mobile-form-section">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-              <Users className="w-8 h-8 text-blue-400" />
-              Recipient Details
-            </CardTitle>
-            <p className="text-white/70 mt-2">Who are you sending money to?</p>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-white text-sm font-medium">Send To Country</label>
@@ -1303,15 +1293,20 @@ export function RemittancePlatform() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </StepWithBenefits>
     );
   }
 
-  // Transfer step
+  // Transfer step  
   if (state.step === 'transfer') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+      <StepWithBenefits
+        title="Send Money"
+        subtitle="Choose amount and recipient details"
+        badge="Instant blockchain transfers"
+        onDisconnect={() => setState(prev => ({ ...prev, step: 'connect' }))}
+      >
+        <Card className="w-full bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
               <Send className="w-8 h-8 text-green-400" />
@@ -1442,7 +1437,7 @@ export function RemittancePlatform() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </StepWithBenefits>
     );
   }
 
