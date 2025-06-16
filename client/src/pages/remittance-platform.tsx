@@ -1642,30 +1642,49 @@ export function RemittancePlatform() {
   // Fallback - should not reach here
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <h2 className="text-2xl font-bold">Something went wrong</h2>
-          <p className="text-white/70 mb-4">Please refresh the page and try again</p>
-          <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+      <div className="pwa-fullscreen bg-gradient-to-br from-[#6667AB] via-[#6667AB] to-[#5A5B9F] relative overflow-hidden no-pull-refresh">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#6667AB]/90 via-[#6667AB]/95 to-[#5A5B9F]/90" />
+        <div className="absolute top-0 left-0 w-full h-full opacity-30 bg-repeat" style={{
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FCFBF4' fill-opacity='0.05'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
+        }} />
+        
+        <div className="relative z-10 safe-area-inset pwa-scrollable">
+          <div className="mobile-container flex items-center justify-center min-h-screen">
+            <div className="text-[#FCFBF4] text-center mobile-spacing">
+              <h2 className="mobile-text-2xl font-bold">Something went wrong</h2>
+              <p className="text-[#FCFBF4]/70 mb-4">Please refresh the page and try again</p>
+              <Button onClick={() => window.location.reload()} className="mobile-button bg-[#FCFBF4] text-[#6667AB] hover:bg-[#FCFBF4]/90">
+                Refresh Page
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Debug info for wallet creation */}
       {showWalletCreationModal && (
-        <div className="fixed top-4 right-4 bg-black/80 text-white p-4 rounded-lg z-50">
-          <p>Debug: Wallet creation modal state active</p>
-          <button onClick={() => setShowWalletCreationModal(false)} className="text-red-400">Close</button>
+        <div className="mobile-modal">
+          <div className="mobile-modal-content bg-[#6667AB]/95 backdrop-blur-md text-[#FCFBF4] p-4 rounded-t-xl sm:rounded-xl">
+            <p>Debug: Wallet creation modal state active</p>
+            <button 
+              onClick={() => setShowWalletCreationModal(false)} 
+              className="mobile-button bg-red-500 text-white mt-4"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
 
       {/* Floating Action Button for Quick Transfer */}
       {isConnected && (
         <button 
-          className="btn-floating group"
+          className="mobile-fab bg-[#6667AB] text-[#FCFBF4] hover:bg-[#6667AB]/90 hover:scale-110 shadow-2xl group touch-manipulation"
           onClick={() => setState(prev => ({ ...prev, step: 'transfer' }))}
           title="Quick Transfer"
         >
-          <Send className="w-7 h-7 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
+          <Send className="w-6 h-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
         </button>
       )}
     </>
