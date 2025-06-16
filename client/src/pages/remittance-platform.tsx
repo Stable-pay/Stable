@@ -1023,9 +1023,9 @@ export function RemittancePlatform() {
               </div>
             )}
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">ID Document Type</label>
+            <div className="mobile-spacing">
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB]">ID Document Type</label>
                 <Select 
                   value={state.kycDocuments.idType} 
                   onValueChange={(value) => setState(prev => ({ 
@@ -1033,7 +1033,7 @@ export function RemittancePlatform() {
                     kycDocuments: { ...prev.kycDocuments, idType: value }
                   }))}
                 >
-                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
+                  <SelectTrigger className="mobile-input bg-[#FCFBF4] border-[#6667AB]/20 text-[#6667AB]">
                     <SelectValue placeholder="Select ID type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1045,8 +1045,8 @@ export function RemittancePlatform() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">ID Number</label>
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB]">ID Number</label>
                 <Input
                   placeholder="Enter your ID number"
                   value={state.kycDocuments.idNumber}
@@ -1054,7 +1054,7 @@ export function RemittancePlatform() {
                     ...prev, 
                     kycDocuments: { ...prev.kycDocuments, idNumber: e.target.value }
                   }))}
-                  className="bg-gray-700/50 border-gray-600 text-white"
+                  className="mobile-input bg-[#FCFBF4] border-[#6667AB]/20 text-[#6667AB]"
                 />
               </div>
 
