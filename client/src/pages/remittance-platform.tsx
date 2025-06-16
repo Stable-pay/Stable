@@ -369,9 +369,9 @@ export function RemittancePlatform() {
                 <div className="w-8 h-8 bg-gradient-to-r from-background to-background/80 rounded-lg flex items-center justify-center">
                   <Globe className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-background font-semibold text-lg">StablePay</span>
+                <span className="text-[#FCFBF4] font-semibold text-lg">StablePay</span>
               </div>
-              <div className="hidden md:flex items-center gap-6 text-sm text-background/70">
+              <div className="hidden md:flex items-center gap-6 text-sm text-[#FCFBF4]/80">
                 <span>How it works</span>
                 <span>Security</span>
                 <span>Support</span>
@@ -383,9 +383,9 @@ export function RemittancePlatform() {
           <main className="flex-1 flex items-center justify-center px-6 py-20">
             <div className="max-w-4xl mx-auto text-center">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm border border-background/20 px-4 py-2 rounded-full mb-8">
-                <div className="w-2 h-2 bg-background rounded-full animate-pulse"></div>
-                <span className="text-background/80 text-sm font-medium">World's first Web3 remittance platform</span>
+              <div className="inline-flex items-center gap-2 bg-[#FCFBF4]/10 backdrop-blur-sm border border-[#FCFBF4]/20 px-4 py-2 rounded-full mb-8">
+                <div className="w-2 h-2 bg-[#FCFBF4] rounded-full animate-pulse"></div>
+                <span className="text-[#FCFBF4]/90 text-sm font-medium">World's first Web3 remittance platform</span>
               </div>
               
               {/* Main Heading */}
@@ -408,35 +408,35 @@ export function RemittancePlatform() {
               <div className="flex flex-wrap justify-center gap-8 mb-12">
                 <div className="text-center group">
                   <div className="flex items-center justify-center gap-2 mb-1">
-                    <div className="text-3xl font-bold text-background">
+                    <div className="text-3xl font-bold text-[#FCFBF4]">
                       ₹{liveExchangeRate.rate.toFixed(2)}
                     </div>
                     {liveExchangeRate.isLoading ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-background/20 border-t-background/60"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#FCFBF4]/20 border-t-[#FCFBF4]/60"></div>
                     ) : (
                       <div className={`text-sm px-2 py-1 rounded-full ${
                         liveExchangeRate.change24h >= 0 
-                          ? 'bg-primary/20 text-primary' 
-                          : 'bg-destructive/20 text-destructive'
+                          ? 'bg-green-500/20 text-green-400' 
+                          : 'bg-red-500/20 text-red-400'
                       }`}>
                         {liveExchangeRate.change24h >= 0 ? '+' : ''}{liveExchangeRate.change24h.toFixed(2)}%
                       </div>
                     )}
                   </div>
-                  <div className="text-sm text-background/60">Live USD → INR rate</div>
-                  <div className="text-xs text-background/40 mt-1">
+                  <div className="text-sm text-[#FCFBF4]/70">Live USD → INR rate</div>
+                  <div className="text-xs text-[#FCFBF4]/50 mt-1">
                     Updated {new Date(liveExchangeRate.lastUpdated).toLocaleTimeString()}
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-background mb-1">$2.99</div>
-                  <div className="text-sm text-background/60">Fixed network fee</div>
-                  <div className="text-xs text-background/40 mt-1">No hidden charges</div>
+                  <div className="text-3xl font-bold text-[#FCFBF4] mb-1">$2.99</div>
+                  <div className="text-sm text-[#FCFBF4]/70">Fixed network fee</div>
+                  <div className="text-xs text-[#FCFBF4]/50 mt-1">No hidden charges</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-background mb-1">2-5min</div>
-                  <div className="text-sm text-background/60">Settlement time</div>
-                  <div className="text-xs text-background/40 mt-1">Blockchain powered</div>
+                  <div className="text-3xl font-bold text-[#FCFBF4] mb-1">2-5min</div>
+                  <div className="text-sm text-[#FCFBF4]/70">Settlement time</div>
+                  <div className="text-xs text-[#FCFBF4]/50 mt-1">Blockchain powered</div>
                 </div>
               </div>
 
@@ -475,24 +475,24 @@ export function RemittancePlatform() {
                 
                 <div className="text-center space-y-3">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto text-sm">
-                    <div className="p-6 bg-primary/10 rounded-xl border border-primary/20 group hover:bg-primary/15 transition-all duration-300 animate-slide-in-left cursor-pointer transform hover:scale-[1.02]">
-                      <div className="font-semibold text-primary-foreground mb-2 group-hover:text-primary transition-colors">Already have crypto?</div>
-                      <div className="text-primary-foreground/90 group-hover:text-primary-foreground transition-colors">Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
+                    <div className="p-6 bg-[#FCFBF4]/10 rounded-xl border border-[#FCFBF4]/20 group hover:bg-[#FCFBF4]/15 transition-all duration-300 animate-slide-in-left cursor-pointer transform hover:scale-[1.02]">
+                      <div className="font-semibold text-[#FCFBF4] mb-2 group-hover:text-[#FCFBF4] transition-colors">Already have crypto?</div>
+                      <div className="text-[#FCFBF4]/80 group-hover:text-[#FCFBF4] transition-colors">Use MetaMask, Coinbase, Trust Wallet, or any of 300+ supported wallets</div>
                     </div>
-                    <div className="p-6 bg-secondary/50 rounded-xl border border-primary/20 group hover:bg-secondary/70 transition-all duration-300 animate-slide-in-right cursor-pointer transform hover:scale-[1.02]">
-                      <div className="font-semibold text-secondary-foreground mb-2 group-hover:text-primary transition-colors">New to crypto?</div>
-                      <div className="text-secondary-foreground/90 group-hover:text-primary transition-colors">Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
+                    <div className="p-6 bg-[#FCFBF4]/10 rounded-xl border border-[#FCFBF4]/20 group hover:bg-[#FCFBF4]/15 transition-all duration-300 animate-slide-in-right cursor-pointer transform hover:scale-[1.02]">
+                      <div className="font-semibold text-[#FCFBF4] mb-2 group-hover:text-[#FCFBF4] transition-colors">New to crypto?</div>
+                      <div className="text-[#FCFBF4]/80 group-hover:text-[#FCFBF4] transition-colors">Sign up with Google/Apple • Buy crypto instantly • Start sending money</div>
                     </div>
                   </div>
                   
-                  <div className="text-background/70 text-sm font-medium">
+                  <div className="text-[#FCFBF4]/80 text-sm font-medium">
                     🔐 Secure • 🎯 Self-custodial • 🔑 Your keys, your crypto
                   </div>
                 </div>
                 
                 {status === 'reconnecting' && (
-                  <div className="flex items-center justify-center gap-2 text-background/60">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-background/20 border-t-background/60"></div>
+                  <div className="flex items-center justify-center gap-2 text-[#FCFBF4]/70">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#FCFBF4]/20 border-t-[#FCFBF4]/60"></div>
                     <span className="text-sm">Connecting...</span>
                   </div>
                 )}
@@ -544,8 +544,8 @@ export function RemittancePlatform() {
           <section className="px-6 py-20 border-t border-background/10">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold text-background mb-4">How it works</h2>
-                <p className="text-xl text-background/60 max-w-2xl mx-auto">
+                <h2 className="text-4xl md:text-5xl font-bold text-[#FCFBF4] mb-4">How it works</h2>
+                <p className="text-xl text-[#FCFBF4]/80 max-w-2xl mx-auto">
                   Four simple steps to send money across borders instantly
                 </p>
               </div>
