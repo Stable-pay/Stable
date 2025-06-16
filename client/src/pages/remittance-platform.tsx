@@ -1657,6 +1657,17 @@ export function RemittancePlatform() {
           <button onClick={() => setShowWalletCreationModal(false)} className="text-red-400">Close</button>
         </div>
       )}
+
+      {/* Floating Action Button for Quick Transfer */}
+      {isConnected && (
+        <button 
+          className="btn-floating group"
+          onClick={() => setState(prev => ({ ...prev, step: 'transfer' }))}
+          title="Quick Transfer"
+        >
+          <Send className="w-7 h-7 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
+        </button>
+      )}
     </>
   );
 }

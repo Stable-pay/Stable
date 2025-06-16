@@ -273,13 +273,28 @@
 
   /* Floating action button */
   .btn-floating {
-    @apply fixed bottom-6 right-6 w-14 h-14 rounded-full;
-    @apply bg-primary text-primary-foreground shadow-lg;
-    @apply hover:shadow-2xl hover:shadow-primary/30;
-    @apply transform hover:scale-110 active:scale-95;
+    @apply fixed bottom-6 right-6 w-16 h-16 rounded-full;
+    @apply bg-primary text-primary-foreground shadow-2xl;
+    @apply hover:shadow-2xl hover:shadow-primary/40;
+    @apply transform hover:scale-125 active:scale-90;
     @apply transition-all duration-300;
-    @apply animate-pulse-glow;
+    @apply animate-pulse-glow z-50;
   }
+
+  /* Interactive button effects */
+  .btn-interactive {
+    @apply relative overflow-hidden;
+    @apply before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent;
+    @apply before:transform before:-translate-x-full before:transition-transform before:duration-700;
+    @apply hover:before:translate-x-full;
+  }
+
+  /* Staggered animation delays */
+  .animate-stagger-1 { animation-delay: 0.1s; }
+  .animate-stagger-2 { animation-delay: 0.2s; }
+  .animate-stagger-3 { animation-delay: 0.3s; }
+  .animate-stagger-4 { animation-delay: 0.4s; }
+  .animate-stagger-5 { animation-delay: 0.5s; }
 
   /* Network card animations */
   .network-card {
