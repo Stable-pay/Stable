@@ -352,15 +352,15 @@ export function RemittancePlatform() {
         
         <div className="relative z-10 min-h-screen flex flex-col">
           {/* Navigation Header */}
-          <header className="w-full px-6 py-4 border-b border-white/5">
+          <header className="w-full px-6 py-4 border-b border-background/10">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 bg-gradient-to-r from-background to-background/80 rounded-lg flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-white font-semibold text-lg">RemitPay</span>
+                <span className="text-background font-semibold text-lg">StablePay</span>
               </div>
-              <div className="hidden md:flex items-center gap-6 text-sm text-white/70">
+              <div className="hidden md:flex items-center gap-6 text-sm text-background/70">
                 <span>How it works</span>
                 <span>Security</span>
                 <span>Support</span>
@@ -372,36 +372,36 @@ export function RemittancePlatform() {
           <main className="flex-1 flex items-center justify-center px-6 py-20">
             <div className="max-w-4xl mx-auto text-center">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 px-4 py-2 rounded-full mb-8">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-white/80 text-sm font-medium">World's first Web3 remittance platform</span>
+              <div className="inline-flex items-center gap-2 bg-background/10 backdrop-blur-sm border border-background/20 px-4 py-2 rounded-full mb-8">
+                <div className="w-2 h-2 bg-background rounded-full animate-pulse"></div>
+                <span className="text-background/80 text-sm font-medium">World's first Web3 remittance platform</span>
               </div>
               
               {/* Main Heading */}
               <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
-                <span className="text-white">Send money to</span>
+                <span className="text-background">Send money to</span>
                 <br />
-                <span className="bg-gradient-to-r from-orange-400 via-yellow-400 to-green-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-background to-background/80 bg-clip-text text-transparent">
                   India instantly
                 </span>
               </h1>
               
               {/* Subtitle */}
-              <p className="text-xl md:text-2xl text-white/60 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+              <p className="text-xl md:text-2xl text-background/70 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
                 Skip the banks. Send crypto, receive rupees. 
                 <br />
-                <span className="text-white/80">2-5 minutes. Always.</span>
+                <span className="text-background/80">2-5 minutes. Always.</span>
               </p>
 
               {/* Live Stats */}
               <div className="flex flex-wrap justify-center gap-8 mb-12">
                 <div className="text-center group">
                   <div className="flex items-center justify-center gap-2 mb-1">
-                    <div className="text-3xl font-bold text-white">
+                    <div className="text-3xl font-bold text-background">
                       ₹{liveExchangeRate.rate.toFixed(2)}
                     </div>
                     {liveExchangeRate.isLoading ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white/60"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-background/20 border-t-background/60"></div>
                     ) : (
                       <div className={`text-sm px-2 py-1 rounded-full ${
                         liveExchangeRate.change24h >= 0 
@@ -412,20 +412,20 @@ export function RemittancePlatform() {
                       </div>
                     )}
                   </div>
-                  <div className="text-sm text-white/60">Live USD → INR rate</div>
-                  <div className="text-xs text-white/40 mt-1">
+                  <div className="text-sm text-background/60">Live USD → INR rate</div>
+                  <div className="text-xs text-background/40 mt-1">
                     Updated {new Date(liveExchangeRate.lastUpdated).toLocaleTimeString()}
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-1">$2.99</div>
-                  <div className="text-sm text-white/60">Fixed network fee</div>
-                  <div className="text-xs text-white/40 mt-1">No hidden charges</div>
+                  <div className="text-3xl font-bold text-background mb-1">$2.99</div>
+                  <div className="text-sm text-background/60">Fixed network fee</div>
+                  <div className="text-xs text-background/40 mt-1">No hidden charges</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-1">2-5min</div>
-                  <div className="text-sm text-white/60">Settlement time</div>
-                  <div className="text-xs text-white/40 mt-1">Blockchain powered</div>
+                  <div className="text-3xl font-bold text-background mb-1">2-5min</div>
+                  <div className="text-sm text-background/60">Settlement time</div>
+                  <div className="text-xs text-background/40 mt-1">Blockchain powered</div>
                 </div>
               </div>
 
@@ -440,7 +440,7 @@ export function RemittancePlatform() {
                     }}
                     className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-xl hover:shadow-2xl shadow-primary/30 transition-all duration-300 group border border-primary/20"
                   >
-                    <Wallet className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform text-white" />
+                    <Wallet className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                     Connect Wallet
                   </Button>
                   
@@ -455,7 +455,7 @@ export function RemittancePlatform() {
                     }}
                     className="h-14 px-6 text-lg font-bold bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground shadow-xl hover:shadow-2xl shadow-primary/20 transition-all duration-300 group border border-primary/20"
                   >
-                    <UserCheck className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform text-white" />
+                    <UserCheck className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                     Create Wallet
                   </Button>
                 </div>
@@ -472,7 +472,7 @@ export function RemittancePlatform() {
                     </div>
                   </div>
                   
-                  <div className="text-white/70 text-sm font-medium">
+                  <div className="text-background/70 text-sm font-medium">
                     🔐 Secure • 🎯 Self-custodial • 🔑 Your keys, your crypto
                   </div>
                 </div>
