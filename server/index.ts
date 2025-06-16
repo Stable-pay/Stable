@@ -87,15 +87,22 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    // Handle CSS files directly to prevent MIME type errors
-    app.get('*.css', (req, res, next) => {
-      res.setHeader('Content-Type', 'text/css; charset=utf-8');
-      next();
-    });
-    
-    // Handle JS files directly to prevent MIME type errors
-    app.get('*.js', (req, res, next) => {
-      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    // Handle asset files with proper MIME types before Vite middleware
+    app.use((req, res, next) => {
+      const url = req.originalUrl;
+      
+      if (url.includes('/assets/') && url.includes('.css')) {
+        res.setHeader('Content-Type', 'text/css; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache');
+      } else if (url.includes('/assets/') && url.includes('.js')) {
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache');
+      } else if (url.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css; charset=utf-8');
+      } else if (url.endsWith('.js') || url.endsWith('.mjs')) {
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+      }
+      
       next();
     });
     
