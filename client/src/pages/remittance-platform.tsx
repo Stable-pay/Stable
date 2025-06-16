@@ -689,82 +689,82 @@ export function RemittancePlatform() {
               </div>
               
               <div className="grid md:grid-cols-2 gap-8">
-                <div className="p-8 rounded-2xl bg-red-500/5 border border-red-500/20">
+                <div className="p-8 rounded-2xl bg-[#6667AB]/10 border border-[#6667AB]/30">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
-                      <Building className="w-5 h-5 text-red-400" />
+                    <div className="w-10 h-10 bg-[#6667AB]/20 rounded-lg flex items-center justify-center">
+                      <Building className="w-5 h-5 text-[#6667AB]" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Traditional remittance</h3>
+                    <h3 className="text-lg font-semibold text-[#FCFBF4]">Traditional Remittance</h3>
                   </div>
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
-                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/70">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-[#6667AB] rounded-full"></div>
                       </div>
                       <span>Banks control your money</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
-                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/70">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-[#6667AB] rounded-full"></div>
                       </div>
                       <span>3-7 day settlement times</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
-                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/70">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-[#6667AB] rounded-full"></div>
                       </div>
                       <span>Hidden fees up to 8% total cost</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
-                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/70">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-[#6667AB] rounded-full"></div>
                       </div>
                       <span>Centralized points of failure</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
-                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/70">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-[#6667AB] rounded-full"></div>
                       </div>
                       <span>Limited to business hours</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/20">
+                <div className="p-8 rounded-2xl bg-[#6667AB]/15 border border-[#6667AB]/40 shadow-lg">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                      <Zap className="w-5 h-5 text-green-400" />
+                    <div className="w-10 h-10 bg-[#6667AB]/30 rounded-lg flex items-center justify-center">
+                      <Zap className="w-5 h-5 text-[#FCFBF4]" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Web3 off-ramping</h3>
+                    <h3 className="text-lg font-semibold text-[#FCFBF4]">Web3 Off-Ramping</h3>
                   </div>
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/90">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/30 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-[#FCFBF4]" />
                       </div>
                       <span>Self-custodial wallet control</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/90">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/30 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-[#FCFBF4]" />
                       </div>
                       <span>2-5 minute blockchain settlement</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/90">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/30 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-[#FCFBF4]" />
                       </div>
                       <span>Transparent $2.99 flat fee</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/90">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/30 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-[#FCFBF4]" />
                       </div>
                       <span>Decentralized infrastructure</span>
                     </div>
-                    <div className="flex items-start gap-3 text-white/70">
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
+                    <div className="flex items-start gap-3 text-[#FCFBF4]/90">
+                      <div className="w-5 h-5 rounded-full bg-[#6667AB]/30 flex items-center justify-center mt-0.5">
+                        <CheckCircle className="w-3 h-3 text-[#FCFBF4]" />
                       </div>
                       <span>Available 24/7 globally</span>
                     </div>
