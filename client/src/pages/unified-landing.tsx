@@ -41,6 +41,7 @@ import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
 import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } from '@/../../shared/top-100-crypto';
+import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTokenSupportedByReown, getAllSupportedTokenSymbols } from '@/../../shared/reown-supported-tokens';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // Core remittance state and types
@@ -681,78 +682,111 @@ export function UnifiedLanding() {
                 >
                   <Card className="bg-[#FCFBF4]/10 border-[#FCFBF4]/20 p-8">
                     <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl text-[#FCFBF4]">Crypto to INR Off-Ramping</CardTitle>
+                      <CardTitle className="text-2xl text-[#FCFBF4]">Available Token Balance to INR</CardTitle>
                       <div className="text-sm text-[#FCFBF4]/70 mt-2">
                         Live USD to INR: ₹{usdToInrRate.toFixed(2)}
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {/* From Token Selection */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-[#FCFBF4]">From Crypto</label>
-                        <div className="flex gap-4">
-                          <Select value={remittanceState.fromToken} onValueChange={handleTokenChange}>
-                            <SelectTrigger className="w-32 bg-[#FCFBF4] text-[#6667AB] border-[#6667AB]/30 font-medium">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#FCFBF4] border-[#6667AB]/30 max-h-60 shadow-lg">
-                              {supportedTokens.slice(0, 20).map(token => (
-                                <SelectItem 
-                                  key={token.symbol} 
-                                  value={token.symbol}
-                                  className="text-[#6667AB] font-medium hover:bg-[#6667AB]/10 focus:bg-[#6667AB]/10"
-                                >
-                                  {token.symbol} - {token.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <Input
-                            type="number"
-                            placeholder="0.00"
-                            value={remittanceState.amount}
-                            onChange={(e) => handleAmountChange(e.target.value)}
-                            className="flex-1 bg-[#FCFBF4] text-[#6667AB] border-[#6667AB]/30 placeholder:text-[#6667AB]/60 font-medium focus:border-[#6667AB] focus:ring-[#6667AB]"
-                          />
+                      {/* Available Token Balances */}
+                      <div className="space-y-4">
+                        <label className="text-sm font-medium text-[#FCFBF4]">Your Available Token Balances</label>
+                        
+                        {/* Mock wallet balances for demonstration */}
+                        <div className="grid gap-3 max-h-60 overflow-y-auto">
+                          {[
+                            { symbol: 'USDC', balance: '1,250.50', chain: 'Ethereum', inrValue: '104,160.62' },
+                            { symbol: 'USDT', balance: '850.25', chain: 'Polygon', inrValue: '70,741.80' },
+                            { symbol: 'ETH', balance: '0.45', chain: 'Ethereum', inrValue: '83,439.22' },
+                            { symbol: 'MATIC', balance: '2,500.00', chain: 'Polygon', inrValue: '12,500.00' },
+                            { symbol: 'BNB', balance: '5.2', chain: 'BSC', inrValue: '26,000.00' },
+                            { symbol: 'DOGE', balance: '15,000', chain: 'BSC', inrValue: '4,500.00' }
+                          ].map((token, index) => {
+                            const isSupported = isTokenSupported(token.symbol);
+                            return (
+                              <div 
+                                key={index}
+                                className={`flex items-center justify-between p-4 rounded-lg border transition-all cursor-pointer ${
+                                  isSupported 
+                                    ? 'bg-[#FCFBF4]/10 border-[#FCFBF4]/30 hover:bg-[#FCFBF4]/20' 
+                                    : 'bg-red-500/10 border-red-500/30 opacity-60'
+                                }`}
+                                onClick={() => {
+                                  if (!isSupported) {
+                                    setUnsupportedTokenSymbol(token.symbol);
+                                    setShowUnsupportedTokenModal(true);
+                                  } else {
+                                    setRemittanceState(prev => ({
+                                      ...prev,
+                                      fromToken: token.symbol,
+                                      amount: token.balance.replace(/,/g, ''),
+                                      toAmount: token.inrValue
+                                    }));
+                                  }
+                                }}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 bg-[#FCFBF4]/20 rounded-full flex items-center justify-center">
+                                    <span className="text-[#FCFBF4] font-bold text-sm">{token.symbol.charAt(0)}</span>
+                                  </div>
+                                  <div>
+                                    <div className="text-[#FCFBF4] font-semibold">{token.symbol}</div>
+                                    <div className="text-[#FCFBF4]/70 text-sm">{token.chain}</div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-[#FCFBF4] font-semibold">{token.balance}</div>
+                                  <div className="text-[#FCFBF4]/70 text-sm">≈ ₹{token.inrValue}</div>
+                                  {!isSupported && (
+                                    <Badge variant="destructive" className="mt-1 text-xs">
+                                      Not Supported
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
 
-                      {/* Exchange Rate Display */}
-                      <div className="flex items-center justify-center py-4">
-                        <div className="flex items-center gap-3 text-[#FCFBF4] bg-[#FCFBF4]/10 rounded-lg px-4 py-2 border border-[#FCFBF4]/20">
-                          <RefreshCw className="w-4 h-4 animate-pulse text-[#FCFBF4]" />
-                          <span className="text-sm font-medium">
-                            1 {remittanceState.fromToken} = ₹{remittanceState.fromToken === 'USD' ? usdToInrRate.toFixed(2) : remittanceState.exchangeRate.toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* To Amount Display */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-[#FCFBF4]">To Indian Rupees</label>
-                        <div className="flex gap-4">
-                          <div className="w-32 h-10 bg-[#FCFBF4]/30 border border-[#FCFBF4]/40 rounded-md flex items-center justify-center text-[#FCFBF4] font-bold shadow-sm">
-                            INR
+                      {/* Selected Token Conversion Details */}
+                      {remittanceState.fromToken && (
+                        <div className="bg-[#FCFBF4]/15 border border-[#FCFBF4]/30 rounded-lg p-4 space-y-3">
+                          <div className="text-center">
+                            <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Convert to INR</h3>
+                            <div className="flex items-center justify-center gap-3 text-[#FCFBF4]">
+                              <RefreshCw className="w-4 h-4 animate-pulse" />
+                              <span className="text-sm font-medium">
+                                1 {remittanceState.fromToken} = ₹{remittanceState.fromToken === 'USD' ? usdToInrRate.toFixed(2) : remittanceState.exchangeRate.toLocaleString()}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex-1 h-10 bg-[#FCFBF4]/30 border border-[#FCFBF4]/40 rounded-md flex items-center px-3 text-[#FCFBF4] font-bold shadow-sm">
-                            ₹{remittanceState.toAmount || '0.00'}
+                          
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="text-center">
+                              <div className="text-[#FCFBF4]/70">Converting</div>
+                              <div className="text-[#FCFBF4] font-bold text-lg">
+                                {remittanceState.amount} {remittanceState.fromToken}
+                              </div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-[#FCFBF4]/70">You'll Receive</div>
+                              <div className="text-[#FCFBF4] font-bold text-lg">
+                                ₹{remittanceState.toAmount}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
 
-                      {/* Fee Display */}
-                      <div className="bg-[#FCFBF4]/15 border border-[#FCFBF4]/30 rounded-lg p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-[#FCFBF4] font-medium">Service Fee</span>
-                          <span className="text-[#FCFBF4] font-bold">₹{remittanceState.fees}</span>
+                      {/* Instructions */}
+                      {!remittanceState.fromToken && (
+                        <div className="text-center py-8">
+                          <div className="text-[#FCFBF4]/70 text-sm">
+                            Select a token from your available balances above to convert to INR
+                          </div>
                         </div>
-                        <div className="flex justify-between items-center font-bold text-lg">
-                          <span className="text-[#FCFBF4]">You'll Receive</span>
-                          <span className="text-[#FCFBF4]">
-                            ₹{remittanceState.toAmount ? (parseFloat(remittanceState.toAmount) - remittanceState.fees).toFixed(2) : '0.00'}
-                          </span>
-                        </div>
-                      </div>
+                      )}
 
                       {/* Action Buttons */}
                       <div className="space-y-4 pt-6">
