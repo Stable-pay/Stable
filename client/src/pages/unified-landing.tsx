@@ -70,6 +70,7 @@ const EXCHANGE_RATES = {
 export function UnifiedLanding() {
   const { open } = useAppKit();
   const { address, isConnected } = useAppKitAccount();
+  const { tokenBalances, isLoading, refreshAllChains } = useWalletBalances();
   const { chainId } = useAppKitNetwork();
   const { loading } = useAppKitState();
   
@@ -692,60 +693,78 @@ export function UnifiedLanding() {
                       <div className="space-y-4">
                         <label className="text-sm font-medium text-[#FCFBF4]">Your Available Token Balances</label>
                         
-                        {/* Mock wallet balances for demonstration */}
+                        {/* Real wallet balances from connected wallet */}
                         <div className="grid gap-3 max-h-60 overflow-y-auto">
-                          {[
-                            { symbol: 'USDC', balance: '1,250.50', chain: 'Ethereum', inrValue: '104,160.62' },
-                            { symbol: 'USDT', balance: '850.25', chain: 'Polygon', inrValue: '70,741.80' },
-                            { symbol: 'ETH', balance: '0.45', chain: 'Ethereum', inrValue: '83,439.22' },
-                            { symbol: 'MATIC', balance: '2,500.00', chain: 'Polygon', inrValue: '12,500.00' },
-                            { symbol: 'BNB', balance: '5.2', chain: 'BSC', inrValue: '26,000.00' },
-                            { symbol: 'DOGE', balance: '15,000', chain: 'BSC', inrValue: '4,500.00' }
-                          ].map((token, index) => {
-                            const isSupported = isTokenSupported(token.symbol);
-                            return (
-                              <div 
-                                key={index}
-                                className={`flex items-center justify-between p-4 rounded-lg border transition-all cursor-pointer ${
-                                  isSupported 
-                                    ? 'bg-[#FCFBF4]/10 border-[#FCFBF4]/30 hover:bg-[#FCFBF4]/20' 
-                                    : 'bg-red-500/10 border-red-500/30 opacity-60'
-                                }`}
-                                onClick={() => {
-                                  if (!isSupported) {
-                                    setUnsupportedTokenSymbol(token.symbol);
-                                    setShowUnsupportedTokenModal(true);
-                                  } else {
-                                    setRemittanceState(prev => ({
-                                      ...prev,
-                                      fromToken: token.symbol,
-                                      amount: token.balance.replace(/,/g, ''),
-                                      toAmount: token.inrValue
-                                    }));
-                                  }
-                                }}
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 bg-[#FCFBF4]/20 rounded-full flex items-center justify-center">
-                                    <span className="text-[#FCFBF4] font-bold text-sm">{token.symbol.charAt(0)}</span>
-                                  </div>
-                                  <div>
-                                    <div className="text-[#FCFBF4] font-semibold">{token.symbol}</div>
-                                    <div className="text-[#FCFBF4]/70 text-sm">{token.chain}</div>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className="text-[#FCFBF4] font-semibold">{token.balance}</div>
-                                  <div className="text-[#FCFBF4]/70 text-sm">≈ ₹{token.inrValue}</div>
-                                  {!isSupported && (
-                                    <Badge variant="destructive" className="mt-1 text-xs">
-                                      Not Supported
-                                    </Badge>
-                                  )}
-                                </div>
+                          {tokenBalances.length === 0 ? (
+                            <div className="text-center py-8">
+                              <div className="text-[#FCFBF4]/70 text-sm">
+                                {isLoading ? 'Loading token balances...' : 'No token balances found in connected wallet'}
                               </div>
-                            );
-                          })}
+                              {!isConnected && (
+                                <div className="text-[#FCFBF4]/60 text-xs mt-2">
+                                  Connect your wallet to view available token balances
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            tokenBalances
+                              .filter((token: any) => parseFloat(token.formattedBalance) > 0) // Only show tokens with positive balance
+                              .map((token: any, index: number) => {
+                                const isSupported = isTokenSupported(token.symbol);
+                                const inrValue = (token.usdValue * usdToInrRate).toFixed(2);
+                                const chainName = REOWN_SUPPORTED_CHAINS.find(chain => chain.id === token.chainId)?.name || token.chainName;
+                                const tokenPrice = token.usdValue / parseFloat(token.formattedBalance || '1');
+                                
+                                return (
+                                  <div 
+                                    key={`${token.chainId}-${token.address}-${index}`}
+                                    className={`flex items-center justify-between p-4 rounded-lg border transition-all cursor-pointer ${
+                                      isSupported 
+                                        ? 'bg-[#FCFBF4]/10 border-[#FCFBF4]/30 hover:bg-[#FCFBF4]/20' 
+                                        : 'bg-red-500/10 border-red-500/30 opacity-60'
+                                    }`}
+                                    onClick={() => {
+                                      if (!isSupported) {
+                                        setUnsupportedTokenSymbol(token.symbol);
+                                        setShowUnsupportedTokenModal(true);
+                                      } else {
+                                        setRemittanceState(prev => ({
+                                          ...prev,
+                                          fromToken: token.symbol,
+                                          amount: token.formattedBalance,
+                                          toAmount: inrValue,
+                                          exchangeRate: tokenPrice * usdToInrRate
+                                        }));
+                                      }
+                                    }}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-10 h-10 bg-[#FCFBF4]/20 rounded-full flex items-center justify-center">
+                                        <span className="text-[#FCFBF4] font-bold text-sm">{token.symbol.charAt(0)}</span>
+                                      </div>
+                                      <div>
+                                        <div className="text-[#FCFBF4] font-semibold">{token.symbol}</div>
+                                        <div className="text-[#FCFBF4]/70 text-sm">{chainName}</div>
+                                      </div>
+                                    </div>
+                                    <div className="text-right">
+                                      <div className="text-[#FCFBF4] font-semibold">
+                                        {parseFloat(token.formattedBalance).toLocaleString('en-US', { 
+                                          maximumFractionDigits: 6,
+                                          minimumFractionDigits: 2 
+                                        })}
+                                      </div>
+                                      <div className="text-[#FCFBF4]/70 text-sm">≈ ₹{inrValue}</div>
+                                      {!isSupported && (
+                                        <Badge variant="destructive" className="mt-1 text-xs">
+                                          Not Supported
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })
+                          )}
                         </div>
                       </div>
 

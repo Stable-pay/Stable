@@ -1,6 +1,19 @@
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, polygon, bsc, arbitrum } from '@reown/appkit/networks'
+import { 
+  mainnet, 
+  polygon, 
+  bsc, 
+  arbitrum, 
+  optimism, 
+  base, 
+  avalanche, 
+  fantom, 
+  celo, 
+  moonbeam, 
+  gnosis, 
+  zkSync 
+} from '@reown/appkit/networks'
 import { QueryClient } from '@tanstack/react-query'
 
 // Create query client
@@ -21,7 +34,20 @@ console.log('Current domain:', typeof window !== 'undefined' ? window.location.o
 export const wagmiAdapter = new WagmiAdapter({
   ssr: false,
   projectId: projectId || 'demo-project-id',
-  networks: [mainnet, polygon, bsc, arbitrum]
+  networks: [
+    mainnet, 
+    polygon, 
+    bsc, 
+    arbitrum, 
+    optimism, 
+    base, 
+    avalanche, 
+    fantom, 
+    celo, 
+    moonbeam, 
+    gnosis, 
+    zkSync
+  ]
 })
 
 // Set up metadata with dynamic domain configuration
