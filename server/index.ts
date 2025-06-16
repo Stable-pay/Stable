@@ -22,12 +22,20 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
   // Set proper MIME types for static assets
-  if (req.url.endsWith('.css')) {
-    res.setHeader('Content-Type', 'text/css');
-  } else if (req.url.endsWith('.js') || req.url.endsWith('.mjs')) {
-    res.setHeader('Content-Type', 'application/javascript');
-  } else if (req.url.endsWith('.json')) {
-    res.setHeader('Content-Type', 'application/json');
+  const url = req.url || '';
+  if (url.includes('.css') || url.endsWith('.css')) {
+    res.setHeader('Content-Type', 'text/css; charset=utf-8');
+  } else if (url.includes('.js') || url.endsWith('.js') || url.includes('.mjs') || url.endsWith('.mjs')) {
+    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  } else if (url.includes('.json') || url.endsWith('.json')) {
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  } else if (url.includes('/assets/')) {
+    // Handle Vite's asset files with proper MIME types
+    if (url.includes('-') && url.includes('.css')) {
+      res.setHeader('Content-Type', 'text/css; charset=utf-8');
+    } else if (url.includes('-') && url.includes('.js')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    }
   }
   
   if (req.method === 'OPTIONS') {
