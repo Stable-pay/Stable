@@ -1398,7 +1398,7 @@ export function RemittancePlatform() {
                       <span className="font-semibold">${totalCost.toFixed(2)} USD</span>
                     </div>
                     <Separator className="bg-[#6667AB]/20" />
-                    <div className="flex justify-between text-green-600 text-lg">
+                    <div className="flex justify-between text-[#6667AB] text-lg">
                       <span>Recipient Gets:</span>
                       <span className="font-bold">{receivedAmount.toFixed(2)} {corridor.currency}</span>
                     </div>
@@ -1413,7 +1413,7 @@ export function RemittancePlatform() {
                   <span className="text-[#6667AB] text-sm font-semibold">Delivery Information</span>
                 </div>
                 <div className="text-[#6667AB]/80 text-sm">
-                  <div>Estimated arrival: <span className="text-green-600 font-medium">{state.estimatedArrival}</span></div>
+                  <div>Estimated arrival: <span className="text-[#6667AB] font-medium">{state.estimatedArrival}</span></div>
                   <div>Method: <span className="text-[#6667AB] font-medium capitalize">{state.recipientMethod} Transfer</span></div>
                 </div>
               </div>
@@ -1466,74 +1466,71 @@ export function RemittancePlatform() {
   // Review step
   if (state.step === 'review') {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl border-border">
-          <CardHeader className="text-center bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-t-lg">
-            <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2">
-              <CheckCircle className="w-8 h-8" />
-              Review Transfer
-            </CardTitle>
-            <p className="text-primary-foreground/90 mt-2">Confirm all details before sending</p>
-          </CardHeader>
-          
-          <CardContent className="space-y-6 p-6">
+      <StepWithBenefits
+        title="Review Transfer"
+        subtitle="Confirm all details before sending"
+        badge="Final verification"
+        onDisconnect={() => setState(prev => ({ ...prev, step: 'connect' }))}
+      >
+        <Card className="w-full bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
+          <CardContent className="mobile-form-section">
             {/* Transfer Summary */}
-            <div className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg border border-border">
-                <h3 className="text-foreground font-semibold mb-3">Transfer Summary</h3>
+            <div className="mobile-spacing">
+              <div className="p-4 bg-[#6667AB]/10 rounded-lg border border-[#6667AB]/30">
+                <h3 className="text-[#6667AB] font-semibold mb-3">Transfer Summary</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Send Amount:</span>
-                    <span className="text-foreground font-medium">${state.amount} USD</span>
+                    <span className="text-[#6667AB]/70">Send Amount:</span>
+                    <span className="text-[#6667AB] font-medium">${state.amount} USD</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Network Fee:</span>
-                    <span className="text-foreground font-medium">${state.fees} USD</span>
+                    <span className="text-[#6667AB]/70">Network Fee:</span>
+                    <span className="text-[#6667AB] font-medium">${state.fees} USD</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Exchange Rate:</span>
-                    <span className="text-foreground font-medium">1 USD = {state.exchangeRate.toFixed(2)} {corridor?.currency}</span>
+                    <span className="text-[#6667AB]/70">Exchange Rate:</span>
+                    <span className="text-[#6667AB] font-medium">1 USD = {state.exchangeRate.toFixed(2)} {corridor?.currency}</span>
                   </div>
-                  <Separator className="bg-border" />
+                  <Separator className="bg-[#6667AB]/20" />
                   <div className="flex justify-between text-lg">
-                    <span className="text-foreground font-semibold">Total Cost:</span>
-                    <span className="text-foreground font-bold">${totalCost.toFixed(2)} USD</span>
+                    <span className="text-[#6667AB] font-semibold">Total Cost:</span>
+                    <span className="text-[#6667AB] font-bold">${totalCost.toFixed(2)} USD</span>
                   </div>
                   <div className="flex justify-between text-lg">
-                    <span className="text-secondary font-semibold">Recipient Gets:</span>
-                    <span className="text-secondary font-bold">{receivedAmount.toFixed(2)} {corridor?.currency}</span>
+                    <span className="text-[#6667AB] font-semibold">Recipient Gets:</span>
+                    <span className="text-[#6667AB] font-bold">{receivedAmount.toFixed(2)} {corridor?.currency}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-muted rounded-lg border border-border">
-                <h3 className="text-foreground font-semibold mb-3">Recipient Details</h3>
+              <div className="p-4 bg-[#6667AB]/10 rounded-lg border border-[#6667AB]/30">
+                <h3 className="text-[#6667AB] font-semibold mb-3">Recipient Details</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Name:</span>
-                    <span className="text-foreground font-medium">{state.recipientName}</span>
+                    <span className="text-[#6667AB]/70">Name:</span>
+                    <span className="text-[#6667AB] font-medium">{state.recipientName}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Phone:</span>
-                    <span className="text-foreground font-medium">{state.recipientPhone}</span>
+                    <span className="text-[#6667AB]/70">Phone:</span>
+                    <span className="text-[#6667AB] font-medium">{state.recipientPhone}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Country:</span>
-                    <span className="text-foreground font-medium">{corridor?.flag} {corridor?.name}</span>
+                    <span className="text-[#6667AB]/70">Country:</span>
+                    <span className="text-[#6667AB] font-medium">{corridor?.flag} {corridor?.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Method:</span>
-                    <span className="text-foreground font-medium capitalize">{state.recipientMethod} Transfer</span>
+                    <span className="text-[#6667AB]/70">Method:</span>
+                    <span className="text-[#6667AB] font-medium capitalize">{state.recipientMethod} Transfer</span>
                   </div>
                   {state.recipientMethod === 'bank' && (
                     <>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Bank:</span>
-                        <span className="text-foreground font-medium">{state.bankDetails.bankName}</span>
+                        <span className="text-[#6667AB]/70">Bank:</span>
+                        <span className="text-[#6667AB] font-medium">{state.bankDetails.bankName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Account:</span>
-                        <span className="text-foreground font-medium">***{state.bankDetails.accountNumber.slice(-4)}</span>
+                        <span className="text-[#6667AB]/70">Account:</span>
+                        <span className="text-[#6667AB] font-medium">***{state.bankDetails.accountNumber.slice(-4)}</span>
                       </div>
                     </>
                   )}
@@ -1542,43 +1539,43 @@ export function RemittancePlatform() {
 
               {/* Travel Rule Compliance Summary */}
               {state.travelRuleData && (
-                <div className="p-4 bg-muted rounded-lg border border-border">
-                  <h3 className="text-foreground font-semibold mb-3 flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-secondary" />
+                <div className="p-4 bg-[#6667AB]/10 rounded-lg border border-[#6667AB]/30">
+                  <h3 className="text-[#6667AB] font-semibold mb-3 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-[#6667AB]" />
                     Compliance Verified
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Originator:</span>
-                      <span className="text-foreground font-medium">{state.travelRuleData.originatorName}</span>
+                      <span className="text-[#6667AB]/70">Originator:</span>
+                      <span className="text-[#6667AB] font-medium">{state.travelRuleData.originatorName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Purpose:</span>
-                      <span className="text-foreground font-medium capitalize">
-                        {state.travelRuleData?.transactionPurpose?.replace('_', ' ') || 'Family support'}
+                      <span className="text-[#6667AB]/70">Purpose:</span>
+                      <span className="text-[#6667AB] font-medium capitalize">
+                        {state.travelRuleData?.transactionPurpose?.replace('_', ' ') || 'Family Support'}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Source of Funds:</span>
-                      <span className="text-foreground font-medium capitalize">
-                        {state.travelRuleData?.sourceOfFunds?.replace('_', ' ') || 'Employment income'}
+                      <span className="text-[#6667AB]/70">Source of Funds:</span>
+                      <span className="text-[#6667AB] font-medium capitalize">
+                        {state.travelRuleData?.sourceOfFunds?.replace('_', ' ') || 'Employment Income'}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
-                      <CheckCircle className="w-4 h-4 text-secondary" />
-                      <span className="text-secondary text-sm font-medium">Travel Rule requirements completed</span>
+                      <CheckCircle className="w-4 h-4 text-[#6667AB]" />
+                      <span className="text-[#6667AB] text-sm font-medium">Travel Rule requirements completed</span>
                     </div>
                   </div>
                 </div>
               )}
 
-              <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+              <div className="p-4 bg-[#6667AB]/10 rounded-lg border border-[#6667AB]/30">
                 <div className="flex items-center gap-2 mb-2">
-                  <Clock className="w-4 h-4 text-blue-400" />
-                  <span className="text-white text-sm font-medium">Delivery Information</span>
+                  <Clock className="w-4 h-4 text-[#6667AB]" />
+                  <span className="text-[#6667AB] text-sm font-semibold">Delivery Information</span>
                 </div>
-                <div className="text-white/80 text-sm">
-                  <div>Estimated arrival: <span className="text-green-400 font-medium">{state.estimatedArrival}</span></div>
+                <div className="text-[#6667AB]/80 text-sm">
+                  <div>Estimated arrival: <span className="text-[#6667AB] font-medium">{state.estimatedArrival}</span></div>
                   <div>Blockchain settlement via Web3 off-ramping</div>
                 </div>
               </div>
@@ -1588,18 +1585,18 @@ export function RemittancePlatform() {
               <Button 
                 onClick={() => setState(prev => ({ ...prev, step: 'transfer' }))}
                 variant="outline"
-                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+                className="mobile-button flex-1 border-[#6667AB]/20 text-[#6667AB] hover:bg-[#6667AB]/10"
               >
                 Back to Edit
               </Button>
               <Button 
                 onClick={handleRemittanceTransfer}
                 disabled={state.isProcessing || transferState.isTransferring}
-                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                className="mobile-button btn-premium flex-1 disabled:opacity-50"
               >
                 {(state.isProcessing || transferState.isTransferring) ? (
                   <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#FCFBF4] border-t-transparent"></div>
                     {transferState.step === 'preparing' && 'Preparing...'}
                     {transferState.step === 'confirming' && 'Confirm in Wallet...'}
                     {transferState.step === 'completed' && 'Complete!'}
@@ -1615,7 +1612,7 @@ export function RemittancePlatform() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </StepWithBenefits>
     );
   }
 

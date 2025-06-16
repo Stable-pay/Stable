@@ -205,7 +205,7 @@ export function ModernWalletModal({ isOpen, onClose, onConnect, isConnecting }: 
                                 <Badge 
                                   key={idx}
                                   variant="secondary" 
-                                  className="text-xs bg-gray-100 text-gray-700"
+                                  className="text-xs bg-[#6667AB]/10 text-[#6667AB]"
                                 >
                                   {feature}
                                 </Badge>
