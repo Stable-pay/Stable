@@ -632,15 +632,30 @@ export function UnifiedLanding() {
                     👉 <strong>Connect Wallet</strong> → <strong>KYC</strong> → <strong>Add Bank</strong> → <strong>Get INR Instantly</strong>
                   </motion.p>
 
-                  <motion.div variants={itemVariants} className="mb-8">
-                    <Button 
-                      onClick={() => open()}
-                      size="lg"
-                      className="btn-premium text-xl px-12 py-6 group"
-                    >
-                      Get Started
-                      <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                  <motion.div variants={itemVariants} className="mb-8 space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Button 
+                        onClick={() => open()}
+                        size="lg"
+                        className="btn-premium text-xl px-12 py-6 group"
+                      >
+                        Connect EVM Wallet
+                        <Wallet className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => setShowSolanaConnector(true)}
+                        size="lg"
+                        className="btn-premium text-xl px-12 py-6 group bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
+                      >
+                        Connect Solana
+                        <Globe className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </div>
+                    
+                    <p className="text-sm text-[#FCFBF4]/60">
+                      Choose EVM chains (Ethereum, Polygon, BSC, etc.) or Solana network
+                    </p>
                   </motion.div>
 
                   <motion.p 
@@ -1489,6 +1504,18 @@ export function UnifiedLanding() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Solana Wallet Connector */}
+        <SolanaWalletConnector
+          isOpen={showSolanaConnector}
+          onClose={() => setShowSolanaConnector(false)}
+          onConnect={(wallet) => {
+            console.log('Solana wallet connected:', wallet);
+            setSolanaWallet(wallet);
+            setShowSolanaConnector(false);
+            setCurrentStep('wallet-connected');
+          }}
+        />
       </motion.div>
     </div>
   );

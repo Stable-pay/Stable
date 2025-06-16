@@ -191,6 +191,10 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Added Solana SPL tokens support (USDC, USDT, RAY, SRM, MNGO, STEP, ORCA, SAMO)
 - June 16, 2025: Configured custom wallet integrations for Phantom, Solflare, and TronLink wallets
 - June 16, 2025: Updated Reown AppKit with multi-chain connectivity and non-EVM network support
+- June 16, 2025: Implemented dedicated Solana wallet connector to bypass WalletConnect domain restrictions
+- June 16, 2025: Created direct wallet detection for Phantom, Solflare, and Backpack wallets
+- June 16, 2025: Added dual wallet connection options: EVM wallets via Reown AppKit, Solana wallets via direct integration
+- June 16, 2025: Enhanced landing page with separate wallet connection buttons for EVM and Solana networks
 
 ## User Preferences
 
