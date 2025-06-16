@@ -83,12 +83,14 @@ export function UnifiedLanding() {
   const [unsupportedTokenSymbol, setUnsupportedTokenSymbol] = useState('');
   
   // Enhanced KYC state
-  const [kycStep, setKycStep] = useState<'recipient-check' | 'aadhaar-verification' | 'pan-verification' | 'complete'>('recipient-check');
+  const [kycStep, setKycStep] = useState<'recipient-check' | 'aadhaar-verification' | 'pan-verification' | 'wallet-verification' | 'complete'>('recipient-check');
   const [isSamePerson, setIsSamePerson] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [panVerified, setPanVerified] = useState(false);
+  const [walletVerified, setWalletVerified] = useState(false);
   const [aadhaarOTP, setAadhaarOTP] = useState('');
+  const [walletSignature, setWalletSignature] = useState('');
   const [recipientData, setRecipientData] = useState({
     fullName: '',
     address: '',
@@ -1150,7 +1152,7 @@ export function UnifiedLanding() {
                                 <Button 
                                   onClick={() => {
                                     setPanVerified(true);
-                                    setKycStep('complete');
+                                    setKycStep('wallet-verification');
                                   }}
                                   className="w-full btn-premium text-[#FCFBF4] font-bold"
                                   disabled={recipientData.panNumber.length !== 10}
@@ -1172,11 +1174,10 @@ export function UnifiedLanding() {
                                   </div>
                                   
                                   <Button 
-                                    onClick={() => setCurrentStep('complete')}
+                                    onClick={() => setKycStep('wallet-verification')}
                                     className="w-full btn-premium text-[#FCFBF4] font-bold"
                                   >
-                                    <CheckCircle className="w-4 h-4 mr-2" />
-                                    Complete KYC Verification
+                                    Continue to Wallet Verification
                                   </Button>
                                 </div>
                               )}
@@ -1189,6 +1190,127 @@ export function UnifiedLanding() {
                                 className="text-[#6667AB] font-semibold"
                               >
                                 ← Back to Aadhaar Verification
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {kycStep === 'wallet-verification' && (
+                        <Card className="bg-[#FCFBF4] border-[#6667AB]/30">
+                          <CardHeader>
+                            <CardTitle className="text-[#6667AB] flex items-center gap-2">
+                              <Wallet className="w-6 h-6" />
+                              Wallet Ownership Verification
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-6">
+                            <div className="bg-[#6667AB]/10 rounded-lg p-4">
+                              <div className="flex items-center gap-2 text-[#6667AB] font-semibold mb-2">
+                                <Shield className="w-5 h-5" />
+                                Smart Contract Verification Required
+                              </div>
+                              <p className="text-[#6667AB]/70 text-sm">
+                                As per Travel Rule compliance, you must digitally sign to prove wallet ownership before INR conversion. This ensures the originator (sender) is verified.
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <div className="bg-[#6667AB]/5 border border-[#6667AB]/20 rounded-lg p-4">
+                                <h4 className="text-[#6667AB] font-semibold mb-2">Verification Details:</h4>
+                                <div className="space-y-2 text-sm text-[#6667AB]/70">
+                                  <div className="flex justify-between">
+                                    <span>Wallet Address:</span>
+                                    <span className="font-mono">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span>Network:</span>
+                                    <span>{chain?.name || 'Ethereum'}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span>Conversion Amount:</span>
+                                    <span>{remittanceState.amount} {remittanceState.fromToken}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span>INR Amount:</span>
+                                    <span>₹{remittanceState.toAmount}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span>Recipient Bank:</span>
+                                    <span>{recipientData.bankName}</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {!walletVerified ? (
+                                <div className="space-y-4">
+                                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                                    <div className="flex items-center gap-2 text-amber-700 font-semibold mb-2">
+                                      <AlertCircle className="w-5 h-5" />
+                                      Signature Required
+                                    </div>
+                                    <p className="text-amber-600 text-sm">
+                                      Click below to sign the transaction with your wallet. This proves you own the wallet and authorizes the crypto-to-INR conversion.
+                                    </p>
+                                  </div>
+
+                                  <Button 
+                                    onClick={async () => {
+                                      try {
+                                        // Simulate wallet signature request
+                                        const message = `StablePay Wallet Verification\n\nI hereby confirm that I am the owner of wallet ${address} and authorize the conversion of ${remittanceState.amount} ${remittanceState.fromToken} to INR ₹${remittanceState.toAmount} for transfer to ${recipientData.accountHolderName} at ${recipientData.bankName}.\n\nBank Account: ${recipientData.bankAccountNumber}\nIFSC: ${recipientData.ifscCode}\nTimestamp: ${new Date().toISOString()}`;
+                                        
+                                        // In a real implementation, this would call the wallet's signMessage method
+                                        // const signature = await signMessage({ message });
+                                        
+                                        // For demo purposes, simulate signature
+                                        setTimeout(() => {
+                                          setWalletSignature('0x' + Math.random().toString(16).substr(2, 64));
+                                          setWalletVerified(true);
+                                        }, 2000);
+                                      } catch (error) {
+                                        console.error('Signature failed:', error);
+                                      }
+                                    }}
+                                    className="w-full btn-premium text-[#FCFBF4] font-bold"
+                                    disabled={!address}
+                                  >
+                                    <Wallet className="w-4 h-4 mr-2" />
+                                    Sign with Wallet to Verify Ownership
+                                  </Button>
+                                </div>
+                              ) : (
+                                <div className="space-y-4">
+                                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                                    <div className="flex items-center gap-2 text-green-700 font-semibold mb-2">
+                                      <CheckCircle className="w-5 h-5" />
+                                      Wallet Ownership Verified
+                                    </div>
+                                    <div className="text-green-600 text-sm space-y-1">
+                                      <p>Signature: {walletSignature.slice(0, 20)}...{walletSignature.slice(-6)}</p>
+                                      <p>Verification Status: ✅ Confirmed</p>
+                                      <p>Ready for INR Conversion</p>
+                                    </div>
+                                  </div>
+                                  
+                                  <Button 
+                                    onClick={() => setKycStep('complete')}
+                                    className="w-full btn-premium text-[#FCFBF4] font-bold"
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    Complete Verification & Convert to INR
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="text-center">
+                              <Button 
+                                variant="ghost" 
+                                onClick={() => setKycStep('pan-verification')}
+                                className="text-[#6667AB] font-semibold"
+                              >
+                                ← Back to PAN Verification
                               </Button>
                             </div>
                           </CardContent>
@@ -1229,6 +1351,13 @@ export function UnifiedLanding() {
                                 <Badge className="bg-green-500 text-white">
                                   <CheckCircle className="w-3 h-3 mr-1" />
                                   Verified
+                                </Badge>
+                              </div>
+                              <div className="flex items-center justify-between p-3 bg-[#6667AB]/5 rounded-lg">
+                                <span className="text-[#6667AB] font-medium">Wallet Ownership</span>
+                                <Badge className="bg-green-500 text-white">
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  Signed & Verified
                                 </Badge>
                               </div>
                               <div className="flex items-center justify-between p-3 bg-[#6667AB]/5 rounded-lg">

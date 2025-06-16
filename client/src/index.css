@@ -130,6 +130,62 @@
     min-width: 44px;
   }
   
+  /* Enhanced Button Text Visibility - Global Fix */
+  button {
+    color: #6667AB !important;
+    font-weight: 600 !important;
+  }
+  
+  button span,
+  button svg {
+    color: inherit !important;
+  }
+  
+  /* Premium Button Styling */
+  .btn-premium {
+    background: linear-gradient(135deg, #6667AB 0%, #8B7EC8 50%, #6667AB 100%) !important;
+    border: 2px solid #6667AB !important;
+    color: #FCFBF4 !important;
+    font-weight: 700 !important;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-premium *,
+  .btn-premium span,
+  .btn-premium svg {
+    color: #FCFBF4 !important;
+  }
+  
+  .btn-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(252, 251, 244, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-premium:hover::before {
+    left: 100%;
+  }
+  
+  .btn-premium:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 8px 25px rgba(102, 103, 171, 0.4) !important;
+    background: linear-gradient(135deg, #7A7BC4 0%, #9B8ED6 50%, #7A7BC4 100%) !important;
+    color: #FCFBF4 !important;
+  }
+  
+  .btn-premium:hover *,
+  .btn-premium:hover span,
+  .btn-premium:hover svg {
+    color: #FCFBF4 !important;
+  }
+  
   /* Focus visible for accessibility */
   *:focus-visible {
     outline: 2px solid hsl(var(--ring));
