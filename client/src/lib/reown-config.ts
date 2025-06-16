@@ -1,5 +1,6 @@
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { 
   mainnet, 
   polygon, 
@@ -12,7 +13,10 @@ import {
   celo, 
   moonbeam, 
   gnosis, 
-  zkSync
+  zkSync,
+  solana,
+  solanaTestnet,
+  solanaDevnet
 } from '@reown/appkit/networks'
 
 // Define additional network configurations (Reown AppKit will handle these via WalletConnect)
@@ -54,6 +58,9 @@ export const wagmiAdapter = new WagmiAdapter({
   ]
 })
 
+// Set up the Solana Adapter for Solana networks
+export const solanaAdapter = new SolanaAdapter()
+
 // Set up metadata with dynamic domain configuration
 const metadata = {
   name: 'RemitPay - Web3 Remittance Platform',
@@ -64,7 +71,7 @@ const metadata = {
 
 // Create the modal with comprehensive multi-chain support
 export const modal = createAppKit({
-  adapters: [wagmiAdapter],
+  adapters: [wagmiAdapter, solanaAdapter],
   projectId: projectId || 'demo-project-id',
   networks: [
     mainnet, 
@@ -78,7 +85,10 @@ export const modal = createAppKit({
     celo, 
     moonbeam, 
     gnosis, 
-    zkSync
+    zkSync,
+    solana,
+    solanaTestnet,
+    solanaDevnet
   ],
   defaultNetwork: mainnet,
   metadata,
