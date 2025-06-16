@@ -300,17 +300,17 @@ export function StablePayMinimal() {
 
   if (state.step === 'kyc') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+      <div className="min-h-screen bg-gradient-to-br from-[#6667AB] via-[#6667AB]/90 to-[#6667AB]/80 flex items-center justify-center p-6">
+        <Card className="w-full max-w-2xl bg-[#FCFBF4]/10 backdrop-blur-md border-[#FCFBF4]/20">
           <CardHeader>
             <div className="flex items-center justify-between mb-4">
-              <CardTitle className="text-2xl font-bold text-white">Identity Verification</CardTitle>
+              <CardTitle className="text-2xl font-bold text-[#FCFBF4]">Identity Verification</CardTitle>
               <div className="flex gap-2">
                 <Button
                   onClick={() => open({ view: 'Account' })}
                   variant="outline"
                   size="sm"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  className="bg-[#FCFBF4]/10 border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/20"
                 >
                   <User className="w-4 h-4 mr-2" />
                   {address?.slice(0, 6)}...{address?.slice(-4)}
@@ -319,49 +319,49 @@ export function StablePayMinimal() {
                   onClick={() => open({ view: 'Networks' })}
                   variant="outline"
                   size="sm"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  className="bg-[#FCFBF4]/10 border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/20"
                 >
                   <Network className="w-4 h-4 mr-2" />
                   {caipNetwork?.name || 'Network'}
                 </Button>
               </div>
             </div>
-            <p className="text-white/80">Complete identity verification for INR withdrawals</p>
+            <p className="text-[#FCFBF4]/80">Complete identity verification for INR withdrawals</p>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="text-white font-medium">Connected Wallet</h3>
-                <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
+                <h3 className="text-[#FCFBF4] font-medium">Connected Wallet</h3>
+                <div className="p-4 bg-[#6667AB]/20 border border-[#6667AB]/30 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-400" />
+                    <CheckCircle className="w-5 h-5 text-[#6667AB]" />
                     <div>
-                      <p className="text-white font-medium">Wallet Connected</p>
-                      <p className="text-white/60 text-sm">{address?.slice(0, 12)}...{address?.slice(-6)}</p>
-                      <p className="text-white/60 text-sm">Network: {caipNetwork?.name}</p>
+                      <p className="text-[#FCFBF4] font-medium">Wallet Connected</p>
+                      <p className="text-[#FCFBF4]/60 text-sm">{address?.slice(0, 12)}...{address?.slice(-6)}</p>
+                      <p className="text-[#FCFBF4]/60 text-sm">Network: {caipNetwork?.name}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-white font-medium">KYC Status</h3>
+                <h3 className="text-[#FCFBF4] font-medium">KYC Status</h3>
                 <div className={`p-4 border rounded-lg ${
-                  kycStatus === 'verified' ? 'bg-green-500/20 border-green-500/30' :
-                  kycStatus === 'pending' ? 'bg-yellow-500/20 border-yellow-500/30' :
-                  'bg-gray-500/20 border-gray-500/30'
+                  kycStatus === 'verified' ? 'bg-[#6667AB]/20 border-[#6667AB]/30' :
+                  kycStatus === 'pending' ? 'bg-[#6667AB]/15 border-[#6667AB]/25' :
+                  'bg-[#6667AB]/10 border-[#6667AB]/20'
                 }`}>
                   <div className="flex items-center gap-3">
-                    {kycStatus === 'verified' ? <CheckCircle className="w-5 h-5 text-green-400" /> :
-                     kycStatus === 'pending' ? <Clock className="w-5 h-5 text-yellow-400" /> :
-                     <Shield className="w-5 h-5 text-gray-400" />}
+                    {kycStatus === 'verified' ? <CheckCircle className="w-5 h-5 text-[#6667AB]" /> :
+                     kycStatus === 'pending' ? <Clock className="w-5 h-5 text-[#6667AB]" /> :
+                     <Shield className="w-5 h-5 text-[#6667AB]" />}
                     <div>
-                      <p className="text-white font-medium">
+                      <p className="text-[#FCFBF4] font-medium">
                         {kycStatus === 'verified' ? 'Verified' :
                          kycStatus === 'pending' ? 'Processing...' :
                          'Not Started'}
                       </p>
-                      <p className="text-white/60 text-sm">
+                      <p className="text-[#FCFBF4]/60 text-sm">
                         {kycStatus === 'verified' ? 'Ready for withdrawals' :
                          kycStatus === 'pending' ? 'Verifying documents...' :
                          'Click to start verification'}
@@ -374,9 +374,9 @@ export function StablePayMinimal() {
 
             {kycStatus === 'none' && (
               <div className="space-y-4">
-                <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Required Documents:</h4>
-                  <ul className="text-white/80 text-sm space-y-1">
+                <div className="p-4 bg-[#6667AB]/20 border border-[#6667AB]/30 rounded-lg">
+                  <h4 className="text-[#FCFBF4] font-medium mb-2">Required Documents:</h4>
+                  <ul className="text-[#FCFBF4]/80 text-sm space-y-1">
                     <li>• Government-issued photo ID (Aadhaar, PAN, Passport)</li>
                     <li>• Bank account details for INR withdrawals</li>
                     <li>• Address proof (utility bill, bank statement)</li>
@@ -385,7 +385,7 @@ export function StablePayMinimal() {
                 
                 <Button 
                   onClick={handleKycStart}
-                  className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                  className="mobile-button btn-premium w-full"
                 >
                   Start KYC Verification
                 </Button>
@@ -395,7 +395,7 @@ export function StablePayMinimal() {
             {kycStatus === 'verified' && (
               <Button 
                 onClick={() => setState(prev => ({ ...prev, step: 'convert' }))}
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                className="mobile-button btn-premium w-full"
               >
                 Continue to Conversion
               </Button>
