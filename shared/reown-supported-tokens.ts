@@ -26,8 +26,9 @@ export interface ReownChain {
   iconUrl?: string;
 }
 
-// Reown Supported Chains
+// Reown Supported Chains - Complete List Including Non-EVM Networks
 export const REOWN_SUPPORTED_CHAINS: ReownChain[] = [
+  // Ethereum Mainnet
   {
     id: 1,
     name: "Ethereum",
@@ -37,6 +38,7 @@ export const REOWN_SUPPORTED_CHAINS: ReownChain[] = [
     blockExplorerUrls: ["https://etherscan.io"],
     iconUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png"
   },
+  // Polygon
   {
     id: 137,
     name: "Polygon",
@@ -45,6 +47,66 @@ export const REOWN_SUPPORTED_CHAINS: ReownChain[] = [
     rpcUrls: ["https://polygon-rpc.com", "https://rpc-mainnet.matic.network"],
     blockExplorerUrls: ["https://polygonscan.com"],
     iconUrl: "https://cryptologos.cc/logos/polygon-matic-logo.png"
+  },
+  // Solana Mainnet
+  {
+    id: 501,
+    name: "Solana",
+    network: "solana",
+    nativeCurrency: { name: "Solana", symbol: "SOL", decimals: 9 },
+    rpcUrls: ["https://api.mainnet-beta.solana.com", "https://solana-api.projectserum.com"],
+    blockExplorerUrls: ["https://explorer.solana.com"],
+    iconUrl: "https://cryptologos.cc/logos/solana-sol-logo.png"
+  },
+  // Bitcoin Mainnet
+  {
+    id: 0,
+    name: "Bitcoin",
+    network: "bitcoin",
+    nativeCurrency: { name: "Bitcoin", symbol: "BTC", decimals: 8 },
+    rpcUrls: ["https://blockstream.info/api", "https://api.blockcypher.com/v1/btc/main"],
+    blockExplorerUrls: ["https://blockstream.info", "https://blockchain.info"],
+    iconUrl: "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+  },
+  // Cosmos Hub
+  {
+    id: 118,
+    name: "Cosmos Hub",
+    network: "cosmos",
+    nativeCurrency: { name: "Cosmos", symbol: "ATOM", decimals: 6 },
+    rpcUrls: ["https://cosmos-rpc.quickapi.com", "https://rpc-cosmoshub.blockapsis.com"],
+    blockExplorerUrls: ["https://www.mintscan.io/cosmos"],
+    iconUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.png"
+  },
+  // Near Protocol
+  {
+    id: 397,
+    name: "Near Protocol",
+    network: "near",
+    nativeCurrency: { name: "Near", symbol: "NEAR", decimals: 24 },
+    rpcUrls: ["https://rpc.mainnet.near.org", "https://near-mainnet.infura.io"],
+    blockExplorerUrls: ["https://explorer.near.org"],
+    iconUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.png"
+  },
+  // Polkadot
+  {
+    id: 0,
+    name: "Polkadot",
+    network: "polkadot",
+    nativeCurrency: { name: "Polkadot", symbol: "DOT", decimals: 10 },
+    rpcUrls: ["https://rpc.polkadot.io", "https://polkadot.api.onfinality.io/public"],
+    blockExplorerUrls: ["https://polkadot.subscan.io"],
+    iconUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
+  },
+  // Tron
+  {
+    id: 728126428,
+    name: "Tron",
+    network: "tron",
+    nativeCurrency: { name: "Tronix", symbol: "TRX", decimals: 6 },
+    rpcUrls: ["https://api.trongrid.io", "https://api.tronstack.io"],
+    blockExplorerUrls: ["https://tronscan.org"],
+    iconUrl: "https://cryptologos.cc/logos/tron-trx-logo.png"
   },
   {
     id: 56,
@@ -210,6 +272,123 @@ export const REOWN_SUPPORTED_TOKENS: ReownToken[] = [
     chainId: 1,
     address: "0xc00e94Cb662C3520282E6f5717214004A7f26888",
     decimals: 18
+  },
+
+  // Solana Mainnet Tokens (SPL Tokens)
+  {
+    symbol: "USDC",
+    name: "USD Coin",
+    chainId: 501,
+    address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    decimals: 6
+  },
+  {
+    symbol: "USDT",
+    name: "Tether USD",
+    chainId: 501,
+    address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    decimals: 6
+  },
+  {
+    symbol: "RAY",
+    name: "Raydium",
+    chainId: 501,
+    address: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
+    decimals: 6
+  },
+  {
+    symbol: "SRM",
+    name: "Serum",
+    chainId: 501,
+    address: "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
+    decimals: 6
+  },
+  {
+    symbol: "MNGO",
+    name: "Mango",
+    chainId: 501,
+    address: "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac",
+    decimals: 6
+  },
+  {
+    symbol: "STEP",
+    name: "Step Finance",
+    chainId: 501,
+    address: "StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT",
+    decimals: 9
+  },
+  {
+    symbol: "ORCA",
+    name: "Orca",
+    chainId: 501,
+    address: "orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE",
+    decimals: 6
+  },
+  {
+    symbol: "SAMO",
+    name: "Samoyedcoin",
+    chainId: 501,
+    address: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+    decimals: 9
+  },
+
+  // Bitcoin Network (Native BTC)
+  {
+    symbol: "BTC",
+    name: "Bitcoin",
+    chainId: 0,
+    address: "native",
+    decimals: 8
+  },
+
+  // Cosmos Hub Tokens
+  {
+    symbol: "ATOM",
+    name: "Cosmos Hub",
+    chainId: 118,
+    address: "uatom",
+    decimals: 6
+  },
+
+  // Near Protocol Tokens
+  {
+    symbol: "NEAR",
+    name: "Near Protocol",
+    chainId: 397,
+    address: "native",
+    decimals: 24
+  },
+  {
+    symbol: "AURORA",
+    name: "Aurora",
+    chainId: 397,
+    address: "meta-pool.near",
+    decimals: 24
+  },
+
+  // Polkadot Network
+  {
+    symbol: "DOT",
+    name: "Polkadot",
+    chainId: 0,
+    address: "native",
+    decimals: 10
+  },
+
+  // Tron Network Tokens
+  {
+    symbol: "TRX",
+    name: "Tronix",
+    chainId: 728126428,
+    address: "native",
+    decimals: 6
+  },
+  {
+    symbol: "USDT",
+    name: "Tether USD (TRC20)",
+    chainId: 728126428,
+    address: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    decimals: 6
   },
 
   // Polygon Tokens

@@ -12,8 +12,57 @@ import {
   celo, 
   moonbeam, 
   gnosis, 
-  zkSync 
+  zkSync
 } from '@reown/appkit/networks'
+
+// Define Solana network configurations
+const solanaMainnet = {
+  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  name: 'Solana',
+  currency: 'SOL',
+  explorerUrl: 'https://explorer.solana.com',
+  rpcUrl: 'https://api.mainnet-beta.solana.com'
+}
+
+const bitcoinMainnet = {
+  id: 'btc:000000000019d6689c085ae165831e93',
+  name: 'Bitcoin',
+  currency: 'BTC', 
+  explorerUrl: 'https://blockstream.info',
+  rpcUrl: 'https://blockstream.info/api'
+}
+
+const cosmosHub = {
+  id: 'cosmos:cosmoshub-4',
+  name: 'Cosmos Hub',
+  currency: 'ATOM',
+  explorerUrl: 'https://www.mintscan.io/cosmos',
+  rpcUrl: 'https://cosmos-rpc.quickapi.com'
+}
+
+const nearProtocol = {
+  id: 'near:mainnet',
+  name: 'Near Protocol',
+  currency: 'NEAR',
+  explorerUrl: 'https://explorer.near.org',
+  rpcUrl: 'https://rpc.mainnet.near.org'
+}
+
+const polkadotMainnet = {
+  id: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
+  name: 'Polkadot',
+  currency: 'DOT',
+  explorerUrl: 'https://polkadot.subscan.io',
+  rpcUrl: 'https://rpc.polkadot.io'
+}
+
+const tronMainnet = {
+  id: 'tron:0x2b6653dc',
+  name: 'Tron',
+  currency: 'TRX',
+  explorerUrl: 'https://tronscan.org',
+  rpcUrl: 'https://api.trongrid.io'
+}
 import { QueryClient } from '@tanstack/react-query'
 
 // Create query client
@@ -30,7 +79,7 @@ if (!projectId) {
 console.log('Reown AppKit initializing with project ID:', projectId ? projectId.substring(0, 8) + '...' : 'Demo mode');
 console.log('Current domain:', typeof window !== 'undefined' ? window.location.origin : 'SSR mode');
 
-// Set up the Wagmi Adapter (Config)
+// Set up the Wagmi Adapter for EVM chains
 export const wagmiAdapter = new WagmiAdapter({
   ssr: false,
   projectId: projectId || 'demo-project-id',
