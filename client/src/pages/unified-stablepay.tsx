@@ -11,7 +11,16 @@ import {
   Clock,
   CheckCircle,
   DollarSign,
-  ArrowRight
+  ArrowRight,
+  Wallet,
+  CreditCard,
+  Send,
+  Lock,
+  Award,
+  Smartphone,
+  Building,
+  GraduationCap,
+  Target
 } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
 import { ReownSwapFlow } from '@/components/remittance/reown-swap-flow';
@@ -122,25 +131,29 @@ export function UnifiedStablePay() {
               {
                 step: "01",
                 title: "Connect Wallet",
-                description: "Link your Web3 wallet using WalletConnect or create a new social wallet",
+                description: "Link your Web3 wallet using WalletConnect, MetaMask, Coinbase Wallet, or create a new social wallet with email/phone",
+                icon: Wallet,
                 color: "from-[#6667AB] to-[#6667AB]/80"
               },
               {
                 step: "02", 
                 title: "Select Crypto",
-                description: "Choose from 50+ supported tokens across Ethereum, Polygon, BSC, and more",
+                description: "Choose from 50+ supported tokens across Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, and Avalanche networks",
+                icon: CreditCard,
                 color: "from-[#6667AB]/90 to-[#6667AB]/70"
               },
               {
                 step: "03",
                 title: "Get Live Rate",
-                description: "See real-time INR conversion with transparent fees - ₹249 flat fee",
+                description: "See real-time INR conversion with live market rates, transparent ₹249 flat fee, and instant quote generation",
+                icon: DollarSign,
                 color: "from-[#6667AB]/80 to-[#6667AB]/60"
               },
               {
                 step: "04",
                 title: "Receive INR",
-                description: "Get instant INR transfer to your verified Indian bank account",
+                description: "Get instant INR transfer to your verified Indian bank account with full transaction tracking and support",
+                icon: Send,
                 color: "from-[#6667AB]/70 to-[#6667AB]/50"
               }
             ].map((item, index) => (
@@ -153,7 +166,7 @@ export function UnifiedStablePay() {
                 className="text-center"
               >
                 <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center`}>
-                  <span className="text-2xl font-bold text-white">{item.step}</span>
+                  <item.icon className="w-10 h-10 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-[#6667AB] mb-3">{item.title}</h3>
                 <p className="text-[#6667AB]/70">{item.description}</p>
@@ -251,6 +264,218 @@ export function UnifiedStablePay() {
                 </div>
                 <h3 className="text-xl font-semibold text-[#6667AB] mb-3">{feature.title}</h3>
                 <p className="text-[#6667AB]/70 leading-relaxed">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Target Audience Section */}
+      <section className="py-20 bg-gradient-to-br from-[#6667AB]/5 to-[#FCFBF4]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-[#6667AB] mb-6">
+              Perfect For Every Crypto User
+            </h2>
+            <p className="text-xl text-[#6667AB]/70 max-w-3xl mx-auto">
+              Whether you're an NRI, freelancer, investor, or business - StablePay adapts to your needs
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: Building,
+                title: "NRIs & Expats",
+                description: "Send money home to India instantly. Convert your overseas earnings from crypto to INR with competitive rates.",
+                features: ["Global remittance", "Multi-currency support", "Family transfers"]
+              },
+              {
+                icon: GraduationCap,
+                title: "Crypto Freelancers",
+                description: "Get paid in crypto, cash out in INR. Perfect for developers, designers, and digital nomads working globally.",
+                features: ["Invoice payments", "Project settlements", "Regular income"]
+              },
+              {
+                icon: TrendingUp,
+                title: "Crypto Investors",
+                description: "Take profits and diversify your portfolio. Convert gains to INR for real-world purchases and investments.",
+                features: ["Profit taking", "Portfolio rebalancing", "Investment exits"]
+              },
+              {
+                icon: Target,
+                title: "Web3 Businesses",
+                description: "Scale your crypto business in India. Convert revenue, pay expenses, and manage treasury operations efficiently.",
+                features: ["Revenue conversion", "Expense management", "Treasury operations"]
+              }
+            ].map((audience, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-8 shadow-lg border border-[#6667AB]/10 hover:border-[#6667AB]/30 transition-all duration-300 group"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-[#6667AB] to-[#6667AB]/80 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <audience.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#6667AB] mb-4">{audience.title}</h3>
+                <p className="text-[#6667AB]/70 mb-6 leading-relaxed">{audience.description}</p>
+                <div className="space-y-2">
+                  {audience.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-center text-sm">
+                      <CheckCircle className="w-4 h-4 text-[#6667AB] mr-2 flex-shrink-0" />
+                      <span className="text-[#6667AB]/80">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                <Button 
+                  onClick={() => open()}
+                  className="w-full mt-6 btn-premium group-hover:scale-105 transition-transform"
+                >
+                  Connect Wallet
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Supported Tokens & Networks */}
+      <section className="py-20 bg-[#FCFBF4]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-[#6667AB] mb-6">
+              Supported Networks & Tokens
+            </h2>
+            <p className="text-xl text-[#6667AB]/70 max-w-3xl mx-auto">
+              Trade across major blockchain networks with support for 50+ popular cryptocurrencies
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Networks */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-8 shadow-lg border border-[#6667AB]/10"
+            >
+              <h3 className="text-2xl font-semibold text-[#6667AB] mb-6 flex items-center">
+                <Globe className="w-8 h-8 mr-3" />
+                Blockchain Networks
+              </h3>
+              <div className="grid grid-cols-1 gap-4">
+                {[
+                  "Ethereum (ETH)",
+                  "Polygon (MATIC)",
+                  "Binance Smart Chain (BSC)",
+                  "Arbitrum (ARB)",
+                  "Optimism (OP)",
+                  "Base (BASE)",
+                  "Avalanche (AVAX)"
+                ].map((network, index) => (
+                  <div key={index} className="flex items-center p-3 bg-[#6667AB]/5 rounded-lg">
+                    <CheckCircle className="w-5 h-5 text-[#6667AB] mr-3" />
+                    <span className="text-[#6667AB]/90 font-medium">{network}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Popular Tokens */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-8 shadow-lg border border-[#6667AB]/10"
+            >
+              <h3 className="text-2xl font-semibold text-[#6667AB] mb-6 flex items-center">
+                <CreditCard className="w-8 h-8 mr-3" />
+                Popular Tokens
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  "USDT", "USDC", "ETH", "BTC",
+                  "BNB", "MATIC", "AVAX", "SOL",
+                  "ADA", "DOT", "LINK", "UNI",
+                  "AAVE", "COMP", "MKR", "SNX"
+                ].map((token, index) => (
+                  <div key={index} className="flex items-center p-2 bg-[#6667AB]/5 rounded">
+                    <span className="text-[#6667AB]/90 font-medium text-sm">{token}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[#6667AB]/60 text-sm mt-4">+ 30 more supported tokens</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Security & Compliance Details */}
+      <section className="py-20 bg-gradient-to-br from-[#6667AB]/10 to-[#FCFBF4]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-[#6667AB] mb-6">
+              Security & Compliance
+            </h2>
+            <p className="text-xl text-[#6667AB]/70 max-w-3xl mx-auto">
+              Your funds and data are protected by industry-leading security measures and regulatory compliance
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { 
+                icon: Shield, 
+                title: "Smart Contract Audited", 
+                description: "Multiple security audits by leading firms ensure code integrity and safety"
+              },
+              { 
+                icon: Lock, 
+                title: "KYC/AML Compliant", 
+                description: "Full regulatory compliance with Indian RBI guidelines and international standards"
+              },
+              { 
+                icon: Award, 
+                title: "ISO 27001 Certified", 
+                description: "International security management standards for data protection and privacy"
+              },
+              { 
+                icon: CheckCircle, 
+                title: "FATF Travel Rule", 
+                description: "Global compliance framework for cross-border transactions and reporting"
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center bg-white rounded-2xl p-6 shadow-lg border border-[#6667AB]/10 hover:border-[#6667AB]/30 transition-all duration-300"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-[#6667AB] to-[#6667AB]/80 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <item.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#6667AB] mb-3">{item.title}</h3>
+                <p className="text-[#6667AB]/70 text-sm leading-relaxed">{item.description}</p>
               </motion.div>
             ))}
           </div>
