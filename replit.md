@@ -176,6 +176,9 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Added comprehensive Reown supported tokens and chains database (12 chains, 40+ tokens)
 - June 16, 2025: Implemented interactive token balance display with support validation and unsupported token popups
 - June 16, 2025: Updated conversion interface to show selected token details and real-time INR conversion rates
+- June 16, 2025: Enabled all 12 Reown supported chains (Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, Avalanche, Fantom, Celo, Moonbeam, Gnosis, zkSync)
+- June 16, 2025: Removed all mock data - implemented production-only real wallet balance fetching via multi-chain RPC calls
+- June 16, 2025: Updated AppKit configuration to support all chains and integrated real-time token balance detection from connected wallets
 
 ## User Preferences
 
