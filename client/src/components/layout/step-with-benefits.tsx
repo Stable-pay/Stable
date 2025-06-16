@@ -47,10 +47,23 @@ export function StepWithBenefits({
                 <span className="text-[#FCFBF4] font-semibold text-lg">StablePay</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-6 text-sm text-[#FCFBF4]/70 mr-4">
-                  <span>How it works</span>
-                  <span>Security</span>
-                  <span>Support</span>
+                <div className="flex items-center gap-4 text-sm mr-4">
+                  <button 
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="text-[#FCFBF4] hover:text-[#FCFBF4]/80 font-medium transition-colors"
+                  >
+                    How it works
+                  </button>
+                  <button 
+                    onClick={() => {
+                      const benefitsSection = document.getElementById('web3-benefits');
+                      if (benefitsSection) benefitsSection.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="text-[#FCFBF4] hover:text-[#FCFBF4]/80 font-medium transition-colors"
+                  >
+                    Benefits
+                  </button>
+                  <span className="text-[#FCFBF4]/70">Support</span>
                 </div>
                 <Button
                   onClick={handleDisconnect}

@@ -1008,14 +1008,14 @@ export function RemittancePlatform() {
           <CardContent className="mobile-form-section">
             {/* Validation Errors */}
             {state.validationErrors.length > 0 && (
-              <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <div className="p-4 bg-[#6667AB]/10 border border-[#6667AB]/30 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-5 h-5 bg-red-500/20 rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  <div className="w-5 h-5 bg-[#6667AB]/20 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-[#6667AB] rounded-full"></div>
                   </div>
-                  <span className="text-red-300 font-medium">Please fix the following:</span>
+                  <span className="text-[#6667AB] font-medium">Please fix the following:</span>
                 </div>
-                <ul className="text-red-200 text-sm space-y-1 ml-7">
+                <ul className="text-[#6667AB]/80 text-sm space-y-1 ml-7">
                   {state.validationErrors.map((error, index) => (
                     <li key={index}>• {error}</li>
                   ))}
@@ -1063,7 +1063,7 @@ export function RemittancePlatform() {
                   <label className="mobile-form-label text-[#6667AB] font-semibold">Upload ID Document</label>
                   <div className="border-2 border-dashed border-[#6667AB]/30 rounded-lg p-6 text-center hover:border-[#6667AB]/50 transition-colors cursor-pointer bg-white">
                     {state.kycDocuments.documentUploaded ? (
-                      <div className="flex items-center justify-center gap-2 text-green-600">
+                      <div className="flex items-center justify-center gap-2 text-[#6667AB]">
                         <CheckCircle className="w-5 h-5" />
                         <span className="font-medium">Document uploaded</span>
                       </div>
@@ -1091,7 +1091,7 @@ export function RemittancePlatform() {
                   <label className="mobile-form-label text-[#6667AB] font-semibold">Selfie Verification</label>
                   <div className="border-2 border-dashed border-[#6667AB]/30 rounded-lg p-6 text-center hover:border-[#6667AB]/50 transition-colors cursor-pointer bg-white">
                     {state.kycDocuments.selfieUploaded ? (
-                      <div className="flex items-center justify-center gap-2 text-green-600">
+                      <div className="flex items-center justify-center gap-2 text-[#6667AB]">
                         <CheckCircle className="w-5 h-5" />
                         <span className="font-medium">Selfie verified</span>
                       </div>
