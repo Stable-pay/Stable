@@ -1,0 +1,92 @@
+Here’s your **landing page content fully aligned with the exact user flow:**
+**Connect Wallet → Complete KYC → Add Bank Details → Off-Ramp to INR.**
+The tone is now **professional, clear, and action-oriented.**
+
+---
+
+# 🚀 **Web3 Remittance & INR Off-Ramping Made Simple**
+
+## *Instantly move your crypto to your Indian bank account – in just a few easy steps.*
+
+---
+
+## 💸 **Your Crypto, Your Wallet, Your INR. On Your Terms.**
+
+Welcome to a faster, smarter way to off-ramp crypto to INR. No delays. No complicated processes. Just a seamless experience designed to make global remittance simple, secure, and efficient.
+
+---
+
+# 🔗 **How It Works: A Quick, Clear Process**
+
+### 1. **Connect Your Wallet**
+
+Compatible with Particle Network, Reown AppKit, and all major Web3 wallets.
+*No custody, no middlemen. Your wallet stays yours.*
+
+### 2. **Complete KYC Verification**
+
+Fast, secure, and fully compliant onboarding process.
+*We make it simple – identity verification in minutes.*
+
+### 3. **Add Your Indian Bank Details**
+
+Securely link your account to receive INR directly via RTGS, NEFT, or IMPS.
+*Your details stay encrypted and safe.*
+
+### 4. **Off-Ramp to INR Instantly**
+
+Convert your crypto to INR at real-time rates with a flat ₹249 fee.
+*Receive funds quickly and reliably in your bank account.*
+
+---
+
+# ✅ **Why Choose Us?**
+
+* **Multi-Crypto Support:** Bitcoin, Ethereum, USDT, USDC, and more
+* **Multi-Chain Enabled:** Ethereum, Solana, BNB Chain, and others
+* **Self-Custody First:** You control your assets at every step
+* **Real-Time INR Conversion:** Competitive rates, instant processing
+* **Flat Fee Structure:** ₹249 per off-ramp transaction – no hidden charges
+* **Fully Compliant:** FIU-IND registered, FATF-aligned, Travel Rule ready
+* **Mobile-First Web App:** Seamless experience on mobile and desktop
+
+---
+
+# 🎯 **Who Is This For?**
+
+* NRIs sending remittance to India
+* Freelancers receiving international crypto payments
+* Crypto holders off-ramping to INR
+* Businesses with cross-border payment needs
+
+---
+
+# 🔒 **Security & Compliance You Can Trust**
+
+* Smart contract wallet security
+* FATF-compliant Travel Rule support
+* Robust KYC & AML integration
+* Real-time transaction monitoring
+* Fully regulated and FIU-IND registered
+
+---
+
+# 🚀 **Start Now: It’s Simple**
+
+👉 **Connect Wallet** → **KYC** → **Add Bank** → **Get INR Instantly**
+
+**\[Get Started]**
+
+---
+
+*Flat ₹249 transaction fee applies. Blockchain network fees are separate.*
+
+---
+
+If you want, I can also help you:
+
+* Design **user onboarding screens**
+* Build **push notifications and email flows**
+* Prepare a **pitch deck** for this product
+
+Let me know how you’d like to proceed! 😊
