@@ -172,6 +172,10 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Created unsupported token detection with popup for inclusion requests
 - June 16, 2025: Token validation system allows only top 100 cryptocurrencies with proven DeFi liquidity
 - June 16, 2025: Maintained original landing page content while adding backend validation logic
+- June 16, 2025: Replaced crypto selection interface with available token balance to INR conversion feature
+- June 16, 2025: Added comprehensive Reown supported tokens and chains database (12 chains, 40+ tokens)
+- June 16, 2025: Implemented interactive token balance display with support validation and unsupported token popups
+- June 16, 2025: Updated conversion interface to show selected token details and real-time INR conversion rates
 
 ## User Preferences
 

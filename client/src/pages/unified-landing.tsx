@@ -790,14 +790,23 @@ export function UnifiedLanding() {
 
                       {/* Action Buttons */}
                       <div className="space-y-4 pt-6">
-                        <Button 
-                          className="w-full btn-premium text-lg py-3"
-                          disabled={!remittanceState.amount || parseFloat(remittanceState.amount) <= 0}
-                          onClick={() => setCurrentStep('swap')}
-                        >
-                          Continue to KYC
-                          <ArrowRight className="w-5 h-5 ml-2" />
-                        </Button>
+                        {remittanceState.fromToken ? (
+                          <Button 
+                            className="w-full btn-premium text-lg py-3"
+                            onClick={() => setCurrentStep('swap')}
+                          >
+                            <Send className="w-5 h-5 mr-2" />
+                            Convert {remittanceState.fromToken} to INR
+                          </Button>
+                        ) : (
+                          <Button 
+                            className="w-full btn-premium text-lg py-3 opacity-50 cursor-not-allowed"
+                            disabled
+                          >
+                            <Send className="w-5 h-5 mr-2" />
+                            Select Token to Convert
+                          </Button>
+                        )}
                         
                         <div className="text-center">
                           <button
