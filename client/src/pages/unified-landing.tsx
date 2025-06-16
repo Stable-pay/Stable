@@ -692,12 +692,16 @@ export function UnifiedLanding() {
                         <label className="text-sm font-medium text-[#FCFBF4]">From Crypto</label>
                         <div className="flex gap-4">
                           <Select value={remittanceState.fromToken} onValueChange={handleTokenChange}>
-                            <SelectTrigger className="w-32 bg-[#FCFBF4] text-[#6667AB] border-[#FCFBF4]/30">
+                            <SelectTrigger className="w-32 bg-[#FCFBF4] text-[#6667AB] border-[#6667AB]/30 font-medium">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#FCFBF4] border-[#6667AB]/20 max-h-60">
+                            <SelectContent className="bg-[#FCFBF4] border-[#6667AB]/30 max-h-60 shadow-lg">
                               {supportedTokens.slice(0, 20).map(token => (
-                                <SelectItem key={token.symbol} value={token.symbol}>
+                                <SelectItem 
+                                  key={token.symbol} 
+                                  value={token.symbol}
+                                  className="text-[#6667AB] font-medium hover:bg-[#6667AB]/10 focus:bg-[#6667AB]/10"
+                                >
                                   {token.symbol} - {token.name}
                                 </SelectItem>
                               ))}
@@ -708,16 +712,16 @@ export function UnifiedLanding() {
                             placeholder="0.00"
                             value={remittanceState.amount}
                             onChange={(e) => handleAmountChange(e.target.value)}
-                            className="flex-1 bg-[#FCFBF4] text-[#6667AB] border-[#FCFBF4]/30 placeholder:text-[#6667AB]/50"
+                            className="flex-1 bg-[#FCFBF4] text-[#6667AB] border-[#6667AB]/30 placeholder:text-[#6667AB]/60 font-medium focus:border-[#6667AB] focus:ring-[#6667AB]"
                           />
                         </div>
                       </div>
 
                       {/* Exchange Rate Display */}
                       <div className="flex items-center justify-center py-4">
-                        <div className="flex items-center gap-3 text-[#FCFBF4]/80">
-                          <RefreshCw className="w-4 h-4 animate-pulse" />
-                          <span className="text-sm">
+                        <div className="flex items-center gap-3 text-[#FCFBF4] bg-[#FCFBF4]/10 rounded-lg px-4 py-2 border border-[#FCFBF4]/20">
+                          <RefreshCw className="w-4 h-4 animate-pulse text-[#FCFBF4]" />
+                          <span className="text-sm font-medium">
                             1 {remittanceState.fromToken} = ₹{remittanceState.fromToken === 'USD' ? usdToInrRate.toFixed(2) : remittanceState.exchangeRate.toLocaleString()}
                           </span>
                         </div>
@@ -727,22 +731,22 @@ export function UnifiedLanding() {
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-[#FCFBF4]">To Indian Rupees</label>
                         <div className="flex gap-4">
-                          <div className="w-32 h-10 bg-[#FCFBF4]/20 border border-[#FCFBF4]/30 rounded-md flex items-center justify-center text-[#FCFBF4] font-medium">
+                          <div className="w-32 h-10 bg-[#FCFBF4]/30 border border-[#FCFBF4]/40 rounded-md flex items-center justify-center text-[#FCFBF4] font-bold shadow-sm">
                             INR
                           </div>
-                          <div className="flex-1 h-10 bg-[#FCFBF4]/20 border border-[#FCFBF4]/30 rounded-md flex items-center px-3 text-[#FCFBF4] font-medium">
+                          <div className="flex-1 h-10 bg-[#FCFBF4]/30 border border-[#FCFBF4]/40 rounded-md flex items-center px-3 text-[#FCFBF4] font-bold shadow-sm">
                             ₹{remittanceState.toAmount || '0.00'}
                           </div>
                         </div>
                       </div>
 
                       {/* Fee Display */}
-                      <div className="bg-[#FCFBF4]/5 border border-[#FCFBF4]/20 rounded-lg p-4">
+                      <div className="bg-[#FCFBF4]/15 border border-[#FCFBF4]/30 rounded-lg p-4 shadow-sm">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-[#FCFBF4]/80">Service Fee</span>
-                          <span className="text-[#FCFBF4]">₹{remittanceState.fees}</span>
+                          <span className="text-[#FCFBF4] font-medium">Service Fee</span>
+                          <span className="text-[#FCFBF4] font-bold">₹{remittanceState.fees}</span>
                         </div>
-                        <div className="flex justify-between items-center font-semibold">
+                        <div className="flex justify-between items-center font-bold text-lg">
                           <span className="text-[#FCFBF4]">You'll Receive</span>
                           <span className="text-[#FCFBF4]">
                             ₹{remittanceState.toAmount ? (parseFloat(remittanceState.toAmount) - remittanceState.fees).toFixed(2) : '0.00'}
@@ -847,40 +851,38 @@ export function UnifiedLanding() {
 
         {/* Unsupported Token Modal */}
         <Dialog open={showUnsupportedTokenModal} onOpenChange={setShowUnsupportedTokenModal}>
-          <DialogContent className="bg-[#FCFBF4] border-[#6667AB]/20 text-[#6667AB] max-w-md">
+          <DialogContent className="bg-[#FCFBF4] border-[#6667AB]/30 text-[#6667AB] max-w-md shadow-xl">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-[#6667AB] flex items-center gap-2">
-                <Database className="w-6 h-6" />
+                <Database className="w-6 h-6 text-[#6667AB]" />
                 Token Not Supported
               </DialogTitle>
-              <DialogDescription className="text-[#6667AB]/80 mt-4">
-                <strong>{unsupportedTokenSymbol}</strong> is not currently supported for DeFi swaps to INR.
+              <DialogDescription className="text-[#6667AB] mt-4 font-medium">
+                <strong className="text-[#6667AB]">{unsupportedTokenSymbol}</strong> is not currently supported for conversion to INR.
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4 mt-4">
-              <div className="bg-[#6667AB]/10 border border-[#6667AB]/20 rounded-lg p-4">
+              <div className="bg-[#6667AB]/10 border border-[#6667AB]/30 rounded-lg p-4">
                 <h4 className="font-semibold text-[#6667AB] mb-2">Why isn't this token supported?</h4>
-                <ul className="text-sm text-[#6667AB]/70 space-y-1">
+                <ul className="text-sm text-[#6667AB] space-y-1 font-medium">
                   <li>• Only top 100 cryptocurrencies by market cap</li>
                   <li>• Token must have sufficient DeFi liquidity</li>
                   <li>• Must be available on supported networks</li>
                 </ul>
               </div>
 
-              <div className="bg-[#6667AB]/5 border border-[#6667AB]/20 rounded-lg p-4">
+              <div className="bg-[#6667AB]/5 border border-[#6667AB]/30 rounded-lg p-4">
                 <h4 className="font-semibold text-[#6667AB] mb-2">Request Token Support</h4>
-                <p className="text-sm text-[#6667AB]/70 mb-3">
+                <p className="text-sm text-[#6667AB] mb-3 font-medium">
                   We regularly review and add new tokens based on market demand and liquidity.
                 </p>
                 <Button 
                   onClick={() => {
-                    // Submit token request
                     console.log(`Token support requested: ${unsupportedTokenSymbol}`);
                     setShowUnsupportedTokenModal(false);
-                    // Show success toast or confirmation
                   }}
-                  className="w-full bg-[#6667AB] hover:bg-[#6667AB]/90 text-[#FCFBF4]"
+                  className="w-full bg-[#6667AB] hover:bg-[#6667AB]/90 text-[#FCFBF4] font-semibold"
                 >
                   Submit Request for {unsupportedTokenSymbol}
                 </Button>
@@ -890,7 +892,7 @@ export function UnifiedLanding() {
                 <Button 
                   variant="outline"
                   onClick={() => setShowUnsupportedTokenModal(false)}
-                  className="border-[#6667AB]/20 text-[#6667AB] hover:bg-[#6667AB]/10"
+                  className="border-[#6667AB]/40 text-[#6667AB] hover:bg-[#6667AB]/10 font-semibold"
                 >
                   Choose Different Token
                 </Button>

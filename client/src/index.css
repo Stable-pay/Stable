@@ -29,8 +29,8 @@
     --destructive-foreground: 43 33% 97%; /* #FCFBF4 */
     
     /* Border and Input */
-    --border: 262 20% 82%; /* Light purple border */
-    --input: 262 20% 82%; /* Light purple input border */
+    --border: 262 47% 85%; /* Light purple border with better contrast */
+    --input: 262 47% 90%; /* Very light purple input background */
     --ring: 262 47% 55%; /* #6667AB focus ring */
     
     /* Card */
