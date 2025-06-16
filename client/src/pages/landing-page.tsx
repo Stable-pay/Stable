@@ -547,7 +547,7 @@ export function LandingPage() {
                 </span>
               </div>
               <Button 
-                onClick={() => open()}
+                onClick={handleGetStarted}
                 size="lg"
                 className="btn-premium text-xl px-12 py-6 group"
               >
