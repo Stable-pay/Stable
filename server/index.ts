@@ -15,11 +15,20 @@ process.on('uncaughtException', (error) => {
 
 const app = express();
 
-// Add CORS headers to prevent 403 errors
+// Add CORS headers and proper MIME types
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Set proper MIME types for static assets
+  if (req.url.endsWith('.css')) {
+    res.setHeader('Content-Type', 'text/css');
+  } else if (req.url.endsWith('.js') || req.url.endsWith('.mjs')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  } else if (req.url.endsWith('.json')) {
+    res.setHeader('Content-Type', 'application/json');
+  }
   
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
