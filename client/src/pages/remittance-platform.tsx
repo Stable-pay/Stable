@@ -12,6 +12,7 @@ import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { TravelRuleCompliance } from '@/components/compliance/travel-rule-compliance';
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
 import { MobileLayout } from '@/components/layout/mobile-layout';
+import { UniversalPageLayout } from '@/components/layout/universal-page-layout';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
@@ -996,17 +997,15 @@ export function RemittancePlatform() {
   // KYC Verification step
   if (state.step === 'kyc') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-              <UserCheck className="w-8 h-8 text-purple-400" />
-              Identity Verification
-            </CardTitle>
-            <p className="text-white/70 mt-2">Complete KYC verification to ensure secure transfers</p>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
+      <UniversalPageLayout
+        title="Identity Verification"
+        subtitle="Complete KYC verification to ensure secure transfers"
+        badge="Secure & compliant verification process"
+        showDisconnect={true}
+        onDisconnect={() => setState(prev => ({ ...prev, step: 'connect' }))}
+      >
+        <Card className="w-full max-w-2xl bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
+          <CardContent className="mobile-form-section">
             {/* Validation Errors */}
             {state.validationErrors.length > 0 && (
               <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
@@ -1148,15 +1147,22 @@ export function RemittancePlatform() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </UniversalPageLayout>
     );
   }
 
   // Recipient details step
   if (state.step === 'recipient') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
+      <UniversalPageLayout
+        title="Recipient Details"
+        subtitle="Who are you sending money to?"
+        badge="Secure recipient information"
+        showDisconnect={true}
+        onDisconnect={() => setState(prev => ({ ...prev, step: 'connect' }))}
+      >
+        <Card className="w-full max-w-2xl bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
+          <CardContent className="mobile-form-section">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
               <Users className="w-8 h-8 text-blue-400" />
