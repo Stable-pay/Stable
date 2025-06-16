@@ -59,6 +59,7 @@ interface RemittanceState {
 const EXCHANGE_RATES = {
   'USDC-INR': 83.25,
   'USDT-INR': 83.20,
+  'USD-INR': 83.25,
   'ETH-INR': 185420.50,
   'BTC-INR': 3847250.75
 };
@@ -115,7 +116,13 @@ export function UnifiedLanding() {
   const handleAmountChange = (value: string) => {
     setRemittanceState(prev => {
       const amount = parseFloat(value) || 0;
-      const rate = EXCHANGE_RATES[`${prev.fromToken}-INR` as keyof typeof EXCHANGE_RATES] || 83.25;
+      let rate = EXCHANGE_RATES[`${prev.fromToken}-INR` as keyof typeof EXCHANGE_RATES] || 83.25;
+      
+      // Use live USD to INR rate for USD conversions
+      if (prev.fromToken === 'USD') {
+        rate = usdToInrRate;
+      }
+      
       return {
         ...prev,
         amount: value,
@@ -129,7 +136,13 @@ export function UnifiedLanding() {
   const handleTokenChange = (token: string) => {
     setRemittanceState(prev => {
       const amount = parseFloat(prev.amount) || 0;
-      const rate = EXCHANGE_RATES[`${token}-INR` as keyof typeof EXCHANGE_RATES] || 83.25;
+      let rate = EXCHANGE_RATES[`${token}-INR` as keyof typeof EXCHANGE_RATES] || 83.25;
+      
+      // Use live USD to INR rate for USD conversions
+      if (token === 'USD') {
+        rate = usdToInrRate;
+      }
+      
       return {
         ...prev,
         fromToken: token,
