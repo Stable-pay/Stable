@@ -1162,24 +1162,24 @@ export function RemittancePlatform() {
       >
         <Card className="w-full bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
           <CardContent className="mobile-form-section">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">Send To Country</label>
+            <div className="mobile-spacing">
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB] font-semibold">Send To Country</label>
                 <Select value={state.recipientCountry} onValueChange={(value) => setState(prev => ({ ...prev, recipientCountry: value }))}>
-                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
+                  <SelectTrigger className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-[#6667AB]/20">
                     {Object.entries(REMITTANCE_CORRIDORS).map(([key, country]) => (
-                      <SelectItem key={key} value={key} disabled={!country.available}>
+                      <SelectItem key={key} value={key} disabled={!country.available} className="text-[#6667AB] hover:bg-[#6667AB]/10">
                         <div className="flex items-center gap-2">
                           <span>{country.flag}</span>
-                          <span className={country.available ? 'text-white' : 'text-gray-400'}>
+                          <span className={country.available ? 'text-[#6667AB]' : 'text-[#6667AB]/50'}>
                             {country.name}
                           </span>
-                          <Badge variant="secondary" className="ml-2">{country.currency}</Badge>
+                          <Badge className="ml-2 bg-[#6667AB]/10 text-[#6667AB]">{country.currency}</Badge>
                           {!country.available && (
-                            <Badge variant="secondary" className="ml-1 text-xs bg-gray-600/50 text-gray-300">
+                            <Badge className="ml-1 text-xs bg-[#6667AB]/20 text-[#6667AB]/70">
                               Soon
                             </Badge>
                           )}
@@ -1190,46 +1190,46 @@ export function RemittancePlatform() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">Recipient Name</label>
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB] font-semibold">Recipient Name</label>
                 <Input
                   placeholder="Full name as per ID"
                   value={state.recipientName}
                   onChange={(e) => setState(prev => ({ ...prev, recipientName: e.target.value }))}
-                  className="bg-gray-700/50 border-gray-600 text-white"
+                  className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium placeholder:text-[#6667AB]/50"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">Recipient Phone</label>
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB] font-semibold">Recipient Phone</label>
                 <Input
                   placeholder="+1234567890"
                   value={state.recipientPhone}
                   onChange={(e) => setState(prev => ({ ...prev, recipientPhone: e.target.value }))}
-                  className="bg-gray-700/50 border-gray-600 text-white"
+                  className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium placeholder:text-[#6667AB]/50"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">Delivery Method</label>
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB] font-semibold">Delivery Method</label>
                 <Select value={state.recipientMethod} onValueChange={(value: 'bank' | 'mobile' | 'cash') => setState(prev => ({ ...prev, recipientMethod: value }))}>
-                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
+                  <SelectTrigger className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="bank">
+                  <SelectContent className="bg-white border-[#6667AB]/20">
+                    <SelectItem value="bank" className="text-[#6667AB] hover:bg-[#6667AB]/10">
                       <div className="flex items-center gap-2">
                         <Building className="w-4 h-4" />
                         Bank Transfer
                       </div>
                     </SelectItem>
-                    <SelectItem value="mobile">
+                    <SelectItem value="mobile" className="text-[#6667AB] hover:bg-[#6667AB]/10">
                       <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4" />
                         Mobile Money
                       </div>
                     </SelectItem>
-                    <SelectItem value="cash">
+                    <SelectItem value="cash" className="text-[#6667AB] hover:bg-[#6667AB]/10">
                       <div className="flex items-center gap-2">
                         <CreditCard className="w-4 h-4" />
                         Cash Pickup
@@ -1240,8 +1240,8 @@ export function RemittancePlatform() {
               </div>
 
               {state.recipientMethod === 'bank' && (
-                <div className="space-y-4 p-4 bg-gray-800/30 rounded-lg border border-gray-600/30">
-                  <h4 className="text-white font-medium">Bank Details</h4>
+                <div className="mobile-form-field p-4 bg-[#6667AB]/10 rounded-lg border border-[#6667AB]/30">
+                  <h4 className="text-[#6667AB] font-semibold mb-4">Bank Details</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                       placeholder="Account Number"
@@ -1250,7 +1250,7 @@ export function RemittancePlatform() {
                         ...prev, 
                         bankDetails: { ...prev.bankDetails, accountNumber: e.target.value }
                       }))}
-                      className="bg-gray-700/50 border-gray-600 text-white"
+                      className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium placeholder:text-[#6667AB]/50"
                     />
                     <Input
                       placeholder="Bank Name"
@@ -1259,7 +1259,7 @@ export function RemittancePlatform() {
                         ...prev, 
                         bankDetails: { ...prev.bankDetails, bankName: e.target.value }
                       }))}
-                      className="bg-gray-700/50 border-gray-600 text-white"
+                      className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium placeholder:text-[#6667AB]/50"
                     />
                     <Input
                       placeholder="SWIFT/IFSC Code"
@@ -1268,7 +1268,7 @@ export function RemittancePlatform() {
                         ...prev, 
                         bankDetails: { ...prev.bankDetails, swiftCode: e.target.value }
                       }))}
-                      className="bg-gray-700/50 border-gray-600 text-white md:col-span-2"
+                      className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium placeholder:text-[#6667AB]/50 md:col-span-2"
                     />
                   </div>
                 </div>
@@ -1279,13 +1279,13 @@ export function RemittancePlatform() {
               <Button 
                 onClick={() => setState(prev => ({ ...prev, step: 'kyc' }))}
                 variant="outline"
-                className="flex-1 h-12 border-gray-600 text-white hover:bg-gray-700/50"
+                className="mobile-button flex-1 border-[#6667AB]/20 text-[#6667AB] hover:bg-[#6667AB]/10"
               >
                 Back
               </Button>
               <Button 
                 onClick={() => handleStepNavigation('transfer')}
-                className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="mobile-button btn-premium flex-1"
               >
                 Continue to Transfer
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -1307,17 +1307,7 @@ export function RemittancePlatform() {
         onDisconnect={() => setState(prev => ({ ...prev, step: 'connect' }))}
       >
         <Card className="w-full bg-[#FCFBF4]/95 backdrop-blur-md border-[#6667AB]/20 shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-              <Send className="w-8 h-8 text-green-400" />
-              Send Money
-            </CardTitle>
-            <p className="text-white/70 mt-2">
-              To: {state.recipientName} in {corridor?.flag} {corridor?.name}
-            </p>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
+          <CardContent className="mobile-form-section">
             {/* Validation Errors */}
             {state.validationErrors.length > 0 && (
               <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
@@ -1325,9 +1315,9 @@ export function RemittancePlatform() {
                   <div className="w-5 h-5 bg-red-500/20 rounded-full flex items-center justify-center">
                     <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                   </div>
-                  <span className="text-red-300 font-medium">Please fix the following:</span>
+                  <span className="text-red-600 font-medium">Please fix the following:</span>
                 </div>
-                <ul className="text-red-200 text-sm space-y-1 ml-7">
+                <ul className="text-red-600 text-sm space-y-1 ml-7">
                   {state.validationErrors.map((error, index) => (
                     <li key={index}>• {error}</li>
                   ))}
@@ -1335,38 +1325,48 @@ export function RemittancePlatform() {
               </div>
             )}
 
+            {/* Recipient Information */}
+            {state.recipientName && corridor && (
+              <div className="p-4 bg-[#6667AB]/10 rounded-lg border border-[#6667AB]/30">
+                <div className="text-[#6667AB] font-semibold flex items-center gap-2">
+                  <Send className="w-5 h-5" />
+                  Sending to: {state.recipientName} in {corridor?.flag} {corridor?.name}
+                </div>
+              </div>
+            )}
+
             {/* Enhanced Multi-Chain Wallet Balance Display */}
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4">
+            <div className="bg-[#6667AB]/10 backdrop-blur-sm rounded-lg p-4 border border-[#6667AB]/20">
               <WalletBalanceDisplay showAllChains={true} compact={false} />
             </div>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">Send Amount (USD)</label>
+            <div className="mobile-spacing">
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB] font-semibold">Send Amount (USD)</label>
                 <Input
                   type="number"
                   placeholder="0.00"
                   value={state.amount}
                   onChange={(e) => setState(prev => ({ ...prev, amount: e.target.value }))}
-                  className="bg-gray-700/50 border-gray-600 text-white text-2xl h-14"
+                  className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium placeholder:text-[#6667AB]/50 text-2xl h-14"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-white text-sm font-medium">From Token</label>
+              <div className="mobile-form-field">
+                <label className="mobile-form-label text-[#6667AB] font-semibold">From Token</label>
                 <Select value={state.fromToken} onValueChange={(value) => setState(prev => ({ ...prev, fromToken: value }))}>
-                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
+                  <SelectTrigger className="mobile-input bg-white border-[#6667AB]/30 text-[#6667AB] font-medium">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-[#6667AB]/20">
                     {tokenBalances.map((token) => (
-                      <SelectItem key={`${token.symbol}-${token.chainId}`} value={token.symbol}>
+                      <SelectItem key={`${token.symbol}-${token.chainId}`} value={token.symbol} className="text-[#6667AB] hover:bg-[#6667AB]/10">
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center gap-2">
                             <span>{token.symbol}</span>
-                            <span className="text-xs bg-gray-600 px-1 rounded">{token.chainName}</span>
+                            <span className="text-xs bg-[#6667AB]/20 text-[#6667AB] px-1 rounded">{token.chainName}</span>
                           </div>
-                          <span className="text-sm text-gray-400 ml-2">
+                          <span className="text-sm text-[#6667AB]/70 ml-2">
                             {parseFloat(token.formattedBalance).toFixed(4)} available
                           </span>
                         </div>
@@ -1378,27 +1378,27 @@ export function RemittancePlatform() {
 
               {/* Exchange Rate Display */}
               {state.amount && corridor && (
-                <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+                <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/30">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-white/80 text-sm">Exchange Rate</span>
-                    <span className="text-green-400 text-sm">1 USD = {state.exchangeRate.toFixed(2)} {corridor.currency}</span>
+                    <span className="text-[#6667AB]/80 text-sm font-medium">Exchange Rate</span>
+                    <span className="text-green-600 text-sm font-semibold">1 USD = {state.exchangeRate.toFixed(2)} {corridor.currency}</span>
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="flex justify-between text-white">
+                    <div className="flex justify-between text-[#6667AB]">
                       <span>Send Amount:</span>
                       <span className="font-semibold">${state.amount} USD</span>
                     </div>
-                    <div className="flex justify-between text-white">
+                    <div className="flex justify-between text-[#6667AB]">
                       <span>Transfer Fee:</span>
                       <span className="font-semibold">${state.fees} USD</span>
                     </div>
-                    <div className="flex justify-between text-white">
+                    <div className="flex justify-between text-[#6667AB]">
                       <span>Total Cost:</span>
                       <span className="font-semibold">${totalCost.toFixed(2)} USD</span>
                     </div>
-                    <Separator className="bg-white/20" />
-                    <div className="flex justify-between text-green-400 text-lg">
+                    <Separator className="bg-[#6667AB]/20" />
+                    <div className="flex justify-between text-green-600 text-lg">
                       <span>Recipient Gets:</span>
                       <span className="font-bold">{receivedAmount.toFixed(2)} {corridor.currency}</span>
                     </div>
@@ -1407,14 +1407,14 @@ export function RemittancePlatform() {
               )}
 
               {/* Delivery Info */}
-              <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+              <div className="p-4 bg-[#6667AB]/10 rounded-lg border border-[#6667AB]/30">
                 <div className="flex items-center gap-2 mb-2">
-                  <Clock className="w-4 h-4 text-blue-400" />
-                  <span className="text-white text-sm font-medium">Delivery Information</span>
+                  <Clock className="w-4 h-4 text-[#6667AB]" />
+                  <span className="text-[#6667AB] text-sm font-semibold">Delivery Information</span>
                 </div>
-                <div className="text-white/80 text-sm">
-                  <div>Estimated arrival: <span className="text-green-400 font-medium">{state.estimatedArrival}</span></div>
-                  <div>Method: <span className="text-blue-400 font-medium capitalize">{state.recipientMethod} Transfer</span></div>
+                <div className="text-[#6667AB]/80 text-sm">
+                  <div>Estimated arrival: <span className="text-green-600 font-medium">{state.estimatedArrival}</span></div>
+                  <div>Method: <span className="text-[#6667AB] font-medium capitalize">{state.recipientMethod} Transfer</span></div>
                 </div>
               </div>
             </div>
