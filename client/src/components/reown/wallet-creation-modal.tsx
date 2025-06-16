@@ -109,7 +109,7 @@ export function WalletCreationModal({ isOpen, onClose, onWalletCreated }: Wallet
               variant="outline"
               className="w-full h-14 bg-white/5 border-white/20 text-white hover:bg-white/10 transition-all duration-200 group"
             >
-              <Mail className="w-6 h-6 mr-3 text-blue-400" />
+              <Mail className="w-6 h-6 mr-3 text-[#6667AB]" />
               Continue with Email
               <ArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
             </Button>

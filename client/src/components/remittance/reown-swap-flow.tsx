@@ -432,7 +432,7 @@ export function ReownSwapFlow() {
                           <div className="font-semibold">
                             {swapAmount} {selectedToken.symbol} = ₹{inrAmount} INR
                           </div>
-                          <div className="text-sm text-gray-600 mt-1">
+                          <div className="text-sm text-[#6667AB]/70 mt-1">
                             Exchange rate: 1 {selectedToken.symbol} = ₹{exchangeRate.toLocaleString()}
                           </div>
                         </AlertDescription>
@@ -603,7 +603,7 @@ export function ReownSwapFlow() {
               <Shield className="h-4 w-4" />
               <AlertDescription>
                 <div className="font-semibold">Secure Swap via Reown AppKit</div>
-                <div className="text-sm text-gray-600 mt-1">
+                <div className="text-sm text-[#6667AB]/70 mt-1">
                   Your transaction will be processed through Reown's secure infrastructure
                   with built-in gasless capabilities and multi-chain support.
                 </div>
@@ -705,7 +705,7 @@ export function ReownSwapFlow() {
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
                   <div className="font-semibold">Transfer Initiated!</div>
-                  <div className="text-sm text-gray-600 mt-1">
+                  <div className="text-sm text-[#6667AB]/70 mt-1">
                     Transfer ID: {withdrawalId}<br />
                     Estimated time: 5-10 minutes<br />
                     You will receive an SMS confirmation once completed.

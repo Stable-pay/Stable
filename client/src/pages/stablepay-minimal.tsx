@@ -236,41 +236,41 @@ export function StablePayMinimal() {
 
   if (state.step === 'connect') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-lg bg-white/10 backdrop-blur-md border-white/20">
+      <div className="min-h-screen bg-gradient-to-br from-[#6667AB] via-[#6667AB]/90 to-[#6667AB]/80 flex items-center justify-center p-6">
+        <Card className="w-full max-w-lg bg-[#FCFBF4]/10 backdrop-blur-md border-[#FCFBF4]/20">
           <CardHeader className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-              <Banknote className="w-8 h-8 text-white" />
+            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 rounded-full flex items-center justify-center">
+              <Banknote className="w-8 h-8 text-[#FCFBF4]" />
             </div>
-            <CardTitle className="text-3xl font-bold text-white">StablePay</CardTitle>
-            <p className="text-white/80 text-lg">Powered by Reown WalletConnect</p>
-            <p className="text-white/60 text-sm">Multi-chain crypto-to-INR conversion platform</p>
+            <CardTitle className="text-3xl font-bold text-[#FCFBF4]">StablePay</CardTitle>
+            <p className="text-[#FCFBF4]/80 text-lg">Powered by Reown WalletConnect</p>
+            <p className="text-[#FCFBF4]/60 text-sm">Multi-chain crypto-to-INR conversion platform</p>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="space-y-2">
-                <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto">
-                  <Wallet className="w-4 h-4 text-blue-400" />
+                <div className="w-8 h-8 bg-[#6667AB]/20 rounded-full flex items-center justify-center mx-auto">
+                  <Wallet className="w-4 h-4 text-[#6667AB]" />
                 </div>
-                <p className="text-xs text-white/80">Connect</p>
+                <p className="text-xs text-[#FCFBF4]/80">Connect</p>
               </div>
               <div className="space-y-2">
-                <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
-                  <Zap className="w-4 h-4 text-green-400" />
+                <div className="w-8 h-8 bg-[#6667AB]/20 rounded-full flex items-center justify-center mx-auto">
+                  <Zap className="w-4 h-4 text-[#6667AB]" />
                 </div>
-                <p className="text-xs text-white/80">Swap</p>
+                <p className="text-xs text-[#FCFBF4]/80">Swap</p>
               </div>
               <div className="space-y-2">
-                <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto">
-                  <Banknote className="w-4 h-4 text-purple-400" />
+                <div className="w-8 h-8 bg-[#6667AB]/20 rounded-full flex items-center justify-center mx-auto">
+                  <Banknote className="w-4 h-4 text-[#6667AB]" />
                 </div>
-                <p className="text-xs text-white/80">Receive INR</p>
+                <p className="text-xs text-[#FCFBF4]/80">Receive INR</p>
               </div>
             </div>
 
-            <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-              <h3 className="text-white font-medium mb-3">Connection Options:</h3>
-              <div className="space-y-2 text-white/80 text-sm">
+            <div className="p-4 bg-[#6667AB]/20 border border-[#6667AB]/30 rounded-lg">
+              <h3 className="text-[#FCFBF4] font-medium mb-3">Connection Options:</h3>
+              <div className="space-y-2 text-[#FCFBF4]/80 text-sm">
                 <div className="flex items-center gap-2">
                   <Wallet className="w-4 h-4" />
                   <span>350+ Wallets (MetaMask, Rainbow, Coinbase)</span>
@@ -288,7 +288,7 @@ export function StablePayMinimal() {
 
             <Button 
               onClick={() => open()}
-              className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              className="mobile-button btn-premium w-full"
             >
               Connect Wallet
             </Button>
