@@ -246,7 +246,7 @@ export function UnifiedLanding() {
                   >
                     Web3 Remittance &
                     <span className="block bg-gradient-to-r from-[#FCFBF4] to-[#FCFBF4]/80 bg-clip-text text-transparent">
-                      Crypto Off-Ramping
+                      INR Off-Ramping Made Simple
                     </span>
                   </motion.h1>
                   
@@ -254,8 +254,8 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-xl md:text-2xl mb-8 text-[#FCFBF4]/90 max-w-4xl mx-auto leading-relaxed"
                   >
-                    Send money globally and convert crypto to fiat seamlessly. 
-                    <strong className="text-[#FCFBF4]">Multi-chain support, KYC compliant, instant INR transfers to Indian banks.</strong>
+                    Instantly move your crypto to your Indian bank account – in just a few easy steps.
+                    <strong className="text-[#FCFBF4]"> Your Crypto, Your Wallet, Your INR. On Your Terms.</strong>
                   </motion.p>
                 </motion.div>
 
@@ -275,23 +275,14 @@ export function UnifiedLanding() {
                 </motion.div>
 
                 {/* Primary CTA */}
-                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                <motion.div variants={itemVariants} className="flex justify-center mb-16">
                   <Button 
                     onClick={() => open()}
                     size="lg"
-                    className="btn-premium text-lg px-8 py-4 group"
+                    className="btn-premium text-xl px-12 py-6 group"
                   >
-                    Connect Wallet to Start
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    size="lg"
-                    className="border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10 text-lg px-8 py-4 group"
-                    onClick={() => scrollToSection('how-it-works')}
-                  >
-                    <Play className="w-5 h-5 mr-2" />
-                    See How It Works
+                    Get Started
+                    <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </motion.div>
               </motion.section>
@@ -306,34 +297,34 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-4xl md:text-5xl font-bold text-center mb-16 text-[#FCFBF4]"
                   >
-                    Complete Web3 Financial Platform
+                    How It Works: A Quick, Clear Process
                   </motion.h2>
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {[
                       {
-                        step: "01",
-                        title: "Connect Wallet",
-                        description: "Multi-chain wallet support: MetaMask, Coinbase, social wallets",
+                        step: "1",
+                        title: "Connect Your Wallet",
+                        description: "Compatible with Particle Network, Reown AppKit, and all major Web3 wallets. No custody, no middlemen. Your wallet stays yours.",
                         icon: <Wallet className="w-8 h-8" />
                       },
                       {
-                        step: "02", 
-                        title: "Choose Service",
-                        description: "Global remittance, crypto off-ramping, or token swapping",
-                        icon: <Globe className="w-8 h-8" />
-                      },
-                      {
-                        step: "03",
-                        title: "KYC & Compliance",
-                        description: "Travel Rule compliant, RBI guidelines, instant verification",
+                        step: "2", 
+                        title: "Complete KYC Verification",
+                        description: "Fast, secure, and fully compliant onboarding process. We make it simple – identity verification in minutes.",
                         icon: <UserCheck className="w-8 h-8" />
                       },
                       {
-                        step: "04",
-                        title: "Instant Transfer",
-                        description: "Bank transfers, cash pickup, mobile wallets worldwide",
-                        icon: <Send className="w-8 h-8" />
+                        step: "3",
+                        title: "Add Your Indian Bank Details",
+                        description: "Securely link your account to receive INR directly via RTGS, NEFT, or IMPS. Your details stay encrypted and safe.",
+                        icon: <Building className="w-8 h-8" />
+                      },
+                      {
+                        step: "4",
+                        title: "Off-Ramp to INR Instantly",
+                        description: "Convert your crypto to INR at real-time rates with a flat ₹249 fee. Receive funds quickly and reliably in your bank account.",
+                        icon: <Zap className="w-8 h-8" />
                       }
                     ].map((item, index) => (
                       <motion.div
@@ -369,40 +360,40 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-4xl md:text-5xl font-bold text-center mb-16 text-[#FCFBF4]"
                   >
-                    Web3 Remittance & Off-Ramping Features
+                    Why Choose Us?
                   </motion.h2>
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[
                       {
-                        title: "Global Remittance",
-                        description: "Send money to 180+ countries with crypto",
-                        icon: <Globe className="w-8 h-8" />
+                        title: "Multi-Crypto Support",
+                        description: "Bitcoin, Ethereum, USDT, USDC, and more",
+                        icon: <CreditCard className="w-8 h-8" />
                       },
                       {
-                        title: "Crypto Off-Ramping",
-                        description: "Convert crypto to fiat instantly",
-                        icon: <RefreshCw className="w-8 h-8" />
-                      },
-                      {
-                        title: "Multi-Chain Support",
-                        description: "Ethereum, Polygon, BSC, Arbitrum, Base, Avalanche",
+                        title: "Multi-Chain Enabled",
+                        description: "Ethereum, Solana, BNB Chain, and others",
                         icon: <Database className="w-8 h-8" />
                       },
                       {
-                        title: "Travel Rule Compliant",
-                        description: "FATF compliant for international transfers",
-                        icon: <Shield className="w-8 h-8" />
+                        title: "Self-Custody First",
+                        description: "You control your assets at every step",
+                        icon: <Key className="w-8 h-8" />
                       },
                       {
-                        title: "Multiple Payout Methods",
-                        description: "Bank transfer, cash pickup, mobile wallets",
-                        icon: <Building className="w-8 h-8" />
+                        title: "Real-Time INR Conversion",
+                        description: "Competitive rates, instant processing",
+                        icon: <RefreshCw className="w-8 h-8" />
                       },
                       {
-                        title: "Live Exchange Rates",
-                        description: "Real-time rates with transparent fees",
+                        title: "Flat Fee Structure",
+                        description: "₹249 per off-ramp transaction – no hidden charges",
                         icon: <TrendingUp className="w-8 h-8" />
+                      },
+                      {
+                        title: "Mobile-First Web App",
+                        description: "Seamless experience on mobile and desktop",
+                        icon: <Phone className="w-8 h-8" />
                       }
                     ].map((feature, index) => (
                       <motion.div
@@ -427,6 +418,58 @@ export function UnifiedLanding() {
                 </motion.div>
               </section>
 
+              {/* Target Audience Section */}
+              <section className="py-20 px-6 md:px-12 bg-[#FCFBF4]/5">
+                <motion.div 
+                  variants={containerVariants}
+                  className="max-w-6xl mx-auto"
+                >
+                  <motion.h2 
+                    variants={itemVariants}
+                    className="text-4xl md:text-5xl font-bold text-center mb-16 text-[#FCFBF4]"
+                  >
+                    Who Is This For?
+                  </motion.h2>
+                  
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {[
+                      {
+                        title: "NRIs",
+                        description: "Sending remittance to India",
+                        icon: <Users className="w-8 h-8" />
+                      },
+                      {
+                        title: "Freelancers",
+                        description: "Receiving international crypto payments",
+                        icon: <Globe className="w-8 h-8" />
+                      },
+                      {
+                        title: "Crypto Holders",
+                        description: "Off-ramping to INR",
+                        icon: <Wallet className="w-8 h-8" />
+                      },
+                      {
+                        title: "Businesses",
+                        description: "Cross-border payment needs",
+                        icon: <Building className="w-8 h-8" />
+                      }
+                    ].map((item, index) => (
+                      <motion.div
+                        key={index}
+                        variants={itemVariants}
+                        className="text-center group"
+                      >
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#6667AB] flex items-center justify-center text-[#FCFBF4] group-hover:scale-110 transition-transform">
+                          {item.icon}
+                        </div>
+                        <h3 className="text-xl font-semibold text-[#FCFBF4] mb-3">{item.title}</h3>
+                        <p className="text-[#FCFBF4]/80">{item.description}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </section>
+
               {/* Security Section */}
               <section id="security" className="py-20 px-6 md:px-12">
                 <motion.div 
@@ -437,37 +480,30 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-4xl md:text-5xl font-bold mb-8 text-[#FCFBF4]"
                   >
-                    Security & Compliance
+                    Security & Compliance You Can Trust
                   </motion.h2>
-                  
-                  <motion.p 
-                    variants={itemVariants}
-                    className="text-xl text-[#FCFBF4]/90 mb-12"
-                  >
-                    Your funds and data are protected by enterprise-grade security measures
-                  </motion.p>
 
                   <div className="grid md:grid-cols-2 gap-8 mb-12">
                     {[
                       {
-                        title: "SOC 2 Compliant",
-                        description: "Highest security standards",
-                        icon: <Award className="w-6 h-6" />
-                      },
-                      {
-                        title: "RBI Guidelines",
-                        description: "Fully compliant with Indian regulations",
-                        icon: <FileText className="w-6 h-6" />
-                      },
-                      {
-                        title: "Multi-Sig Security",
-                        description: "Advanced wallet protection",
-                        icon: <Key className="w-6 h-6" />
-                      },
-                      {
-                        title: "Insurance Coverage",
-                        description: "Protected against digital asset loss",
+                        title: "Smart Contract Wallet Security",
+                        description: "Advanced protection for your assets",
                         icon: <Shield className="w-6 h-6" />
+                      },
+                      {
+                        title: "FATF-Compliant Travel Rule Support",
+                        description: "International compliance standards",
+                        icon: <Globe className="w-6 h-6" />
+                      },
+                      {
+                        title: "Robust KYC & AML Integration",
+                        description: "Secure identity verification",
+                        icon: <UserCheck className="w-6 h-6" />
+                      },
+                      {
+                        title: "Real-Time Transaction Monitoring",
+                        description: "Continuous security oversight",
+                        icon: <Clock className="w-6 h-6" />
                       }
                     ].map((item, index) => (
                       <motion.div
@@ -539,26 +575,33 @@ export function UnifiedLanding() {
                     variants={itemVariants}
                     className="text-4xl md:text-5xl font-bold mb-8 text-[#FCFBF4]"
                   >
-                    Ready to Get Started?
+                    Start Now: It's Simple
                   </motion.h2>
                   
                   <motion.p 
                     variants={itemVariants}
-                    className="text-xl text-[#FCFBF4]/90 mb-12"
+                    className="text-xl text-[#FCFBF4]/90 mb-8"
                   >
-                    Connect your wallet and start converting crypto to INR in minutes
+                    👉 <strong>Connect Wallet</strong> → <strong>KYC</strong> → <strong>Add Bank</strong> → <strong>Get INR Instantly</strong>
                   </motion.p>
 
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={itemVariants} className="mb-8">
                     <Button 
                       onClick={() => open()}
                       size="lg"
                       className="btn-premium text-xl px-12 py-6 group"
                     >
-                      Connect Wallet Now
+                      Get Started
                       <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </motion.div>
+
+                  <motion.p 
+                    variants={itemVariants}
+                    className="text-sm text-[#FCFBF4]/70"
+                  >
+                    Flat ₹249 transaction fee applies. Blockchain network fees are separate.
+                  </motion.p>
                 </motion.div>
               </section>
             </motion.div>

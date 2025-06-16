@@ -162,6 +162,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Created unified landing page with connect wallet button as primary interaction
 - June 16, 2025: Implemented dynamic content switching based on wallet connection status
 - June 16, 2025: Added live token swap interface, KYC flow, and Travel Rule compliance in single page design
+- June 16, 2025: Updated all landing page content to match approved user specifications
+- June 16, 2025: Removed "See How It Works" button and live stats, integrated USD to INR conversion
+- June 16, 2025: Implemented exact user flow: Connect Wallet → Complete KYC → Add Bank Details → Off-Ramp to INR
+- June 16, 2025: Added target audience section (NRIs, Freelancers, Crypto Holders, Businesses)
+- June 16, 2025: Updated security section to remove RBI compliance references, focus on FATF/Travel Rule
 
 ## User Preferences
 
