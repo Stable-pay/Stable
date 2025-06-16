@@ -772,14 +772,20 @@ export function RemittancePlatform() {
             </div>
           </section>
         </div>
-      </div>
+      </MobileLayout>
     );
   }
 
   // Unified Connect/Create Wallet step
   if (['connect', 'create-wallet'].includes(state.step)) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <MobileLayout 
+        currentStep={state.step} 
+        isConnected={isConnected} 
+        onNavigate={handleMobileNavigation}
+        showNavigation={false}
+      >
+        <div className="flex items-center justify-center min-h-screen mobile-container">
         <Card className="w-full max-w-lg border-border shadow-xl">
           <CardHeader className="text-center pb-6 bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-t-lg">
             <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2">
@@ -881,7 +887,8 @@ export function RemittancePlatform() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </MobileLayout>
     );
   }
 
@@ -890,7 +897,13 @@ export function RemittancePlatform() {
   // Buy Crypto step - integrated with Reown AppKit onramp
   if (state.step === 'buy-crypto') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-6">
+      <MobileLayout 
+        currentStep={state.step} 
+        isConnected={isConnected} 
+        onNavigate={handleMobileNavigation}
+        showNavigation={true}
+      >
+        <div className="flex items-center justify-center min-h-screen mobile-container">
         <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-white/20">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-white flex items-center justify-center gap-2">
@@ -975,7 +988,8 @@ export function RemittancePlatform() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </MobileLayout>
     );
   }
 
