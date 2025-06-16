@@ -160,6 +160,8 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Made navigation links functional with scroll-to-section behavior for "How it works" and "Benefits"
 - June 16, 2025: Created unified single-page experience merging landing page and main application with seamless content flow
 - June 16, 2025: Implemented scroll-based navigation with fixed header and section highlighting for improved user experience
+- June 16, 2025: Simplified to minimal, professional design with only "Connect Wallet" buttons redirecting to Reown AppKit
+- June 16, 2025: Reduced content to essential messaging: hero, trading interface, 3 key features, and clear call-to-action
 
 ## User Preferences
 
