@@ -41,6 +41,7 @@ import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
+import { GaslessSwapInterface } from '@/components/swap/gasless-swap-interface';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';

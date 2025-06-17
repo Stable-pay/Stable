@@ -8,6 +8,7 @@ import path from "path";
 
 import { smartContractAPI } from './smart-contract-api';
 import { travelRuleAPI } from './travel-rule';
+import { zeroXSwapAPI } from './zero-x-swap-api';
 
 // Multer configuration for file uploads
 const upload = multer({
@@ -685,8 +686,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Reown WalletConnect API endpoints
   app.post('/api/tokens/balance', reownAPI.getTokenBalance.bind(reownAPI));
-  app.post('/api/swap/quote', reownAPI.getSwapQuote.bind(reownAPI));
-  app.post('/api/swap/execute', reownAPI.executeSwap.bind(reownAPI));
+  
+  // 0x Swap API endpoints for gasless swaps (replacing old swap endpoints)
+  app.post('/api/swap/quote', zeroXSwapAPI.getSwapQuote.bind(zeroXSwapAPI));
+  app.post('/api/swap/gasless', zeroXSwapAPI.executeGaslessSwap.bind(zeroXSwapAPI));
+  app.get('/api/swap/status/:transactionHash/:chainId', zeroXSwapAPI.getTransactionStatus.bind(zeroXSwapAPI));
+  app.get('/api/swap/tokens/:chainId', zeroXSwapAPI.getSupportedTokens.bind(zeroXSwapAPI));
 
   
 
