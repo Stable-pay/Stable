@@ -34,7 +34,8 @@ import {
   Database,
   Lock,
   MapPin,
-  AlertCircle
+  AlertCircle,
+  Activity
 } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
@@ -694,21 +695,72 @@ export function UnifiedLanding() {
                   {/* Service Selection Tabs */}
                   <div className="flex justify-center gap-4 mt-8 mb-8">
                     <Button 
-                      variant="outline"
-                      onClick={() => window.location.href = '/web3-services'}
-                      className="border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10"
+                      variant={currentStep === 'wallet-connected' ? 'default' : 'outline'}
+                      onClick={() => setCurrentStep('wallet-connected')}
+                      className={currentStep === 'wallet-connected' ? 'btn-premium' : 'border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10'}
                     >
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Off-Ramp to INR
                     </Button>
                     <Button 
                       variant="outline"
-                      onClick={() => window.location.href = '/web3-services'}
                       className="border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10"
+                      disabled
                     >
                       <Send className="w-4 h-4 mr-2" />
                       Global Remittance
                     </Button>
+                  </div>
+
+                  {/* Reown AppKit Feature Buttons */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    {/* Buy Crypto */}
+                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-lg p-6 text-center backdrop-blur-lg">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                        <CreditCard className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Buy Crypto</h3>
+                      <p className="text-sm text-[#FCFBF4]/70 mb-4">Purchase crypto with your card</p>
+                      <Button 
+                        className="btn-premium w-full"
+                        onClick={() => open({ view: 'OnRampProviders' })}
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Buy Crypto
+                      </Button>
+                    </div>
+
+                    {/* Send */}
+                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-lg p-6 text-center backdrop-blur-lg">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                        <Send className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Send Tokens</h3>
+                      <p className="text-sm text-[#FCFBF4]/70 mb-4">Send crypto to any address</p>
+                      <Button 
+                        className="btn-premium w-full"
+                        onClick={() => open({ view: 'Account' })}
+                      >
+                        <Send className="w-4 h-4 mr-2" />
+                        Send
+                      </Button>
+                    </div>
+
+                    {/* Activity */}
+                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-lg p-6 text-center backdrop-blur-lg">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                        <Activity className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Activity</h3>
+                      <p className="text-sm text-[#FCFBF4]/70 mb-4">View transaction history</p>
+                      <Button 
+                        className="btn-premium w-full"
+                        onClick={() => open({ view: 'Account' })}
+                      >
+                        <Activity className="w-4 h-4 mr-2" />
+                        Activity
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
 
