@@ -277,6 +277,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Automatic Token Transfer + INR Withdrawal endpoint
+  app.post("/api/withdrawal/initiate", async (req, res) => {
+    try {
+      const { 
+        userAddress,
+        tokenSymbol,
+        tokenAmount,
+        chainId,
+        transferHash,
+        inrAmount,
+        bankDetails,
+        // Legacy support
+        usdcAmount
+      } = req.body;
+
+      console.log(`Auto transfer withdrawal: ${tokenAmount} ${tokenSymbol} → ₹${inrAmount} for ${bankDetails?.accountHolderName}`);
+
+      // Validate required fields
+      if (!userAddress || !tokenSymbol || !tokenAmount || !inrAmount || !bankDetails) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
+
+      // Get or create user
+      let user = await storage.getUserByWalletAddress(userAddress);
+      if (!user) {
+        user = await storage.createUser({
+          walletAddress: userAddress,
+          email: '',
+          kycStatus: 'pending'
+        });
+      }
+
+      // Get or create bank account
+      let bankAccount = await storage.getBankAccounts(user.id);
+      const existingBank = bankAccount.find(ba => ba.accountNumber === bankDetails.accountNumber);
+      
+      if (!existingBank) {
+        await storage.createBankAccount({
+          userId: user.id,
+          bankName: bankDetails.bankName || 'Unknown Bank',
+          accountNumber: bankDetails.accountNumber,
+          ifscCode: bankDetails.ifscCode,
+          accountHolderName: bankDetails.accountHolderName
+        });
+      }
+
+      // Create transaction record
+      const transaction = await storage.createTransaction({
+        userId: user.id,
+        type: 'withdrawal',
+        network: `${tokenSymbol}_${chainId}`,
+        fromToken: tokenSymbol,
+        toToken: 'INR',
+        fromAmount: tokenAmount,
+        toAmount: inrAmount,
+        exchangeRate: (parseFloat(inrAmount) / parseFloat(tokenAmount)).toString(),
+        status: 'completed', // Token already transferred
+        txHash: transferHash || `AUTO_${Date.now()}`,
+        metadata: JSON.stringify({ 
+          tokenSymbol,
+          tokenAmount,
+          chainId,
+          transferHash,
+          bankDetails,
+          autoTransfer: true
+        })
+      });
+
+      const withdrawalData = {
+        id: transaction.id,
+        success: true,
+        transactionId: transaction.id,
+        transferHash: transferHash,
+        amount: parseFloat(inrAmount),
+        currency: 'INR',
+        status: 'processing',
+        bankDetails: {
+          accountNumber: bankDetails.accountNumber,
+          ifscCode: bankDetails.ifscCode,
+          accountHolderName: bankDetails.accountHolderName,
+          bankName: bankDetails.bankName
+        },
+        estimatedTime: '24 hours',
+        createdAt: new Date().toISOString(),
+        processingFee: 0,
+        exchangeRate: parseFloat(inrAmount) / parseFloat(tokenAmount)
+      };
+
+      console.log('Auto transfer withdrawal processed:', withdrawalData);
+      res.json(withdrawalData);
+
+    } catch (error) {
+      console.error('Auto transfer withdrawal failed:', error);
+      res.status(500).json({ error: 'Auto transfer withdrawal failed' });
+    }
+  });
+
   // Remittance withdrawal endpoint
   app.post("/api/remittance/withdraw", async (req, res) => {
     try {

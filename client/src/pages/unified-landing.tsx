@@ -63,6 +63,13 @@ interface RemittanceState {
   fees: number;
   isProcessing: boolean;
   transactionHash: string | null;
+  selectedTokenData?: {
+    symbol: string;
+    address: string;
+    chainId: number;
+    balance: string;
+    decimals: number;
+  };
 }
 
 // Exchange rate data
@@ -843,15 +850,22 @@ export function UnifiedLanding() {
                                           exchangeRate: tokenPrice * usdToInrRate
                                         }));
                                       } else {
-                                        // Mandatory USDC conversion step first
-                                        setCurrentStep('gasless-swap');
+                                        // Set selected token for direct transfer during INR withdrawal
                                         setRemittanceState(prev => ({
                                           ...prev,
                                           fromToken: token.symbol,
                                           amount: token.formattedBalance,
                                           toAmount: inrValue,
-                                          exchangeRate: tokenPrice * usdToInrRate
+                                          exchangeRate: tokenPrice * usdToInrRate,
+                                          selectedTokenData: {
+                                            symbol: token.symbol,
+                                            address: token.address,
+                                            chainId: token.chainId,
+                                            balance: token.formattedBalance,
+                                            decimals: token.decimals
+                                          }
                                         }));
+                                        setCurrentStep('kyc');
                                       }
                                     }}
                                   >
