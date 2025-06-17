@@ -19,6 +19,7 @@ import { StablePayMinimal } from "@/pages/stablepay-minimal";
 import { RemittancePlatform } from "@/pages/remittance-platform";
 import { UnifiedLanding } from "@/pages/unified-landing";
 import { AdminConfig } from "@/pages/admin-config";
+import Web3FinancialServices from "@/pages/web3-financial-services";
 
 
 function Router() {
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/remittance" component={Remittance} />
       <Route path="/home" component={AnimatedHome} />
       <Route path="/convert" component={StablePayConversion} />
+      <Route path="/web3-services" component={Web3FinancialServices} />
       <Route component={NotFound} />
     </Switch>
   );
