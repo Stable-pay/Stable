@@ -53,7 +53,7 @@ import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTok
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // Core remittance state and types
-type StepType = 'landing' | 'wallet-connected' | 'direct-transfer' | 'swap' | 'kyc' | 'transfer' | 'complete';
+type StepType = 'landing' | 'wallet-connected' | 'kyc' | 'transfer' | 'complete';
 
 interface RemittanceState {
   step: StepType;
