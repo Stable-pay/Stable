@@ -200,6 +200,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Created new user flow step 'gasless-swap' for seamless crypto-to-USDC conversions before INR off-ramping
 - June 17, 2025: Implemented 0x Swap API endpoints supporting 7 major chains (Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, Avalanche)
 - June 17, 2025: Enhanced unified landing page with gasless swap option as primary conversion method alongside regular token conversion
+- June 17, 2025: Implemented mandatory USDC conversion step - all tokens must convert to USDC before INR conversion
+- June 17, 2025: Updated Web3 Financial Services section with enhanced content and brand-consistent purple/cream icons
+- June 17, 2025: Added two-step conversion process visualization (Token → USDC → INR) with clear user flow indicators
+- June 17, 2025: Enhanced Buy Crypto, Send, and Activity buttons with proper Reown AppKit integration
+- June 17, 2025: Updated gasless swap interface to display mandatory USDC conversion messaging and step-based flow
 
 ## User Preferences
 

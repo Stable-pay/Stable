@@ -48,6 +48,7 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
 
   const [selectedToken, setSelectedToken] = useState<any>(null);
   const [sellAmount, setSellAmount] = useState('');
+  const [buyToken, setBuyToken] = useState('USDC'); // Force USDC as target token
   const [buyAmount, setBuyAmount] = useState('');
   const [quote, setQuote] = useState<SwapQuote | null>(null);
   const [isLoadingQuote, setIsLoadingQuote] = useState(false);
@@ -237,9 +238,15 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
       <CardHeader>
         <CardTitle className="text-[#6667AB] flex items-center gap-2">
           <Zap className="w-6 h-6" />
-          Instant Swap to USDC
-          <Badge className="bg-green-500 text-white">Zero Gas</Badge>
+          Step 1: Convert to USDC
+          <Badge className="bg-[#6667AB] text-[#FCFBF4]">Zero Gas</Badge>
         </CardTitle>
+        <div className="bg-[#6667AB]/10 border border-[#6667AB]/30 rounded-lg p-3 mt-3">
+          <p className="text-[#6667AB] text-sm font-medium mb-2">Mandatory USDC Conversion</p>
+          <p className="text-[#6667AB]/80 text-xs">
+            All tokens must be converted to USDC first before INR conversion. This ensures optimal rates and compliance with our banking partners.
+          </p>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {error && (

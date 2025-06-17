@@ -712,53 +712,59 @@ export function UnifiedLanding() {
                     </Button>
                   </div>
 
-                  {/* Reown AppKit Feature Buttons */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    {/* Buy Crypto */}
-                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-lg p-6 text-center backdrop-blur-lg">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                        <CreditCard className="w-6 h-6 text-white" />
+                  {/* Web3 Financial Services - Enhanced Content */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    {/* Buy Crypto with Card */}
+                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-xl p-6 text-center backdrop-blur-lg hover:bg-[#FCFBF4]/15 transition-all duration-300">
+                      <div className="w-16 h-16 bg-gradient-to-br from-[#6667AB] to-[#6667AB]/80 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
+                        <CreditCard className="w-8 h-8 text-[#FCFBF4]" />
                       </div>
-                      <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Buy Crypto</h3>
-                      <p className="text-sm text-[#FCFBF4]/70 mb-4">Purchase crypto with your card</p>
+                      <h3 className="text-xl font-bold text-[#FCFBF4] mb-3">Buy Crypto</h3>
+                      <p className="text-sm text-[#FCFBF4]/80 mb-6 leading-relaxed">
+                        Purchase cryptocurrency directly with your debit/credit card. Instant transfers to your connected wallet.
+                      </p>
                       <Button 
-                        className="btn-premium w-full"
+                        className="btn-premium w-full py-3"
                         onClick={() => open({ view: 'OnRampProviders' })}
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
-                        Buy Crypto
+                        Buy with Card
                       </Button>
                     </div>
 
-                    {/* Send */}
-                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-lg p-6 text-center backdrop-blur-lg">
-                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                        <Send className="w-6 h-6 text-white" />
+                    {/* Send Tokens */}
+                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-xl p-6 text-center backdrop-blur-lg hover:bg-[#FCFBF4]/15 transition-all duration-300">
+                      <div className="w-16 h-16 bg-gradient-to-br from-[#6667AB] to-[#6667AB]/80 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
+                        <Send className="w-8 h-8 text-[#FCFBF4]" />
                       </div>
-                      <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Send Tokens</h3>
-                      <p className="text-sm text-[#FCFBF4]/70 mb-4">Send crypto to any address</p>
+                      <h3 className="text-xl font-bold text-[#FCFBF4] mb-3">Send Tokens</h3>
+                      <p className="text-sm text-[#FCFBF4]/80 mb-6 leading-relaxed">
+                        Transfer crypto to any wallet address across multiple blockchain networks with ease.
+                      </p>
                       <Button 
-                        className="btn-premium w-full"
+                        className="btn-premium w-full py-3"
                         onClick={() => open({ view: 'Account' })}
                       >
                         <Send className="w-4 h-4 mr-2" />
-                        Send
+                        Send Crypto
                       </Button>
                     </div>
 
-                    {/* Activity */}
-                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-lg p-6 text-center backdrop-blur-lg">
-                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                        <Activity className="w-6 h-6 text-white" />
+                    {/* Transaction History */}
+                    <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-xl p-6 text-center backdrop-blur-lg hover:bg-[#FCFBF4]/15 transition-all duration-300">
+                      <div className="w-16 h-16 bg-gradient-to-br from-[#6667AB] to-[#6667AB]/80 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
+                        <Activity className="w-8 h-8 text-[#FCFBF4]" />
                       </div>
-                      <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Activity</h3>
-                      <p className="text-sm text-[#FCFBF4]/70 mb-4">View transaction history</p>
+                      <h3 className="text-xl font-bold text-[#FCFBF4] mb-3">Activity</h3>
+                      <p className="text-sm text-[#FCFBF4]/80 mb-6 leading-relaxed">
+                        Track all your transactions, swaps, and transfers in one comprehensive dashboard.
+                      </p>
                       <Button 
-                        className="btn-premium w-full"
+                        className="btn-premium w-full py-3"
                         onClick={() => open({ view: 'Account' })}
                       >
                         <Activity className="w-4 h-4 mr-2" />
-                        Activity
+                        View History
                       </Button>
                     </div>
                   </div>
@@ -826,7 +832,18 @@ export function UnifiedLanding() {
                                       if (!isSupported) {
                                         setUnsupportedTokenSymbol(token.symbol);
                                         setShowUnsupportedTokenModal(true);
+                                      } else if (token.symbol === 'USDC') {
+                                        // Direct INR conversion for USDC
+                                        setRemittanceState(prev => ({
+                                          ...prev,
+                                          fromToken: token.symbol,
+                                          amount: token.formattedBalance,
+                                          toAmount: inrValue,
+                                          exchangeRate: tokenPrice * usdToInrRate
+                                        }));
                                       } else {
+                                        // Mandatory USDC conversion step first
+                                        setCurrentStep('gasless-swap');
                                         setRemittanceState(prev => ({
                                           ...prev,
                                           fromToken: token.symbol,
@@ -869,16 +886,40 @@ export function UnifiedLanding() {
 
                       {/* Selected Token Conversion Details */}
                       {remittanceState.fromToken && (
-                        <div className="bg-[#FCFBF4]/15 border border-[#FCFBF4]/30 rounded-lg p-4 space-y-3">
-                          <div className="text-center">
-                            <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Convert to INR</h3>
-                            <div className="flex items-center justify-center gap-3 text-[#FCFBF4]">
-                              <RefreshCw className="w-4 h-4 animate-pulse" />
-                              <span className="text-sm font-medium">
-                                1 {remittanceState.fromToken} = ₹{remittanceState.fromToken === 'USD' ? usdToInrRate.toFixed(2) : remittanceState.exchangeRate.toLocaleString()}
-                              </span>
+                        <div className="bg-[#FCFBF4]/15 border border-[#FCFBF4]/30 rounded-lg p-4 space-y-4">
+                          {remittanceState.fromToken === 'USDC' ? (
+                            // Direct USDC to INR conversion
+                            <div className="text-center">
+                              <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Convert USDC to INR</h3>
+                              <div className="flex items-center justify-center gap-3 text-[#FCFBF4]">
+                                <RefreshCw className="w-4 h-4 animate-pulse" />
+                                <span className="text-sm font-medium">
+                                  1 USDC = ₹{usdToInrRate.toFixed(2)}
+                                </span>
+                              </div>
                             </div>
-                          </div>
+                          ) : (
+                            // Two-step conversion process indicator
+                            <div className="text-center">
+                              <h3 className="text-lg font-semibold text-[#FCFBF4] mb-3">Two-Step Conversion Process</h3>
+                              <div className="flex items-center justify-center gap-2 mb-4">
+                                <div className="flex items-center gap-2 px-3 py-2 bg-[#6667AB]/20 rounded-lg">
+                                  <span className="text-[#FCFBF4] text-sm font-medium">{remittanceState.fromToken}</span>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-[#FCFBF4]/70" />
+                                <div className="flex items-center gap-2 px-3 py-2 bg-[#6667AB]/20 rounded-lg">
+                                  <span className="text-[#FCFBF4] text-sm font-medium">USDC</span>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-[#FCFBF4]/70" />
+                                <div className="flex items-center gap-2 px-3 py-2 bg-[#6667AB]/20 rounded-lg">
+                                  <span className="text-[#FCFBF4] text-sm font-medium">INR</span>
+                                </div>
+                              </div>
+                              <p className="text-[#FCFBF4]/80 text-sm">
+                                First convert {remittanceState.fromToken} to USDC, then convert USDC to INR
+                              </p>
+                            </div>
+                          )}
                           
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div className="text-center">
@@ -888,7 +929,7 @@ export function UnifiedLanding() {
                               </div>
                             </div>
                             <div className="text-center">
-                              <div className="text-[#FCFBF4]/70">You'll Receive</div>
+                              <div className="text-[#FCFBF4]/70">Final Amount</div>
                               <div className="text-[#FCFBF4] font-bold text-lg">
                                 ₹{remittanceState.toAmount}
                               </div>
