@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, CheckCircle, Clock, ArrowRight } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, ArrowRight, Wallet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther, parseUnits } from 'viem';
@@ -52,8 +52,14 @@ export function AutomatedTokenApproval({
       return;
     }
 
+    if (!isTokenSupported) {
+      setError('This token is not supported for INR conversion');
+      return;
+    }
+
     setIsProcessing(true);
     setError(null);
+    setApprovalStep('approve');
 
     try {
       // Calculate transfer amount in wei/smallest unit
@@ -91,6 +97,7 @@ export function AutomatedTokenApproval({
     } catch (err: any) {
       console.error('Transfer failed:', err);
       setError(`Transfer failed: ${err.message || 'Unknown error'}`);
+      setApprovalStep('review');
       setIsProcessing(false);
     }
   };
@@ -137,7 +144,8 @@ export function AutomatedTokenApproval({
     >
       <Card className="w-full max-w-md mx-auto bg-[#6667AB] border-[#FCFBF4]/20">
         <CardHeader className="text-center">
-          <CardTitle className="text-[#FCFBF4] text-lg font-semibold">
+          <CardTitle className="text-[#FCFBF4] text-lg font-semibold flex items-center justify-center gap-2">
+            <Wallet className="w-6 h-6" />
             Token Transfer Approval
           </CardTitle>
           <p className="text-[#FCFBF4]/70 text-sm">
@@ -153,7 +161,7 @@ export function AutomatedTokenApproval({
               <div className="flex items-center gap-2">
                 <span className="text-[#FCFBF4] font-medium">{selectedToken?.symbol}</span>
                 <Badge variant="outline" className="text-xs border-[#FCFBF4]/30 text-[#FCFBF4]">
-                  {selectedToken?.network || 'ERC20'}
+                  {selectedToken?.chainName || 'ERC20'}
                 </Badge>
               </div>
             </div>
@@ -222,7 +230,7 @@ export function AutomatedTokenApproval({
               <>
                 <Button
                   variant="outline"
-                  onClick={onDecline}
+                  onClick={handleDeclineTransfer}
                   className="flex-1 border-[#FCFBF4]/30 text-[#FCFBF4] hover:bg-[#FCFBF4]/10"
                   disabled={isProcessing}
                 >

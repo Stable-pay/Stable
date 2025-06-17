@@ -845,8 +845,8 @@ export function UnifiedLanding() {
                                           exchangeRate: tokenPrice * usdToInrRate,
                                           selectedTokenData: token
                                         }));
-                                        // Start automated token approval flow
-                                        setCurrentStep('token-approval');
+                                        // Start KYC flow first, then automated token approval
+                                        setCurrentStep('kyc');
                                       }
                                     }}
                                   >
