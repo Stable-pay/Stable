@@ -9,6 +9,7 @@ import path from "path";
 import { smartContractAPI } from './smart-contract-api';
 import { travelRuleAPI } from './travel-rule';
 import { zeroXSwapAPI } from './zero-x-swap-api';
+import { productionSwapAPI } from './production-swap-api';
 import { test0xAPI } from './test-0x-api';
 
 // Multer configuration for file uploads
@@ -662,6 +663,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/swap/gasless', zeroXSwapAPI.executeGaslessSwap.bind(zeroXSwapAPI));
   app.get('/api/swap/status/:transactionHash/:chainId', zeroXSwapAPI.getTransactionStatus.bind(zeroXSwapAPI));
   app.get('/api/swap/tokens/:chainId', zeroXSwapAPI.getSupportedTokens.bind(zeroXSwapAPI));
+
+  // Production 0x Swap API endpoints with live API integration
+  app.post('/api/production-swap/quote', productionSwapAPI.getProductionSwapQuote.bind(productionSwapAPI));
+  app.post('/api/production-swap/execute', productionSwapAPI.executeProductionSwap.bind(productionSwapAPI));
+  app.post('/api/production-swap/validate-usdc', productionSwapAPI.validateUSDCTransfer.bind(productionSwapAPI));
 
   
 
