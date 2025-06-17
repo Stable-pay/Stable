@@ -42,8 +42,7 @@ import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
-import { GaslessSwapInterface } from '@/components/swap/gasless-swap-interface';
-import { ZeroXProductionSwap } from '@/components/swap/0x-production-swap';
+import { DirectTokenTransfer } from '@/components/transfer/direct-token-transfer';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
@@ -954,11 +953,11 @@ export function UnifiedLanding() {
                         <div className="grid gap-4 mb-4">
                           <Button 
                             className="w-full btn-premium text-lg py-3"
-                            onClick={() => setCurrentStep('gasless-swap')}
+                            onClick={() => setCurrentStep('direct-transfer')}
                           >
-                            <Zap className="w-5 h-5 mr-2" />
-                            StablePay Swap to USDC
-                            <Badge className="ml-2 bg-green-500 text-white">Live</Badge>
+                            <Send className="w-5 h-5 mr-2" />
+                            Direct Token Transfer
+                            <Badge className="ml-2 bg-green-500 text-white">Binance</Badge>
                           </Button>
                           
                           {remittanceState.fromToken ? (
@@ -993,7 +992,8 @@ export function UnifiedLanding() {
                   </Card>
                 </motion.div>
 
-                {/* Production 0x Protocol Swap */}
+                {/* Direct Token Transfer to Developer Wallet */}
+                {/* 
                 {currentStep === 'gasless-swap' && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
@@ -1021,6 +1021,7 @@ export function UnifiedLanding() {
                     </div>
                   </motion.div>
                 )}
+                */}
 
                 {/* Enhanced Indian KYC Flow */}
                 {currentStep === 'swap' && (
