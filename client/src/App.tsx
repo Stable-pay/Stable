@@ -17,7 +17,7 @@ import { StablePayConversion } from "@/pages/stablepay-conversion";
 import { StablePayMain } from "@/pages/stablepay-main";
 import { StablePayMinimal } from "@/pages/stablepay-minimal";
 import { RemittancePlatform } from "@/pages/remittance-platform";
-import { SimpleLanding } from "@/pages/simple-landing";
+import { MinimalStablePay } from "@/pages/minimal-stablepay";
 import { AdminConfig } from "@/pages/admin-config";
 import Web3FinancialServices from "@/pages/web3-financial-services";
 
@@ -25,7 +25,7 @@ import Web3FinancialServices from "@/pages/web3-financial-services";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={UnifiedLanding} />
+      <Route path="/" component={MinimalStablePay} />
       <Route path="/app" component={RemittancePlatform} />
       <Route path="/admin" component={AdminConfig} />
       <Route path="/swap" component={Swap} />
