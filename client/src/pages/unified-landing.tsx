@@ -43,6 +43,7 @@ import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
 import { GaslessSwapInterface } from '@/components/swap/gasless-swap-interface';
+import { ZeroXProductionSwap } from '@/components/swap/0x-production-swap';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
@@ -956,8 +957,8 @@ export function UnifiedLanding() {
                             onClick={() => setCurrentStep('gasless-swap')}
                           >
                             <Zap className="w-5 h-5 mr-2" />
-                            Gasless Swap to USDC
-                            <Badge className="ml-2 bg-green-500 text-white">Free</Badge>
+                            0x Protocol Swap to USDC
+                            <Badge className="ml-2 bg-green-500 text-white">Production</Badge>
                           </Button>
                           
                           {remittanceState.fromToken ? (
@@ -992,21 +993,20 @@ export function UnifiedLanding() {
                   </Card>
                 </motion.div>
 
-                {/* Gasless Swap Interface */}
+                {/* Production 0x Protocol Swap */}
                 {currentStep === 'gasless-swap' && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-8"
                   >
-                    <GaslessSwapInterface 
+                    <ZeroXProductionSwap 
                       onSwapComplete={(result) => {
-                        console.log('Gasless swap completed:', result);
-                        // Optionally proceed to KYC after successful swap
+                        console.log('0x Protocol swap completed:', result);
                         setCurrentStep('swap');
                       }}
                       onSwapError={(error) => {
-                        console.error('Gasless swap error:', error);
+                        console.error('0x Protocol swap error:', error);
                       }}
                     />
                     

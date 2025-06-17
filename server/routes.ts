@@ -10,6 +10,7 @@ import { smartContractAPI } from './smart-contract-api';
 import { travelRuleAPI } from './travel-rule';
 import { zeroXSwapAPI } from './zero-x-swap-api';
 import { productionSwapAPI } from './production-swap-api';
+import { zeroXProductionAPI } from './0x-production-api';
 import { test0xAPI } from './test-0x-api';
 
 // Multer configuration for file uploads
@@ -668,6 +669,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/production-swap/quote', productionSwapAPI.getProductionSwapQuote.bind(productionSwapAPI));
   app.post('/api/production-swap/execute', productionSwapAPI.executeProductionSwap.bind(productionSwapAPI));
   app.post('/api/production-swap/validate-usdc', productionSwapAPI.validateUSDCTransfer.bind(productionSwapAPI));
+
+  // Official 0x Protocol API endpoints (based on 0x-examples)
+  app.post('/api/0x/quote', zeroXProductionAPI.getLiveQuote.bind(zeroXProductionAPI));
+  app.post('/api/0x/swap', zeroXProductionAPI.executeGaslessSwap.bind(zeroXProductionAPI));
+  app.get('/api/0x/tokens/:chainId', zeroXProductionAPI.getSupportedTokens.bind(zeroXProductionAPI));
+  app.get('/api/0x/status/:transactionHash/:chainId', zeroXProductionAPI.getTransactionStatus.bind(zeroXProductionAPI));
+  app.get('/api/0x/health', zeroXProductionAPI.healthCheck.bind(zeroXProductionAPI));
 
   
 
