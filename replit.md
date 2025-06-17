@@ -242,6 +242,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Automated token approval system now executes after KYC and bank details completion with balance validation
 - June 17, 2025: Updated flow: Connect Wallet → Select Token → KYC → Bank Details → Automated Token Transfer → INR Conversion
 - June 17, 2025: All token transfers now validate against available wallet balance before execution
+- June 17, 2025: Updated admin wallet address to 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3 across all supported networks
+- June 17, 2025: Enhanced button styling with more rounded corners (rounded-2xl) for improved modern UI design
+- June 17, 2025: Fixed duplicate chains issue in multi-network token fetching with deduplication system
+- June 17, 2025: Removed outdated Two-Step Conversion Process display, now shows Direct Token to INR Conversion
+- June 17, 2025: Fixed disabled Approve Transfer button by correcting token support validation logic
 
 ## User Preferences
 

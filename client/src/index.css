@@ -48,7 +48,7 @@
     --chart-4: 262 47% 75%; /* Very light purple */
     --chart-5: 262 47% 35%; /* Very dark purple */
     
-    --radius: 0.75rem;
+    --radius: 1rem;
   }
 
   .dark {
@@ -213,7 +213,7 @@
   }
   
   .mobile-button {
-    @apply px-4 py-3 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-lg transition-all duration-300 min-h-[44px] flex items-center justify-center;
+    @apply px-4 py-3 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-2xl transition-all duration-300 min-h-[44px] flex items-center justify-center;
   }
   
   .mobile-input {
