@@ -85,7 +85,7 @@ export function DirectTokenTransfer({ onTransferComplete, onTransferError }: Dir
     }
 
     if (!isTokenSupportedByBinance(selectedToken.symbol, currentChainId)) {
-      setError('Selected token is not supported by Binance');
+      setError('This token is not supported for INR conversion');
       return;
     }
 
