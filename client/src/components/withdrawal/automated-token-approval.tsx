@@ -48,34 +48,27 @@ export function AutomatedTokenApproval({
 
   const handleApproveTransfer = async () => {
     if (!selectedToken || !address || !chainId || !developerWallet) {
-      setError('Missing required parameters for transfer');
-      return;
-    }
-
-    if (!isTokenSupported) {
-      setError('This token is not supported for INR conversion');
+      setError('Missing required information for transfer');
       return;
     }
 
     setIsProcessing(true);
     setError(null);
-    setApprovalStep('approve');
 
     try {
-      const isNativeToken = selectedToken.address === '0x0000000000000000000000000000000000000000';
-      
-      if (isNativeToken) {
-        // Native token transfer
-        const txHash = await writeContract({
+      // Calculate transfer amount in wei/smallest unit
+      const decimals = selectedToken.decimals || 18;
+      const amount = parseUnits(transferAmount, decimals);
+
+      if (selectedToken.isNative) {
+        // Native token transfer (ETH, BNB, MATIC, etc.)
+        writeContract({
           to: developerWallet as `0x${string}`,
-          value: parseEther(transferAmount),
+          value: amount,
         });
-        setTxHash(txHash as string);
       } else {
         // ERC-20 token transfer
-        const transferAmount_BN = parseUnits(transferAmount, selectedToken.decimals);
-        
-        const tx = await writeContract({
+        writeContract({
           address: selectedToken.address as `0x${string}`,
           abi: [
             {
@@ -90,19 +83,20 @@ export function AutomatedTokenApproval({
             }
           ],
           functionName: 'transfer',
-          args: [developerWallet as `0x${string}`, transferAmount_BN],
+          args: [developerWallet, amount],
         });
-        setTxHash(tx);
       }
 
       setApprovalStep('transfer');
     } catch (err: any) {
       console.error('Transfer failed:', err);
-      setError(err?.message || 'Transfer failed. Please try again.');
-      setApprovalStep('review');
-    } finally {
+      setError(`Transfer failed: ${err.message || 'Unknown error'}`);
       setIsProcessing(false);
     }
+  };
+
+  const handleDeclineTransfer = () => {
+    onDecline();
   };
 
   const getStepIcon = (step: string) => {

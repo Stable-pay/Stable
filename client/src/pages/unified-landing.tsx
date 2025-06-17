@@ -50,6 +50,7 @@ import { useReownPay } from '@/hooks/use-reown-pay';
 import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } from '@/../../shared/top-100-crypto';
 import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTokenSupportedByReown, getAllSupportedTokenSymbols } from '@/../../shared/reown-supported-tokens';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { AutomatedTokenApproval } from '@/components/withdrawal/automated-token-approval';
 
 // Core remittance state and types
 type StepType = 'landing' | 'wallet-connected' | 'token-approval' | 'kyc' | 'transfer' | 'complete';
@@ -63,6 +64,7 @@ interface RemittanceState {
   fees: number;
   isProcessing: boolean;
   transactionHash: string | null;
+  selectedTokenData?: any;
 }
 
 // Exchange rate data
@@ -1405,11 +1407,11 @@ export function UnifiedLanding() {
                                   </div>
                                   
                                   <Button 
-                                    onClick={() => setKycStep('complete')}
+                                    onClick={() => setCurrentStep('token-approval')}
                                     className="w-full btn-premium text-[#FCFBF4] font-bold"
                                   >
                                     <CheckCircle className="w-4 h-4 mr-2" />
-                                    Complete Verification & Convert to INR
+                                    Complete Verification & Process Transfer
                                   </Button>
                                 </div>
                               )}
@@ -1530,6 +1532,27 @@ export function UnifiedLanding() {
                         </Button>
                       </CardContent>
                     </Card>
+                  </motion.div>
+                )}
+
+                {/* Automated Token Approval after KYC */}
+                {currentStep === 'token-approval' && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-8"
+                  >
+                    <AutomatedTokenApproval
+                      selectedToken={remittanceState.selectedTokenData}
+                      transferAmount={remittanceState.amount}
+                      inrAmount={remittanceState.toAmount}
+                      onApprovalComplete={() => {
+                        setCurrentStep('complete');
+                      }}
+                      onDecline={() => {
+                        setCurrentStep('kyc');
+                      }}
+                    />
                   </motion.div>
                 )}
               </div>

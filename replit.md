@@ -237,6 +237,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Token transfer now integrated into INR withdrawal flow with smart contract approval/decline option
 - June 17, 2025: Updated flow: Connect Wallet → Select Token → Automated Approval → KYC → INR Withdrawal
 - June 17, 2025: Users approve/decline token transfer as part of withdrawal process instead of separate step
+- June 17, 2025: Fixed multi-network balance fetching with expanded RPC endpoints across 6 major chains (Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, Avalanche)
+- June 17, 2025: Enhanced balance fetcher with improved token detection and USD pricing for better conversion accuracy
+- June 17, 2025: Automated token approval system now executes after KYC and bank details completion with balance validation
+- June 17, 2025: Updated flow: Connect Wallet → Select Token → KYC → Bank Details → Automated Token Transfer → INR Conversion
+- June 17, 2025: All token transfers now validate against available wallet balance before execution
 
 ## User Preferences
 
