@@ -1,373 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StablePay - Automatic Token Transfer</title>
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- PWA and Mobile Optimization -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="StablePay" />
+    <meta name="theme-color" content="#6667AB" />
+    <meta name="msapplication-TileColor" content="#6667AB" />
+    <meta name="msapplication-navbutton-color" content="#6667AB" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <title>StablePay - Web3 Remittance Platform</title>
+    <meta name="description" content="Send money across borders with blockchain technology. Fast, secure, and transparent crypto-to-fiat transfers to India." />
+    <meta name="keywords" content="crypto, remittance, blockchain, web3, transfer, india, stablecoin, wallet" />
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="StablePay - Web3 Remittance Platform" />
+    <meta property="og:description" content="Send money across borders with blockchain technology" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://stablepay.app" />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="StablePay - Web3 Remittance Platform" />
+    <meta name="twitter:description" content="Send money across borders with blockchain technology" />
+    <meta name="twitter:image" content="/og-image.png" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236667AB'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" />
+    
+    <!-- Complete embedded CSS to bypass MIME type issues -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background-color: #6667AB;
+        overflow-x: hidden;
+        height: 100%;
+      }
+      
+      #root {
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+      
+      /* Loading spinner */
+      .loading-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border: 4px solid #FCFBF4;
+        border-top: 4px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 9999;
+      }
+      
+      @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      
+      /* Complete brand-consistent styles */
+      * {
+        box-sizing: border-box;
+      }
+      
+      .bg-primary { background-color: #6667AB !important; }
+      .bg-secondary { background-color: #FCFBF4 !important; }
+      .text-primary { color: #6667AB !important; }
+      .text-secondary { color: #FCFBF4 !important; }
+      
+      /* Mobile responsive utilities */
+      .mobile-button {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        min-height: 48px;
+        touch-action: manipulation;
+      }
+      
+      .btn-premium {
+        background: linear-gradient(135deg, #6667AB 0%, #8B5FBF 100%);
+        color: #FCFBF4;
+        border: none;
+        box-shadow: 0 4px 15px rgba(102, 103, 171, 0.4);
+      }
+      
+      .btn-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 103, 171, 0.6);
+      }
+      
+      .mobile-input {
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 2px solid rgba(102, 103, 171, 0.3);
+        background: white;
+        color: #6667AB;
+        font-weight: 500;
+        min-height: 48px;
+        font-size: 16px;
+      }
+      
+      .mobile-input:focus {
+        outline: none;
+        border-color: #6667AB;
+        box-shadow: 0 0 0 3px rgba(102, 103, 171, 0.1);
+      }
+      
+      .mobile-form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #6667AB;
+      }
+      
+      .mobile-form-field {
+        margin-bottom: 20px;
+      }
+      
+      .mobile-spacing {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .mobile-form-section {
+        padding: 24px;
+      }
+      
+      /* Safe area handling for iOS */
+      @supports (padding: max(0px)) {
+        .safe-area-top {
+          padding-top: max(20px, env(safe-area-inset-top));
         }
         
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: #6667AB;
-            min-height: 100vh;
-            padding: 20px;
+        .safe-area-bottom {
+          padding-bottom: max(20px, env(safe-area-inset-bottom));
         }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 16px;
-        }
-        
-        .header p {
-            color: rgba(255,255,255,0.8);
-            font-size: 1.1rem;
-        }
-        
-        .card {
-            background-color: #FCFBF4;
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .card h2 {
-            color: #6667AB;
-            margin-bottom: 24px;
-            font-size: 1.5rem;
-        }
-        
-        .info-section {
-            color: #6667AB;
-            margin-bottom: 24px;
-        }
-        
-        .info-section p {
-            margin-bottom: 16px;
-        }
-        
-        .token-info {
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-        }
-        
-        .token-info div {
-            margin-bottom: 4px;
-        }
-        
-        .wallet-address {
-            font-size: 0.8rem;
-            margin-top: 8px;
-        }
-        
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .form-field {
-            margin-bottom: 16px;
-        }
-        
-        .form-field label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #6667AB;
-            font-size: 0.9rem;
-        }
-        
-        .form-field input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 2px solid rgba(102, 103, 171, 0.3);
-            background-color: white;
-            color: #6667AB;
-            font-weight: 500;
-            min-height: 48px;
-            font-size: 16px;
-        }
-        
-        .form-field input:focus {
-            outline: none;
-            border-color: #6667AB;
-            box-shadow: 0 0 0 3px rgba(102, 103, 171, 0.1);
-        }
-        
-        .btn {
-            width: 100%;
-            background: linear-gradient(135deg, #6667AB 0%, #8B5FBF 100%);
-            color: #FCFBF4;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            min-height: 48px;
-            box-shadow: 0 4px 15px rgba(102, 103, 171, 0.4);
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 103, 171, 0.6);
-        }
-        
-        .btn:disabled {
-            background: rgba(102, 103, 171, 0.5);
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .transfer-summary {
-            background-color: #6667AB;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-        }
-        
-        .transfer-summary .title {
-            font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-        }
-        
-        .transfer-summary div {
-            margin-bottom: 4px;
-        }
-        
-        .developer-info {
-            font-size: 0.9rem;
-            margin-top: 12px;
-            opacity: 0.8;
-        }
-        
-        .processing-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .spinner {
-            width: 16px;
-            height: 16px;
-            margin-right: 8px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .success-message {
-            background-color: #6667AB;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 24px;
-        }
-        
-        .success-message .title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-        
-        .success-message div {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-bottom: 4px;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .card {
-                padding: 24px;
-            }
-        }
+      }
+      
+      /* Card styles */
+      .card {
+        background: rgba(252, 251, 244, 0.95);
+        border: 1px solid rgba(102, 103, 171, 0.2);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Badge styles */
+      .badge {
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(102, 103, 171, 0.1);
+        color: #6667AB;
+        border: 1px solid rgba(102, 103, 171, 0.2);
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>StablePay</h1>
-            <p>Convert your crypto to INR automatically</p>
-        </div>
-
-        <!-- Landing Step -->
-        <div id="landing-step" class="card">
-            <h2>Get Started with StablePay</h2>
-            <div class="info-section">
-                <p>Connect your wallet to start converting crypto to INR</p>
-                <div class="token-info">
-                    <div>• Selected Token: ETH</div>
-                    <div>• Amount: 1.0</div>
-                    <div>• Estimated INR: ₹83.25</div>
-                    <div class="wallet-address">• Will transfer to: 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3</div>
-                </div>
-            </div>
-            <button class="btn" onclick="startKyc()">Connect Wallet & Start KYC</button>
-        </div>
-
-        <!-- KYC Step -->
-        <div id="kyc-step" class="card hidden">
-            <h2>Complete KYC & Bank Details</h2>
-            <div class="form-grid">
-                <div class="form-field">
-                    <label>Account Number</label>
-                    <input type="text" id="accountNumber" placeholder="Enter account number">
-                </div>
-                <div class="form-field">
-                    <label>IFSC Code</label>
-                    <input type="text" id="ifscCode" placeholder="Enter IFSC code">
-                </div>
-                <div class="form-field">
-                    <label>Account Holder Name</label>
-                    <input type="text" id="accountHolderName" placeholder="Enter full name">
-                </div>
-                <div class="form-field">
-                    <label>Bank Name</label>
-                    <input type="text" id="bankName" placeholder="Enter bank name">
-                </div>
-            </div>
-            <button class="btn" id="completeKycBtn" onclick="completeKyc()" disabled>Complete KYC</button>
-        </div>
-
-        <!-- Transfer Step -->
-        <div id="transfer-step" class="card hidden">
-            <h2>Automatic Token Transfer & INR Withdrawal</h2>
-            
-            <div class="transfer-summary">
-                <div class="title">Transfer Summary</div>
-                <div>Token: ETH</div>
-                <div>Amount: 1.0</div>
-                <div>INR Value: ₹83.25</div>
-                <div class="developer-info">Will transfer to developer wallet: 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3</div>
-            </div>
-            
-            <button class="btn" id="transferBtn" onclick="executeAutoTransfer()">
-                Complete Verification & Convert to INR
-            </button>
-
-            <div id="success-message" class="success-message hidden">
-                <div class="title">Transfer Complete!</div>
-                <div>Token transferred automatically to developer wallet</div>
-                <div>INR bank transfer initiated: ₹83.25</div>
-            </div>
-        </div>
+  </head>
+  <body class="font-inter">
+    <div id="root">
+      <!-- Initial loading state -->
+      <div class="loading-spinner"></div>
     </div>
-
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker Registration -->
     <script>
-        function startKyc() {
-            document.getElementById('landing-step').classList.add('hidden');
-            document.getElementById('kyc-step').classList.remove('hidden');
-            validateKycForm();
-        }
-
-        function validateKycForm() {
-            const accountNumber = document.getElementById('accountNumber').value;
-            const ifscCode = document.getElementById('ifscCode').value;
-            const accountHolderName = document.getElementById('accountHolderName').value;
-            const completeKycBtn = document.getElementById('completeKycBtn');
-            
-            if (accountNumber && ifscCode && accountHolderName) {
-                completeKycBtn.disabled = false;
-            } else {
-                completeKycBtn.disabled = true;
-            }
-        }
-
-        function completeKyc() {
-            document.getElementById('kyc-step').classList.add('hidden');
-            document.getElementById('transfer-step').classList.remove('hidden');
-        }
-
-        async function executeAutoTransfer() {
-            const transferBtn = document.getElementById('transferBtn');
-            
-            // Show processing state
-            transferBtn.innerHTML = '<div class="processing-btn"><div class="spinner"></div>Processing Transfer...</div>';
-            transferBtn.disabled = true;
-            
-            try {
-                // Simulate transfer processing
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // Call backend API
-                const response = await fetch('/api/withdrawal/initiate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userAddress: '0x1234567890123456789012345678901234567890',
-                        tokenSymbol: 'ETH',
-                        tokenAmount: '1.0',
-                        chainId: 1,
-                        transferHash: `TRANSFER_${Date.now()}`,
-                        inrAmount: '83.25',
-                        bankDetails: {
-                            accountNumber: document.getElementById('accountNumber').value,
-                            ifscCode: document.getElementById('ifscCode').value,
-                            accountHolderName: document.getElementById('accountHolderName').value,
-                            bankName: document.getElementById('bankName').value
-                        }
-                    })
-                });
-
-                if (response.ok) {
-                    // Show success message
-                    document.getElementById('success-message').classList.remove('hidden');
-                    transferBtn.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Transfer failed:', error);
-                transferBtn.innerHTML = 'Transfer Failed - Try Again';
-                transferBtn.disabled = false;
-            }
-        }
-
-        // Add event listeners for form validation
-        document.getElementById('accountNumber').addEventListener('input', validateKycForm);
-        document.getElementById('ifscCode').addEventListener('input', validateKycForm);
-        document.getElementById('accountHolderName').addEventListener('input', validateKycForm);
-        document.getElementById('bankName').addEventListener('input', validateKycForm);
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
     </script>
-</body>
+    
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+  </body>
 </html>

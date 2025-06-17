@@ -28,10 +28,10 @@ import { QueryClient } from '@tanstack/react-query'
 export const queryClient = new QueryClient()
 
 // Get project ID from environment variables
-export const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'demo-project-id'
+export const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID
 
 // Validate project ID with fallback
-if (!import.meta.env.VITE_WALLETCONNECT_PROJECT_ID) {
+if (!projectId) {
   console.warn('VITE_WALLETCONNECT_PROJECT_ID is not set. Using demo mode.');
 }
 

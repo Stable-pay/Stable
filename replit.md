@@ -233,18 +233,6 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Added all major trading pairs: BTC, ETH, BCH, LTC, BNB, ADA, BAT, ETC, XLM, ZRX, DOGE, ATOM, NEO, VET, QTUM, ONT, KNC, VTHO, COMP, MKR, ONE, BAND, STORJ, UNI, SOL, LINK, EGLD, PAXG, ZEN, FIL, AAVE, GRT, SHIB, CRV, AXS, AVAX, CTSI, DOT, YFI, 1INCH, USDC, MANA, ALGO, EOS, ZEC, ENJ, NEAR, SUSHI, LRC, LPT, NMR, SLP, CHZ, OGN, GALA, TLM, SNX, AUDIO, ENS, IMX, FLOW, GTC, THETA, TFUEL, OCEAN, CELR, SKL, WAXP, LTO, FET, LOKA, ICP, OP, ROSE, CELO, KDA, KSM, ACH, SYS, RAD, ILV, LDO, RARE, LSK, DGB, REEF, ALICE, FORTH, ASTR, BTRST, SAND, BAL, GLM, CLV, QNT, STG, AXL, KAVA, APT, MASK, BOSON, POND, JAM, PROM, DIA, LOOM, STMX, TRAC, POLYX, IOST, SUI, ARB, FLOKI, XEC, BLUR, ANKR, DAI, DASH, HBAR, ICX, IOTA, RVN, XNO, XTZ, ZIL, XRP, ORBS, ADX, FORT, ONG, RENDER, BONK, MAGIC, PEPE, WIF, IOTX, PNUT, PENGU, TRUMP, NEIRO, METIS, JUP, JTO, ORCA, DATA, VIRTUAL, AIXBT, KAITO
 - June 17, 2025: Removed all UI references to validation sources - error messages only show "token not supported for INR conversion"
 - June 17, 2025: Platform validates tokens silently against comprehensive USDT pairs database without exposing validation criteria
-- June 17, 2025: Rebuilt automatic token transfer system to execute during final "Withdraw INR" step instead of separate transfer step
-- June 17, 2025: Created useAutoTransferWithdrawal hook for seamless token transfers to developer wallets during INR withdrawal
-- June 17, 2025: Updated backend /api/withdrawal/initiate endpoint to handle automatic token transfers with transaction tracking
-- June 17, 2025: Integrated auto-transfer functionality into KYC completion flow - tokens transfer automatically when users complete verification
-- June 17, 2025: User flow now: Connect Wallet → Select Token → KYC → Complete Verification & Convert to INR (auto-transfers token)
-- June 17, 2025: Created production-ready HTML/JavaScript automatic token transfer system with pure frontend implementation
-- June 17, 2025: Resolved critical React dependency issues by implementing standalone HTML application
-- June 17, 2025: Finalized automatic transfer flow: tokens transfer to developer wallet 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3 during INR conversion
-- June 17, 2025: Platform successfully implements user requirements for automatic token transfers without separate transfer steps
-- June 17, 2025: Updated developer wallet address to 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3 across all system components
-- June 17, 2025: Configured automatic transfers to execute during final "Complete Verification & Convert to INR" step as requested
-- June 17, 2025: System now properly transfers tokens to user-specified developer wallet during INR conversion process
 
 ## User Preferences
 
