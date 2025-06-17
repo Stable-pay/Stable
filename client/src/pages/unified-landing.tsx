@@ -52,7 +52,7 @@ import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTok
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // Core remittance state and types
-type StepType = 'landing' | 'wallet-connected' | 'direct-transfer' | 'swap' | 'kyc' | 'transfer' | 'complete';
+type StepType = 'landing' | 'wallet-connected' | 'token-approval' | 'kyc' | 'transfer' | 'complete';
 
 interface RemittanceState {
   step: StepType;
@@ -833,25 +833,18 @@ export function UnifiedLanding() {
                                       if (!isSupported) {
                                         setUnsupportedTokenSymbol(token.symbol);
                                         setShowUnsupportedTokenModal(true);
-                                      } else if (token.symbol === 'USDC') {
-                                        // Direct INR conversion for USDC
-                                        setRemittanceState(prev => ({
-                                          ...prev,
-                                          fromToken: token.symbol,
-                                          amount: token.formattedBalance,
-                                          toAmount: inrValue,
-                                          exchangeRate: tokenPrice * usdToInrRate
-                                        }));
                                       } else {
-                                        // Mandatory USDC conversion step first
-                                        setCurrentStep('gasless-swap');
+                                        // Set selected token for withdrawal flow
                                         setRemittanceState(prev => ({
                                           ...prev,
                                           fromToken: token.symbol,
                                           amount: token.formattedBalance,
                                           toAmount: inrValue,
-                                          exchangeRate: tokenPrice * usdToInrRate
+                                          exchangeRate: tokenPrice * usdToInrRate,
+                                          selectedTokenData: token
                                         }));
+                                        // Start automated token approval flow
+                                        setCurrentStep('token-approval');
                                       }
                                     }}
                                   >
