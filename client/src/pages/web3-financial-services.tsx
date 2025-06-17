@@ -14,15 +14,17 @@ import {
   Globe,
   TrendingUp,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Activity
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAppKitAccount } from '@reown/appkit/react';
+import { useAppKitAccount, useAppKit } from '@reown/appkit/react';
 import { GaslessSwapInterface } from '@/components/swap/gasless-swap-interface';
 import { WalletBalances } from '@/components/wallet/wallet-balances';
 
 export default function Web3FinancialServices() {
   const { isConnected } = useAppKitAccount();
+  const { open } = useAppKit();
   const [activeService, setActiveService] = useState('overview');
 
   const services = [
@@ -314,20 +316,54 @@ export default function Web3FinancialServices() {
                     </div>
                   </div>
 
-                  {/* Reown Buy Crypto Component */}
-                  <div className="border border-[#6667AB]/20 rounded-lg p-4 bg-white">
-                    <div className="text-center py-8">
-                      <CreditCard className="w-12 h-12 text-[#6667AB]/50 mx-auto mb-4" />
-                      <p className="text-[#6667AB] text-lg mb-4">Buy Crypto with Card</p>
+                  {/* Reown AppKit Feature Buttons */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Buy Crypto */}
+                    <div className="border border-[#6667AB]/20 rounded-lg p-6 bg-white text-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                        <CreditCard className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#6667AB] mb-2">Buy Crypto</h3>
+                      <p className="text-sm text-[#6667AB]/70 mb-4">Purchase crypto with your card directly to your wallet</p>
                       <Button 
-                        className="btn-premium"
-                        onClick={() => (window as any).open?.('https://buy.reown.com', '_blank')}
+                        className="btn-premium w-full"
+                        onClick={() => open({ view: 'OnRampProviders' })}
                       >
-                        Open Reown Buy Widget
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Buy Crypto
                       </Button>
-                      <p className="text-xs text-[#6667AB]/60 mt-3">
-                        Secure third-party crypto purchase service
-                      </p>
+                    </div>
+
+                    {/* Send */}
+                    <div className="border border-[#6667AB]/20 rounded-lg p-6 bg-white text-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                        <Send className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#6667AB] mb-2">Send Tokens</h3>
+                      <p className="text-sm text-[#6667AB]/70 mb-4">Send crypto to any wallet address securely</p>
+                      <Button 
+                        className="btn-premium w-full"
+                        onClick={() => open({ view: 'Account' })}
+                      >
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Tokens
+                      </Button>
+                    </div>
+
+                    {/* Activity */}
+                    <div className="border border-[#6667AB]/20 rounded-lg p-6 bg-white text-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                        <Activity className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#6667AB] mb-2">Activity</h3>
+                      <p className="text-sm text-[#6667AB]/70 mb-4">View your transaction history and activity</p>
+                      <Button 
+                        className="btn-premium w-full"
+                        onClick={() => open({ view: 'Transactions' })}
+                      >
+                        <Activity className="w-4 h-4 mr-2" />
+                        View Activity
+                      </Button>
                     </div>
                   </div>
                   
