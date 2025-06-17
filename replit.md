@@ -233,6 +233,10 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Added all major trading pairs: BTC, ETH, BCH, LTC, BNB, ADA, BAT, ETC, XLM, ZRX, DOGE, ATOM, NEO, VET, QTUM, ONT, KNC, VTHO, COMP, MKR, ONE, BAND, STORJ, UNI, SOL, LINK, EGLD, PAXG, ZEN, FIL, AAVE, GRT, SHIB, CRV, AXS, AVAX, CTSI, DOT, YFI, 1INCH, USDC, MANA, ALGO, EOS, ZEC, ENJ, NEAR, SUSHI, LRC, LPT, NMR, SLP, CHZ, OGN, GALA, TLM, SNX, AUDIO, ENS, IMX, FLOW, GTC, THETA, TFUEL, OCEAN, CELR, SKL, WAXP, LTO, FET, LOKA, ICP, OP, ROSE, CELO, KDA, KSM, ACH, SYS, RAD, ILV, LDO, RARE, LSK, DGB, REEF, ALICE, FORTH, ASTR, BTRST, SAND, BAL, GLM, CLV, QNT, STG, AXL, KAVA, APT, MASK, BOSON, POND, JAM, PROM, DIA, LOOM, STMX, TRAC, POLYX, IOST, SUI, ARB, FLOKI, XEC, BLUR, ANKR, DAI, DASH, HBAR, ICX, IOTA, RVN, XNO, XTZ, ZIL, XRP, ORBS, ADX, FORT, ONG, RENDER, BONK, MAGIC, PEPE, WIF, IOTX, PNUT, PENGU, TRUMP, NEIRO, METIS, JUP, JTO, ORCA, DATA, VIRTUAL, AIXBT, KAITO
 - June 17, 2025: Removed all UI references to validation sources - error messages only show "token not supported for INR conversion"
 - June 17, 2025: Platform validates tokens silently against comprehensive USDT pairs database without exposing validation criteria
+- June 17, 2025: Implemented automated token approval system - removed direct transfer button
+- June 17, 2025: Token transfer now integrated into INR withdrawal flow with smart contract approval/decline option
+- June 17, 2025: Updated flow: Connect Wallet → Select Token → Automated Approval → KYC → INR Withdrawal
+- June 17, 2025: Users approve/decline token transfer as part of withdrawal process instead of separate step
 
 ## User Preferences
 
