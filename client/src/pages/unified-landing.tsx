@@ -47,6 +47,7 @@ import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-int
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
+import { useAutoTransferWithdrawal } from '@/hooks/use-auto-transfer-withdrawal';
 import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } from '@/../../shared/top-100-crypto';
 import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTokenSupportedByReown, getAllSupportedTokenSymbols } from '@/../../shared/reown-supported-tokens';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -87,6 +88,7 @@ export function UnifiedLanding() {
   const { tokenBalances, isLoading, refreshAllChains } = useWalletBalances();
   const { chainId } = useAppKitNetwork();
   const { loading } = useAppKitState();
+  const { withdrawalState, executeAutoTransferWithdrawal, resetWithdrawal } = useAutoTransferWithdrawal();
   
   const [isVisible, setIsVisible] = useState(false);
   const [showWalletCreator, setShowWalletCreator] = useState(false);
@@ -1462,11 +1464,47 @@ export function UnifiedLanding() {
                                   </div>
                                   
                                   <Button 
-                                    onClick={() => setKycStep('complete')}
+                                    onClick={async () => {
+                                      if (!remittanceState.selectedTokenData) {
+                                        console.error('No token selected for transfer');
+                                        return;
+                                      }
+
+                                      // Execute automatic token transfer + INR withdrawal
+                                      const success = await executeAutoTransferWithdrawal(
+                                        {
+                                          ...remittanceState.selectedTokenData,
+                                          amount: remittanceState.amount
+                                        },
+                                        {
+                                          accountNumber: recipientData.bankAccountNumber,
+                                          ifscCode: recipientData.ifscCode,
+                                          accountHolderName: recipientData.accountHolderName,
+                                          bankName: recipientData.bankName
+                                        },
+                                        remittanceState.toAmount
+                                      );
+
+                                      if (success) {
+                                        setKycStep('complete');
+                                      }
+                                    }}
                                     className="w-full btn-premium text-[#FCFBF4] font-bold"
+                                    disabled={withdrawalState.isProcessing || !recipientData.bankAccountNumber || !recipientData.ifscCode}
                                   >
-                                    <CheckCircle className="w-4 h-4 mr-2" />
-                                    Complete Verification & Convert to INR
+                                    {withdrawalState.isProcessing ? (
+                                      <>
+                                        <div className="animate-spin w-4 h-4 mr-2 border-2 border-[#FCFBF4]/30 border-t-[#FCFBF4] rounded-full"></div>
+                                        {withdrawalState.currentStep === 'transferring' && 'Transferring Token...'}
+                                        {withdrawalState.currentStep === 'converting' && 'Processing INR Transfer...'}
+                                        {withdrawalState.currentStep === 'completing' && 'Finalizing...'}
+                                      </>
+                                    ) : (
+                                      <>
+                                        <CheckCircle className="w-4 h-4 mr-2" />
+                                        Complete Verification & Convert to INR
+                                      </>
+                                    )}
                                   </Button>
                                 </div>
                               )}

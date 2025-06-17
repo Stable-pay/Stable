@@ -28,7 +28,7 @@ interface BankDetails {
 
 export function useAutoTransferWithdrawal() {
   const { address, isConnected } = useAppKitAccount();
-  const { walletProvider } = useAppKitProvider();
+  const { walletProvider } = useAppKitProvider('eip155');
   
   const [withdrawalState, setWithdrawalState] = useState<AutoTransferWithdrawalState>({
     isProcessing: false,
@@ -80,7 +80,10 @@ export function useAutoTransferWithdrawal() {
       }
 
       // Create provider and contract
-      const provider = new BrowserProvider(walletProvider);
+      if (!walletProvider) {
+        throw new Error('Wallet provider not available');
+      }
+      const provider = new BrowserProvider(walletProvider as any);
       const signer = await provider.getSigner();
 
       let transferHash: string;
