@@ -35,6 +35,9 @@ export class ZeroXSwapAPI {
    */
   async getSwapQuote(req: Request, res: Response) {
     try {
+      console.log('Raw request body:', req.body);
+      console.log('Request headers:', req.headers);
+      
       const { 
         chainId, 
         sellToken, 
@@ -43,9 +46,18 @@ export class ZeroXSwapAPI {
         takerAddress 
       } = req.body;
 
+      console.log('Extracted parameters:', { chainId, sellToken, sellAmount, takerAddress, slippagePercentage });
+
       if (!chainId || !sellToken || !sellAmount || !takerAddress) {
+        console.log('Missing parameters detected:', {
+          hasChainId: !!chainId,
+          hasSellToken: !!sellToken,
+          hasSellAmount: !!sellAmount,
+          hasTakerAddress: !!takerAddress
+        });
         return res.status(400).json({
-          error: 'Missing required parameters: chainId, sellToken, sellAmount, takerAddress'
+          error: 'Missing required parameters: chainId, sellToken, sellAmount, takerAddress',
+          received: { chainId, sellToken, sellAmount, takerAddress }
         });
       }
 
@@ -63,25 +75,26 @@ export class ZeroXSwapAPI {
         });
       }
 
-      // Build 0x API URL for the specific chain
-      const apiURL = chainId === 1 
-        ? `${this.baseURL}/swap/v1/quote`
-        : `${this.baseURL}/swap/v1/quote?chainId=${chainId}`;
-
+      // Build 0x API URL - use correct endpoint structure
+      const apiURL = `${this.baseURL}/swap/v1/quote`;
+      
       const params = new URLSearchParams({
+        chainId: chainId.toString(),
         sellToken,
         buyToken,
         sellAmount,
         slippagePercentage,
         takerAddress,
-        enableSlippageProtection: 'true',
-        priceImpactProtectionPercentage: '0.95'
+        skipValidation: 'true' // Skip validation for quote-only requests
       });
 
-      const response = await fetch(`${apiURL}?${params}`, {
+      console.log('0x API Request URL:', `${apiURL}?${params.toString()}`);
+
+      const response = await fetch(`${apiURL}?${params.toString()}`, {
+        method: 'GET',
         headers: {
           '0x-api-key': this.apiKey,
-          'Content-Type': 'application/json'
+          'Accept': 'application/json'
         }
       });
 

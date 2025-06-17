@@ -345,40 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Advanced swap quote endpoint
-  app.post('/api/swap/quote', async (req, res) => {
-    try {
-      const { fromToken, toToken, amount, userAddress } = req.body;
-
-      // Get real-time token prices using external API
-      const fromPrice = await getTokenPrice(fromToken);
-      const toPrice = await getTokenPrice(toToken);
-
-      const fromAmountNum = parseFloat(amount);
-      const exchangeRate = fromPrice / toPrice;
-      const slippage = 0.005; // 0.5% slippage
-      const priceImpact = Math.min(fromAmountNum * 0.001, 3); // Price impact based on amount
-
-      const toAmount = (fromAmountNum * exchangeRate * (1 - slippage)).toFixed(6);
-      const gasEstimate = "0.0045"; // Estimated gas in ETH
-
-      const quote = {
-        fromToken,
-        toToken,
-        fromAmount: amount,
-        toAmount,
-        priceImpact,
-        gasEstimate,
-        exchangeRate: exchangeRate.toFixed(6),
-        timestamp: Date.now()
-      };
-
-      res.json(quote);
-    } catch (error) {
-      console.error('Swap quote error:', error);
-      res.status(500).json({ error: 'Failed to get swap quote' });
-    }
-  });
+  // Legacy swap quote endpoint (removed - replaced by 0x Protocol)
 
   // Execute swap endpoint
   app.post('/api/swap/execute', async (req, res) => {
