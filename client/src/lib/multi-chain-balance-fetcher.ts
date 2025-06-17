@@ -207,10 +207,11 @@ export class MultiChainBalanceFetcher {
       })
     );
 
-    // Sort by USD value descending
-    return allBalances
-      .filter(balance => parseFloat(balance.formattedBalance) > 0)
-      .sort((a, b) => b.usdValue - a.usdValue);
+    // Remove duplicates and sort by USD value descending
+    const uniqueBalances = this.deduplicateBalances(allBalances);
+    return uniqueBalances
+      .filter((balance: TokenBalance) => parseFloat(balance.formattedBalance) > 0)
+      .sort((a: TokenBalance, b: TokenBalance) => b.usdValue - a.usdValue);
   }
 
   private async fetchChainBalances(walletAddress: string, chainId: number): Promise<TokenBalance[]> {
@@ -283,6 +284,23 @@ export class MultiChainBalanceFetcher {
     }
 
     return balances;
+  }
+
+  // Deduplicate balances by creating unique keys for each token-chain combination
+  private deduplicateBalances(balances: TokenBalance[]): TokenBalance[] {
+    const uniqueBalances = new Map<string, TokenBalance>();
+    
+    balances.forEach(balance => {
+      // Create unique key: symbol-chainId-address
+      const key = `${balance.symbol}-${balance.chainId}-${balance.address}`;
+      
+      // Keep the balance with higher USD value if duplicate
+      if (!uniqueBalances.has(key) || uniqueBalances.get(key)!.usdValue < balance.usdValue) {
+        uniqueBalances.set(key, balance);
+      }
+    });
+    
+    return Array.from(uniqueBalances.values());
   }
 
   private async getTokenPrice(symbol: string): Promise<number> {

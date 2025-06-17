@@ -895,25 +895,15 @@ export function UnifiedLanding() {
                               </div>
                             </div>
                           ) : (
-                            // Two-step conversion process indicator
+                            // Direct token to INR conversion
                             <div className="text-center">
-                              <h3 className="text-lg font-semibold text-[#FCFBF4] mb-3">Two-Step Conversion Process</h3>
-                              <div className="flex items-center justify-center gap-2 mb-4">
-                                <div className="flex items-center gap-2 px-3 py-2 bg-[#6667AB]/20 rounded-lg">
-                                  <span className="text-[#FCFBF4] text-sm font-medium">{remittanceState.fromToken}</span>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-[#FCFBF4]/70" />
-                                <div className="flex items-center gap-2 px-3 py-2 bg-[#6667AB]/20 rounded-lg">
-                                  <span className="text-[#FCFBF4] text-sm font-medium">USDC</span>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-[#FCFBF4]/70" />
-                                <div className="flex items-center gap-2 px-3 py-2 bg-[#6667AB]/20 rounded-lg">
-                                  <span className="text-[#FCFBF4] text-sm font-medium">INR</span>
-                                </div>
+                              <h3 className="text-lg font-semibold text-[#FCFBF4] mb-2">Direct Token to INR Conversion</h3>
+                              <div className="flex items-center justify-center gap-3 text-[#FCFBF4]">
+                                <RefreshCw className="w-4 h-4 animate-pulse" />
+                                <span className="text-sm font-medium">
+                                  {remittanceState.fromToken} → INR ₹{remittanceState.toAmount}
+                                </span>
                               </div>
-                              <p className="text-[#FCFBF4]/80 text-sm">
-                                First convert {remittanceState.fromToken} to USDC, then convert USDC to INR
-                              </p>
                             </div>
                           )}
                           

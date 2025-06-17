@@ -35,7 +35,7 @@ export function AutomatedTokenApproval({
   });
 
   const developerWallet = getDeveloperWallet(chainId || 1);
-  const isTokenSupported = isTokenSupportedByBinance(selectedToken?.symbol || '', chainId || 1);
+  const isTokenSupported = selectedToken ? isTokenSupportedByBinance(selectedToken.symbol, selectedToken.chainId || chainId || 1) : false;
 
   useEffect(() => {
     if (isTxSuccess && approvalStep === 'transfer') {
