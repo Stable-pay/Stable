@@ -373,7 +373,8 @@ export const getAllSupportedBinanceChainIds = (): number[] => {
 };
 
 export const getAllSupportedBinanceTokenSymbols = (): string[] => {
-  return [...new Set(BINANCE_SUPPORTED_TOKENS
+  const uniqueSymbols = new Set(BINANCE_SUPPORTED_TOKENS
     .filter(token => token.binanceSupported)
-    .map(token => token.symbol))];
+    .map(token => token.symbol));
+  return Array.from(uniqueSymbols);
 };

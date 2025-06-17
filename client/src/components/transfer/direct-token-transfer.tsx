@@ -23,7 +23,7 @@ import {
   getBinanceChainById,
   isTokenSupportedByBinance,
   getDeveloperWallet
-} from '@/shared/binance-supported-tokens';
+} from '@/../../shared/binance-supported-tokens';
 
 interface DirectTokenTransferProps {
   onTransferComplete?: (result: any) => void;
@@ -51,13 +51,14 @@ export function DirectTokenTransfer({ onTransferComplete, onTransferError }: Dir
   const [usdToInrRate, setUsdToInrRate] = useState(84.25);
 
   // Filter for Binance-supported tokens only
+  const currentChainId = chainId as number || 1;
   const binanceSupportedTokens = tokenBalances.filter((token: any) => {
-    return isTokenSupportedByBinance(token.symbol, chainId || 1) && 
+    return isTokenSupportedByBinance(token.symbol, currentChainId) && 
            parseFloat(token.formattedBalance) > 0;
   });
 
-  const currentChain = getBinanceChainById(chainId || 1);
-  const developerWallet = getDeveloperWallet(chainId || 1);
+  const currentChain = getBinanceChainById(currentChainId);
+  const developerWallet = getDeveloperWallet(currentChainId);
 
   useEffect(() => {
     const fetchExchangeRate = async () => {
@@ -78,12 +79,12 @@ export function DirectTokenTransfer({ onTransferComplete, onTransferError }: Dir
   }, []);
 
   const executeDirectTransfer = async () => {
-    if (!selectedToken || !transferAmount || !address || !chainId || !developerWallet) {
+    if (!selectedToken || !transferAmount || !address || !currentChainId || !developerWallet) {
       setError('Missing required parameters for transfer');
       return;
     }
 
-    if (!isTokenSupportedByBinance(selectedToken.symbol, chainId)) {
+    if (!isTokenSupportedByBinance(selectedToken.symbol, currentChainId)) {
       setError('Selected token is not supported by Binance');
       return;
     }

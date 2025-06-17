@@ -52,7 +52,7 @@ import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTok
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // Core remittance state and types
-type StepType = 'landing' | 'wallet-connected' | 'gasless-swap' | 'swap' | 'kyc' | 'transfer' | 'complete';
+type StepType = 'landing' | 'wallet-connected' | 'direct-transfer' | 'swap' | 'kyc' | 'transfer' | 'complete';
 
 interface RemittanceState {
   step: StepType;
@@ -993,20 +993,19 @@ export function UnifiedLanding() {
                 </motion.div>
 
                 {/* Direct Token Transfer to Developer Wallet */}
-                {/* 
-                {currentStep === 'gasless-swap' && (
+                {currentStep === 'direct-transfer' && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-8"
                   >
-                    <ZeroXProductionSwap 
-                      onSwapComplete={(result) => {
-                        console.log('0x Protocol swap completed:', result);
+                    <DirectTokenTransfer 
+                      onTransferComplete={(result) => {
+                        console.log('Direct transfer completed:', result);
                         setCurrentStep('swap');
                       }}
-                      onSwapError={(error) => {
-                        console.error('0x Protocol swap error:', error);
+                      onTransferError={(error) => {
+                        console.error('Direct transfer error:', error);
                       }}
                     />
                     
@@ -1021,7 +1020,6 @@ export function UnifiedLanding() {
                     </div>
                   </motion.div>
                 )}
-                */}
 
                 {/* Enhanced Indian KYC Flow */}
                 {currentStep === 'swap' && (

@@ -219,6 +219,12 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Updated swap interface titles from "0x Protocol" to "StablePay Gasless Swap" for consistent branding
 - June 17, 2025: Verified PWA functionality with proper manifest.json, service worker, and mobile-responsive design
 - June 17, 2025: Enhanced mobile optimization with safe area handling, touch-friendly buttons, and responsive layouts
+- June 17, 2025: Commented out StablePay Gasless swap component and rebuilt conversion process with direct token transfers
+- June 17, 2025: Created comprehensive Binance-supported tokens and chains database (6 networks, 20+ tokens verified from binance.com)
+- June 17, 2025: Implemented DirectTokenTransfer component for automatic transfers to developer-controlled wallets
+- June 17, 2025: Added developer wallet addresses for each supported chain (Ethereum, BSC, Polygon, Avalanche, Arbitrum, Optimism)
+- June 17, 2025: Platform now uses only Binance-supported tokens and networks for all conversions and transfers
+- June 17, 2025: Updated conversion flow: Connect Wallet → Select Binance Token → Direct Transfer → KYC → INR Conversion
 
 ## User Preferences
 
