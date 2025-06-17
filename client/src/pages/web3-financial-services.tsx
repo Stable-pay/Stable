@@ -316,7 +316,19 @@ export default function Web3FinancialServices() {
 
                   {/* Reown Buy Crypto Component */}
                   <div className="border border-[#6667AB]/20 rounded-lg p-4 bg-white">
-                    <w3m-onramp-widget />
+                    <div className="text-center py-8">
+                      <CreditCard className="w-12 h-12 text-[#6667AB]/50 mx-auto mb-4" />
+                      <p className="text-[#6667AB] text-lg mb-4">Buy Crypto with Card</p>
+                      <Button 
+                        className="btn-premium"
+                        onClick={() => (window as any).open?.('https://buy.reown.com', '_blank')}
+                      >
+                        Open Reown Buy Widget
+                      </Button>
+                      <p className="text-xs text-[#6667AB]/60 mt-3">
+                        Secure third-party crypto purchase service
+                      </p>
+                    </div>
                   </div>
                   
                   <div className="mt-4 text-xs text-[#6667AB]/60 text-center">

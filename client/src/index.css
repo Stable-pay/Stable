@@ -313,6 +313,104 @@
   .btn-premium, .btn-premium:hover, .btn-premium:active, .btn-premium:focus {
     color: #FCFBF4 !important;
   }
+
+  /* Dropdown and Select Component Text Visibility Fixes */
+  [data-radix-select-content] {
+    background: white !important;
+    border: 1px solid rgba(102, 103, 171, 0.3) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2) !important;
+  }
+
+  [data-radix-select-item] {
+    color: #6667AB !important;
+    padding: 0.75rem 1rem !important;
+    cursor: pointer !important;
+    outline: none !important;
+    border-radius: 0.25rem !important;
+  }
+
+  [data-radix-select-item]:hover {
+    background-color: rgba(102, 103, 171, 0.1) !important;
+  }
+
+  [data-radix-select-item][data-highlighted] {
+    background-color: rgba(102, 103, 171, 0.1) !important;
+    color: #6667AB !important;
+  }
+
+  [data-radix-select-trigger] {
+    color: #6667AB !important;
+    background: white !important;
+    border: 1px solid rgba(102, 103, 171, 0.3) !important;
+  }
+
+  /* SelectContent and SelectItem class-based fixes */
+  .select-content {
+    background: white !important;
+    color: #6667AB !important;
+    border: 1px solid rgba(102, 103, 171, 0.3) !important;
+  }
+
+  .select-item {
+    color: #6667AB !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  .select-item:hover {
+    background-color: rgba(102, 103, 171, 0.1) !important;
+    color: #6667AB !important;
+  }
+
+  /* Role-based dropdown fixes */
+  [role="option"] {
+    color: #6667AB !important;
+    background: white !important;
+  }
+
+  [role="option"]:hover {
+    background-color: rgba(102, 103, 171, 0.1) !important;
+  }
+
+  [role="listbox"] {
+    background: white !important;
+    border: 1px solid rgba(102, 103, 171, 0.3) !important;
+  }
+
+  /* Comprehensive dropdown content fixes */
+  .dropdown-content,
+  .select-dropdown,
+  [data-radix-popper-content-wrapper] {
+    background: white !important;
+    color: #6667AB !important;
+    border: 1px solid rgba(102, 103, 171, 0.3) !important;
+    box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35) !important;
+  }
+
+  /* Ensure all nested dropdown elements are visible */
+  .dropdown-content > *,
+  .select-dropdown > *,
+  [data-radix-popper-content-wrapper] > * {
+    color: #6667AB !important;
+  }
+
+  /* Additional specificity for persistent dropdown issues */
+  div[role="listbox"] > div,
+  div[role="listbox"] > div > *,
+  [data-radix-select-content] > div,
+  [data-radix-select-content] > div > *,
+  [data-radix-select-viewport] > div,
+  [data-radix-select-viewport] > div > * {
+    color: #6667AB !important;
+  }
+
+  /* Universal dropdown text fix with highest specificity */
+  [class*="select"] [class*="content"] *,
+  [class*="dropdown"] [class*="content"] *,
+  [data-radix-select-content] *,
+  [data-radix-select-viewport] * {
+    color: #6667AB !important;
+  }
   
   /* Modal Optimizations */
   .mobile-modal {
