@@ -30,24 +30,28 @@ export interface NetworkConfig {
   }>;
 }
 
-// Comprehensive network configurations
+// Comprehensive network configurations with all major chains
 const NETWORK_CONFIGS: NetworkConfig[] = [
   {
     chainId: 1,
     name: 'Ethereum',
-    rpcUrl: 'https://eth.llamarpc.com',
+    rpcUrl: 'https://eth.drpc.org',
     nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0xA0b86a33E6441e95e2c2b08ae91e8e6B0e5C3CB2', decimals: 6 },
       { symbol: 'USDT', name: 'Tether USD', address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', decimals: 6 },
       { symbol: 'DAI', name: 'Dai Stablecoin', address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', decimals: 18 },
-      { symbol: 'WETH', name: 'Wrapped Ether', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', decimals: 18 }
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', decimals: 18 },
+      { symbol: 'WBTC', name: 'Wrapped Bitcoin', address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', decimals: 8 },
+      { symbol: 'UNI', name: 'Uniswap', address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', decimals: 18 },
+      { symbol: 'LINK', name: 'Chainlink', address: '0x514910771AF9Ca656af840dff83E8264EcF986CA', decimals: 18 },
+      { symbol: 'PEPE', name: 'Pepe', address: '0x6982508145454Ce325dDbE47a25d4ec3d2311933', decimals: 18 }
     ]
   },
   {
     chainId: 137,
     name: 'Polygon',
-    rpcUrl: 'https://polygon.llamarpc.com',
+    rpcUrl: 'https://polygon.drpc.org',
     nativeToken: { symbol: 'MATIC', name: 'Polygon', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6 },
@@ -104,9 +108,58 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
     ]
   },
   {
+    chainId: 56,
+    name: 'BNB Smart Chain',
+    rpcUrl: 'https://bsc.drpc.org',
+    nativeToken: { symbol: 'BNB', name: 'BNB', decimals: 18 },
+    tokens: [
+      { symbol: 'USDC', name: 'USD Coin', address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', decimals: 18 },
+      { symbol: 'USDT', name: 'Tether USD', address: '0x55d398326f99059fF775485246999027B3197955', decimals: 18 },
+      { symbol: 'BUSD', name: 'Binance USD', address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', decimals: 18 },
+      { symbol: 'WBNB', name: 'Wrapped BNB', address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', decimals: 18 },
+      { symbol: 'CAKE', name: 'PancakeSwap Token', address: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', decimals: 18 },
+      { symbol: 'ADA', name: 'Cardano Token', address: '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47', decimals: 18 }
+    ]
+  },
+  {
+    chainId: 42161,
+    name: 'Arbitrum',
+    rpcUrl: 'https://arbitrum.drpc.org',
+    nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+    tokens: [
+      { symbol: 'USDC', name: 'USD Coin', address: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', decimals: 6 },
+      { symbol: 'USDT', name: 'Tether USD', address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', decimals: 6 },
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', decimals: 18 },
+      { symbol: 'ARB', name: 'Arbitrum', address: '0x912CE59144191C1204E64559FE8253a0e49E6548', decimals: 18 }
+    ]
+  },
+  {
+    chainId: 10,
+    name: 'Optimism',
+    rpcUrl: 'https://optimism.drpc.org',
+    nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+    tokens: [
+      { symbol: 'USDC', name: 'USD Coin', address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6 },
+      { symbol: 'USDT', name: 'Tether USD', address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', decimals: 6 },
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x4200000000000000000000000000000000000006', decimals: 18 },
+      { symbol: 'OP', name: 'Optimism', address: '0x4200000000000000000000000000000000000042', decimals: 18 }
+    ]
+  },
+  {
+    chainId: 8453,
+    name: 'Base',
+    rpcUrl: 'https://base.drpc.org',
+    nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+    tokens: [
+      { symbol: 'USDC', name: 'USD Coin', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', decimals: 6 },
+      { symbol: 'DAI', name: 'Dai Stablecoin', address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb', decimals: 18 },
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x4200000000000000000000000000000000000006', decimals: 18 }
+    ]
+  },
+  {
     chainId: 43114,
     name: 'Avalanche',
-    rpcUrl: 'https://avalanche.llamarpc.com',
+    rpcUrl: 'https://avalanche.drpc.org',
     nativeToken: { symbol: 'AVAX', name: 'Avalanche', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', decimals: 6 },

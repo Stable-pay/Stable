@@ -944,19 +944,10 @@ export function UnifiedLanding() {
                       {/* Action Buttons */}
                       <div className="space-y-4 pt-6">
                         <div className="grid gap-4 mb-4">
-                          <Button 
-                            className="w-full btn-premium text-lg py-3"
-                            onClick={() => setCurrentStep('direct-transfer')}
-                          >
-                            <Send className="w-5 h-5 mr-2" />
-                            Direct Token Transfer
-                            <Badge className="ml-2 bg-green-500 text-white">Binance</Badge>
-                          </Button>
-                          
                           {remittanceState.fromToken ? (
                             <Button 
-                              className="w-full btn-premium text-lg py-3 bg-[#6667AB]/80 hover:bg-[#6667AB]"
-                              onClick={() => setCurrentStep('swap')}
+                              className="w-full btn-premium text-lg py-3"
+                              onClick={() => setCurrentStep('kyc')}
                             >
                               <Send className="w-5 h-5 mr-2" />
                               Convert {remittanceState.fromToken} to INR
@@ -985,37 +976,10 @@ export function UnifiedLanding() {
                   </Card>
                 </motion.div>
 
-                {/* Direct Token Transfer to Developer Wallet */}
-                {currentStep === 'direct-transfer' && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-8"
-                  >
-                    <DirectTokenTransfer 
-                      onTransferComplete={(result) => {
-                        console.log('Direct transfer completed:', result);
-                        setCurrentStep('swap');
-                      }}
-                      onTransferError={(error) => {
-                        console.error('Direct transfer error:', error);
-                      }}
-                    />
-                    
-                    <div className="text-center mt-6">
-                      <Button 
-                        variant="ghost" 
-                        onClick={() => setCurrentStep('wallet-connected')}
-                        className="text-[#6667AB] font-semibold"
-                      >
-                        ← Back to Token Selection
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
+
 
                 {/* Enhanced Indian KYC Flow */}
-                {currentStep === 'swap' && (
+                {currentStep === 'kyc' && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
