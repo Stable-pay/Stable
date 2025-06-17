@@ -356,7 +356,7 @@ export function UnifiedLanding() {
                       {
                         step: "1",
                         title: "Connect Your Wallet",
-                        description: "Compatible with Particle Network, Reown AppKit, and all major Web3 wallets. No custody, no middlemen. Your wallet stays yours.",
+                        description: "Compatible with StablePay Connect and all major Web3 wallets. No custody, no middlemen. Your wallet stays yours.",
                         icon: <Wallet className="w-8 h-8" />
                       },
                       {
@@ -957,8 +957,8 @@ export function UnifiedLanding() {
                             onClick={() => setCurrentStep('gasless-swap')}
                           >
                             <Zap className="w-5 h-5 mr-2" />
-                            0x Protocol Swap to USDC
-                            <Badge className="ml-2 bg-green-500 text-white">Production</Badge>
+                            StablePay Swap to USDC
+                            <Badge className="ml-2 bg-green-500 text-white">Live</Badge>
                           </Button>
                           
                           {remittanceState.fromToken ? (

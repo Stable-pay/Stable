@@ -275,7 +275,7 @@ export function ZeroXProductionSwap({ onSwapComplete, onSwapError }: ZeroXProduc
       <Card className="bg-[#FCFBF4] border-[#6667AB]/30">
         <CardContent className="p-6 text-center">
           <AlertCircle className="w-12 h-12 text-[#6667AB]/50 mx-auto mb-4" />
-          <p className="text-[#6667AB] mb-4">Connect your wallet to use 0x Protocol swaps</p>
+          <p className="text-[#6667AB] mb-4">Connect your wallet to use StablePay swaps</p>
           <Button className="btn-premium">Connect Wallet</Button>
         </CardContent>
       </Card>
@@ -288,7 +288,7 @@ export function ZeroXProductionSwap({ onSwapComplete, onSwapError }: ZeroXProduc
         <CardHeader>
           <CardTitle className="text-[#6667AB] flex items-center gap-2">
             <CheckCircle className="w-6 h-6 text-green-600" />
-            0x Protocol Swap Completed
+            StablePay Swap Completed
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -334,16 +334,16 @@ export function ZeroXProductionSwap({ onSwapComplete, onSwapError }: ZeroXProduc
       <CardHeader>
         <CardTitle className="text-[#6667AB] flex items-center gap-2">
           <Zap className="w-6 h-6" />
-          0x Protocol Gasless Swap
-          <Badge className="bg-[#6667AB] text-[#FCFBF4]">Production Ready</Badge>
+          StablePay Gasless Swap
+          <Badge className="bg-[#6667AB] text-[#FCFBF4]">Live</Badge>
         </CardTitle>
         <div className="bg-[#6667AB]/10 border border-[#6667AB]/30 rounded-lg p-3 mt-3">
           <div className="flex items-center gap-2 mb-2">
             <Info className="w-4 h-4 text-[#6667AB]" />
-            <p className="text-[#6667AB] text-sm font-medium">Official 0x Protocol Integration</p>
+            <p className="text-[#6667AB] text-sm font-medium">StablePay Swap Technology</p>
           </div>
           <p className="text-[#6667AB]/80 text-xs">
-            Using live 0x API with Permit2 for optimal gas efficiency and MEV protection
+            Advanced swap infrastructure with optimal gas efficiency and MEV protection
           </p>
         </div>
       </CardHeader>
