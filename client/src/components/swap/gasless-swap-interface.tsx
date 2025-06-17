@@ -13,9 +13,12 @@ import {
   AlertCircle, 
   Loader2,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  Wallet,
+  Percent
 } from 'lucide-react';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { useWalletBalances } from '@/hooks/use-wallet-balances';
 
 interface GaslessSwapInterfaceProps {
   onSwapComplete?: (result: any) => void;
@@ -41,8 +44,9 @@ interface SwapQuote {
 export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwapInterfaceProps) {
   const { address, isConnected } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
+  const { tokenBalances, isLoading: isLoadingBalances } = useWalletBalances();
 
-  const [sellToken, setSellToken] = useState('');
+  const [selectedToken, setSelectedToken] = useState<any>(null);
   const [sellAmount, setSellAmount] = useState('');
   const [buyAmount, setBuyAmount] = useState('');
   const [quote, setQuote] = useState<SwapQuote | null>(null);
@@ -50,40 +54,15 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
   const [isExecutingSwap, setIsExecutingSwap] = useState(false);
   const [swapResult, setSwapResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [supportedTokens, setSupportedTokens] = useState<any[]>([]);
 
-  // Common tokens for quick selection
-  const commonTokens = [
-    { symbol: 'ETH', address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', name: 'Ethereum' },
-    { symbol: 'WETH', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', name: 'Wrapped Ether' },
-    { symbol: 'USDT', address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', name: 'Tether USD' },
-    { symbol: 'DAI', address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', name: 'Dai Stablecoin' },
-    { symbol: 'WBTC', address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', name: 'Wrapped Bitcoin' },
-    { symbol: 'UNI', address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', name: 'Uniswap' }
-  ];
-
-  // Load supported tokens for current chain
-  useEffect(() => {
-    if (chainId) {
-      loadSupportedTokens();
-    }
-  }, [chainId]);
-
-  const loadSupportedTokens = async () => {
-    try {
-      const response = await fetch(`/api/swap/tokens/${chainId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setSupportedTokens(data.tokens || []);
-      }
-    } catch (error) {
-      console.error('Failed to load supported tokens:', error);
-    }
-  };
+  // Filter tokens with positive balances for swapping
+  const availableTokens = tokenBalances.filter((token: any) => 
+    parseFloat(token.formattedBalance) > 0
+  );
 
   const getSwapQuote = async () => {
-    if (!sellToken || !sellAmount || !address || !chainId) {
-      setError('Please fill in all required fields');
+    if (!selectedToken || !sellAmount || !address || !chainId) {
+      setError('Please select a token and enter amount');
       return;
     }
 
@@ -91,13 +70,16 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
     setError(null);
 
     try {
+      const decimals = selectedToken.decimals || 18;
+      const sellAmountWei = (parseFloat(sellAmount) * Math.pow(10, decimals)).toString();
+      
       const response = await fetch('/api/swap/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chainId,
-          sellToken,
-          sellAmount: (parseFloat(sellAmount) * Math.pow(10, 18)).toString(), // Convert to wei
+          sellToken: selectedToken.address,
+          sellAmount: sellAmountWei,
           takerAddress: address,
           slippagePercentage: '0.01'
         })
@@ -110,7 +92,7 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
 
       const data = await response.json();
       setQuote(data.quote);
-      setBuyAmount((parseFloat(data.quote.buyAmount) / Math.pow(10, 6)).toFixed(6)); // Convert from wei to USDC
+      setBuyAmount((parseFloat(data.quote.buyAmount) / Math.pow(10, 6)).toFixed(6));
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to get swap quote');
       onSwapError?.(error instanceof Error ? error.message : 'Failed to get swap quote');
@@ -120,7 +102,7 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
   };
 
   const executeGaslessSwap = async () => {
-    if (!quote || !address || !chainId) {
+    if (!quote || !address || !chainId || !selectedToken) {
       setError('No quote available');
       return;
     }
@@ -129,13 +111,16 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
     setError(null);
 
     try {
+      const decimals = selectedToken.decimals || 18;
+      const sellAmountWei = (parseFloat(sellAmount) * Math.pow(10, decimals)).toString();
+      
       const response = await fetch('/api/swap/gasless', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chainId,
-          sellToken,
-          sellAmount: (parseFloat(sellAmount) * Math.pow(10, 18)).toString(),
+          sellToken: selectedToken.address,
+          sellAmount: sellAmountWei,
           takerAddress: address,
           slippagePercentage: '0.01'
         })
@@ -163,6 +148,24 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
     setError(null);
     setSellAmount('');
     setBuyAmount('');
+    setSelectedToken(null);
+  };
+
+  const handleTokenSelect = (tokenAddress: string) => {
+    const token = availableTokens.find(t => t.address === tokenAddress);
+    if (token) {
+      setSelectedToken(token);
+      setSellAmount('');
+      setBuyAmount('');
+      setQuote(null);
+      setError(null);
+    }
+  };
+
+  const handleMaxAmount = () => {
+    if (selectedToken) {
+      setSellAmount(selectedToken.formattedBalance);
+    }
   };
 
   if (!isConnected) {
@@ -170,7 +173,7 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
       <Card className="bg-[#FCFBF4] border-[#6667AB]/30">
         <CardContent className="p-6 text-center">
           <AlertCircle className="w-12 h-12 text-[#6667AB]/50 mx-auto mb-4" />
-          <p className="text-[#6667AB] mb-4">Connect your wallet to use gasless swaps</p>
+          <p className="text-[#6667AB] mb-4">Connect your wallet to use instant swaps</p>
           <Button className="btn-premium">Connect Wallet</Button>
         </CardContent>
       </Card>
@@ -183,7 +186,7 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
         <CardHeader>
           <CardTitle className="text-[#6667AB] flex items-center gap-2">
             <CheckCircle className="w-6 h-6 text-green-600" />
-            Gasless Swap Completed
+            Instant Swap Completed
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -197,11 +200,15 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
               </div>
               <div className="flex justify-between">
                 <span className="text-[#6667AB]/70">Swapped:</span>
-                <span className="text-[#6667AB]">{sellAmount} {swapResult.sellTokenSymbol} → {buyAmount} USDC</span>
+                <span className="text-[#6667AB]">{sellAmount} {selectedToken?.symbol} → {buyAmount} USDC</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#6667AB]/70">Network:</span>
                 <span className="text-[#6667AB]">{swapResult.chainName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#6667AB]/70">Gas Fee:</span>
+                <span className="text-green-600 font-medium">$0.00 (Zero Gas)</span>
               </div>
             </div>
           </div>
@@ -230,8 +237,8 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
       <CardHeader>
         <CardTitle className="text-[#6667AB] flex items-center gap-2">
           <Zap className="w-6 h-6" />
-          Gasless Swap to USDC
-          <Badge className="bg-green-500 text-white">0x Protocol</Badge>
+          Instant Swap to USDC
+          <Badge className="bg-green-500 text-white">Zero Gas</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -245,132 +252,189 @@ export function GaslessSwapInterface({ onSwapComplete, onSwapError }: GaslessSwa
           </div>
         )}
 
-        <div className="space-y-4">
-          {/* Sell Token Selection */}
-          <div>
-            <Label className="text-[#6667AB] font-medium">From Token</Label>
-            <Select value={sellToken} onValueChange={setSellToken}>
-              <SelectTrigger className="bg-white border-[#6667AB]/30 text-[#6667AB]">
-                <SelectValue placeholder="Select token to swap" />
-              </SelectTrigger>
-              <SelectContent>
-                {commonTokens.map((token) => (
-                  <SelectItem key={token.address} value={token.address}>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{token.symbol}</span>
-                      <span className="text-sm text-gray-600">{token.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        {/* Show loading state for wallet balances */}
+        {isLoadingBalances && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-6 h-6 animate-spin text-[#6667AB]" />
+            <span className="ml-2 text-[#6667AB]">Loading wallet balances...</span>
           </div>
+        )}
 
-          {/* Sell Amount */}
-          <div>
-            <Label className="text-[#6667AB] font-medium">Amount</Label>
-            <Input
-              type="number"
-              placeholder="0.0"
-              value={sellAmount}
-              onChange={(e) => setSellAmount(e.target.value)}
-              className="bg-white border-[#6667AB]/30 text-[#6667AB]"
-            />
+        {/* Show message when no tokens available */}
+        {!isLoadingBalances && availableTokens.length === 0 && (
+          <div className="text-center py-8">
+            <Wallet className="w-12 h-12 text-[#6667AB]/50 mx-auto mb-4" />
+            <p className="text-[#6667AB]/70 mb-2">No tokens available for swapping</p>
+            <p className="text-[#6667AB]/60 text-sm">
+              Your connected wallet doesn't have any token balances to swap
+            </p>
           </div>
+        )}
 
-          {/* Swap Arrow */}
-          <div className="flex justify-center">
-            <div className="p-2 border border-[#6667AB]/30 rounded-full bg-white">
-              <ArrowDownUp className="w-4 h-4 text-[#6667AB]" />
-            </div>
-          </div>
-
-          {/* Buy Token (Always USDC) */}
-          <div>
-            <Label className="text-[#6667AB] font-medium">To Token</Label>
-            <div className="p-3 border border-[#6667AB]/30 rounded-md bg-gray-50 flex items-center justify-between">
-              <span className="text-[#6667AB] font-medium">USDC</span>
-              <Badge className="bg-[#6667AB] text-[#FCFBF4]">Stablecoin</Badge>
-            </div>
-          </div>
-
-          {/* Buy Amount */}
-          <div>
-            <Label className="text-[#6667AB] font-medium">You will receive</Label>
-            <Input
-              type="text"
-              placeholder="0.0"
-              value={buyAmount}
-              readOnly
-              className="bg-gray-50 border-[#6667AB]/30 text-[#6667AB]"
-            />
-          </div>
-
-          <Separator />
-
-          {/* Quote Information */}
-          {quote && (
-            <div className="bg-[#6667AB]/5 rounded-lg p-4 space-y-2">
-              <h4 className="font-semibold text-[#6667AB]">Swap Details</h4>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-[#6667AB]/70">Rate:</span>
-                  <span className="text-[#6667AB]">1 {quote.sellTokenSymbol} = {parseFloat(quote.price).toFixed(6)} USDC</span>
+        {/* Token selection and swap interface */}
+        {!isLoadingBalances && availableTokens.length > 0 && (
+          <div className="space-y-4">
+            {/* Available Token Selection */}
+            <div>
+              <Label className="text-[#6667AB] font-medium">From Token (Available Balance)</Label>
+              <Select value={selectedToken?.address || ''} onValueChange={handleTokenSelect}>
+                <SelectTrigger className="bg-white border-[#6667AB]/30 text-[#6667AB]">
+                  <SelectValue placeholder="Select token from your wallet" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableTokens.map((token: any) => (
+                    <SelectItem key={token.address} value={token.address}>
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{token.symbol}</span>
+                          <span className="text-sm text-gray-600">{token.name}</span>
+                        </div>
+                        <span className="text-sm text-[#6667AB] font-medium ml-4">
+                          {parseFloat(token.formattedBalance).toFixed(6)}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedToken && (
+                <div className="mt-2 text-sm text-[#6667AB]/70">
+                  Available: {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-[#6667AB]/70">Network Fee:</span>
-                  <span className="text-green-600 font-medium">$0.00 (Gasless)</span>
+              )}
+            </div>
+
+            {/* Sell Amount */}
+            {selectedToken && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-[#6667AB] font-medium">Amount to Swap</Label>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleMaxAmount}
+                    className="text-[#6667AB] hover:bg-[#6667AB]/10 h-6 px-2"
+                  >
+                    <Percent className="w-3 h-3 mr-1" />
+                    MAX
+                  </Button>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-[#6667AB]/70">Protocol Fee:</span>
-                  <span className="text-[#6667AB]">{(parseFloat(quote.protocolFee || '0') / Math.pow(10, 18)).toFixed(6)} ETH</span>
+                <Input
+                  type="number"
+                  placeholder="0.0"
+                  value={sellAmount}
+                  onChange={(e) => setSellAmount(e.target.value)}
+                  className="bg-white border-[#6667AB]/30 text-[#6667AB]"
+                  max={selectedToken.formattedBalance}
+                />
+                <div className="mt-1 text-xs text-[#6667AB]/60">
+                  Max: {parseFloat(selectedToken.formattedBalance).toFixed(6)} {selectedToken.symbol}
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex gap-3">
-            <Button
-              onClick={getSwapQuote}
-              disabled={!sellToken || !sellAmount || isLoadingQuote}
-              className="flex-1 btn-premium"
-            >
-              {isLoadingQuote ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Getting Quote...
-                </>
-              ) : (
-                'Get Quote'
-              )}
-            </Button>
-
-            {quote && (
-              <Button
-                onClick={executeGaslessSwap}
-                disabled={isExecutingSwap}
-                className="flex-1 btn-premium bg-green-600 hover:bg-green-700"
-              >
-                {isExecutingSwap ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Swapping...
-                  </>
-                ) : (
-                  <>
-                    <Zap className="w-4 h-4 mr-2" />
-                    Execute Gasless Swap
-                  </>
-                )}
-              </Button>
             )}
-          </div>
 
-          <div className="text-center text-sm text-[#6667AB]/60">
-            Powered by 0x Protocol • Zero gas fees • Instant execution
+            {/* Swap Arrow */}
+            {selectedToken && (
+              <div className="flex justify-center">
+                <div className="p-2 border border-[#6667AB]/30 rounded-full bg-white">
+                  <ArrowDownUp className="w-4 h-4 text-[#6667AB]" />
+                </div>
+              </div>
+            )}
+
+            {/* Buy Token (Always USDC) */}
+            {selectedToken && (
+              <div>
+                <Label className="text-[#6667AB] font-medium">To Token</Label>
+                <div className="p-3 border border-[#6667AB]/30 rounded-md bg-gray-50 flex items-center justify-between">
+                  <span className="text-[#6667AB] font-medium">USDC</span>
+                  <Badge className="bg-[#6667AB] text-[#FCFBF4]">Stablecoin</Badge>
+                </div>
+              </div>
+            )}
+
+            {/* Buy Amount */}
+            {selectedToken && (
+              <div>
+                <Label className="text-[#6667AB] font-medium">You will receive</Label>
+                <Input
+                  type="text"
+                  placeholder="0.0"
+                  value={buyAmount}
+                  readOnly
+                  className="bg-gray-50 border-[#6667AB]/30 text-[#6667AB]"
+                />
+              </div>
+            )}
+
+            {selectedToken && <Separator />}
+
+            {/* Quote Information */}
+            {quote && selectedToken && (
+              <div className="bg-[#6667AB]/5 rounded-lg p-4 space-y-2">
+                <h4 className="font-semibold text-[#6667AB]">Swap Details</h4>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-[#6667AB]/70">Rate:</span>
+                    <span className="text-[#6667AB]">1 {selectedToken.symbol} = {parseFloat(quote.price).toFixed(6)} USDC</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#6667AB]/70">Network Fee:</span>
+                    <span className="text-green-600 font-medium">$0.00 (Zero Gas)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#6667AB]/70">Slippage:</span>
+                    <span className="text-[#6667AB]">1%</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            {selectedToken && (
+              <div className="flex gap-3">
+                <Button
+                  onClick={getSwapQuote}
+                  disabled={!sellAmount || isLoadingQuote}
+                  className="flex-1 btn-premium"
+                >
+                  {isLoadingQuote ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Getting Quote...
+                    </>
+                  ) : (
+                    'Get Quote'
+                  )}
+                </Button>
+
+                {quote && (
+                  <Button
+                    onClick={executeGaslessSwap}
+                    disabled={isExecutingSwap}
+                    className="flex-1 btn-premium bg-green-600 hover:bg-green-700"
+                  >
+                    {isExecutingSwap ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Swapping...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-4 h-4 mr-2" />
+                        Execute Instant Swap
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            )}
+
+            <div className="text-center text-sm text-[#6667AB]/60">
+              Powered by StablePay • Zero gas fees • Instant execution
+            </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
