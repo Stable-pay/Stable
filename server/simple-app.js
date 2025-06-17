@@ -210,5 +210,5 @@ app.post('/api/withdrawal/initiate', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(\`StablePay server running at http://localhost:\${port}\`);
+  console.log(`StablePay server running at http://localhost:${port}`);
 });
