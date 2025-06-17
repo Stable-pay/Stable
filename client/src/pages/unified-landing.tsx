@@ -50,7 +50,7 @@ import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTok
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // Core remittance state and types
-type StepType = 'landing' | 'wallet-connected' | 'swap' | 'kyc' | 'transfer' | 'complete';
+type StepType = 'landing' | 'wallet-connected' | 'gasless-swap' | 'swap' | 'kyc' | 'transfer' | 'complete';
 
 interface RemittanceState {
   step: StepType;
@@ -856,23 +856,34 @@ export function UnifiedLanding() {
 
                       {/* Action Buttons */}
                       <div className="space-y-4 pt-6">
-                        {remittanceState.fromToken ? (
+                        <div className="grid gap-4 mb-4">
                           <Button 
                             className="w-full btn-premium text-lg py-3"
-                            onClick={() => setCurrentStep('swap')}
+                            onClick={() => setCurrentStep('gasless-swap')}
                           >
-                            <Send className="w-5 h-5 mr-2" />
-                            Convert {remittanceState.fromToken} to INR
+                            <Zap className="w-5 h-5 mr-2" />
+                            Gasless Swap to USDC
+                            <Badge className="ml-2 bg-green-500 text-white">Free</Badge>
                           </Button>
-                        ) : (
-                          <Button 
-                            className="w-full btn-premium text-lg py-3 opacity-50 cursor-not-allowed"
-                            disabled
-                          >
-                            <Send className="w-5 h-5 mr-2" />
-                            Select Token to Convert
-                          </Button>
-                        )}
+                          
+                          {remittanceState.fromToken ? (
+                            <Button 
+                              className="w-full btn-premium text-lg py-3 bg-[#6667AB]/80 hover:bg-[#6667AB]"
+                              onClick={() => setCurrentStep('swap')}
+                            >
+                              <Send className="w-5 h-5 mr-2" />
+                              Convert {remittanceState.fromToken} to INR
+                            </Button>
+                          ) : (
+                            <Button 
+                              className="w-full btn-premium text-lg py-3 opacity-50 cursor-not-allowed"
+                              disabled
+                            >
+                              <Send className="w-5 h-5 mr-2" />
+                              Select Token to Convert
+                            </Button>
+                          )}
+                        </div>
                         
                         <div className="text-center">
                           <button
@@ -886,6 +897,36 @@ export function UnifiedLanding() {
                     </CardContent>
                   </Card>
                 </motion.div>
+
+                {/* Gasless Swap Interface */}
+                {currentStep === 'gasless-swap' && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-8"
+                  >
+                    <GaslessSwapInterface 
+                      onSwapComplete={(result) => {
+                        console.log('Gasless swap completed:', result);
+                        // Optionally proceed to KYC after successful swap
+                        setCurrentStep('swap');
+                      }}
+                      onSwapError={(error) => {
+                        console.error('Gasless swap error:', error);
+                      }}
+                    />
+                    
+                    <div className="text-center mt-6">
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => setCurrentStep('wallet-connected')}
+                        className="text-[#6667AB] font-semibold"
+                      >
+                        ← Back to Token Selection
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* Enhanced Indian KYC Flow */}
                 {currentStep === 'swap' && (

@@ -195,6 +195,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 16, 2025: Created direct wallet detection for Phantom, Solflare, and Backpack wallets
 - June 16, 2025: Added dual wallet connection options: EVM wallets via Reown AppKit, Solana wallets via direct integration
 - June 16, 2025: Enhanced landing page with separate wallet connection buttons for EVM and Solana networks
+- June 17, 2025: Integrated gasless swaps using 0x Protocol API with provided API key (12be1743-8f3e-4867-a82b-501263f3c4b6)
+- June 17, 2025: Added comprehensive gasless swap interface component with real-time quotes and zero gas fee execution
+- June 17, 2025: Created new user flow step 'gasless-swap' for seamless crypto-to-USDC conversions before INR off-ramping
+- June 17, 2025: Implemented 0x Swap API endpoints supporting 7 major chains (Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, Avalanche)
+- June 17, 2025: Enhanced unified landing page with gasless swap option as primary conversion method alongside regular token conversion
 
 ## User Preferences
 
