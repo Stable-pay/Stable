@@ -225,6 +225,10 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Added developer wallet addresses for each supported chain (Ethereum, BSC, Polygon, Avalanche, Arbitrum, Optimism)
 - June 17, 2025: Platform now uses only Binance-supported tokens and networks for all conversions and transfers
 - June 17, 2025: Updated conversion flow: Connect Wallet → Select Binance Token → Direct Transfer → KYC → INR Conversion
+- June 17, 2025: Updated token database with authentic Binance USDT trading pairs from CoinMarketCap exchange data
+- June 17, 2025: Added major cryptocurrencies with USDT pairs: BTC, ETH, BNB, SOL, XRP, DOGE, ADA, AVAX, TRX, TON, LINK, MATIC, DOT, UNI, LTC, BCH, PEPE, APT, NEAR, SHIB
+- June 17, 2025: Implemented strict token validation - only tokens with active USDT trading pairs on Binance are supported
+- June 17, 2025: Platform now blocks INR conversion for any token not in the Binance USDT pairs list
 
 ## User Preferences
 

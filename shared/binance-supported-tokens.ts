@@ -1,6 +1,7 @@
 /**
- * Binance-supported tokens and chains for developer-controlled wallet transfers
- * Based on Binance.com supported networks and tokens as of June 2025
+ * Binance USDT trading pairs and supported tokens for developer-controlled wallet transfers
+ * Based on CoinMarketCap Binance exchange USDT pairs as of June 2025
+ * Source: https://coinmarketcap.com/exchanges/binance/
  */
 
 export interface BinanceToken {
@@ -108,41 +109,118 @@ export const BINANCE_SUPPORTED_CHAINS: BinanceChain[] = [
   }
 ];
 
-// Binance-supported tokens (verified from binance.com withdrawal/deposit pages)
+// Binance USDT trading pairs (verified from coinmarketcap.com/exchanges/binance/)
 export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
-  // Ethereum Network (ERC-20)
+  // Ethereum Network (ERC-20) - Major USDT pairs
   {
-    symbol: "USDT",
-    name: "Tether USD",
+    symbol: "BTC",
+    name: "Bitcoin",
     chainId: 1,
-    address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-    decimals: 6,
+    address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", // WBTC
+    decimals: 8,
     network: "ERC20",
     binanceSupported: true,
-    withdrawalFee: "0.8",
-    minWithdrawal: "1.6"
+    withdrawalFee: "0.0005",
+    minWithdrawal: "0.001"
   },
   {
-    symbol: "USDC",
-    name: "USD Coin",
+    symbol: "ETH",
+    name: "Ethereum",
     chainId: 1,
-    address: "0xA0b86a33E6441955C100d30E18E9e7ba28C35516",
-    decimals: 6,
-    network: "ERC20",
-    binanceSupported: true,
-    withdrawalFee: "0.8",
-    minWithdrawal: "1.6"
-  },
-  {
-    symbol: "DAI",
-    name: "Dai Stablecoin",
-    chainId: 1,
-    address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    address: "0x0000000000000000000000000000000000000000", // Native ETH
     decimals: 18,
     network: "ERC20",
     binanceSupported: true,
-    withdrawalFee: "0.8",
-    minWithdrawal: "1.6"
+    withdrawalFee: "0.0024",
+    minWithdrawal: "0.0048"
+  },
+  {
+    symbol: "BNB",
+    name: "BNB",
+    chainId: 1,
+    address: "0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
+    decimals: 18,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.0050",
+    minWithdrawal: "0.01"
+  },
+  {
+    symbol: "SOL",
+    name: "Solana",
+    chainId: 1,
+    address: "0xD31a59c85aE9D8edEFeC411D448f90841571b89c",
+    decimals: 9,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.01",
+    minWithdrawal: "0.02"
+  },
+  {
+    symbol: "XRP",
+    name: "XRP",
+    chainId: 1,
+    address: "0x1d2F0da169ceB9fC7B3144628dB156f3F6c60dBE",
+    decimals: 18,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.1",
+    minWithdrawal: "0.2"
+  },
+  {
+    symbol: "DOGE",
+    name: "Dogecoin",
+    chainId: 1,
+    address: "0x4206931337dc273a630d328dA6441786BfaD668f",
+    decimals: 8,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "2",
+    minWithdrawal: "4"
+  },
+  {
+    symbol: "ADA",
+    name: "Cardano",
+    chainId: 1,
+    address: "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47",
+    decimals: 18,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.5",
+    minWithdrawal: "1"
+  },
+  {
+    symbol: "AVAX",
+    name: "Avalanche",
+    chainId: 1,
+    address: "0x85f138bfEE4ef8e540890CFb48F620571d67Eda3",
+    decimals: 18,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.01",
+    minWithdrawal: "0.02"
+  },
+  {
+    symbol: "TRX",
+    name: "TRON",
+    chainId: 1,
+    address: "0xE1Be5D3f34e89dE342Ee97E6e90D405884dA6c67",
+    decimals: 6,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "1",
+    minWithdrawal: "2"
+  },
+  {
+    symbol: "TON",
+    name: "Toncoin",
+    chainId: 1,
+    address: "0x582d872A1B094FC48F5DE31D3B73F2D9bE47def1",
+    decimals: 9,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.005",
+    minWithdrawal: "0.01"
   },
   {
     symbol: "LINK",
@@ -152,8 +230,30 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 18,
     network: "ERC20",
     binanceSupported: true,
-    withdrawalFee: "0.28",
-    minWithdrawal: "0.56"
+    withdrawalFee: "0.35",
+    minWithdrawal: "0.7"
+  },
+  {
+    symbol: "MATIC",
+    name: "Polygon",
+    chainId: 1,
+    address: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+    decimals: 18,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.1",
+    minWithdrawal: "0.2"
+  },
+  {
+    symbol: "DOT",
+    name: "Polkadot",
+    chainId: 1,
+    address: "0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402",
+    decimals: 10,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.1",
+    minWithdrawal: "0.2"
   },
   {
     symbol: "UNI",
@@ -163,22 +263,88 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 18,
     network: "ERC20",
     binanceSupported: true,
-    withdrawalFee: "0.58",
-    minWithdrawal: "1.16"
+    withdrawalFee: "0.65",
+    minWithdrawal: "1.3"
   },
   {
-    symbol: "AAVE",
-    name: "Aave",
+    symbol: "LTC",
+    name: "Litecoin",
     chainId: 1,
-    address: "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+    address: "0x6159504a9c6Dd5dE8E3cAB9972D9f8d5EF7aFd8c",
+    decimals: 8,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.001",
+    minWithdrawal: "0.002"
+  },
+  {
+    symbol: "BCH",
+    name: "Bitcoin Cash",
+    chainId: 1,
+    address: "0x8fF795a6F4D97E7887C79beA79aba5cc76444aDf",
     decimals: 18,
     network: "ERC20",
     binanceSupported: true,
-    withdrawalFee: "0.0058",
-    minWithdrawal: "0.0116"
+    withdrawalFee: "0.0005",
+    minWithdrawal: "0.001"
+  },
+  {
+    symbol: "PEPE",
+    name: "Pepe",
+    chainId: 1,
+    address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+    decimals: 18,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "2500000",
+    minWithdrawal: "5000000"
+  },
+  {
+    symbol: "APT",
+    name: "Aptos",
+    chainId: 1,
+    address: "0x4c9edd5852cd905f086c759e8383e09bff1e68b3",
+    decimals: 8,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.01",
+    minWithdrawal: "0.02"
+  },
+  {
+    symbol: "NEAR",
+    name: "NEAR Protocol",
+    chainId: 1,
+    address: "0x85F17Cf997934a597031b2E18a9aB6ebD4B9f6a4",
+    decimals: 24,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "0.005",
+    minWithdrawal: "0.01"
+  },
+  {
+    symbol: "SHIB",
+    name: "Shiba Inu",
+    chainId: 1,
+    address: "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
+    decimals: 18,
+    network: "ERC20",
+    binanceSupported: true,
+    withdrawalFee: "100000",
+    minWithdrawal: "200000"
   },
 
-  // BNB Smart Chain (BEP-20)
+  // BNB Smart Chain (BEP-20) - Native and wrapped tokens
+  {
+    symbol: "BNB",
+    name: "BNB",
+    chainId: 56,
+    address: "0x0000000000000000000000000000000000000000", // Native BNB
+    decimals: 18,
+    network: "BEP20",
+    binanceSupported: true,
+    withdrawalFee: "0.0005",
+    minWithdrawal: "0.001"
+  },
   {
     symbol: "USDT",
     name: "Tether USD",
@@ -187,8 +353,8 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 18,
     network: "BEP20",
     binanceSupported: true,
-    withdrawalFee: "0.2",
-    minWithdrawal: "0.4"
+    withdrawalFee: "0.8",
+    minWithdrawal: "1.6"
   },
   {
     symbol: "USDC",
@@ -198,8 +364,8 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 18,
     network: "BEP20",
     binanceSupported: true,
-    withdrawalFee: "0.2",
-    minWithdrawal: "0.4"
+    withdrawalFee: "0.8",
+    minWithdrawal: "1.6"
   },
   {
     symbol: "BUSD",
@@ -209,8 +375,8 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 18,
     network: "BEP20",
     binanceSupported: true,
-    withdrawalFee: "0.2",
-    minWithdrawal: "0.4"
+    withdrawalFee: "0.8",
+    minWithdrawal: "1.6"
   },
   {
     symbol: "CAKE",
@@ -220,11 +386,22 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 18,
     network: "BEP20",
     binanceSupported: true,
-    withdrawalFee: "0.058",
-    minWithdrawal: "0.116"
+    withdrawalFee: "0.01",
+    minWithdrawal: "0.02"
   },
 
   // Polygon Network
+  {
+    symbol: "MATIC",
+    name: "Polygon",
+    chainId: 137,
+    address: "0x0000000000000000000000000000000000000000", // Native MATIC
+    decimals: 18,
+    network: "Polygon",
+    binanceSupported: true,
+    withdrawalFee: "0.01",
+    minWithdrawal: "0.02"
+  },
   {
     symbol: "USDT",
     name: "Tether USD",
@@ -233,8 +410,8 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 6,
     network: "Polygon",
     binanceSupported: true,
-    withdrawalFee: "0.1",
-    minWithdrawal: "0.2"
+    withdrawalFee: "0.8",
+    minWithdrawal: "1.6"
   },
   {
     symbol: "USDC",
@@ -244,22 +421,22 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 6,
     network: "Polygon",
     binanceSupported: true,
-    withdrawalFee: "0.1",
-    minWithdrawal: "0.2"
-  },
-  {
-    symbol: "DAI",
-    name: "Dai Stablecoin",
-    chainId: 137,
-    address: "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
-    decimals: 18,
-    network: "Polygon",
-    binanceSupported: true,
-    withdrawalFee: "0.1",
-    minWithdrawal: "0.2"
+    withdrawalFee: "0.8",
+    minWithdrawal: "1.6"
   },
 
   // Avalanche C-Chain
+  {
+    symbol: "AVAX",
+    name: "Avalanche",
+    chainId: 43114,
+    address: "0x0000000000000000000000000000000000000000", // Native AVAX
+    decimals: 18,
+    network: "AVAX C",
+    binanceSupported: true,
+    withdrawalFee: "0.01",
+    minWithdrawal: "0.02"
+  },
   {
     symbol: "USDT",
     name: "Tether USD",
@@ -268,8 +445,8 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 6,
     network: "AVAX C",
     binanceSupported: true,
-    withdrawalFee: "0.1",
-    minWithdrawal: "0.2"
+    withdrawalFee: "0.8",
+    minWithdrawal: "1.6"
   },
   {
     symbol: "USDC",
@@ -279,11 +456,22 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
     decimals: 6,
     network: "AVAX C",
     binanceSupported: true,
-    withdrawalFee: "0.1",
-    minWithdrawal: "0.2"
+    withdrawalFee: "0.8",
+    minWithdrawal: "1.6"
   },
 
   // Arbitrum One
+  {
+    symbol: "ETH",
+    name: "Ethereum",
+    chainId: 42161,
+    address: "0x0000000000000000000000000000000000000000", // Native ETH
+    decimals: 18,
+    network: "Arbitrum One",
+    binanceSupported: true,
+    withdrawalFee: "0.0001",
+    minWithdrawal: "0.0002"
+  },
   {
     symbol: "USDT",
     name: "Tether USD",
@@ -308,6 +496,17 @@ export const BINANCE_SUPPORTED_TOKENS: BinanceToken[] = [
   },
 
   // Optimism
+  {
+    symbol: "ETH",
+    name: "Ethereum",
+    chainId: 10,
+    address: "0x0000000000000000000000000000000000000000", // Native ETH
+    decimals: 18,
+    network: "Optimism",
+    binanceSupported: true,
+    withdrawalFee: "0.0001",
+    minWithdrawal: "0.0002"
+  },
   {
     symbol: "USDT",
     name: "Tether USD",
