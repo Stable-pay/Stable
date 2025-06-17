@@ -694,17 +694,17 @@ export function UnifiedLanding() {
                   {/* Service Selection Tabs */}
                   <div className="flex justify-center gap-4 mt-8 mb-8">
                     <Button 
-                      variant={currentStep === 'wallet-connected' ? 'default' : 'outline'}
-                      onClick={() => setCurrentStep('wallet-connected')}
-                      className={currentStep === 'wallet-connected' ? 'btn-premium' : 'border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10'}
+                      variant="outline"
+                      onClick={() => window.location.href = '/web3-services'}
+                      className="border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10"
                     >
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Off-Ramp to INR
                     </Button>
                     <Button 
                       variant="outline"
+                      onClick={() => window.location.href = '/web3-services'}
                       className="border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/10"
-                      disabled
                     >
                       <Send className="w-4 h-4 mr-2" />
                       Global Remittance
