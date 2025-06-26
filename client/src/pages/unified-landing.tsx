@@ -41,6 +41,8 @@ import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import CleanBalance from '@/components/CleanBalance';
+import KYCFlow from '@/components/KYCFlow';
+import BankDetailsForm from '@/components/BankDetailsForm';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
 import { DirectTokenTransfer } from '@/components/transfer/direct-token-transfer';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
@@ -269,25 +271,7 @@ const UnifiedLandingPage = () => {
               exit={{ opacity: 0, y: -20 }}
               className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8"
             >
-              <Card className="w-full max-w-2xl bg-[#FCFBF4] border-0 shadow-2xl">
-                <CardHeader className="text-center pb-6">
-                  <CardTitle className="text-2xl text-[#6667AB]">Complete Your KYC Verification</CardTitle>
-                  <p className="text-[#6667AB]/70 mt-2">
-                    Secure verification for regulatory compliance
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8">
-                    <p className="text-[#6667AB]">KYC verification interface</p>
-                    <Button 
-                      onClick={() => setCurrentStep('bank-details')}
-                      className="mt-4 bg-[#6667AB] text-[#FCFBF4] hover:bg-[#6667AB]/90"
-                    >
-                      Continue to Bank Details
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <KYCFlow onComplete={() => setCurrentStep('bank-details')} />
             </motion.div>
           )}
 
@@ -300,25 +284,7 @@ const UnifiedLandingPage = () => {
               exit={{ opacity: 0, y: -20 }}
               className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8"
             >
-              <Card className="w-full max-w-2xl bg-[#FCFBF4] border-0 shadow-2xl">
-                <CardHeader className="text-center pb-6">
-                  <CardTitle className="text-2xl text-[#6667AB]">Bank Account Details</CardTitle>
-                  <p className="text-[#6667AB]/70 mt-2">
-                    Add your bank account for INR withdrawal
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8">
-                    <p className="text-[#6667AB]">Bank details form</p>
-                    <Button 
-                      onClick={() => setCurrentStep('withdrawal')}
-                      className="mt-4 bg-[#6667AB] text-[#FCFBF4] hover:bg-[#6667AB]/90"
-                    >
-                      Continue to Withdrawal
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <BankDetailsForm onComplete={() => setCurrentStep('withdrawal')} />
             </motion.div>
           )}
 
