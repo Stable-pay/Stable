@@ -1,47 +1,26 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useAccount } from 'wagmi';
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Coins, ArrowRight, Wallet } from 'lucide-react';
-
-interface TokenBalance {
-  symbol: string;
-  name: string;
-  balance: string;
-  decimals: number;
-  address: string;
-  chainId: number;
-  chainName: string;
-  usdValue: number;
-}
+import { useWalletBalances, type TokenBalance } from '@/hooks/useWalletBalances';
 
 interface SimpleTokenSelectionProps {
   onTokenSelect: (token: TokenBalance, amount: string, inrAmount: string) => void;
 }
 
 export function SimpleTokenSelection({ onTokenSelect }: SimpleTokenSelectionProps) {
-  const { address } = useAccount();
+  const { address, isConnected } = useAppKitAccount();
   const [selectedToken, setSelectedToken] = useState<TokenBalance | null>(null);
   const [inrAmount, setInrAmount] = useState('');
   const [tokenAmount, setTokenAmount] = useState('');
   const [usdToInrRate] = useState(83.25);
 
-  // Fetch token balances
-  const { data: tokenBalances = [], isLoading } = useQuery({
-    queryKey: ['token-balances', address],
-    queryFn: async (): Promise<TokenBalance[]> => {
-      if (!address) return [];
-      const response = await fetch(`/api/balance/all/${address}`);
-      if (!response.ok) throw new Error('Failed to fetch balances');
-      return response.json();
-    },
-    enabled: !!address,
-    refetchInterval: 30000,
-  });
+  // Use AppKit's native balance fetching
+  const { tokenBalances, isLoading } = useWalletBalances();
 
   // Calculate token amount when INR amount changes
   useEffect(() => {

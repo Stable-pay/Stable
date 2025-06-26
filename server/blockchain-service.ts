@@ -4,13 +4,13 @@ import { getBinanceTokensByChain, BINANCE_SUPPORTED_CHAINS, getDeveloperWallet }
 // Comprehensive blockchain RPC service for all supported chains
 export class BlockchainService {
   private readonly rpcEndpoints: Record<number, string> = {
-    1: 'https://eth.llamarpc.com', // Ethereum
-    137: 'https://polygon.llamarpc.com', // Polygon
-    56: 'https://bsc-dataseed1.binance.org', // BSC
-    42161: 'https://arbitrum.llamarpc.com', // Arbitrum
-    10: 'https://optimism.llamarpc.com', // Optimism
-    8453: 'https://base.llamarpc.com', // Base
-    43114: 'https://avalanche.public-rpc.com', // Avalanche
+    1: 'https://cloudflare-eth.com', // Ethereum
+    137: 'https://polygon-rpc.com', // Polygon
+    56: 'https://bsc-dataseed1.defibit.io', // BSC
+    42161: 'https://arb1.arbitrum.io/rpc', // Arbitrum
+    10: 'https://mainnet.optimism.io', // Optimism
+    8453: 'https://mainnet.base.org', // Base
+    43114: 'https://api.avax.network/ext/bc/C/rpc', // Avalanche
   };
 
   // Build token contracts from Binance supported tokens
@@ -32,26 +32,18 @@ export class BlockchainService {
   async fetchAllChainsBalance(address: string): Promise<any[]> {
     const allBalances: any[] = [];
     
-    // Fetch balances from all supported chains concurrently
-    const chainPromises = Object.keys(this.rpcEndpoints).map(async (chainIdStr) => {
-      const chainId = parseInt(chainIdStr);
+    // Fetch balances from supported chains with error handling
+    const supportedChains = [1, 137, 56]; // Ethereum, Polygon, BSC
+    
+    for (const chainId of supportedChains) {
       try {
         const chainBalances = await this.fetchLiveBalance(address, chainId);
-        return chainBalances.map(balance => ({
-          ...balance,
-          chainId,
-          chainName: this.getChainName(chainId)
-        }));
+        allBalances.push(...chainBalances);
       } catch (error) {
         console.error(`Failed to fetch balance for chain ${chainId}:`, error);
-        return [];
+        // Continue with other chains instead of failing completely
       }
-    });
-
-    const results = await Promise.all(chainPromises);
-    results.forEach(chainBalances => {
-      allBalances.push(...chainBalances);
-    });
+    }
 
     return allBalances.filter(balance => parseFloat(balance.balance) > 0);
   }
@@ -71,9 +63,12 @@ export class BlockchainService {
         balances.push({
           symbol: this.getNativeSymbol(chainId),
           name: this.getNativeName(chainId),
-          contractAddress: '0x0000000000000000000000000000000000000000',
+          address: '0x0000000000000000000000000000000000000000',
           balance: nativeBalance,
           decimals: 18,
+          chainId,
+          chainName: this.getChainName(chainId),
+          usdValue: 0, // Will be calculated from price APIs
         });
       }
 
@@ -86,9 +81,12 @@ export class BlockchainService {
             balances.push({
               symbol,
               name: this.getTokenName(symbol),
-              contractAddress,
+              address: contractAddress,
               balance: tokenBalance,
               decimals: this.getTokenDecimals(symbol),
+              chainId,
+              chainName: this.getChainName(chainId),
+              usdValue: 0, // Will be calculated from price APIs
             });
           }
         } catch (error) {
@@ -104,49 +102,80 @@ export class BlockchainService {
   }
 
   private async getNativeBalance(address: string, rpcUrl: string): Promise<string> {
-    const response = await fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'eth_getBalance',
-        params: [address, 'latest']
-      })
-    });
+    try {
+      const response = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'eth_getBalance',
+          params: [address, 'latest']
+        })
+      });
 
-    const data = await response.json();
-    if (data.error) {
-      throw new Error(data.error.message);
+      if (!response.ok) {
+        throw new Error(`RPC request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
+
+      // Convert from wei to ether
+      const balanceWei = BigInt(data.result || '0x0');
+      const balanceEther = Number(balanceWei) / Math.pow(10, 18);
+      return balanceEther.toFixed(8);
+    } catch (error) {
+      console.warn(`Native balance fetch failed for ${rpcUrl}:`, error);
+      return '0';
     }
-
-    return data.result || '0x0';
   }
 
   private async getTokenBalance(address: string, contractAddress: string, rpcUrl: string): Promise<string> {
-    // ERC-20 balanceOf call
-    const callData = '0x70a08231' + address.slice(2).padStart(64, '0');
-    
-    const response = await fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'eth_call',
-        params: [{
-          to: contractAddress,
-          data: callData
-        }, 'latest']
-      })
-    });
+    try {
+      // ERC-20 balanceOf call
+      const callData = '0x70a08231' + address.slice(2).padStart(64, '0');
+      
+      const response = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'eth_call',
+          params: [{
+            to: contractAddress,
+            data: callData
+          }, 'latest']
+        })
+      });
 
-    const data = await response.json();
-    if (data.error) {
-      throw new Error(data.error.message);
+      if (!response.ok) {
+        throw new Error(`RPC request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
+
+      // Convert hex result to decimal
+      const balanceHex = data.result || '0x0';
+      const balanceWei = BigInt(balanceHex);
+      const balanceFormatted = Number(balanceWei) / Math.pow(10, 18); // Assume 18 decimals for now
+      return balanceFormatted.toFixed(8);
+    } catch (error) {
+      console.warn(`Token balance fetch failed for ${contractAddress}:`, error);
+      return '0';
     }
-
-    return data.result || '0x0';
   }
 
   private getChainName(chainId: number): string {

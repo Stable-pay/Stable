@@ -461,7 +461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { address } = req.params;
       const balances = await blockchainService.fetchAllChainsBalance(address);
-      res.json({ success: true, balances });
+      res.json(balances);
     } catch (error) {
       console.error('All chains balance fetch error:', error);
       res.status(500).json({ error: 'Failed to fetch balances from all chains' });
