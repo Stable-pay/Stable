@@ -17,11 +17,11 @@ interface TokenBalance {
   usdValue: number;
 }
 
-interface SimpleWalletBalanceProps {
+interface WalletBalanceFetcherProps {
   onTokenSelect: (token: TokenBalance, amount: string, inrAmount: string) => void;
 }
 
-export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps) {
+export function WalletBalanceFetcher({ onTokenSelect }: WalletBalanceFetcherProps) {
   const { address, isConnected } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
   
@@ -33,6 +33,19 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
 
   const currentChainId = Number(chainId) || 1;
 
+  const getChainData = () => {
+    const chainData: Record<number, { symbol: string; name: string; rpc: string }> = {
+      1: { symbol: 'ETH', name: 'Ethereum', rpc: 'https://ethereum-rpc.publicnode.com' },
+      137: { symbol: 'MATIC', name: 'Polygon', rpc: 'https://polygon-rpc.com' },
+      56: { symbol: 'BNB', name: 'BSC', rpc: 'https://bsc-dataseed1.binance.org' },
+      42161: { symbol: 'ETH', name: 'Arbitrum', rpc: 'https://arbitrum-one.publicnode.com' },
+      10: { symbol: 'ETH', name: 'Optimism', rpc: 'https://optimism.publicnode.com' },
+      8453: { symbol: 'ETH', name: 'Base', rpc: 'https://base-rpc.publicnode.com' },
+      43114: { symbol: 'AVAX', name: 'Avalanche', rpc: 'https://avalanche-c-chain.publicnode.com' }
+    };
+    return chainData[currentChainId] || chainData[1];
+  };
+
   // Fetch balance using direct RPC call
   useEffect(() => {
     const fetchBalance = async () => {
@@ -43,24 +56,9 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
       
       setIsLoading(true);
       try {
-        // Production RPC endpoints for authentic balance fetching
-        const rpcEndpoints: Record<number, string> = {
-          1: 'https://ethereum-rpc.publicnode.com',
-          137: 'https://polygon-rpc.com',
-          56: 'https://bsc-dataseed1.binance.org',
-          42161: 'https://arbitrum-one.publicnode.com',
-          10: 'https://optimism.publicnode.com',
-          8453: 'https://base-rpc.publicnode.com',
-          43114: 'https://avalanche-c-chain.publicnode.com'
-        };
-
-        const rpcUrl = rpcEndpoints[currentChainId];
-        if (!rpcUrl) {
-          setBalance('0');
-          return;
-        }
-
-        const response = await fetch(rpcUrl, {
+        const chainData = getChainData();
+        
+        const response = await fetch(chainData.rpc, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -105,42 +103,17 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
     }
   }, [inrAmount, usdToInrRate]);
 
-  const getChainSymbol = () => {
-    switch (currentChainId) {
-      case 1: return 'ETH';
-      case 137: return 'MATIC';
-      case 56: return 'BNB';
-      case 42161: return 'ETH';
-      case 10: return 'ETH';
-      case 8453: return 'ETH';
-      case 43114: return 'AVAX';
-      default: return 'ETH';
-    }
-  };
-
-  const getChainName = () => {
-    switch (currentChainId) {
-      case 1: return 'Ethereum';
-      case 137: return 'Polygon';
-      case 56: return 'BSC';
-      case 42161: return 'Arbitrum';
-      case 10: return 'Optimism';
-      case 8453: return 'Base';
-      case 43114: return 'Avalanche';
-      default: return 'Ethereum';
-    }
-  };
-
   const handleContinue = () => {
     if (tokenAmount && inrAmount && parseFloat(balance) > 0) {
+      const chainData = getChainData();
       const tokenData: TokenBalance = {
-        symbol: getChainSymbol(),
-        name: getChainName(),
+        symbol: chainData.symbol,
+        name: chainData.name,
         balance: balance,
         decimals: 18,
         address: '0x0000000000000000000000000000000000000000',
         chainId: currentChainId,
-        chainName: getChainName(),
+        chainName: chainData.name,
         usdValue: 3000
       };
       
@@ -170,26 +143,26 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
     );
   }
 
-  const symbol = getChainSymbol();
+  const chainData = getChainData();
 
   return (
     <Card className="max-w-2xl mx-auto bg-[#FCFBF4] border-[#6667AB]/30">
       <CardHeader>
         <CardTitle className="text-[#6667AB] flex items-center gap-2">
           <Coins className="w-5 h-5" />
-          Convert {symbol} to INR
+          Convert {chainData.symbol} to INR
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="bg-[#6667AB]/10 p-4 rounded-lg">
           <div className="flex justify-between items-center">
-            <span className="text-[#6667AB]">Available {symbol}:</span>
+            <span className="text-[#6667AB]">Available {chainData.symbol}:</span>
             <span className="font-semibold text-[#6667AB]">
-              {parseFloat(balance).toFixed(6)} {symbol}
+              {parseFloat(balance).toFixed(6)} {chainData.symbol}
             </span>
           </div>
           <div className="text-sm text-[#6667AB]/70 mt-1">
-            Network: {getChainName()}
+            Network: {chainData.name}
           </div>
           <div className="text-sm text-[#6667AB]/70">
             Address: {address?.slice(0, 8)}...{address?.slice(-6)}
@@ -212,13 +185,13 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
             {tokenAmount && (
               <div className="bg-[#6667AB]/10 p-4 rounded-lg">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#6667AB]">{symbol} Amount:</span>
+                  <span className="text-[#6667AB]">{chainData.symbol} Amount:</span>
                   <span className="font-semibold text-[#6667AB]">
-                    {tokenAmount} {symbol}
+                    {tokenAmount} {chainData.symbol}
                   </span>
                 </div>
                 <div className="text-sm text-[#6667AB]/70 mt-1">
-                  Rate: 1 USD = ₹{usdToInrRate} | 1 {symbol} ≈ $3,000
+                  Rate: 1 USD = ₹{usdToInrRate} | 1 {chainData.symbol} ≈ $3,000
                 </div>
               </div>
             )}
@@ -234,8 +207,8 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
           </>
         ) : (
           <div className="text-center py-8">
-            <p className="text-[#6667AB]/70">No {symbol} balance found</p>
-            <p className="text-sm text-[#6667AB]/50">Add {symbol} to your wallet to continue</p>
+            <p className="text-[#6667AB]/70">No {chainData.symbol} balance found</p>
+            <p className="text-sm text-[#6667AB]/50">Add {chainData.symbol} to your wallet to continue</p>
           </div>
         )}
       </CardContent>
@@ -243,4 +216,4 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
   );
 }
 
-export default SimpleWalletBalance;
+export default WalletBalanceFetcher;
