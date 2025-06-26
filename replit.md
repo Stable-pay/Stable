@@ -252,6 +252,13 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 26, 2025: Added domain verification system with TXT record support for DNS validation
 - June 26, 2025: Created DomainSetup component to guide users through Reown domain allowlist configuration
 - June 26, 2025: Fixed 403 errors by implementing proper domain verification workflow
+- June 26, 2025: Implemented comprehensive multi-chain token balance fetching across all 7 supported networks (Ethereum, Polygon, BSC, Arbitrum, Optimism, Base, Avalanche)
+- June 26, 2025: Created TokenSelectionInterface component with real-time balance display, token selection, and INR conversion functionality
+- June 26, 2025: Added live token balance fetching via RPC endpoints with 30-second refresh intervals
+- June 26, 2025: Integrated comprehensive balance API endpoints: /api/balance/all/:address for multi-chain fetching
+- June 26, 2025: Replaced static balance display with dynamic token selection from actual wallet balances
+- June 26, 2025: Added INR input field with real-time token amount calculation and conversion rates
+- June 26, 2025: Implemented balance validation and admin wallet transfer preparation functionality
 
 ## User Preferences
 
