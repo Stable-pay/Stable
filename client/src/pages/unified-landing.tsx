@@ -40,7 +40,7 @@ import {
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
-import TokenSelectionInterface from '@/components/TokenSelectionInterface';
+import SimpleTokenSelection from '@/components/SimpleTokenSelection';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
 import { DirectTokenTransfer } from '@/components/transfer/direct-token-transfer';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
@@ -203,9 +203,15 @@ const UnifiedLandingPage = () => {
                   transition={{ delay: 0.1 }}
                   className="mb-8"
                 >
-                  <TokenSelectionInterface 
-                    onTransferComplete={(transferData) => {
-                      console.log('Transfer completed:', transferData);
+                  <SimpleTokenSelection 
+                    onTokenSelect={(token, tokenAmount, inrAmount) => {
+                      setRemittanceState(prev => ({
+                        ...prev,
+                        fromToken: token.symbol,
+                        amount: tokenAmount,
+                        toAmount: inrAmount,
+                        selectedTokenData: token
+                      }));
                       setCurrentStep('kyc');
                     }}
                   />
