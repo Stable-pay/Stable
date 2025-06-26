@@ -27,12 +27,18 @@ import { QueryClient } from '@tanstack/react-query'
 // Create query client
 export const queryClient = new QueryClient()
 
-// Get project ID from environment variables
+// Get project ID and domain verification from environment variables
 export const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID
+export const domainVerificationId = import.meta.env.VITE_DOMAIN_VERIFICATION_ID
 
 // Validate project ID with fallback
 if (!projectId) {
   console.warn('VITE_WALLETCONNECT_PROJECT_ID is not set. Using demo mode.');
+}
+
+// Log domain verification for debugging
+if (domainVerificationId) {
+  console.log('Domain verification configured:', domainVerificationId.substring(0, 20) + '...');
 }
 
 // Enhanced domain configuration for Replit environments

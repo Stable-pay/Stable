@@ -20,8 +20,7 @@ import { RemittancePlatform } from "@/pages/remittance-platform";
 import { UnifiedLanding } from "@/pages/unified-landing";
 import { AdminConfig } from "@/pages/admin-config";
 import Web3FinancialServices from "@/pages/web3-financial-services";
-import { DomainSetup } from "@/components/DomainSetup";
-import { useState, useEffect } from 'react';
+
 
 
 function Router() {
@@ -44,23 +43,11 @@ function Router() {
 }
 
 function App() {
-  const [showDomainSetup, setShowDomainSetup] = useState(false);
-
-  useEffect(() => {
-    // Show domain setup automatically since 403 errors were detected
-    const timer = setTimeout(() => {
-      setShowDomainSetup(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <div className="min-h-screen bg-background">
-            {showDomainSetup && <DomainSetup />}
             <Router />
           </div>
           <Toaster />
