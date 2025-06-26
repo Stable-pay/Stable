@@ -246,8 +246,8 @@ export function UnifiedLanding() {
             StablePay
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#FCFBF4] transition-colors">How it works</button>
-            <button onClick={() => scrollToSection('features')} className="hover:text-[#FCFBF4] transition-colors">Features</button>
+            <button onClick={() => scrollToSection('how-it-works')} className="nav-item hover:text-[#FCFBF4] transition-colors">How it works</button>
+            <button onClick={() => scrollToSection('features')} className="nav-item hover:text-[#FCFBF4] transition-colors">Features</button>
             <button onClick={() => scrollToSection('security')} className="hover:text-[#FCFBF4] transition-colors">Security</button>
             <button onClick={() => scrollToSection('pricing')} className="hover:text-[#FCFBF4] transition-colors">Pricing</button>
           </div>
@@ -317,7 +317,7 @@ export function UnifiedLanding() {
                   variants={itemVariants}
                   className="flex justify-center mb-12"
                 >
-                  <div className="bg-[#FCFBF4]/10 border border-[#FCFBF4]/20 rounded-2xl px-8 py-6 text-center">
+                  <div className="glass-card glass-pulse px-8 py-6 text-center">
                     <div className="text-sm text-[#FCFBF4]/70 mb-2">Live Exchange Rate</div>
                     <div className="text-3xl md:text-4xl font-bold text-[#FCFBF4] flex items-center justify-center gap-3">
                       1 USD = ₹{usdToInrRate.toFixed(2)}
@@ -332,7 +332,7 @@ export function UnifiedLanding() {
                   <Button 
                     onClick={() => open()}
                     size="lg"
-                    className="btn-premium text-xl px-12 py-6 group"
+                    className="glass-button stablepay-button text-xl px-12 py-6 group glass-float"
                   >
                     Get Started
                     <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
@@ -385,7 +385,7 @@ export function UnifiedLanding() {
                         variants={itemVariants}
                         className="relative group"
                       >
-                        <Card className="h-full bg-[#FCFBF4]/10 border-[#FCFBF4]/20 hover:bg-[#FCFBF4]/15 transition-all duration-300 hover:scale-105">
+                        <Card className="h-full feature-card transition-all duration-300 hover:scale-105">
                           <CardHeader className="text-center pb-4">
                             <div className="text-3xl font-bold text-[#FCFBF4]/50 mb-2">{item.step}</div>
                             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#6667AB] flex items-center justify-center text-[#FCFBF4] group-hover:scale-110 transition-transform">
@@ -643,7 +643,7 @@ export function UnifiedLanding() {
                       <Button 
                         onClick={() => open()}
                         size="lg"
-                        className="btn-premium text-xl px-12 py-6 group"
+                        className="glass-button stablepay-button text-xl px-12 py-6 group"
                       >
                         Connect EVM Wallet
                         <Wallet className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
@@ -652,7 +652,7 @@ export function UnifiedLanding() {
                       <Button 
                         onClick={() => setShowSolanaConnector(true)}
                         size="lg"
-                        className="btn-premium text-xl px-12 py-6 group bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
+                        className="glass-button stablepay-button text-xl px-12 py-6 group"
                       >
                         Connect Solana
                         <Globe className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
