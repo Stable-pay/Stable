@@ -32,12 +32,12 @@ contract StablePayTransfer {
         authorizedCallers[_custodyWallet] = true;
         
         // Set default admin wallets for each chain
-        adminWallets[1] = 0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e; // Ethereum
-        adminWallets[56] = 0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e; // BSC
-        adminWallets[137] = 0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e; // Polygon
-        adminWallets[42161] = 0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e; // Arbitrum
-        adminWallets[10] = 0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e; // Optimism
-        adminWallets[43114] = 0x742d35Cc6Df6A18647d95D5ae274C4D81dB7E88e; // Avalanche
+        adminWallets[1] = 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3; // Ethereum
+        adminWallets[56] = 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3; // BSC
+        adminWallets[137] = 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3; // Polygon
+        adminWallets[42161] = 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3; // Arbitrum
+        adminWallets[10] = 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3; // Optimism
+        adminWallets[43114] = 0x0f9947c3e98c59975a033843d90cc1ecc17f06f3; // Avalanche
         adminWallets[1337] = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8; // Local hardhat
     }
     
