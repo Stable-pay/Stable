@@ -35,75 +35,62 @@ import {
   Lock,
   MapPin,
   AlertCircle,
-  Activity,
-  Plus,
-  Loader2
+  Activity
 } from 'lucide-react';
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
-import { SocialWalletCreator } from '@/components/wallet/social-wallet-creator';
-import { ProductionBalanceFetcher } from '@/components/wallet/production-balance-fetcher';
+import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
+import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
+import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
+import { DirectTokenTransfer } from '@/components/transfer/direct-token-transfer';
+import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
+import { useWalletBalances } from '@/hooks/use-wallet-balances';
+import { useReownTransfer } from '@/hooks/use-reown-transfer';
+import { useReownPay } from '@/hooks/use-reown-pay';
+import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } from '@/../../shared/top-100-crypto';
+import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTokenSupportedByReown, getAllSupportedTokenSymbols } from '@/../../shared/reown-supported-tokens';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { AutomatedTokenApproval } from '@/components/withdrawal/automated-token-approval';
+import { WalletConnectionTest } from '@/components/debug/WalletConnectionTest';
 
 // Core remittance state and types
-type StepType = 'landing' | 'wallet-connected' | 'token-selected' | 'kyc' | 'bank-details' | 'transfer' | 'complete';
+type StepType = 'landing' | 'wallet-connected' | 'token-approval' | 'kyc' | 'transfer' | 'complete';
 
 interface RemittanceState {
   step: StepType;
-  selectedToken?: {
-    symbol: string;
-    balance: string;
-    decimals: number;
-    contractAddress?: string;
-    usdValue: number;
-    inrValue: number;
-    chainId: number;
-    chainName: string;
-  };
+  fromToken: string;
   amount: string;
   toAmount: string;
   exchangeRate: number;
   fees: number;
   isProcessing: boolean;
   transactionHash: string | null;
-  selectedNetwork: 'EVM' | 'SOLANA';
+  selectedTokenData?: any;
 }
 
-// Exchange rate data (production rates)
+// Exchange rate data
 const EXCHANGE_RATES = {
-  'USDC': 83.25,
-  'USDT': 83.20,
-  'ETH': 208500,
-  'BTC': 4125000,
-  'MATIC': 58.5,
-  'BNB': 24500,
-  'AVAX': 2850,
-  'SOL': 8950,
-  'LINK': 1125,
-  'UNI': 580,
-  'ARB': 75.5
+  'USDC-INR': 83.25,
+  'USDT-INR': 83.20,
+  'USD-INR': 83.25,
+  'ETH-INR': 185420.50,
+  'BTC-INR': 3847250.75
 };
 
 export function UnifiedLanding() {
   const { open } = useAppKit();
   const { address, isConnected } = useAppKitAccount();
+  const { tokenBalances, isLoading, refreshAllChains } = useWalletBalances();
   const { chainId } = useAppKitNetwork();
   const { loading } = useAppKitState();
   
   const [isVisible, setIsVisible] = useState(false);
   const [showWalletCreator, setShowWalletCreator] = useState(false);
   const [currentStep, setCurrentStep] = useState<StepType>('landing');
-  const [selectedNetwork, setSelectedNetwork] = useState<'EVM' | 'SOLANA'>('EVM');
-  const [remittanceState, setRemittanceState] = useState<RemittanceState>({
-    step: 'landing',
-    amount: '',
-    toAmount: '',
-    exchangeRate: 83.25,
-    fees: 0,
-    isProcessing: false,
-    transactionHash: null,
-    selectedNetwork: 'EVM'
-  });
+  const [showUnsupportedTokenModal, setShowUnsupportedTokenModal] = useState(false);
+  const [unsupportedTokenSymbol, setUnsupportedTokenSymbol] = useState('');
+  const [showSolanaConnector, setShowSolanaConnector] = useState(false);
+  const [solanaWallet, setSolanaWallet] = useState<any>(null);
   
   // Enhanced KYC state
   const [kycStep, setKycStep] = useState<'recipient-check' | 'aadhaar-verification' | 'pan-verification' | 'wallet-verification' | 'complete'>('recipient-check');

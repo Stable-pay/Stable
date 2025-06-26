@@ -45,10 +45,17 @@ export interface IStorage {
   createCustodyWallet(wallet: InsertCustodyWallet): Promise<CustodyWallet>;
 }
 
-import { db } from "./db";
-import { eq } from "drizzle-orm";
-
-export class DatabaseStorage implements IStorage {
+export class MemStorage implements IStorage {
+  private users: Map<number, User>;
+  private kycDocuments: Map<number, KycDocument>;
+  private bankAccounts: Map<number, BankAccount>;
+  private transactions: Map<number, Transaction>;
+  private custodyWallets: Map<number, CustodyWallet>;
+  private currentUserId: number;
+  private currentKycDocumentId: number;
+  private currentBankAccountId: number;
+  private currentTransactionId: number;
+  private currentCustodyWalletId: number;
 
   constructor() {
     this.users = new Map();
@@ -242,4 +249,4 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
