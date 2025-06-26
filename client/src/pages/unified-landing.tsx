@@ -40,7 +40,7 @@ import {
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@reown/appkit/react';
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
-import CleanBalance from '@/components/CleanBalance';
+import TokenBalanceFetcher from '@/components/TokenBalanceFetcher';
 import KYCFlow from '@/components/KYCFlow';
 import BankDetailsForm from '@/components/BankDetailsForm';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
@@ -226,7 +226,7 @@ const UnifiedLandingPage = () => {
                   transition={{ delay: 0.1 }}
                   className="mb-8"
                 >
-                  <CleanBalance 
+                  <TokenBalanceFetcher 
                     onTokenSelect={(token, tokenAmount, inrAmount) => {
                       setRemittanceState(prev => ({
                         ...prev,
