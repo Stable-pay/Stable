@@ -44,7 +44,7 @@ import TokenSelectionInterface from '@/components/TokenSelectionInterface';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
 import { DirectTokenTransfer } from '@/components/transfer/direct-token-transfer';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
-import { useWalletBalances } from '@/hooks/use-wallet-balances';
+import { useWalletBalances } from '@/hooks/useWalletBalances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
 import { useReownPay } from '@/hooks/use-reown-pay';
 import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } from '@/../../shared/top-100-crypto';
@@ -84,7 +84,7 @@ interface RemittanceState {
 const UnifiedLandingPage = () => {
   const { isConnected, address } = useAppKitAccount();
   const { open } = useAppKit();
-  const [currentStep, setCurrentStep] = useState<FlowStep>('token-selection');
+  const [currentStep, setCurrentStep] = useState<FlowStep | 'landing'>('landing');
   const [kycStep, setKycStep] = useState<KYCStep>('personal-info');
   const [usdToInrRate, setUsdToInrRate] = useState(83.25);
   const [showWalletCreator, setShowWalletCreator] = useState(false);
@@ -127,6 +127,13 @@ const UnifiedLandingPage = () => {
   });
 
   const { tokenBalances, isLoading } = useWalletBalances();
+
+  // Handle wallet connection redirect
+  useEffect(() => {
+    if (isConnected && address && currentStep === 'landing') {
+      setCurrentStep('token-selection');
+    }
+  }, [isConnected, address, currentStep]);
 
   // Scroll to section function
   const scrollToSection = (sectionId: string) => {
