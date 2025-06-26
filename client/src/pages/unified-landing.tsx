@@ -178,6 +178,20 @@ const UnifiedLandingPage = () => {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#FCFBF4]/10 rounded-full blur-3xl"></div>
         </div>
 
+        {/* Navigation */}
+        <nav className="relative z-10 flex items-center justify-between p-6 lg:px-8">
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-[#FCFBF4] rounded-lg flex items-center justify-center mr-3">
+              <span className="text-[#6667AB] font-bold text-lg">S</span>
+            </div>
+            <span className="text-xl font-bold text-[#FCFBF4]">StablePay</span>
+          </div>
+          
+          <div className="text-sm text-[#FCFBF4]/80">
+            {address?.slice(0, 8)}...{address?.slice(-6)}
+          </div>
+        </nav>
+
         <AnimatePresence mode="wait">
           {/* Token Selection Step */}
           {currentStep === 'token-selection' && (
@@ -186,7 +200,7 @@ const UnifiedLandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8"
+              className="relative z-10 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pb-20"
             >
               <div className="w-full max-w-4xl">
                 {/* Header */}
@@ -196,10 +210,10 @@ const UnifiedLandingPage = () => {
                   className="text-center mb-8"
                 >
                   <h1 className="text-3xl font-bold text-[#FCFBF4] mb-2">
-                    Select Token for INR Conversion
+                    Convert Your Crypto to INR
                   </h1>
                   <p className="text-[#FCFBF4]/70">
-                    Choose from your available token balances to convert to Indian Rupees
+                    Enter the INR amount you need and we'll calculate the equivalent token amount
                   </p>
                 </motion.div>
 
