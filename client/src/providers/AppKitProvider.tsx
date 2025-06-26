@@ -20,8 +20,12 @@ import {
   solanaDevnet
 } from '@reown/appkit/networks';
 
-// Get environment variables
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'demo-project-id';
+// Force the new project ID directly
+const projectId = '8b3e608af3d7c16be89416c7d75bf157';
+
+// Debug logging to verify project ID
+console.log('AppKitProvider - Using Project ID:', projectId);
+console.log('AppKitProvider - Environment variable:', import.meta.env.VITE_WALLETCONNECT_PROJECT_ID);
 
 // Create adapters
 const wagmiAdapter = new WagmiAdapter({
