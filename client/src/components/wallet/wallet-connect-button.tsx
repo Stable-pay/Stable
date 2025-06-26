@@ -29,14 +29,11 @@ export function WalletConnectButton() {
           variant="outline"
           size="sm"
           onClick={handleNetworkSwitch}
-          className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+          className="bg-[#FCFBF4]/10 border-[#FCFBF4]/20 text-[#FCFBF4] hover:bg-[#FCFBF4]/20 rounded-xl"
         >
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            {selectedNetworkId === 1 ? 'Ethereum' : 
-             selectedNetworkId === 137 ? 'Polygon' : 
-             selectedNetworkId === 56 ? 'BSC' : 
-             selectedNetworkId === 42161 ? 'Arbitrum' : 'Network'}
+            Network
             <ChevronDown className="w-3 h-3" />
           </div>
         </Button>
@@ -44,7 +41,7 @@ export function WalletConnectButton() {
         {/* Account Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+            <Button className="bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] rounded-xl px-6 py-3">
               <User className="w-4 h-4 mr-2" />
               {address.slice(0, 6)}...{address.slice(-4)}
               <ChevronDown className="w-3 h-3 ml-2" />
@@ -79,10 +76,10 @@ export function WalletConnectButton() {
     <Button 
       onClick={handleConnect}
       disabled={status === 'connecting'}
-      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+      className="bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] px-8 py-6 text-lg font-bold rounded-2xl shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 border-0"
     >
-      <Wallet className="w-4 h-4 mr-2" />
-      {status === 'connecting' ? 'Connecting...' : 'Connect Wallet'}
+      <Wallet className="w-6 h-6 mr-3" />
+      {status === 'connecting' ? 'Connecting...' : 'Connect Your Wallet'}
     </Button>
   )
 }
