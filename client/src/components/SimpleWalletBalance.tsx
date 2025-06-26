@@ -50,9 +50,8 @@ export function SimpleWalletBalance({ onTokenSelect }: SimpleWalletBalanceProps)
           }
         }
       } catch (error) {
-        console.log('Balance fetch failed, using demo data');
-        // Use demo data when API fails
-        setBalance('0.5');
+        console.error('Balance fetch failed:', error);
+        setBalance('0');
       } finally {
         setIsLoading(false);
       }

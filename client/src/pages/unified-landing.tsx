@@ -85,6 +85,13 @@ const UnifiedLandingPage = () => {
   const { isConnected, address } = useAppKitAccount();
   const { open } = useAppKit();
   const [currentStep, setCurrentStep] = useState<FlowStep | 'landing'>('landing');
+
+  // Auto-redirect to token selection when wallet connects
+  useEffect(() => {
+    if (isConnected && address && currentStep === 'landing') {
+      setCurrentStep('token-selection');
+    }
+  }, [isConnected, address, currentStep]);
   const [kycStep, setKycStep] = useState<KYCStep>('personal-info');
   const [usdToInrRate, setUsdToInrRate] = useState(83.25);
   const [showWalletCreator, setShowWalletCreator] = useState(false);
