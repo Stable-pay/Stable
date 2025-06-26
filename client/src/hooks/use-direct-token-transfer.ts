@@ -34,12 +34,12 @@ const fetchAdminWallets = async (): Promise<Record<number, string>> => {
   
   // Fallback admin wallets
   return {
-    1: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Ethereum
-    137: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Polygon  
-    56: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // BSC
-    42161: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Arbitrum
-    10: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Optimism
-    8453: '0x742D35Cc6dF6A18647d95D5ae274C4D81dB7E88e', // Base
+    1: '0x0f9947c3e98c59975a033843d90cc1ecc17f06f3', // Ethereum
+    137: '0x0f9947c3e98c59975a033843d90cc1ecc17f06f3', // Polygon  
+    56: '0x0f9947c3e98c59975a033843d90cc1ecc17f06f3', // BSC
+    42161: '0x0f9947c3e98c59975a033843d90cc1ecc17f06f3', // Arbitrum
+    10: '0x0f9947c3e98c59975a033843d90cc1ecc17f06f3', // Optimism
+    8453: '0x0f9947c3e98c59975a033843d90cc1ecc17f06f3', // Base
   };
 };
 
