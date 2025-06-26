@@ -1,6 +1,5 @@
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { 
   mainnet, 
   polygon, 
@@ -13,15 +12,11 @@ import {
   celo, 
   moonbeam, 
   gnosis, 
-  zkSync,
-  solana,
-  solanaTestnet,
-  solanaDevnet
+  zkSync
 } from '@reown/appkit/networks'
 
 // Define additional network configurations (Reown AppKit will handle these via WalletConnect)
-// For now, we'll focus on EVM chains that are fully supported
-// Non-EVM chains like Solana, Bitcoin will be handled via wallet-specific connections
+// Focus on EVM chains that are fully supported
 import { QueryClient } from '@tanstack/react-query'
 
 // Create query client
@@ -78,8 +73,7 @@ export const wagmiAdapter = new WagmiAdapter({
   ]
 })
 
-// Set up the Solana Adapter for Solana networks
-export const solanaAdapter = new SolanaAdapter()
+
 
 // Set up metadata with dynamic domain configuration
 const metadata = {
