@@ -1,0 +1,23 @@
+[Error] Failed to load resource: the server responded with a status of 403 () (config, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (0c2840c3-5b04-4c44-9661-fbd4b49e1800, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (07ba87ed-43aa-4adf-4540-9e6a2b9cae00, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (getWallets, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (3bff954d-5cb0-47a0-9a23-d20192e74600, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (ba0ba0cd-17c6-4806-ad93-f9d174f17900, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (06b26297-fe0c-4733-5d6b-ffa5498aac00, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (30c46e53-e989-45fb-4549-be3bd4eb3b00, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (161038da-44ae-4ec7-1208-0ea569454b00, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (ab9c186a-c52f-464b-2906-ca59d760a400, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (93564157-2e8e-4ce7-81df-b264dbee9b00, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (ab781bbc-ccc6-418d-d32d-789b15da1f00, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (02b53f6a-e3d4-479e-1cb4-21178987d100, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (41d04d42-da3b-4453-8506-668cc0727900, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (7289c336-3981-4081-c5f4-efc26ac64a00, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (b310f07f-4ef7-49f3-7073-2a0a39685800, line 0)
+[Error] Failed to load resource: the server responded with a status of 404 () (phantom-logo.png, line 0)
+[Error] Failed to load resource: the server responded with a status of 403 () (getWallets, line 0)
+[Error] Unhandled Promise Rejection: Error: HTTP status code: 403
+	(anonymous function) (chunk-OKLW444B.js:736)
+> Selected Element
+< <wui-flex data-testid="w3m-modal-overlay" style>…</wui-flex>

@@ -20,6 +20,8 @@ import { RemittancePlatform } from "@/pages/remittance-platform";
 import { UnifiedLanding } from "@/pages/unified-landing";
 import { AdminConfig } from "@/pages/admin-config";
 import Web3FinancialServices from "@/pages/web3-financial-services";
+import { DomainSetup } from "@/components/DomainSetup";
+import { useState, useEffect } from 'react';
 
 
 function Router() {
@@ -42,11 +44,49 @@ function Router() {
 }
 
 function App() {
+  const [showDomainSetup, setShowDomainSetup] = useState(false);
+
+  useEffect(() => {
+    // Monitor for 403 errors indicating domain allowlist issues
+    const checkDomainErrors = () => {
+      const errors = performance.getEntriesByType('navigation');
+      // Also check for failed resource loads
+      setTimeout(() => {
+        const failedResources = performance.getEntriesByType('resource')
+          .filter(resource => resource.transferSize === 0);
+        if (failedResources.length > 5) {
+          setShowDomainSetup(true);
+        }
+      }, 3000);
+    };
+
+    checkDomainErrors();
+    
+    // Listen for failed network requests
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      try {
+        const response = await originalFetch(...args);
+        if (response.status === 403 && args[0]?.toString().includes('reown')) {
+          setShowDomainSetup(true);
+        }
+        return response;
+      } catch (error) {
+        return originalFetch(...args);
+      }
+    };
+
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, []);
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <div className="min-h-screen bg-background">
+            {showDomainSetup && <DomainSetup />}
             <Router />
           </div>
           <Toaster />

@@ -40,8 +40,10 @@ const getDynamicDomain = () => {
   if (typeof window === 'undefined') return 'https://stablepay.replit.app';
   
   const currentOrigin = window.location.origin;
-  // Handle Replit dev domains
-  if (currentOrigin.includes('replit.dev') || currentOrigin.includes('repl.co')) {
+  // Handle Replit dev domains - add common patterns
+  if (currentOrigin.includes('replit.dev') || 
+      currentOrigin.includes('repl.co') || 
+      currentOrigin.includes('worf.replit.dev')) {
     return currentOrigin;
   }
   return currentOrigin;
@@ -128,25 +130,8 @@ export const modal = createAppKit({
   enableEIP6963: true,
   enableCoinbase: true,
   allowUnsupportedChain: true,
-  // Enhanced wallet support
-  customWallets: [
-    {
-      id: 'phantom',
-      name: 'Phantom',
-      image_url: 'https://phantom.app/img/phantom-logo.png',
-      mobile_link: 'phantom://browse',
-      desktop_link: 'https://phantom.app/download',
-      webapp_link: 'https://phantom.app/ul/browse'
-    },
-    {
-      id: 'solflare',
-      name: 'Solflare', 
-      image_url: 'https://solflare.com/favicon.ico',
-      mobile_link: 'solflare://browse',
-      desktop_link: 'https://solflare.com/download',
-      webapp_link: 'https://solflare.com/ul/browse'
-    }
-  ]
+  // Remove custom wallets to avoid 404 errors on external images
+  customWallets: []
 })
 
 export const config = wagmiAdapter.wagmiConfig
