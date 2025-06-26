@@ -61,6 +61,38 @@ export function DomainSetup() {
               de08fceb9aec3c31d08270dd9eb71c65
             </code>
           </div>
+
+          <div className="p-4 bg-[#FCFBF4] rounded-xl border border-gray-200">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Domain Verification Record (TXT Record)
+            </label>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Name:</span>
+                <code className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-mono">
+                  0a3641ce-8bdc-4685-bfc3-6083525c6244
+                </code>
+                <button
+                  onClick={() => copyToClipboard('0a3641ce-8bdc-4685-bfc3-6083525c6244')}
+                  className="px-3 py-1 bg-[#6667AB] text-white rounded-lg hover:bg-[#5555AA] transition-colors text-sm"
+                >
+                  Copy
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Value:</span>
+                <code className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-mono break-all">
+                  cd9396cade0fb5015cea3a6718608900df61d6abae432ab1780dd7c376878b77
+                </code>
+                <button
+                  onClick={() => copyToClipboard('cd9396cade0fb5015cea3a6718608900df61d6abae432ab1780dd7c376878b77')}
+                  className="px-3 py-1 bg-[#6667AB] text-white rounded-lg hover:bg-[#5555AA] transition-colors text-sm"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -80,7 +112,11 @@ export function DomainSetup() {
             </li>
             <li className="flex items-start gap-2">
               <span className="flex-shrink-0 w-6 h-6 bg-[#6667AB] text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
-              <span>Save changes and refresh this page</span>
+              <span><strong>Add DNS verification:</strong> Create a TXT record with the name and value shown above</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="flex-shrink-0 w-6 h-6 bg-[#6667AB] text-white rounded-full flex items-center justify-center text-xs font-bold">5</span>
+              <span>Save changes, wait for DNS propagation, and refresh this page</span>
             </li>
           </ol>
         </div>

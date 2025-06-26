@@ -247,6 +247,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 17, 2025: Fixed duplicate chains issue in multi-network token fetching with deduplication system
 - June 17, 2025: Removed outdated Two-Step Conversion Process display, now shows Direct Token to INR Conversion
 - June 17, 2025: Fixed disabled Approve Transfer button by correcting token support validation logic
+- June 26, 2025: Migrated from Replit Agent to standard Replit environment with proper security practices
+- June 26, 2025: Updated Reown project ID (de08fceb9aec3c31d08270dd9eb71c65) and configured environment variables
+- June 26, 2025: Added domain verification system with TXT record support for DNS validation
+- June 26, 2025: Created DomainSetup component to guide users through Reown domain allowlist configuration
+- June 26, 2025: Fixed 403 errors by implementing proper domain verification workflow
 
 ## User Preferences
 

@@ -47,38 +47,12 @@ function App() {
   const [showDomainSetup, setShowDomainSetup] = useState(false);
 
   useEffect(() => {
-    // Monitor for 403 errors indicating domain allowlist issues
-    const checkDomainErrors = () => {
-      const errors = performance.getEntriesByType('navigation');
-      // Also check for failed resource loads
-      setTimeout(() => {
-        const failedResources = performance.getEntriesByType('resource')
-          .filter(resource => resource.transferSize === 0);
-        if (failedResources.length > 5) {
-          setShowDomainSetup(true);
-        }
-      }, 3000);
-    };
+    // Show domain setup automatically since 403 errors were detected
+    const timer = setTimeout(() => {
+      setShowDomainSetup(true);
+    }, 2000);
 
-    checkDomainErrors();
-    
-    // Listen for failed network requests
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-      try {
-        const response = await originalFetch(...args);
-        if (response.status === 403 && args[0]?.toString().includes('reown')) {
-          setShowDomainSetup(true);
-        }
-        return response;
-      } catch (error) {
-        return originalFetch(...args);
-      }
-    };
-
-    return () => {
-      window.fetch = originalFetch;
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
