@@ -54,6 +54,9 @@ const getDynamicDomain = () => {
 console.log('Reown AppKit initializing with project ID:', projectId ? projectId.substring(0, 8) + '...' : 'Demo mode');
 console.log('Current domain:', typeof window !== 'undefined' ? window.location.origin : 'SSR mode');
 
+// Debug modal initialization
+console.log('Modal object:', typeof window !== 'undefined' ? 'client-side' : 'server-side');
+
 // Set up the Wagmi Adapter for EVM chains
 export const wagmiAdapter = new WagmiAdapter({
   ssr: false,

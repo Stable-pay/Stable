@@ -1,9 +1,12 @@
 import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from 'wagmi';
-import { queryClient, config } from "@/lib/reown-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AppKitProvider, config } from "@/providers/AppKitProvider";
+import { QueryClient } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 import { StablePayNav } from "@/components/layout/stablepay-nav";
 import AnimatedHome from "@/pages/animated-home";
 import Swap from "@/pages/swap";
@@ -44,16 +47,18 @@ function Router() {
 
 function App() {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <div className="min-h-screen bg-background">
-            <Router />
-          </div>
-          <Toaster />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <AppKitProvider>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <div className="min-h-screen bg-background">
+              <Router />
+            </div>
+            <Toaster />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </AppKitProvider>
   );
 }
 
