@@ -1,5 +1,10 @@
 import { useState } from 'react';
 import { useAppKitAccount } from '@reown/appkit/react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Coins, ArrowRight, Wallet } from 'lucide-react';
 
 interface CleanBalanceProps {
   onTokenSelect: (token: any, amount: string, inrAmount: string) => void;
@@ -41,150 +46,66 @@ export function CleanBalance({ onTokenSelect }: CleanBalanceProps) {
 
   if (!isConnected) {
     return (
-      <div style={{ 
-        maxWidth: '600px',
-        margin: '0 auto',
-        padding: '32px',
-        backgroundColor: '#FCFBF4',
-        border: '1px solid rgba(102, 103, 171, 0.3)',
-        borderRadius: '12px',
-        textAlign: 'center'
-      }}>
-        <div style={{ 
-          width: '48px',
-          height: '48px',
-          margin: '0 auto 16px',
-          backgroundColor: 'rgba(102, 103, 171, 0.5)',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '24px',
-          color: '#FCFBF4'
-        }}>
-          💼
-        </div>
-        <p style={{ color: '#6667AB' }}>Connect your wallet to continue</p>
-      </div>
+      <Card className="max-w-2xl mx-auto bg-[#FCFBF4] border-[#6667AB]/30">
+        <CardContent className="p-8 text-center">
+          <Wallet className="w-12 h-12 mx-auto mb-4 text-[#6667AB]/50" />
+          <p className="text-[#6667AB]">Connect your wallet to continue</p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div style={{ 
-      maxWidth: '600px',
-      margin: '0 auto',
-      padding: '24px',
-      backgroundColor: '#FCFBF4',
-      border: '1px solid rgba(102, 103, 171, 0.3)',
-      borderRadius: '12px'
-    }}>
-      <div style={{ 
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        marginBottom: '24px',
-        color: '#6667AB',
-        fontSize: '20px',
-        fontWeight: '600'
-      }}>
-        🪙 Convert ETH to INR
-      </div>
-
-      <div style={{ 
-        backgroundColor: 'rgba(102, 103, 171, 0.1)',
-        padding: '16px',
-        borderRadius: '8px',
-        marginBottom: '24px'
-      }}>
-        <div style={{ fontSize: '14px', color: 'rgba(102, 103, 171, 0.7)', marginBottom: '8px' }}>
-          Connected Wallet
-        </div>
-        <div style={{ 
-          color: '#6667AB',
-          fontFamily: 'monospace',
-          fontSize: '14px'
-        }}>
-          {address?.slice(0, 10)}...{address?.slice(-8)}
-        </div>
-      </div>
-
-      <div style={{ marginBottom: '16px' }}>
-        <label style={{ 
-          display: 'block',
-          marginBottom: '8px',
-          color: '#6667AB',
-          fontWeight: '500'
-        }}>
-          Amount in INR
-        </label>
-        <input
-          type="number"
-          placeholder="Enter INR amount"
-          value={inrAmount}
-          onChange={(e) => handleInrChange(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '12px',
-            border: '1px solid rgba(102, 103, 171, 0.3)',
-            borderRadius: '8px',
-            fontSize: '16px',
-            backgroundColor: '#FCFBF4'
-          }}
-        />
-      </div>
-
-      {tokenAmount && (
-        <div style={{ 
-          backgroundColor: 'rgba(102, 103, 171, 0.1)',
-          padding: '16px',
-          borderRadius: '8px',
-          marginBottom: '24px'
-        }}>
-          <div style={{ 
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '8px'
-          }}>
-            <span style={{ color: '#6667AB' }}>ETH Amount:</span>
-            <span style={{ 
-              fontWeight: '600',
-              color: '#6667AB'
-            }}>
-              {tokenAmount} ETH
-            </span>
-          </div>
-          <div style={{ 
-            fontSize: '14px',
-            color: 'rgba(102, 103, 171, 0.7)'
-          }}>
-            Rate: 1 USD = ₹83.25 | 1 ETH ≈ $3,000
+    <Card className="max-w-2xl mx-auto bg-[#FCFBF4] border-[#6667AB]/30">
+      <CardHeader>
+        <CardTitle className="text-[#6667AB] flex items-center gap-2">
+          <Coins className="w-5 h-5" />
+          Convert ETH to INR
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="bg-[#6667AB]/10 p-4 rounded-lg">
+          <div className="text-sm text-[#6667AB]/70 mb-2">Connected Wallet</div>
+          <div className="text-[#6667AB] font-mono text-sm">
+            {address?.slice(0, 10)}...{address?.slice(-8)}
           </div>
         </div>
-      )}
 
-      <button
-        onClick={handleContinue}
-        disabled={!inrAmount || !tokenAmount}
-        style={{
-          width: '100%',
-          padding: '16px',
-          backgroundColor: inrAmount && tokenAmount ? '#6667AB' : 'rgba(102, 103, 171, 0.5)',
-          color: '#FCFBF4',
-          border: 'none',
-          borderRadius: '16px',
-          fontSize: '16px',
-          fontWeight: '500',
-          cursor: inrAmount && tokenAmount ? 'pointer' : 'not-allowed',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px'
-        }}
-      >
-        Continue to KYC →
-      </button>
-    </div>
+        <div className="space-y-2">
+          <Label className="text-[#6667AB]">Amount in INR</Label>
+          <Input
+            type="number"
+            placeholder="Enter INR amount"
+            value={inrAmount}
+            onChange={(e) => handleInrChange(e.target.value)}
+            className="border-[#6667AB]/30 bg-white text-[#6667AB] placeholder:text-[#6667AB]/50"
+          />
+        </div>
+
+        {tokenAmount && (
+          <div className="bg-[#6667AB]/10 p-4 rounded-lg">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-[#6667AB]">ETH Amount:</span>
+              <span className="font-semibold text-[#6667AB]">
+                {tokenAmount} ETH
+              </span>
+            </div>
+            <div className="text-sm text-[#6667AB]/70">
+              Rate: 1 USD = ₹83.25 | 1 ETH ≈ $3,000
+            </div>
+          </div>
+        )}
+
+        <Button
+          onClick={handleContinue}
+          disabled={!inrAmount || !tokenAmount}
+          className="w-full bg-[#6667AB] hover:bg-[#6667AB]/90 text-[#FCFBF4] rounded-2xl"
+        >
+          Continue to KYC
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 

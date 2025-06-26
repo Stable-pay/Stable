@@ -259,6 +259,10 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 26, 2025: Replaced static balance display with dynamic token selection from actual wallet balances
 - June 26, 2025: Added INR input field with real-time token amount calculation and conversion rates
 - June 26, 2025: Implemented balance validation and admin wallet transfer preparation functionality
+- June 26, 2025: Fixed persistent runtime errors by resolving Lit library dependency conflicts and cache issues
+- June 26, 2025: Created CleanBalance component using proper Tailwind styling and shadcn/ui components for consistent UX/UI
+- June 26, 2025: Implemented automatic wallet connection redirect to token selection page with properly formatted interface
+- June 26, 2025: Resolved Vite cache conflicts and multiple Lit version warnings through clean component architecture
 
 ## User Preferences
 
