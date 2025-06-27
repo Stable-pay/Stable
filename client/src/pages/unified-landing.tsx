@@ -51,7 +51,7 @@ import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } fr
 import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTokenSupportedByReown, getAllSupportedTokenSymbols } from '@/../../shared/reown-supported-tokens';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AutomatedTokenApproval } from '@/components/withdrawal/automated-token-approval';
-import { WalletConnectionTest } from '@/components/debug/WalletConnectionTest';
+
 
 // Core remittance state and types
 type StepType = 'landing' | 'wallet-connected' | 'token-approval' | 'kyc' | 'transfer' | 'complete';
@@ -657,11 +657,6 @@ export function UnifiedLanding() {
                         Connect Solana
                         <Globe className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                       </Button>
-                    </div>
-                    
-                    {/* Debug Component for Testing */}
-                    <div className="mt-12">
-                      <WalletConnectionTest />
                     </div>
                     
                     <p className="text-sm text-[#FCFBF4]/60">

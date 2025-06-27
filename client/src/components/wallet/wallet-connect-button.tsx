@@ -33,10 +33,10 @@ export function WalletConnectButton() {
         >
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            {selectedNetworkId === 1 ? 'Ethereum' : 
-             selectedNetworkId === 137 ? 'Polygon' : 
-             selectedNetworkId === 56 ? 'BSC' : 
-             selectedNetworkId === 42161 ? 'Arbitrum' : 'Network'}
+            {selectedNetworkId === '1' ? 'Ethereum' : 
+             selectedNetworkId === '137' ? 'Polygon' : 
+             selectedNetworkId === '56' ? 'BSC' : 
+             selectedNetworkId === '42161' ? 'Arbitrum' : 'Network'}
             <ChevronDown className="w-3 h-3" />
           </div>
         </Button>
