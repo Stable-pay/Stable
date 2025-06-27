@@ -24,6 +24,10 @@ export class SurepassKYCAPI {
         });
       }
 
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
       const response = await fetch(`${this.baseURL}/api/v1/aadhaar-v2/generate-otp`, {
         method: 'POST',
         headers: {
@@ -32,8 +36,11 @@ export class SurepassKYCAPI {
         },
         body: JSON.stringify({
           id_number: aadhaar_number
-        })
+        }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
@@ -53,11 +60,20 @@ export class SurepassKYCAPI {
           error: data
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Aadhaar OTP Send Error:', error);
+      
+      // Handle timeout specifically
+      if (error.name === 'AbortError') {
+        return res.status(408).json({
+          success: false,
+          message: 'Request timed out. Please check your internet connection and try again.'
+        });
+      }
+      
       return res.status(500).json({
         success: false,
-        message: 'Internal server error during OTP generation'
+        message: 'Service temporarily unavailable. Please try again in a few moments.'
       });
     }
   }
@@ -77,6 +93,10 @@ export class SurepassKYCAPI {
         });
       }
 
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
       const response = await fetch(`${this.baseURL}/api/v1/aadhaar-v2/submit-otp`, {
         method: 'POST',
         headers: {
@@ -86,8 +106,11 @@ export class SurepassKYCAPI {
         body: JSON.stringify({
           client_id: `${aadhaar_number}_${Date.now()}`, // Generate client_id from previous request
           otp: otp
-        })
+        }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
@@ -112,11 +135,20 @@ export class SurepassKYCAPI {
           error: data
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Aadhaar OTP Verification Error:', error);
+      
+      // Handle timeout specifically
+      if (error.name === 'AbortError') {
+        return res.status(408).json({
+          success: false,
+          message: 'Request timed out. Please check your internet connection and try again.'
+        });
+      }
+      
       return res.status(500).json({
         success: false,
-        message: 'Internal server error during OTP verification'
+        message: 'Service temporarily unavailable. Please try again in a few moments.'
       });
     }
   }

@@ -272,7 +272,7 @@ export function ProductionKYCSystem({ onKYCComplete, onBack }: ProductionKYCSyst
         ) : (
           <>
             <div className="text-center">
-              <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+              <CheckCircle className="w-8 h-8 text-[#6667AB] mx-auto mb-2" />
               <p className="text-sm text-[#6667AB]">OTP sent to your registered mobile number</p>
             </div>
             <div className="space-y-2">
@@ -320,12 +320,12 @@ export function ProductionKYCSystem({ onKYCComplete, onBack }: ProductionKYCSyst
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="bg-green-50 p-3 rounded-lg">
+        <div className="bg-[#6667AB]/10 p-3 rounded-lg border border-[#6667AB]/20">
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="w-4 h-4 text-green-500" />
-            <span className="text-sm font-medium text-green-700">Aadhaar Verified</span>
+            <CheckCircle className="w-4 h-4 text-[#6667AB]" />
+            <span className="text-sm font-medium text-[#6667AB]">Aadhaar Verified</span>
           </div>
-          <p className="text-xs text-green-600">Name: {formData.fullName}</p>
+          <p className="text-xs text-[#6667AB]/70">Name: {formData.fullName}</p>
         </div>
         
         <div className="space-y-2">
@@ -466,34 +466,34 @@ export function ProductionKYCSystem({ onKYCComplete, onBack }: ProductionKYCSyst
   const renderCompleteStep = () => (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
-        <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-          <CheckCircle className="w-6 h-6 text-green-600" />
+        <div className="mx-auto w-12 h-12 bg-[#6667AB]/10 rounded-full flex items-center justify-center mb-4">
+          <CheckCircle className="w-6 h-6 text-[#6667AB]" />
         </div>
-        <CardTitle className="text-green-600">KYC Verification Complete!</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-[#6667AB]">KYC Verification Complete!</CardTitle>
+        <CardDescription className="text-[#6667AB]/70">
           Your identity has been successfully verified
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <div className="flex justify-between">
-            <span className="text-sm text-gray-600">Aadhaar</span>
-            <Badge className="bg-green-100 text-green-700">Verified</Badge>
+            <span className="text-sm text-[#6667AB]/80">Aadhaar</span>
+            <Badge className="bg-[#6667AB]/10 text-[#6667AB] border-[#6667AB]/20">Verified</Badge>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-gray-600">PAN</span>
-            <Badge className="bg-green-100 text-green-700">Verified</Badge>
+            <span className="text-sm text-[#6667AB]/80">PAN</span>
+            <Badge className="bg-[#6667AB]/10 text-[#6667AB] border-[#6667AB]/20">Verified</Badge>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-gray-600">Bank Account</span>
-            <Badge className="bg-green-100 text-green-700">Added</Badge>
+            <span className="text-sm text-[#6667AB]/80">Bank Account</span>
+            <Badge className="bg-[#6667AB]/10 text-[#6667AB] border-[#6667AB]/20">Added</Badge>
           </div>
         </div>
         
         <Separator />
         
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-[#6667AB]/70 mb-4">
             You can now proceed with crypto to INR conversions
           </p>
           <Button 
@@ -508,14 +508,14 @@ export function ProductionKYCSystem({ onKYCComplete, onBack }: ProductionKYCSyst
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#6667AB] to-[#6667AB]/80 p-4">
+    <div className="min-h-screen bg-[#FCFBF4] p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-[#6667AB] mb-2">
             KYC Verification
           </h1>
-          <p className="text-[#FCFBF4]/80">
+          <p className="text-[#6667AB]/70">
             Complete your identity verification to start converting crypto to INR
           </p>
         </div>
@@ -536,20 +536,20 @@ export function ProductionKYCSystem({ onKYCComplete, onBack }: ProductionKYCSyst
               return (
                 <div key={step.key} className="flex items-center">
                   <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                    isCompleted ? 'bg-green-500 border-green-500 text-white' :
-                    isActive ? 'bg-white border-white text-[#6667AB]' :
-                    'border-white/50 text-white/50'
+                    isCompleted ? 'bg-[#6667AB] border-[#6667AB] text-[#FCFBF4]' :
+                    isActive ? 'bg-[#6667AB] border-[#6667AB] text-[#FCFBF4]' :
+                    'border-[#6667AB]/30 text-[#6667AB]/50'
                   }`}>
                     {isCompleted ? <CheckCircle className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                   </div>
                   <span className={`ml-2 text-sm ${
-                    isActive ? 'text-white font-medium' : 'text-white/70'
+                    isActive ? 'text-[#6667AB] font-medium' : 'text-[#6667AB]/70'
                   }`}>
                     {step.label}
                   </span>
                   {index < 3 && (
                     <div className={`w-8 h-px mx-4 ${
-                      isCompleted ? 'bg-green-500' : 'bg-white/30'
+                      isCompleted ? 'bg-[#6667AB]' : 'bg-[#6667AB]/30'
                     }`} />
                   )}
                 </div>
