@@ -34,21 +34,26 @@ export function TokenToINRConverter({ onTokenSelect, onConversionUpdate }: Token
     parseFloat(token.formattedBalance) > 0
   );
 
-  // Get token price from multiple sources with fallback
+  // Get token price using only backend API and fallback pricing
   const fetchTokenPrice = async (symbol: string) => {
     setIsLoadingPrice(true);
     setPriceError(null);
     
     try {
-      // Use backend endpoint to avoid CORS issues
+      console.log(`Fetching price for ${symbol} via backend API...`);
+      
+      // Use backend endpoint to avoid CORS issues completely
       const response = await fetch(`/api/tokens/price/${symbol.toLowerCase()}`, {
+        method: 'GET',
         headers: {
           'Accept': 'application/json',
+          'Content-Type': 'application/json'
         }
       });
       
       if (response.ok) {
         const data = await response.json();
+        console.log(`Backend API response for ${symbol}:`, data);
         
         if (data.usd && data.inr) {
           setTokenPriceUSD(data.usd);
@@ -61,35 +66,28 @@ export function TokenToINRConverter({ onTokenSelect, onConversionUpdate }: Token
         }
       }
       
+      console.warn('Backend API failed, using fallback pricing');
       throw new Error('Backend pricing API failed');
       
     } catch (error) {
-      console.error('Failed to fetch token price:', error);
-      setPriceError('Pricing temporarily unavailable');
+      console.error('Failed to fetch token price via backend:', error);
+      setPriceError('Using fallback pricing');
       
-      // Use fallback pricing as last resort
+      // Use reliable fallback pricing without any external API calls
       const fallbackUSD = getFallbackPrice(symbol);
       setTokenPriceUSD(fallbackUSD);
       
-      const usdToInrRate = await fetchUSDToINRRate();
-      setExchangeRate(fallbackUSD * usdToInrRate);
+      // Use fixed USD to INR rate instead of external API
+      const fixedUsdToInrRate = 83.25;
+      setExchangeRate(fallbackUSD * fixedUsdToInrRate);
     } finally {
       setIsLoadingPrice(false);
     }
   };
 
-  // Fetch live USD to INR rate
-  const fetchUSDToINRRate = async (): Promise<number> => {
-    try {
-      const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-      if (response.ok) {
-        const data = await response.json();
-        return data.rates.INR || 83.25;
-      }
-    } catch (error) {
-      console.error('Failed to fetch USD to INR rate:', error);
-    }
-    return 83.25; // Fallback rate
+  // Use fixed USD to INR rate to avoid external API calls
+  const getUSDToINRRate = (): number => {
+    return 83.25; // Fixed rate to avoid external API dependencies
   };
 
   // Get CoinGecko ID for token symbol

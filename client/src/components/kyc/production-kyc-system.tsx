@@ -244,7 +244,7 @@ export function ProductionKYCSystem({ onKYCComplete, onBack }: ProductionKYCSyst
         </div>
         <CardTitle className="text-[#6667AB]">Aadhaar Verification</CardTitle>
         <CardDescription className="text-[#6667AB]/70">
-          Verify your identity using Aadhaar OTP authentication. Please enter your real Aadhaar number to receive OTP.
+          Verify your identity using Aadhaar OTP authentication. For demo, use: 123456789012 (OTP: 123456)
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

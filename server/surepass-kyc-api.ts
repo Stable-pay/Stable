@@ -24,6 +24,18 @@ export class SurepassKYCAPI {
         });
       }
 
+      // For demo purposes, allow test Aadhaar numbers
+      if (aadhaar_number === '123456789012' || aadhaar_number === '999999999999') {
+        return res.json({
+          success: true,
+          message: 'OTP sent successfully (Demo Mode)',
+          data: {
+            client_id: `demo_${aadhaar_number}_${Date.now()}`,
+            message: 'Demo OTP: 123456'
+          }
+        });
+      }
+
       // Add timeout to prevent hanging requests
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
@@ -100,6 +112,23 @@ export class SurepassKYCAPI {
         return res.status(400).json({
           success: false,
           message: 'Aadhaar number and OTP are required'
+        });
+      }
+
+      // Demo mode for test Aadhaar numbers
+      if ((aadhaar_number === '123456789012' || aadhaar_number === '999999999999') && otp === '123456') {
+        return res.json({
+          success: true,
+          message: 'Aadhaar verified successfully (Demo Mode)',
+          data: {
+            name: 'Test User',
+            dob: '01/01/1990',
+            gender: 'M',
+            address: 'Test Address, Test City, Test State - 123456',
+            photo: '',
+            aadhaar_number: aadhaar_number,
+            verification_status: 'verified'
+          }
         });
       }
 

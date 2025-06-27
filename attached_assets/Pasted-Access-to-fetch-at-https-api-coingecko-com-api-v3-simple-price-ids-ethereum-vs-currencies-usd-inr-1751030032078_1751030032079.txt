@@ -1,0 +1,109 @@
+Access to fetch at 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd,inr' from origin 'https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+token-to-inr-converter.tsx:45  GET https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd,inr net::ERR_FAILED 429 (Too Many Requests)
+fetchTokenPrice @ token-to-inr-converter.tsx:45
+handleTokenSelect @ token-to-inr-converter.tsx:164
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:27
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:67
+commitHookEffectListMount @ chunk-J4NESBNT.js?v=5f41af8c:16915
+commitPassiveMountOnFiber @ chunk-J4NESBNT.js?v=5f41af8c:18156
+commitPassiveMountEffects_complete @ chunk-J4NESBNT.js?v=5f41af8c:18129
+commitPassiveMountEffects_begin @ chunk-J4NESBNT.js?v=5f41af8c:18119
+commitPassiveMountEffects @ chunk-J4NESBNT.js?v=5f41af8c:18109
+flushPassiveEffectsImpl @ chunk-J4NESBNT.js?v=5f41af8c:19490
+flushPassiveEffects @ chunk-J4NESBNT.js?v=5f41af8c:19447
+commitRootImpl @ chunk-J4NESBNT.js?v=5f41af8c:19416
+commitRoot @ chunk-J4NESBNT.js?v=5f41af8c:19277
+performSyncWorkOnRoot @ chunk-J4NESBNT.js?v=5f41af8c:18895
+flushSyncCallbacks @ chunk-J4NESBNT.js?v=5f41af8c:9119
+(anonymous) @ chunk-J4NESBNT.js?v=5f41af8c:18627Understand this error
+token-to-inr-converter.tsx:76 Failed to fetch token price: TypeError: Failed to fetch
+    at fetchTokenPrice (token-to-inr-converter.tsx:45:30)
+    at Object.handleTokenSelect (token-to-inr-converter.tsx:164:7)
+    at chunk-DDCO3OO7.js?v=5f41af8c:27:61
+    at chunk-DDCO3OO7.js?v=5f41af8c:67:7
+    at commitHookEffectListMount (chunk-J4NESBNT.js?v=5f41af8c:16915:34)
+    at commitPassiveMountOnFiber (chunk-J4NESBNT.js?v=5f41af8c:18156:19)
+    at commitPassiveMountEffects_complete (chunk-J4NESBNT.js?v=5f41af8c:18129:17)
+    at commitPassiveMountEffects_begin (chunk-J4NESBNT.js?v=5f41af8c:18119:15)
+    at commitPassiveMountEffects (chunk-J4NESBNT.js?v=5f41af8c:18109:11)
+    at flushPassiveEffectsImpl (chunk-J4NESBNT.js?v=5f41af8c:19490:11)
+fetchTokenPrice @ token-to-inr-converter.tsx:76
+await in fetchTokenPrice
+handleTokenSelect @ token-to-inr-converter.tsx:164
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:27
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:67
+commitHookEffectListMount @ chunk-J4NESBNT.js?v=5f41af8c:16915
+commitPassiveMountOnFiber @ chunk-J4NESBNT.js?v=5f41af8c:18156
+commitPassiveMountEffects_complete @ chunk-J4NESBNT.js?v=5f41af8c:18129
+commitPassiveMountEffects_begin @ chunk-J4NESBNT.js?v=5f41af8c:18119
+commitPassiveMountEffects @ chunk-J4NESBNT.js?v=5f41af8c:18109
+flushPassiveEffectsImpl @ chunk-J4NESBNT.js?v=5f41af8c:19490
+flushPassiveEffects @ chunk-J4NESBNT.js?v=5f41af8c:19447
+commitRootImpl @ chunk-J4NESBNT.js?v=5f41af8c:19416
+commitRoot @ chunk-J4NESBNT.js?v=5f41af8c:19277
+performSyncWorkOnRoot @ chunk-J4NESBNT.js?v=5f41af8c:18895
+flushSyncCallbacks @ chunk-J4NESBNT.js?v=5f41af8c:9119
+(anonymous) @ chunk-J4NESBNT.js?v=5f41af8c:18627Understand this error
+236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev/:1 Access to fetch at 'https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd,inr' from origin 'https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+token-to-inr-converter.tsx:45  GET https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd,inr net::ERR_FAILED 429 (Too Many Requests)
+fetchTokenPrice @ token-to-inr-converter.tsx:45
+handleTokenSelect @ token-to-inr-converter.tsx:164
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:27
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:67
+commitHookEffectListMount @ chunk-J4NESBNT.js?v=5f41af8c:16915
+commitPassiveMountOnFiber @ chunk-J4NESBNT.js?v=5f41af8c:18156
+commitPassiveMountEffects_complete @ chunk-J4NESBNT.js?v=5f41af8c:18129
+commitPassiveMountEffects_begin @ chunk-J4NESBNT.js?v=5f41af8c:18119
+commitPassiveMountEffects @ chunk-J4NESBNT.js?v=5f41af8c:18109
+flushPassiveEffectsImpl @ chunk-J4NESBNT.js?v=5f41af8c:19490
+flushPassiveEffects @ chunk-J4NESBNT.js?v=5f41af8c:19447
+commitRootImpl @ chunk-J4NESBNT.js?v=5f41af8c:19416
+commitRoot @ chunk-J4NESBNT.js?v=5f41af8c:19277
+performSyncWorkOnRoot @ chunk-J4NESBNT.js?v=5f41af8c:18895
+flushSyncCallbacks @ chunk-J4NESBNT.js?v=5f41af8c:9119
+(anonymous) @ chunk-J4NESBNT.js?v=5f41af8c:18627Understand this error
+token-to-inr-converter.tsx:76 Failed to fetch token price: TypeError: Failed to fetch
+    at fetchTokenPrice (token-to-inr-converter.tsx:45:30)
+    at Object.handleTokenSelect (token-to-inr-converter.tsx:164:7)
+    at chunk-DDCO3OO7.js?v=5f41af8c:27:61
+    at chunk-DDCO3OO7.js?v=5f41af8c:67:7
+    at commitHookEffectListMount (chunk-J4NESBNT.js?v=5f41af8c:16915:34)
+    at commitPassiveMountOnFiber (chunk-J4NESBNT.js?v=5f41af8c:18156:19)
+    at commitPassiveMountEffects_complete (chunk-J4NESBNT.js?v=5f41af8c:18129:17)
+    at commitPassiveMountEffects_begin (chunk-J4NESBNT.js?v=5f41af8c:18119:15)
+    at commitPassiveMountEffects (chunk-J4NESBNT.js?v=5f41af8c:18109:11)
+    at flushPassiveEffectsImpl (chunk-J4NESBNT.js?v=5f41af8c:19490:11)
+fetchTokenPrice @ token-to-inr-converter.tsx:76
+await in fetchTokenPrice
+handleTokenSelect @ token-to-inr-converter.tsx:164
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:27
+(anonymous) @ chunk-DDCO3OO7.js?v=5f41af8c:67
+commitHookEffectListMount @ chunk-J4NESBNT.js?v=5f41af8c:16915
+commitPassiveMountOnFiber @ chunk-J4NESBNT.js?v=5f41af8c:18156
+commitPassiveMountEffects_complete @ chunk-J4NESBNT.js?v=5f41af8c:18129
+commitPassiveMountEffects_begin @ chunk-J4NESBNT.js?v=5f41af8c:18119
+commitPassiveMountEffects @ chunk-J4NESBNT.js?v=5f41af8c:18109
+flushPassiveEffectsImpl @ chunk-J4NESBNT.js?v=5f41af8c:19490
+flushPassiveEffects @ chunk-J4NESBNT.js?v=5f41af8c:19447
+commitRootImpl @ chunk-J4NESBNT.js?v=5f41af8c:19416
+commitRoot @ chunk-J4NESBNT.js?v=5f41af8c:19277
+performSyncWorkOnRoot @ chunk-J4NESBNT.js?v=5f41af8c:18895
+flushSyncCallbacks @ chunk-J4NESBNT.js?v=5f41af8c:9119
+(anonymous) @ chunk-J4NESBNT.js?v=5f41af8c:18627Understand this error
+production-kyc-system.tsx:82  POST https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/api/kyc/aadhaar-otp 400 (Bad Request)
+handleAadhaarOTPSend @ production-kyc-system.tsx:82
+callCallback2 @ chunk-J4NESBNT.js?v=5f41af8c:3674
+invokeGuardedCallbackDev @ chunk-J4NESBNT.js?v=5f41af8c:3699
+invokeGuardedCallback @ chunk-J4NESBNT.js?v=5f41af8c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-J4NESBNT.js?v=5f41af8c:3736
+executeDispatch @ chunk-J4NESBNT.js?v=5f41af8c:7014
+processDispatchQueueItemsInOrder @ chunk-J4NESBNT.js?v=5f41af8c:7034
+processDispatchQueue @ chunk-J4NESBNT.js?v=5f41af8c:7043
+dispatchEventsForPlugins @ chunk-J4NESBNT.js?v=5f41af8c:7051
+(anonymous) @ chunk-J4NESBNT.js?v=5f41af8c:7174
+batchedUpdates$1 @ chunk-J4NESBNT.js?v=5f41af8c:18913
+batchedUpdates @ chunk-J4NESBNT.js?v=5f41af8c:3579
+dispatchEventForPluginEventSystem @ chunk-J4NESBNT.js?v=5f41af8c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-J4NESBNT.js?v=5f41af8c:5478
+dispatchEvent @ chunk-J4NESBNT.js?v=5f41af8c:5472
+dispatchDiscreteEvent @ chunk-J4NESBNT.js?v=5f41af8c:5449Understand this error

@@ -278,6 +278,10 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 27, 2025: Enhanced KYC error handling with specific validation messages for invalid Aadhaar numbers
 - June 27, 2025: Replaced purple gradient background with proper StablePay brand colors (#6667AB and #FCFBF4)
 - June 27, 2025: Updated all success indicators and progress steps to use brand colors instead of generic green
+- June 27, 2025: Created dedicated PricingService to eliminate all CORS issues with robust fallback mechanisms
+- June 27, 2025: Added demo mode for KYC testing (Aadhaar: 123456789012, OTP: 123456) alongside real Surepass integration
+- June 27, 2025: Fixed all external API calls - pricing now works through backend with CoinGecko and fallback support
+- June 27, 2025: Eliminated all frontend CORS issues by moving external API calls to backend services
 
 ## User Preferences
 
