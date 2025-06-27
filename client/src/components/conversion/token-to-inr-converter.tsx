@@ -40,9 +40,8 @@ export function TokenToINRConverter({ onTokenSelect, onConversionUpdate }: Token
     setPriceError(null);
     
     try {
-      // First try CoinGecko API
-      const coingeckoId = getCoingeckoId(symbol);
-      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=usd,inr`, {
+      // Use backend endpoint to avoid CORS issues
+      const response = await fetch(`/api/tokens/price/${symbol.toLowerCase()}`, {
         headers: {
           'Accept': 'application/json',
         }
@@ -51,32 +50,24 @@ export function TokenToINRConverter({ onTokenSelect, onConversionUpdate }: Token
       if (response.ok) {
         const data = await response.json();
         
-        if (data[coingeckoId]) {
-          const usdPrice = data[coingeckoId].usd || 0;
-          const inrPrice = data[coingeckoId].inr || 0;
+        if (data.usd && data.inr) {
+          setTokenPriceUSD(data.usd);
+          setExchangeRate(data.inr);
           
-          setTokenPriceUSD(usdPrice);
-          
-          // If we have direct INR rate, use it; otherwise calculate from USD
-          if (inrPrice > 0) {
-            setExchangeRate(inrPrice);
-          } else if (usdPrice > 0) {
-            // Get live USD to INR rate
-            const usdToInrRate = await fetchUSDToINRRate();
-            setExchangeRate(usdPrice * usdToInrRate);
+          if (data.source === 'fallback') {
+            setPriceError('Using backup pricing');
           }
           return;
         }
       }
       
-      // Fallback to backup pricing if CoinGecko fails
-      throw new Error('CoinGecko API failed');
+      throw new Error('Backend pricing API failed');
       
     } catch (error) {
       console.error('Failed to fetch token price:', error);
-      setPriceError('Using fallback pricing');
+      setPriceError('Pricing temporarily unavailable');
       
-      // Use fallback pricing with live USD to INR rate
+      // Use fallback pricing as last resort
       const fallbackUSD = getFallbackPrice(symbol);
       setTokenPriceUSD(fallbackUSD);
       

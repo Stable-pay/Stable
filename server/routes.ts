@@ -278,6 +278,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Token pricing endpoint to avoid CORS issues
+  app.get("/api/tokens/price/:symbol", async (req, res) => {
+    try {
+      const { symbol } = req.params;
+      
+      if (!symbol) {
+        return res.status(400).json({ error: 'Token symbol is required' });
+      }
+
+      const tokenId = getTokenId(symbol.toLowerCase());
+      
+      // Add timeout controller
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd,inr`, {
+        headers: {
+          'Accept': 'application/json',
+        },
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`CoinGecko API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const tokenData = data[tokenId];
+
+      if (!tokenData) {
+        // Return fallback price if CoinGecko fails
+        const fallbackUSD = getFallbackPrice(symbol.toLowerCase());
+        const usdToInrRate = 83.15; // Fallback USD to INR rate
+        
+        return res.json({
+          symbol: symbol.toUpperCase(),
+          usd: fallbackUSD,
+          inr: fallbackUSD * usdToInrRate,
+          source: 'fallback',
+          lastUpdated: new Date().toISOString()
+        });
+      }
+
+      res.json({
+        symbol: symbol.toUpperCase(),
+        usd: tokenData.usd || 0,
+        inr: tokenData.inr || 0,
+        source: 'coingecko',
+        lastUpdated: new Date().toISOString()
+      });
+
+    } catch (error: any) {
+      console.error('Token price fetch error:', error);
+      
+      // Handle timeout
+      if (error.name === 'AbortError') {
+        return res.status(408).json({ error: 'Request timed out' });
+      }
+      
+      // Fallback pricing on error
+      const symbol = req.params.symbol;
+      const fallbackUSD = getFallbackPrice(symbol?.toLowerCase() || 'usdc');
+      const usdToInrRate = 83.15;
+      
+      res.json({
+        symbol: symbol?.toUpperCase() || 'UNKNOWN',
+        usd: fallbackUSD,
+        inr: fallbackUSD * usdToInrRate,
+        source: 'fallback',
+        lastUpdated: new Date().toISOString()
+      });
+    }
+  });
+
   // Remittance withdrawal endpoint
   app.post("/api/remittance/withdraw", async (req, res) => {
     try {

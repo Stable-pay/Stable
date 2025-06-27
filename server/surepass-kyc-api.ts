@@ -54,9 +54,19 @@ export class SurepassKYCAPI {
           }
         });
       } else {
+        // Handle specific error cases
+        if (data.status_code === 422 && data.message_code === 'verification_failed') {
+          if (data.data?.valid_aadhaar === false) {
+            return res.status(400).json({
+              success: false,
+              message: 'Please enter a valid Aadhaar number. Ensure all 12 digits are correct.'
+            });
+          }
+        }
+        
         return res.status(400).json({
           success: false,
-          message: data.message || 'Failed to send OTP',
+          message: data.message || 'Failed to send OTP. Please verify your Aadhaar number and try again.',
           error: data
         });
       }
