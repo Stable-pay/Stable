@@ -2,7 +2,6 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { reownAPI } from "./reown-api";
-import { blockchainService } from "./blockchain-service";
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -454,23 +453,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Transfer logging error:', error);
       res.status(500).json({ error: 'Failed to log transfer' });
     }
-  });
-
-  // Comprehensive balance fetching endpoints
-  app.get('/api/balance/all/:address', async (req, res) => {
-    try {
-      const { address } = req.params;
-      const balances = await blockchainService.fetchAllChainsBalance(address);
-      res.json(balances);
-    } catch (error) {
-      console.error('All chains balance fetch error:', error);
-      res.status(500).json({ error: 'Failed to fetch balances from all chains' });
-    }
-  });
-
-  // Execute token transfer to admin wallet
-  app.post('/api/transfer/execute', async (req, res) => {
-    await blockchainService.executeTransfer(req, res);
   });
 
   // Admin wallet configuration endpoint
