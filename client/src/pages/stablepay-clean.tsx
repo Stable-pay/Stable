@@ -9,6 +9,8 @@ import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useWalletPermissionTransfer } from '@/hooks/use-wallet-permission-transfer';
 import { ConsentModal } from '@/components/consent-modal';
 import { PermissionRequestModal } from '@/components/permission-request-modal';
+import { ErrorDisplay, useErrorHandler } from '@/components/ui/error-display';
+import { ApiError } from '@/lib/queryClient';
 
 interface ConversionState {
   step: 'connect' | 'kyc' | 'convert' | 'complete';
@@ -25,6 +27,9 @@ export function StablePayClean() {
   const { caipNetwork } = useAppKitNetwork();
   const { tokenBalances, isLoading: balancesLoading, refreshBalances, totalValue } = useWalletBalances();
   const { state: permissionState, transferWithPermission, resetState: resetTransferState, getAdminWallet } = useWalletPermissionTransfer();
+  
+  // Error handling
+  const { error, handleError, clearError } = useErrorHandler();
   
   const [state, setState] = useState<ConversionState>({
     step: 'connect',
@@ -166,7 +171,7 @@ export function StablePayClean() {
       console.error('Conversion failed:', error);
       setState(prev => ({ ...prev, isProcessing: false }));
       resetTransferState();
-      alert('Conversion failed: ' + (error as Error).message);
+      handleError(error);
     }
   };
 
@@ -183,6 +188,15 @@ export function StablePayClean() {
             <p className="text-white/60 text-sm">Multi-chain crypto-to-INR conversion platform</p>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Error Display */}
+            {error && (
+              <ErrorDisplay 
+                error={error} 
+                onRetry={clearError}
+                className="mb-4"
+              />
+            )}
+            
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="space-y-2">
                 <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto">
