@@ -127,14 +127,30 @@ export function KYCFlow({ onComplete }: KYCFlowProps) {
             <div className="space-y-4">
               <div className="border-2 border-dashed border-[#6667AB]/30 rounded-lg p-6 text-center">
                 <p className="text-[#6667AB]/70 mb-2">Aadhaar Card (Front & Back)</p>
-                <Button variant="outline" className="border-[#6667AB]/30 text-[#6667AB]">
-                  Choose Files
+                <Button 
+                  variant="outline" 
+                  className="border-[#6667AB]/30 text-[#6667AB] contrast-fix"
+                  style={{ 
+                    color: '#6667AB !important',
+                    backgroundColor: '#FCFBF4 !important',
+                    borderColor: '#6667AB !important'
+                  }}
+                >
+                  <span style={{ color: '#6667AB' }}>Choose Files</span>
                 </Button>
               </div>
               <div className="border-2 border-dashed border-[#6667AB]/30 rounded-lg p-6 text-center">
                 <p className="text-[#6667AB]/70 mb-2">PAN Card</p>
-                <Button variant="outline" className="border-[#6667AB]/30 text-[#6667AB]">
-                  Choose File
+                <Button 
+                  variant="outline" 
+                  className="border-[#6667AB]/30 text-[#6667AB] contrast-fix"
+                  style={{ 
+                    color: '#6667AB !important',
+                    backgroundColor: '#FCFBF4 !important',
+                    borderColor: '#6667AB !important'
+                  }}
+                >
+                  <span style={{ color: '#6667AB' }}>Choose File</span>
                 </Button>
               </div>
             </div>
@@ -150,8 +166,14 @@ export function KYCFlow({ onComplete }: KYCFlowProps) {
               <div className="w-48 h-48 mx-auto bg-[#6667AB]/20 rounded-lg flex items-center justify-center">
                 <Camera className="w-12 h-12 text-[#6667AB]/50" />
               </div>
-              <Button className="mt-4 bg-[#6667AB] text-[#FCFBF4]">
-                Take Photo
+              <Button 
+                className="mt-4 bg-[#6667AB] text-[#FCFBF4] contrast-fix-inverse"
+                style={{ 
+                  color: '#FCFBF4 !important',
+                  backgroundColor: '#6667AB !important'
+                }}
+              >
+                <span style={{ color: '#FCFBF4' }}>Take Photo</span>
               </Button>
             </div>
           </div>
@@ -237,16 +259,27 @@ export function KYCFlow({ onComplete }: KYCFlowProps) {
             onClick={handleBack}
             disabled={currentStep === 1}
             variant="outline"
-            className="border-[#6667AB]/30 text-[#6667AB]"
+            className="border-[#6667AB]/30 text-[#6667AB] contrast-fix"
+            style={{ 
+              color: '#6667AB !important',
+              backgroundColor: '#FCFBF4 !important',
+              borderColor: '#6667AB !important'
+            }}
           >
-            Back
+            <span style={{ color: '#6667AB' }}>Back</span>
           </Button>
           <Button
             onClick={handleNext}
-            className="bg-[#6667AB] text-[#FCFBF4] hover:bg-[#6667AB]/90"
+            className="bg-[#6667AB] text-[#FCFBF4] hover:bg-[#6667AB]/90 contrast-fix-inverse"
+            style={{ 
+              color: '#FCFBF4 !important',
+              backgroundColor: '#6667AB !important'
+            }}
           >
-            {currentStep === 4 ? 'Continue to Bank Details' : 'Next Step'}
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <span style={{ color: '#FCFBF4' }}>
+              {currentStep === 4 ? 'Continue to Bank Details' : 'Next Step'}
+            </span>
+            <ArrowRight className="w-4 h-4 ml-2" style={{ color: '#FCFBF4' }} />
           </Button>
         </div>
       </CardContent>

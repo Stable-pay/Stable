@@ -602,6 +602,7 @@
   .btn-primary {
     @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300;
     @apply relative overflow-hidden;
+    color: #FCFBF4 !important;
   }
 
   .btn-primary::before {
@@ -914,3 +915,252 @@ html {
 .grid-responsive-stats {
   @apply grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6;
 }
+
+
+/* COMPREHENSIVE BUTTON AND TEXT VISIBILITY FIXES FOR STABLEPAY */
+/* Force all primary buttons to have proper text visibility */
+button[class*="bg-gradient-to-r"], 
+button[class*="bg-[#6667AB]"],
+button[class*="bg-primary"],
+.btn-premium,
+[data-style*="background"] button {
+  color: #FCFBF4 !important;
+  font-weight: 600 !important;
+}
+
+button[class*="bg-gradient-to-r"] *,
+button[class*="bg-[#6667AB]"] *,
+button[class*="bg-primary"] *,
+.btn-premium *,
+[data-style*="background"] button * {
+  color: #FCFBF4 !important;
+}
+
+/* Force all secondary/outline buttons to have proper text visibility */
+button[class*="border-[#6667AB]"],
+button[class*="text-[#6667AB]"],
+button[variant="outline"],
+.btn-secondary {
+  color: #6667AB !important;
+  background-color: #FCFBF4 !important;
+  border-color: #6667AB !important;
+}
+
+button[class*="border-[#6667AB]"] *,
+button[class*="text-[#6667AB]"] *,
+button[variant="outline"] *,
+.btn-secondary * {
+  color: #6667AB !important;
+}
+
+/* Reown/AppKit wallet button fixes */
+[class*="appkit"] button,
+[class*="wallet"] button,
+button[class*="wallet"] {
+  color: #FCFBF4 !important;
+  background-color: #6667AB !important;
+}
+
+[class*="appkit"] button *,
+[class*="wallet"] button *,
+button[class*="wallet"] * {
+  color: #FCFBF4 !important;
+}
+
+/* Input and form field visibility fixes */
+input, textarea, select {
+  background-color: #FFFFFF !important;
+  color: #6667AB !important;
+  border: 1px solid #D1D1E8 !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #6667AB !important;
+  box-shadow: 0 0 0 3px rgba(102, 103, 171, 0.1) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9999CC !important;
+}
+
+/* Label text visibility */
+label {
+  color: #6667AB !important;
+  font-weight: 600 !important;
+}
+
+/* Card text visibility */
+.card, [class*="card"] {
+  background-color: #FCFBF4 !important;
+  color: #6667AB !important;
+}
+
+/* Badge text visibility */
+.badge, [class*="badge"] {
+  background-color: #6667AB !important;
+  color: #FCFBF4 !important;
+}
+
+/* Dropdown and select visibility fixes */
+[role="listbox"],
+[role="option"],
+[data-radix-select-content],
+[data-radix-select-item],
+[data-radix-select-trigger],
+.select-content,
+.select-item {
+  background-color: #FFFFFF !important;
+  color: #6667AB !important;
+  border: 1px solid #D1D1E8 !important;
+}
+
+[role="option"]:hover,
+[data-radix-select-item]:hover,
+.select-item:hover {
+  background-color: rgba(102, 103, 171, 0.1) !important;
+  color: #6667AB !important;
+}
+
+/* Navigation text visibility */
+nav a, .nav-link {
+  color: #FCFBF4 !important;
+}
+
+nav a:hover, .nav-link:hover {
+  color: #FFFFFF !important;
+}
+
+/* Alert and notification visibility */
+.alert, [class*="alert"] {
+  background-color: rgba(102, 103, 171, 0.1) !important;
+  color: #6667AB !important;
+  border: 1px solid #6667AB !important;
+}
+
+/* Error text visibility */
+.error, [class*="error"], .destructive {
+  color: #E53E3E !important;
+}
+
+/* Success text visibility */
+.success, [class*="success"] {
+  color: #38A169 !important;
+}
+
+/* Muted text visibility */
+.muted, [class*="muted"] {
+  color: #8888BB !important;
+}
+
+/* Form control visibility */
+.form-control, [class*="form-control"] {
+  background-color: #FFFFFF !important;
+  color: #6667AB !important;
+  border: 1px solid #D1D1E8 !important;
+}
+
+/* Popover and tooltip visibility */
+.popover, [class*="popover"], .tooltip, [class*="tooltip"] {
+  background-color: #FFFFFF !important;
+  color: #6667AB !important;
+  border: 1px solid #D1D1E8 !important;
+}
+
+/* Dialog and modal visibility */
+.dialog, [class*="dialog"], .modal, [class*="modal"] {
+  background-color: #FCFBF4 !important;
+  color: #6667AB !important;
+}
+
+/* Table visibility */
+table, th, td {
+  color: #6667AB !important;
+}
+
+thead th {
+  background-color: rgba(102, 103, 171, 0.1) !important;
+  color: #6667AB !important;
+}
+
+/* Progress and status indicators */
+.progress, [class*="progress"] {
+  background-color: rgba(102, 103, 171, 0.2) !important;
+}
+
+.progress-bar, [class*="progress-bar"] {
+  background-color: #6667AB !important;
+}
+
+/* Tabs visibility */
+.tab, [class*="tab"] {
+  color: #6667AB !important;
+}
+
+.tab.active, [class*="tab"].active {
+  background-color: #6667AB !important;
+  color: #FCFBF4 !important;
+}
+
+/* Accordion visibility */
+.accordion, [class*="accordion"] {
+  background-color: #FCFBF4 !important;
+  color: #6667AB !important;
+}
+
+/* Separator visibility */
+.separator, [class*="separator"] {
+  border-color: #D1D1E8 !important;
+}
+
+/* Avatar and user info visibility */
+.avatar, [class*="avatar"] {
+  background-color: #6667AB !important;
+  color: #FCFBF4 !important;
+}
+
+/* Code and pre visibility */
+code, pre {
+  background-color: rgba(102, 103, 171, 0.1) !important;
+  color: #6667AB !important;
+}
+
+/* Link visibility */
+a {
+  color: #6667AB !important;
+}
+
+a:hover {
+  color: #5558A0 !important;
+}
+
+/* Icon color inheritance fix */
+svg {
+  color: inherit !important;
+}
+
+/* Force StablePay brand colors on all interactive elements */
+button:not([disabled]) {
+  cursor: pointer !important;
+}
+
+button[disabled] {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Final catch-all for any missed elements */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease !important;
+}
+
+/* Ensure proper contrast ratios */
+.contrast-fix {
+  background-color: #FFFFFF !important;
+  color: #6667AB !important;
+}
+
+.contrast-fix-inverse {
+  background-color: #6667AB !important;
+  color: #FCFBF4 !important;
+}
+

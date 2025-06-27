@@ -76,10 +76,16 @@ export function WalletConnectButton() {
     <Button 
       onClick={handleConnect}
       disabled={status === 'connecting'}
-      className="bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] px-8 py-6 text-lg font-bold rounded-2xl shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 border-0"
+      className="bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] px-8 py-6 text-lg font-bold rounded-2xl shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 border-0 contrast-fix-inverse"
+      style={{ 
+        color: '#FCFBF4 !important',
+        backgroundColor: '#6667AB !important' 
+      }}
     >
-      <Wallet className="w-6 h-6 mr-3" />
-      {status === 'connecting' ? 'Connecting...' : 'Connect Your Wallet'}
+      <Wallet className="w-6 h-6 mr-3" style={{ color: '#FCFBF4' }} />
+      <span style={{ color: '#FCFBF4' }}>
+        {status === 'connecting' ? 'Connecting...' : 'Connect Your Wallet'}
+      </span>
     </Button>
   )
 }

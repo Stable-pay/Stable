@@ -215,10 +215,14 @@ export function ReownTokenSelector({ onTokenSelect }: ReownTokenSelectorProps) {
           <p className="text-[#6667AB]/70 mb-6">Connect your wallet to view token balances and start converting to INR</p>
           <Button 
             onClick={() => open()}
-            className="bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] px-8 py-3 rounded-xl"
+            className="bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] px-8 py-3 rounded-xl contrast-fix-inverse"
+            style={{ 
+              color: '#FCFBF4 !important',
+              backgroundColor: '#6667AB !important' 
+            }}
           >
-            <Wallet className="w-5 h-5 mr-2" />
-            Connect Wallet
+            <Wallet className="w-5 h-5 mr-2" style={{ color: '#FCFBF4' }} />
+            <span style={{ color: '#FCFBF4' }}>Connect Wallet</span>
           </Button>
         </CardContent>
       </Card>
@@ -363,10 +367,16 @@ export function ReownTokenSelector({ onTokenSelect }: ReownTokenSelectorProps) {
             <Button
               onClick={handleProceed}
               disabled={!isValidAmount}
-              className="w-full bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] py-6 text-lg font-bold rounded-xl disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-[#6667AB] to-[#6667AB]/80 hover:from-[#6667AB]/90 hover:to-[#6667AB]/70 text-[#FCFBF4] py-6 text-lg font-bold rounded-xl disabled:opacity-50 contrast-fix-inverse"
+              style={{ 
+                color: '#FCFBF4 !important',
+                backgroundColor: '#6667AB !important' 
+              }}
             >
-              {!isValidAmount ? 'Enter Valid Amount' : 'Proceed to KYC'}
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <span style={{ color: '#FCFBF4' }}>
+                {!isValidAmount ? 'Enter Valid Amount' : 'Proceed to KYC'}
+              </span>
+              <ArrowRight className="w-5 h-5 ml-2" style={{ color: '#FCFBF4' }} />
             </Button>
           </CardContent>
         </Card>
