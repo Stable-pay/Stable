@@ -13,7 +13,7 @@ export interface TokenBalance {
   isNative: boolean;
 }
 
-export interface NetworkConfig {
+interface NetworkConfig {
   chainId: number;
   name: string;
   rpcUrl: string;
@@ -30,7 +30,7 @@ export interface NetworkConfig {
   }>;
 }
 
-// Comprehensive network configurations with all major chains
+// Production-ready comprehensive network configurations with all major chains
 const NETWORK_CONFIGS: NetworkConfig[] = [
   {
     chainId: 1,
@@ -45,19 +45,25 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
       { symbol: 'WBTC', name: 'Wrapped Bitcoin', address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', decimals: 8 },
       { symbol: 'UNI', name: 'Uniswap', address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', decimals: 18 },
       { symbol: 'LINK', name: 'Chainlink', address: '0x514910771AF9Ca656af840dff83E8264EcF986CA', decimals: 18 },
-      { symbol: 'PEPE', name: 'Pepe', address: '0x6982508145454Ce325dDbE47a25d4ec3d2311933', decimals: 18 }
+      { symbol: 'PEPE', name: 'Pepe', address: '0x6982508145454Ce325dDbE47a25d4ec3d2311933', decimals: 18 },
+      { symbol: 'SHIB', name: 'Shiba Inu', address: '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE', decimals: 18 },
+      { symbol: 'MATIC', name: 'Polygon', address: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0', decimals: 18 }
     ]
   },
   {
     chainId: 137,
     name: 'Polygon',
-    rpcUrl: 'https://polygon.drpc.org',
+    rpcUrl: 'https://polygon.llamarpc.com',
     nativeToken: { symbol: 'MATIC', name: 'Polygon', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6 },
       { symbol: 'USDT', name: 'Tether USD', address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', decimals: 6 },
       { symbol: 'DAI', name: 'Dai Stablecoin', address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', decimals: 18 },
-      { symbol: 'WMATIC', name: 'Wrapped Matic', address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', decimals: 18 }
+      { symbol: 'WMATIC', name: 'Wrapped Matic', address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', decimals: 18 },
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619', decimals: 18 },
+      { symbol: 'WBTC', name: 'Wrapped Bitcoin', address: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6', decimals: 8 },
+      { symbol: 'AAVE', name: 'Aave', address: '0xD6DF932A45C0f255f85145f286eA0b292B21C90B', decimals: 18 },
+      { symbol: 'UNI', name: 'Uniswap', address: '0xb33EaAd8d922B1083446DC23f610c2567fB5180f', decimals: 18 }
     ]
   },
   {
@@ -69,7 +75,11 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
       { symbol: 'USDC', name: 'USD Coin', address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', decimals: 18 },
       { symbol: 'USDT', name: 'Tether USD', address: '0x55d398326f99059fF775485246999027B3197955', decimals: 18 },
       { symbol: 'BUSD', name: 'Binance USD', address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', decimals: 18 },
-      { symbol: 'WBNB', name: 'Wrapped BNB', address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', decimals: 18 }
+      { symbol: 'WBNB', name: 'Wrapped BNB', address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', decimals: 18 },
+      { symbol: 'CAKE', name: 'PancakeSwap Token', address: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', decimals: 18 },
+      { symbol: 'ADA', name: 'Cardano Token', address: '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47', decimals: 18 },
+      { symbol: 'DOT', name: 'Polkadot Token', address: '0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402', decimals: 18 },
+      { symbol: 'LINK', name: 'Chainlink Token', address: '0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD', decimals: 18 }
     ]
   },
   {
@@ -81,7 +91,11 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
       { symbol: 'USDC', name: 'USD Coin', address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', decimals: 6 },
       { symbol: 'USDT', name: 'Tether USD', address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', decimals: 6 },
       { symbol: 'DAI', name: 'Dai Stablecoin', address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18 },
-      { symbol: 'ARB', name: 'Arbitrum', address: '0x912CE59144191C1204E64559FE8253a0e49E6548', decimals: 18 }
+      { symbol: 'ARB', name: 'Arbitrum', address: '0x912CE59144191C1204E64559FE8253a0e49E6548', decimals: 18 },
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', decimals: 18 },
+      { symbol: 'WBTC', name: 'Wrapped Bitcoin', address: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f', decimals: 8 },
+      { symbol: 'UNI', name: 'Uniswap', address: '0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0', decimals: 18 },
+      { symbol: 'LINK', name: 'Chainlink', address: '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4', decimals: 18 }
     ]
   },
   {
@@ -93,7 +107,11 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
       { symbol: 'USDC', name: 'USD Coin', address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', decimals: 6 },
       { symbol: 'USDT', name: 'Tether USD', address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', decimals: 6 },
       { symbol: 'DAI', name: 'Dai Stablecoin', address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18 },
-      { symbol: 'OP', name: 'Optimism', address: '0x4200000000000000000000000000000000000042', decimals: 18 }
+      { symbol: 'OP', name: 'Optimism', address: '0x4200000000000000000000000000000000000042', decimals: 18 },
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x4200000000000000000000000000000000000006', decimals: 18 },
+      { symbol: 'WBTC', name: 'Wrapped Bitcoin', address: '0x68f180fcCe6836688e9084f035309E29Bf0A2095', decimals: 8 },
+      { symbol: 'LINK', name: 'Chainlink', address: '0x350a791Bfc2C21F9Ed5d10980Dad2e2638ffa7f6', decimals: 18 },
+      { symbol: 'SNX', name: 'Synthetix', address: '0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4', decimals: 18 }
     ]
   },
   {
@@ -104,56 +122,8 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', decimals: 6 },
       { symbol: 'DAI', name: 'Dai Stablecoin', address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb', decimals: 18 },
-      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x4200000000000000000000000000000000000006', decimals: 18 }
-    ]
-  },
-  {
-    chainId: 56,
-    name: 'BNB Smart Chain',
-    rpcUrl: 'https://bsc.drpc.org',
-    nativeToken: { symbol: 'BNB', name: 'BNB', decimals: 18 },
-    tokens: [
-      { symbol: 'USDC', name: 'USD Coin', address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', decimals: 18 },
-      { symbol: 'USDT', name: 'Tether USD', address: '0x55d398326f99059fF775485246999027B3197955', decimals: 18 },
-      { symbol: 'BUSD', name: 'Binance USD', address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', decimals: 18 },
-      { symbol: 'WBNB', name: 'Wrapped BNB', address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', decimals: 18 },
-      { symbol: 'CAKE', name: 'PancakeSwap Token', address: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', decimals: 18 },
-      { symbol: 'ADA', name: 'Cardano Token', address: '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47', decimals: 18 }
-    ]
-  },
-  {
-    chainId: 42161,
-    name: 'Arbitrum',
-    rpcUrl: 'https://arbitrum.drpc.org',
-    nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
-    tokens: [
-      { symbol: 'USDC', name: 'USD Coin', address: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', decimals: 6 },
-      { symbol: 'USDT', name: 'Tether USD', address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', decimals: 6 },
-      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', decimals: 18 },
-      { symbol: 'ARB', name: 'Arbitrum', address: '0x912CE59144191C1204E64559FE8253a0e49E6548', decimals: 18 }
-    ]
-  },
-  {
-    chainId: 10,
-    name: 'Optimism',
-    rpcUrl: 'https://optimism.drpc.org',
-    nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
-    tokens: [
-      { symbol: 'USDC', name: 'USD Coin', address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6 },
-      { symbol: 'USDT', name: 'Tether USD', address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', decimals: 6 },
       { symbol: 'WETH', name: 'Wrapped Ether', address: '0x4200000000000000000000000000000000000006', decimals: 18 },
-      { symbol: 'OP', name: 'Optimism', address: '0x4200000000000000000000000000000000000042', decimals: 18 }
-    ]
-  },
-  {
-    chainId: 8453,
-    name: 'Base',
-    rpcUrl: 'https://base.drpc.org',
-    nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
-    tokens: [
-      { symbol: 'USDC', name: 'USD Coin', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', decimals: 6 },
-      { symbol: 'DAI', name: 'Dai Stablecoin', address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb', decimals: 18 },
-      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x4200000000000000000000000000000000000006', decimals: 18 }
+      { symbol: 'cbETH', name: 'Coinbase Wrapped Staked ETH', address: '0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22', decimals: 18 }
     ]
   },
   {
@@ -165,7 +135,11 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
       { symbol: 'USDC', name: 'USD Coin', address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', decimals: 6 },
       { symbol: 'USDT', name: 'Tether USD', address: '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7', decimals: 6 },
       { symbol: 'DAI', name: 'Dai Stablecoin', address: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70', decimals: 18 },
-      { symbol: 'WAVAX', name: 'Wrapped AVAX', address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', decimals: 18 }
+      { symbol: 'WAVAX', name: 'Wrapped AVAX', address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', decimals: 18 },
+      { symbol: 'WETH', name: 'Wrapped Ether', address: '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB', decimals: 18 },
+      { symbol: 'WBTC', name: 'Wrapped Bitcoin', address: '0x50b7545627a5162F82A992c33b87aDc75187B218', decimals: 8 },
+      { symbol: 'LINK', name: 'Chainlink', address: '0x5947BB275c521040051D82396192181b413227A3', decimals: 18 },
+      { symbol: 'UNI', name: 'Uniswap', address: '0x8eBAf22B6F053dFFeaf46f4Dd9eFA95D89ba8580', decimals: 18 }
     ]
   }
 ];
@@ -178,7 +152,7 @@ const ERC20_ABI = [
   'function name() view returns (string)'
 ];
 
-export class MultiChainBalanceFetcher {
+export class ProductionMultiChainBalanceFetcher {
   private providers: Map<number, ethers.JsonRpcProvider> = new Map();
   private priceCache: Map<string, { price: number; timestamp: number }> = new Map();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -186,7 +160,11 @@ export class MultiChainBalanceFetcher {
   constructor() {
     // Initialize providers for each network
     NETWORK_CONFIGS.forEach(config => {
-      this.providers.set(config.chainId, new ethers.JsonRpcProvider(config.rpcUrl));
+      try {
+        this.providers.set(config.chainId, new ethers.JsonRpcProvider(config.rpcUrl));
+      } catch (error) {
+        console.warn(`Failed to initialize provider for ${config.name}:`, error);
+      }
     });
   }
 
@@ -353,7 +331,18 @@ export class MultiChainBalanceFetcher {
       'WETH': 'weth',
       'WMATIC': 'wmatic',
       'WBNB': 'wbnb',
-      'WAVAX': 'wrapped-avax'
+      'WAVAX': 'wrapped-avax',
+      'WBTC': 'wrapped-bitcoin',
+      'UNI': 'uniswap',
+      'LINK': 'chainlink',
+      'PEPE': 'pepe',
+      'SHIB': 'shiba-inu',
+      'AAVE': 'aave',
+      'CAKE': 'pancakeswap-token',
+      'ADA': 'cardano',
+      'DOT': 'polkadot',
+      'SNX': 'havven',
+      'cbETH': 'coinbase-wrapped-staked-eth'
     };
     return ids[symbol.toUpperCase()] || symbol.toLowerCase();
   }
@@ -369,7 +358,18 @@ export class MultiChainBalanceFetcher {
       'USDC': 1.0,
       'USDT': 1.0,
       'DAI': 1.0,
-      'BUSD': 1.0
+      'BUSD': 1.0,
+      'WBTC': 43000,
+      'UNI': 8.5,
+      'LINK': 11.2,
+      'PEPE': 0.000015,
+      'SHIB': 0.000011,
+      'AAVE': 95,
+      'CAKE': 2.1,
+      'ADA': 0.35,
+      'DOT': 4.2,
+      'SNX': 1.8,
+      'cbETH': 2280
     };
     return fallbackPrices[symbol.toUpperCase()] || 0;
   }
@@ -441,4 +441,4 @@ export class MultiChainBalanceFetcher {
   }
 }
 
-export const multiChainBalanceFetcher = new MultiChainBalanceFetcher();
+export const productionMultiChainBalanceFetcher = new ProductionMultiChainBalanceFetcher();

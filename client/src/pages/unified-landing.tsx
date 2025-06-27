@@ -44,6 +44,7 @@ import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display
 import { TokenToINRConverter } from '@/components/conversion/token-to-inr-converter';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
 import { DirectTokenTransfer } from '@/components/transfer/direct-token-transfer';
+import { ProductionKYCSystem } from '@/components/kyc/production-kyc-system';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
@@ -1087,6 +1088,25 @@ export function UnifiedLanding() {
                       )}
 
                       {kycStep === 'aadhaar-verification' && (
+                        <ProductionKYCSystem
+                          onKYCComplete={(kycData) => {
+                            console.log('KYC completed:', kycData);
+                            setRecipientData(prev => ({
+                              ...prev,
+                              fullName: kycData.fullName,
+                              phoneNumber: kycData.phoneNumber,
+                              email: kycData.email,
+                              accountHolderName: kycData.accountHolderName,
+                              bankAccountNumber: kycData.bankAccountNumber,
+                              ifscCode: kycData.ifscCode
+                            }));
+                            setCurrentStep('complete');
+                          }}
+                          onBack={() => setKycStep('recipient-check')}
+                        />
+                      )}
+
+                      {kycStep === 'aadhaar-verification-old' && (
                         <Card className="bg-[#FCFBF4] border-[#6667AB]/30">
                           <CardHeader>
                             <CardTitle className="text-[#6667AB] flex items-center gap-2">

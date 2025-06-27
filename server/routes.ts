@@ -12,6 +12,7 @@ import { zeroXSwapAPI } from './zero-x-swap-api';
 import { productionSwapAPI } from './production-swap-api';
 import { zeroXProductionAPI } from './0x-production-api';
 import { test0xAPI } from './test-0x-api';
+import { surepassKYCAPI } from './surepass-kyc-api';
 
 // Multer configuration for file uploads
 const upload = multer({
@@ -704,6 +705,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
   });
+
+  // Surepass KYC API endpoints
+  app.post('/api/kyc/aadhaar-otp', surepassKYCAPI.sendAadhaarOTP.bind(surepassKYCAPI));
+  app.post('/api/kyc/aadhaar-verify', surepassKYCAPI.verifyAadhaarOTP.bind(surepassKYCAPI));
+  app.post('/api/kyc/pan-verify', surepassKYCAPI.verifyPAN.bind(surepassKYCAPI));
+  app.get('/api/kyc/status', surepassKYCAPI.getKYCStatus.bind(surepassKYCAPI));
+  app.get('/api/kyc/health', surepassKYCAPI.healthCheck.bind(surepassKYCAPI));
 
   const server = createServer(app);
   return server;

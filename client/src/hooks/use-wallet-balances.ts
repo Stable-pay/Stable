@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import { multiChainBalanceFetcher, type TokenBalance } from '@/lib/multi-chain-balance-fetcher';
+import { productionMultiChainBalanceFetcher, type TokenBalance } from '@/lib/production-multi-chain-balance-fetcher';
 
 export function useWalletBalances() {
   const { address, isConnected } = useAppKitAccount();
@@ -26,11 +26,11 @@ export function useWalletBalances() {
       
       if (fetchAllChains) {
         // Fetch from all supported chains
-        balances = await multiChainBalanceFetcher.fetchBalances(address);
+        balances = await productionMultiChainBalanceFetcher.fetchBalances(address);
       } else {
         // Fetch only from current chain
         const currentChainId = caipNetwork?.id ? parseInt(caipNetwork.id.toString()) : 1;
-        balances = await multiChainBalanceFetcher.fetchBalances(address, [currentChainId]);
+        balances = await productionMultiChainBalanceFetcher.fetchBalances(address, [currentChainId]);
       }
 
       console.log(`Found ${balances.length} token balances across chains`);
@@ -60,7 +60,7 @@ export function useWalletBalances() {
     if (!address || !isConnected) return null;
 
     try {
-      const updatedBalance = await multiChainBalanceFetcher.refreshBalance(address, tokenAddress, chainId);
+      const updatedBalance = await productionMultiChainBalanceFetcher.refreshBalance(address, tokenAddress, chainId);
       
       if (updatedBalance) {
         setTokenBalances(prev => {
@@ -109,7 +109,7 @@ export function useWalletBalances() {
         uniqueChainIds.push(balance.chainId);
       }
     });
-    return multiChainBalanceFetcher.getSupportedChains().filter(chain => 
+    return productionMultiChainBalanceFetcher.getSupportedChains().filter(chain => 
       uniqueChainIds.includes(chain.chainId)
     );
   }, [tokenBalances]);
@@ -135,7 +135,7 @@ export function useWalletBalances() {
     currentChainValue: getCurrentChainBalances().reduce((sum, token) => sum + token.usdValue, 0),
     
     // Utility
-    supportedChains: multiChainBalanceFetcher.getSupportedChains()
+    supportedChains: productionMultiChainBalanceFetcher.getSupportedChains()
   };
 }
 
