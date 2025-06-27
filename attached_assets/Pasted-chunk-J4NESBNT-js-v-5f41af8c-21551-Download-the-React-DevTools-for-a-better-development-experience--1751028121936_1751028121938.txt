@@ -1,0 +1,3422 @@
+chunk-J4NESBNT.js?v=5f41af8c:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+AppKitProvider.tsx:27 AppKitProvider - Using Project ID: 8b3e608af3d7c16be89416c7d75bf157
+AppKitProvider.tsx:28 AppKitProvider - Environment variable: undefined
+AppKitProvider.tsx:29 AppKitProvider - Project ID length: 32
+AppKitProvider.tsx:30 AppKitProvider - Project ID format check: true
+chunk-27ZAVOTY.js?v=5f41af8c:23 Lit is in dev mode. Not recommended for production! See https://lit.dev/msg/dev-mode for more information.
+issueWarning @ chunk-27ZAVOTY.js?v=5f41af8c:23
+chunk-263HO45S.js?v=5f41af8c:23 Multiple versions of Lit loaded. Loading multiple versions is not recommended. See https://lit.dev/msg/multiple-versions for more information.
+issueWarning @ chunk-263HO45S.js?v=5f41af8c:23
+(index):323 SW registered:  ServiceWorkerRegistration
+chunk-4QGP7SWI.js?v=5f41af8c:1052 Element w3m-connecting-wc-qrcode scheduled an update (generally because a property was set) after an update completed, causing a new update to be scheduled. This is inefficient and should be avoided unless the next update can only be scheduled as a side effect of the previous update. See https://lit.dev/msg/change-in-update for more information.
+issueWarning2 @ chunk-4QGP7SWI.js?v=5f41af8c:1052
+chunk-PVXEMZ65.js?v=5f41af8c:1151 Discarding cache for address eip155:1:0x902294cfe1Fa06d84D97551Be89777D56213C80e
+use-wallet-balances.ts:23 Fetching balances for 0x9022...C80e
+production-multi-chain-balance-fetcher.ts:175 Fetching balances for 0x902294cfe1Fa06d84D97551Be89777D56213C80e across 1 chains
+@reown_appkit_react.js?v=5f41af8c:806 Please use proxy object
+snapshot2 @ @reown_appkit_react.js?v=5f41af8c:806
+@reown_appkit_react.js?v=5f41af8c:806 Please use proxy object
+snapshot2 @ @reown_appkit_react.js?v=5f41af8c:806
+@reown_appkit_react.js?v=5f41af8c:808 Uncaught TypeError: proxyState is not iterable
+    at snapshot2 (@reown_appkit_react.js?v=5f41af8c:808:51)
+    at @reown_appkit_react.js?v=5f41af8c:840:28
+    at mountSyncExternalStore (chunk-J4NESBNT.js?v=5f41af8c:11886:28)
+    at Object.useSyncExternalStore (chunk-J4NESBNT.js?v=5f41af8c:12573:22)
+    at useSyncExternalStore (chunk-XYQR56ZF.js?v=5f41af8c:1120:29)
+    at useSnapshot2 (@reown_appkit_react.js?v=5f41af8c:830:24)
+    at useAppKitProvider (@reown_appkit_react.js?v=5f41af8c:882:38)
+    at useReownWalletBalances (use-reown-wallet-balances.ts:24:30)
+    at ReownBalanceDisplay (reown-balance-display.tsx:23:7)
+    at renderWithHooks (chunk-J4NESBNT.js?v=5f41af8c:11548:26)
+@reown_appkit_react.js?v=5f41af8c:806 Please use proxy object
+snapshot2 @ @reown_appkit_react.js?v=5f41af8c:806
+@reown_appkit_react.js?v=5f41af8c:806 Please use proxy object
+snapshot2 @ @reown_appkit_react.js?v=5f41af8c:806
+@reown_appkit_react.js?v=5f41af8c:808 Uncaught TypeError: proxyState is not iterable
+    at snapshot2 (@reown_appkit_react.js?v=5f41af8c:808:51)
+    at @reown_appkit_react.js?v=5f41af8c:840:28
+    at mountSyncExternalStore (chunk-J4NESBNT.js?v=5f41af8c:11886:28)
+    at Object.useSyncExternalStore (chunk-J4NESBNT.js?v=5f41af8c:12573:22)
+    at useSyncExternalStore (chunk-XYQR56ZF.js?v=5f41af8c:1120:29)
+    at useSnapshot2 (@reown_appkit_react.js?v=5f41af8c:830:24)
+    at useAppKitProvider (@reown_appkit_react.js?v=5f41af8c:882:38)
+    at useReownWalletBalances (use-reown-wallet-balances.ts:24:30)
+    at ReownBalanceDisplay (reown-balance-display.tsx:23:7)
+    at renderWithHooks (chunk-J4NESBNT.js?v=5f41af8c:11548:26)
+chunk-J4NESBNT.js?v=5f41af8c:14032 The above error occurred in the <ReownBalanceDisplay> component:
+
+    at ReownBalanceDisplay (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/src/components/wallet/reown-balance-display.tsx:26:36)
+    at div
+    at MotionComponent (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=5f41af8c:971:40)
+    at div
+    at div
+    at MotionComponent (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=5f41af8c:971:40)
+    at PresenceChild (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=5f41af8c:147:24)
+    at AnimatePresence (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=5f41af8c:236:26)
+    at div
+    at MotionComponent (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=5f41af8c:971:40)
+    at div
+    at UnifiedLanding (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/src/pages/unified-landing.tsx:70:36)
+    at Route (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5f41af8c:191:16)
+    at Switch (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5f41af8c:247:17)
+    at Router
+    at div
+    at Provider (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-6CYQPTYK.js?v=5f41af8c:38:15)
+    at TooltipProvider (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=5f41af8c:61:5)
+    at QueryClientProvider (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-5T6ZDHJF.js?v=5f41af8c:2805:3)
+    at Hydrate (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/wagmi.js?v=5f41af8c:215:11)
+    at WagmiProvider (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/wagmi.js?v=5f41af8c:239:11)
+    at AppKitProvider (https://236e5cb4-fe08-4e5c-aa20-81c2604a0d78-00-2rqg8bsrbi5wv.worf.replit.dev:3000/src/providers/AppKitProvider.tsx:115:34)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-J4NESBNT.js?v=5f41af8c:14032
+chunk-J4NESBNT.js?v=5f41af8c:19413 Uncaught TypeError: proxyState is not iterable
+    at snapshot2 (@reown_appkit_react.js?v=5f41af8c:808:51)
+    at @reown_appkit_react.js?v=5f41af8c:840:28
+    at mountSyncExternalStore (chunk-J4NESBNT.js?v=5f41af8c:11886:28)
+    at Object.useSyncExternalStore (chunk-J4NESBNT.js?v=5f41af8c:12573:22)
+    at useSyncExternalStore (chunk-XYQR56ZF.js?v=5f41af8c:1120:29)
+    at useSnapshot2 (@reown_appkit_react.js?v=5f41af8c:830:24)
+    at useAppKitProvider (@reown_appkit_react.js?v=5f41af8c:882:38)
+    at useReownWalletBalances (use-reown-wallet-balances.ts:24:30)
+    at ReownBalanceDisplay (reown-balance-display.tsx:23:7)
+    at renderWithHooks (chunk-J4NESBNT.js?v=5f41af8c:11548:26)
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch USDC balance on Ethereum: TypeError: bad address checksum (argument="address", value="0xA0b86a33E6441e95e2c2b08ae91e8e6B0e5C3CB2", code=INVALID_ARGUMENT, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:330:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at assertArgument (ethers.js?v=5f41af8c:354:3)
+    at getAddress (ethers.js?v=5f41af8c:6846:5)
+    at resolveAddress (ethers.js?v=5f41af8c:6913:14)
+    at ethers.js?v=5f41af8c:17483:20
+    at Array.forEach (<anonymous>)
+    at JsonRpcProvider._getTransactionRequest (ethers.js?v=5f41af8c:17479:20)
+    at JsonRpcProvider.call (ethers.js?v=5f41af8c:17598:16)
+    at staticCallResult (ethers.js?v=5f41af8c:14819:29)
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+use-wallet-balances.ts:36 Found 0 token balances across chains
+use-wallet-balances.ts:23 Fetching balances for 0x9022...C80e
+production-multi-chain-balance-fetcher.ts:175 Fetching balances for 0x902294cfe1Fa06d84D97551Be89777D56213C80e across 7 chains
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+production-multi-chain-balance-fetcher.ts:261 Failed to fetch balances for chain 137: TypeError: Failed to fetch
+    at _FetchRequest.getUrl2 (ethers.js?v=5f41af8c:943:20)
+    at _FetchRequest.send_fn (ethers.js?v=5f41af8c:1548:27)
+    at _FetchRequest.send (ethers.js?v=5f41af8c:1353:68)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19545:36)
+    at ethers.js?v=5f41af8c:19450:37
+    at ethers.js?v=5f41af8c:19479:9
+fetchChainBalances @ production-multi-chain-balance-fetcher.ts:261
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+production-multi-chain-balance-fetcher.ts:261 Failed to fetch balances for chain 42161: TypeError: Failed to fetch
+    at _FetchRequest.getUrl2 (ethers.js?v=5f41af8c:943:20)
+    at _FetchRequest.send_fn (ethers.js?v=5f41af8c:1548:27)
+    at _FetchRequest.send (ethers.js?v=5f41af8c:1353:68)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19545:36)
+    at ethers.js?v=5f41af8c:19450:37
+    at ethers.js?v=5f41af8c:19479:9
+fetchChainBalances @ production-multi-chain-balance-fetcher.ts:261
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+production-multi-chain-balance-fetcher.ts:261 Failed to fetch balances for chain 10: TypeError: Failed to fetch
+    at _FetchRequest.getUrl2 (ethers.js?v=5f41af8c:943:20)
+    at _FetchRequest.send_fn (ethers.js?v=5f41af8c:1548:27)
+    at _FetchRequest.send (ethers.js?v=5f41af8c:1353:68)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19545:36)
+    at ethers.js?v=5f41af8c:19450:37
+    at ethers.js?v=5f41af8c:19479:9
+fetchChainBalances @ production-multi-chain-balance-fetcher.ts:261
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch USDC balance on Ethereum: TypeError: bad address checksum (argument="address", value="0xA0b86a33E6441e95e2c2b08ae91e8e6B0e5C3CB2", code=INVALID_ARGUMENT, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:330:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at assertArgument (ethers.js?v=5f41af8c:354:3)
+    at getAddress (ethers.js?v=5f41af8c:6846:5)
+    at resolveAddress (ethers.js?v=5f41af8c:6913:14)
+    at ethers.js?v=5f41af8c:17483:20
+    at Array.forEach (<anonymous>)
+    at JsonRpcProvider._getTransactionRequest (ethers.js?v=5f41af8c:17479:20)
+    at JsonRpcProvider.call (ethers.js?v=5f41af8c:17598:16)
+    at staticCallResult (ethers.js?v=5f41af8c:14819:29)
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+avalanche.drpc.org/:1  Failed to load resource: the server responded with a status of 500 ()
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch USDC balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch USDT balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch DAI balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch WAVAX balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch WETH balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch WBTC balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch LINK balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+production-multi-chain-balance-fetcher.ts:255 Failed to fetch UNI balance on Avalanche: Error: server response 500  (request={  }, response={  }, error=null, info={ "requestUrl": "https://avalanche.drpc.org", "responseBody": "[{\"id\":3,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":4,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":5,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":6,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":7,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":8,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":9,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":10,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}},{\"id\":11,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"Batch of more than 3 requests are not allowed on free tier, to use this feature register paid account at drpc.org\",\"code\":31}}]", "responseStatus": "500 " }, code=SERVER_ERROR, version=6.14.3)
+    at makeError (ethers.js?v=5f41af8c:337:15)
+    at assert (ethers.js?v=5f41af8c:350:11)
+    at _FetchResponse.assertOk (ethers.js?v=5f41af8c:1759:5)
+    at JsonRpcProvider._send (ethers.js?v=5f41af8c:19546:14)
+    at async ethers.js?v=5f41af8c:19450:26
+(anonymous) @ production-multi-chain-balance-fetcher.ts:255
+use-wallet-balances.ts:36 Found 0 token balances across chains
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+polygon.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+arbitrum.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+optimism.llamarpc.com/:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVED
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js:943
+send_fn @ ethers.js:1548
+send @ ethers.js:1353
+_send @ ethers.js:19545
+(anonymous) @ ethers.js:19450
+(anonymous) @ ethers.js:19479
+setTimeout
+scheduleDrain_fn @ ethers.js:19429
+send @ ethers.js:19361
+send @ ethers.js:19539
+await in send
+(anonymous) @ ethers.js:19020
+_detectNetwork @ ethers.js:19027
+(anonymous) @ ethers.js:19071
+ JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://arbitrum.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://optimism.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)
+ethers.js?v=5f41af8c:943  POST https://polygon.llamarpc.com/ net::ERR_NAME_NOT_RESOLVED
+getUrl2 @ ethers.js?v=5f41af8c:943
+send_fn @ ethers.js?v=5f41af8c:1548
+send @ ethers.js?v=5f41af8c:1353
+_send @ ethers.js?v=5f41af8c:19545
+(anonymous) @ ethers.js?v=5f41af8c:19450
+(anonymous) @ ethers.js?v=5f41af8c:19479
+setTimeout
+scheduleDrain_fn @ ethers.js?v=5f41af8c:19429
+send @ ethers.js?v=5f41af8c:19361
+send @ ethers.js?v=5f41af8c:19539
+await in send
+(anonymous) @ ethers.js?v=5f41af8c:19020
+_detectNetwork @ ethers.js?v=5f41af8c:19027
+(anonymous) @ ethers.js?v=5f41af8c:19071
+ethers.js?v=5f41af8c:19076 JsonRpcProvider failed to detect network and cannot start up; retry in 1s (perhaps the URL is wrong or the node is not started)

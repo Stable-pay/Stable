@@ -21,7 +21,14 @@ interface UseReownWalletBalancesReturn {
 export function useReownWalletBalances(): UseReownWalletBalancesReturn {
   const { address, isConnected, status } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
-  const { walletProvider } = useAppKitProvider('eip155')
+  // Safe provider access with error handling
+  let walletProvider = null
+  try {
+    const providerData = useAppKitProvider('eip155')
+    walletProvider = providerData?.walletProvider || null
+  } catch (error) {
+    console.warn('Failed to get AppKit provider:', error)
+  }
   
   const [balances, setBalances] = useState<ReownTokenBalance[]>([])
   const [isLoading, setIsLoading] = useState(false)

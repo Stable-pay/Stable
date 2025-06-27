@@ -53,7 +53,7 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
   {
     chainId: 137,
     name: 'Polygon',
-    rpcUrl: 'https://polygon.llamarpc.com',
+    rpcUrl: 'https://polygon-rpc.com',
     nativeToken: { symbol: 'MATIC', name: 'Polygon', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6 },
@@ -69,7 +69,7 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
   {
     chainId: 56,
     name: 'BSC',
-    rpcUrl: 'https://bsc.llamarpc.com',
+    rpcUrl: 'https://bsc-dataseed1.binance.org',
     nativeToken: { symbol: 'BNB', name: 'BNB', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', decimals: 18 },
@@ -85,7 +85,7 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
   {
     chainId: 42161,
     name: 'Arbitrum',
-    rpcUrl: 'https://arbitrum.llamarpc.com',
+    rpcUrl: 'https://arb1.arbitrum.io/rpc',
     nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', decimals: 6 },
@@ -101,7 +101,7 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
   {
     chainId: 10,
     name: 'Optimism',
-    rpcUrl: 'https://optimism.llamarpc.com',
+    rpcUrl: 'https://mainnet.optimism.io',
     nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', decimals: 6 },
