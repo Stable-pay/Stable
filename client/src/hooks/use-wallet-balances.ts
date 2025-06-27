@@ -79,16 +79,15 @@ export function useWalletBalances() {
   // Auto-fetch balances when wallet connects or network changes
   useEffect(() => {
     if (isConnected && address) {
-      // Initially fetch current chain balances, then fetch all chains in background
-      fetchCurrentChainBalances().then(() => {
-        // Fetch all chains after current chain is loaded
-        setTimeout(() => fetchAllChainBalances(), 1000);
-      });
+      console.log('Wallet connected, fetching balances from all supported chains...');
+      // Fetch from all chains immediately for comprehensive balance view
+      fetchAllChainBalances();
     } else {
+      console.log('Wallet disconnected, clearing balances');
       setTokenBalances([]);
       setError(null);
     }
-  }, [isConnected, address, caipNetwork?.id]);
+  }, [isConnected, address, fetchAllChainBalances]);
 
   // Get balances for specific chain
   const getChainBalances = useCallback((chainId: number) => {

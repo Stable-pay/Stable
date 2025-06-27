@@ -170,26 +170,42 @@ export class ProductionMultiChainBalanceFetcher {
 
   async fetchBalances(walletAddress: string, chainIds?: number[]): Promise<TokenBalance[]> {
     const targetChains = chainIds || NETWORK_CONFIGS.map(c => c.chainId);
-    const allBalances: TokenBalance[] = [];
-
     console.log(`Fetching balances for ${walletAddress} across ${targetChains.length} chains`);
 
-    await Promise.allSettled(
+    // Fetch balances from all chains concurrently
+    const chainResults = await Promise.allSettled(
       targetChains.map(async (chainId) => {
         try {
           const balances = await this.fetchChainBalances(walletAddress, chainId);
-          allBalances.push(...balances);
+          console.log(`Chain ${chainId}: Found ${balances.length} tokens`);
+          return balances;
         } catch (error) {
           console.warn(`Failed to fetch balances for chain ${chainId}:`, error);
+          return [];
         }
       })
     );
 
+    // Collect all successful results
+    const allBalances: TokenBalance[] = [];
+    chainResults.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        allBalances.push(...result.value);
+      } else {
+        console.warn(`Chain ${targetChains[index]} failed:`, result.reason);
+      }
+    });
+
+    console.log(`Total tokens found across all chains: ${allBalances.length}`);
+
     // Remove duplicates and sort by USD value descending
     const uniqueBalances = this.deduplicateBalances(allBalances);
-    return uniqueBalances
+    const nonZeroBalances = uniqueBalances
       .filter((balance: TokenBalance) => parseFloat(balance.formattedBalance) > 0)
       .sort((a: TokenBalance, b: TokenBalance) => b.usdValue - a.usdValue);
+
+    console.log(`Final filtered balances: ${nonZeroBalances.length}`);
+    return nonZeroBalances;
   }
 
   private async fetchChainBalances(walletAddress: string, chainId: number): Promise<TokenBalance[]> {
@@ -205,15 +221,31 @@ export class ProductionMultiChainBalanceFetcher {
       return [];
     }
 
+    console.log(`Fetching balances for chain ${config.name} (${chainId})`);
     const balances: TokenBalance[] = [];
 
+    // Add timeout wrapper for all network calls
+    const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
+      return Promise.race([
+        promise,
+        new Promise<T>((_, reject) => 
+          setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
+        )
+      ]);
+    };
+
     try {
-      // Fetch native token balance
-      const nativeBalance = await provider.getBalance(walletAddress);
+      // Fetch native token balance with timeout
+      const nativeBalance = await withTimeout(
+        provider.getBalance(walletAddress), 
+        10000 // 10 second timeout
+      );
+      
       const nativeFormatted = ethers.formatUnits(nativeBalance, config.nativeToken.decimals);
       const nativePrice = await this.getTokenPrice(config.nativeToken.symbol);
 
       if (parseFloat(nativeFormatted) > 0) {
+        console.log(`Found ${config.nativeToken.symbol} balance: ${nativeFormatted}`);
         balances.push({
           symbol: config.nativeToken.symbol,
           name: config.nativeToken.name,
@@ -228,17 +260,21 @@ export class ProductionMultiChainBalanceFetcher {
         });
       }
 
-      // Fetch ERC20 token balances
-      await Promise.allSettled(
+      // Fetch ERC20 token balances with timeout and batch processing
+      const tokenResults = await Promise.allSettled(
         config.tokens.map(async (token) => {
           try {
             const contract = new ethers.Contract(token.address, ERC20_ABI, provider);
-            const balance = await contract.balanceOf(walletAddress);
+            const balance = await withTimeout(
+              contract.balanceOf(walletAddress),
+              8000 // 8 second timeout per token
+            );
             const formatted = ethers.formatUnits(balance, token.decimals);
 
             if (parseFloat(formatted) > 0) {
+              console.log(`Found ${token.symbol} balance on ${config.name}: ${formatted}`);
               const price = await this.getTokenPrice(token.symbol);
-              balances.push({
+              return {
                 symbol: token.symbol,
                 name: token.name,
                 address: token.address,
@@ -249,13 +285,22 @@ export class ProductionMultiChainBalanceFetcher {
                 formattedBalance: formatted,
                 usdValue: parseFloat(formatted) * price,
                 isNative: false
-              });
+              };
             }
+            return null;
           } catch (error) {
             console.warn(`Failed to fetch ${token.symbol} balance on ${config.name}:`, error);
+            return null;
           }
         })
       );
+
+      // Add successful token balances
+      tokenResults.forEach(result => {
+        if (result.status === 'fulfilled' && result.value) {
+          balances.push(result.value);
+        }
+      });
 
     } catch (error) {
       console.error(`Failed to fetch balances for chain ${chainId}:`, error);

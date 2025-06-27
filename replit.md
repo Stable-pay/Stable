@@ -268,6 +268,11 @@ StablePay is a comprehensive Web3 remittance and token swapping platform that en
 - June 27, 2025: Fixed RPC endpoint failures by updating to more reliable providers (polygon-rpc.com, arb1.arbitrum.io, mainnet.optimism.io)
 - June 27, 2025: Replaced problematic llamarpc endpoints with official network RPC providers for better stability
 - June 27, 2025: Enhanced error handling to gracefully handle provider failures and display user-friendly messages
+- June 27, 2025: Implemented comprehensive multi-chain balance fetching with proper Promise.allSettled result collection
+- June 27, 2025: Added timeout management (10s for native tokens, 8s per ERC-20 token) to prevent hanging requests
+- June 27, 2025: Enhanced balance fetching logic to always fetch from all supported chains simultaneously
+- June 27, 2025: Improved error logging and debugging information for better troubleshooting of network issues
+- June 27, 2025: Fixed balance collection logic to properly aggregate results from all chains
 
 ## User Preferences
 
