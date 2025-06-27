@@ -48,6 +48,13 @@ export function WalletConnectionTest() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
+          <p className="text-sm text-gray-600">Project ID:</p>
+          <p className="text-xs font-mono text-[#6667AB] break-all">
+            8b3e608af3d7c16be89416c7d75bf157
+          </p>
+        </div>
+
+        <div className="space-y-2">
           <p className="text-sm text-gray-600">Connection Status:</p>
           <Badge variant={isConnected ? "default" : "secondary"}>
             {isConnected ? 'Connected' : 'Disconnected'}
