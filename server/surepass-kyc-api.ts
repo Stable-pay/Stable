@@ -30,7 +30,8 @@ export class SurepassKYCAPI {
       
       return res.json(successResponse({
         message: 'OTP sent successfully (Demo Mode)',
-        ...responseData
+        client_id: responseData.client_id,
+        demo_message: responseData.message
       }, req));
     }
 

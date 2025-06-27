@@ -97,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // Wallet balance endpoint  
-  app.get("/api/wallet/balances", asyncHandler(async (req, res) => {
+  app.get("/api/wallet/balances", asyncHandler(async (req: Request, res: Response) => {
     const { address, chainId } = req.query;
 
     if (!address) {
@@ -137,31 +137,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }));
 
   // Token balance endpoint
-  app.post("/api/wallet/token-balance", async (req, res) => {
-    try {
-      const { address, tokenAddress, chainId } = req.body;
+  app.post("/api/wallet/token-balance", asyncHandler(async (req: Request, res: Response) => {
+    const { address, tokenAddress, chainId } = req.body;
 
-      if (!address || !tokenAddress) {
-        return res.status(400).json({ error: 'Address and token address required' });
-      }
-
-      // Return mock balance
-      const balance = tokenAddress === NATIVE_TOKEN_ADDRESS ? '1500000000000000000' : '5000000000';
-      const decimals = tokenAddress === NATIVE_TOKEN_ADDRESS ? 18 : 6;
-      const symbol = tokenAddress === NATIVE_TOKEN_ADDRESS ? 'ETH' : 'USDC';
-
-      res.json({
-        balance,
-        decimals,
-        symbol,
-        formattedBalance: (parseFloat(balance) / Math.pow(10, decimals)).toFixed(6)
-      });
-
-    } catch (error) {
-      console.error('Token balance error:', error);
-      res.status(500).json({ error: 'Failed to fetch token balance' });
+    if (!address || !tokenAddress) {
+      throw new ValidationError('Address and token address required');
     }
-  });
+
+    // Return mock balance
+    const balance = tokenAddress === NATIVE_TOKEN_ADDRESS ? '1500000000000000000' : '5000000000';
+    const decimals = tokenAddress === NATIVE_TOKEN_ADDRESS ? 18 : 6;
+    const symbol = tokenAddress === NATIVE_TOKEN_ADDRESS ? 'ETH' : 'USDC';
+
+    res.json(successResponse({
+      balance,
+      decimals,
+      symbol,
+      formattedBalance: (parseFloat(balance) / Math.pow(10, decimals)).toFixed(6)
+    }, req));
+  }));
 
   // Real token balance endpoint for wallet integration
   app.post("/api/tokens/balance", async (req, res) => {

@@ -137,7 +137,8 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
       }
     };
 
-    return res.status(err.statusCode).json(errorResponse);
+    res.status(err.statusCode).json(errorResponse);
+    return;
   }
 
   // Handle mongoose/database validation errors
@@ -153,7 +154,8 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
       }
     };
 
-    return res.status(400).json(errorResponse);
+    res.status(400).json(errorResponse);
+    return;
   }
 
   // Handle JSON parsing errors
@@ -168,7 +170,8 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
       }
     };
 
-    return res.status(400).json(errorResponse);
+    res.status(400).json(errorResponse);
+    return;
   }
 
   // Handle unknown errors
