@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ExternalServiceError, ValidationError, successResponse, asyncHandler } from './error-handler';
 
 /**
  * Production-Ready Surepass KYC API Integration
@@ -6,40 +7,38 @@ import { Request, Response } from 'express';
  * API Documentation: https://app.surepass.app/docs/
  */
 export class SurepassKYCAPI {
-  private readonly apiToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczNjE2OTM0MywianRpIjoiYjk4ZDJlNTctNzQyNy00ZmMzLTkyMzctMjVjOGI1ODRjNDQyIiwidHlwZSI6ImFjY2VzcyIsImlkZW50aXR5IjoiZGV2LnN0YWJsZXBheUBzdXJlcGFzcy5pbyIsIm5iZiI6MTczNjE2OTM0MywiZXhwIjoyMzY2ODg5MzQzLCJlbWFpbCI6InN0YWJsZXBheUBzdXJlcGFzcy5pbyIsInRlbmFudF9pZCI6Im1haW4iLCJ1c2VyX2NsYWltcyI6eyJzY29wZXMiOlsidXNlciJdfX0.gwdII-K1wWVxCTIpawz-qyfvBWlYxKHsraRoXXO3Kf0';
+  private readonly apiToken = process.env.SUREPASS_API_TOKEN || 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczNjE2OTM0MywianRpIjoiYjk4ZDJlNTctNzQyNy00ZmMzLTkyMzctMjVjOGI1ODRjNDQyIiwidHlwZSI6ImFjY2VzcyIsImlkZW50aXR5IjoiZGV2LnN0YWJsZXBheUBzdXJlcGFzcy5pbyIsIm5iZiI6MTczNjE2OTM0MywiZXhwIjoyMzY2ODg5MzQzLCJlbWFpbCI6InN0YWJsZXBheUBzdXJlcGFzcy5pbyIsInRlbmFudF9pZCI6Im1haW4iLCJ1c2VyX2NsYWltcyI6eyJzY29wZXMiOlsidXNlciJdfX0.gwdII-K1wWVxCTIpawz-qyfvBWlYxKHsraRoXXO3Kf0';
   private readonly baseURL = 'https://kyc-api.surepass.io';
 
   /**
    * Send Aadhaar OTP using Surepass eAadhaar API
    * Endpoint: /api/v1/aadhaar-v2/generate-otp
    */
-  async sendAadhaarOTP(req: Request, res: Response) {
+  sendAadhaarOTP = asyncHandler(async (req: Request, res: Response) => {
+    const { aadhaar_number } = req.body;
+
+    if (!aadhaar_number || aadhaar_number.length !== 12) {
+      throw new ValidationError('Valid 12-digit Aadhaar number is required');
+    }
+
+    // For demo purposes, allow test Aadhaar numbers
+    if (aadhaar_number === '123456789012' || aadhaar_number === '999999999999') {
+      const responseData = {
+        client_id: `demo_${aadhaar_number}_${Date.now()}`,
+        message: 'Demo OTP: 123456'
+      };
+      
+      return res.json(successResponse({
+        message: 'OTP sent successfully (Demo Mode)',
+        ...responseData
+      }, req));
+    }
+
+    // Add timeout to prevent hanging requests
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
     try {
-      const { aadhaar_number } = req.body;
-
-      if (!aadhaar_number || aadhaar_number.length !== 12) {
-        return res.status(400).json({
-          success: false,
-          message: 'Valid 12-digit Aadhaar number is required'
-        });
-      }
-
-      // For demo purposes, allow test Aadhaar numbers
-      if (aadhaar_number === '123456789012' || aadhaar_number === '999999999999') {
-        return res.json({
-          success: true,
-          message: 'OTP sent successfully (Demo Mode)',
-          data: {
-            client_id: `demo_${aadhaar_number}_${Date.now()}`,
-            message: 'Demo OTP: 123456'
-          }
-        });
-      }
-
-      // Add timeout to prevent hanging requests
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-
       const response = await fetch(`${this.baseURL}/api/v1/aadhaar-v2/generate-otp`, {
         method: 'POST',
         headers: {
@@ -57,48 +56,30 @@ export class SurepassKYCAPI {
       const data = await response.json();
 
       if (response.ok && data.status_code === 200) {
-        return res.json({
-          success: true,
+        console.log('✅ Aadhaar OTP sent successfully:', aadhaar_number);
+        return res.json(successResponse({
           message: 'OTP sent successfully',
-          data: {
-            client_id: data.data.client_id,
-            message: data.message
-          }
-        });
+          client_id: data.data?.client_id || `${aadhaar_number}_${Date.now()}`
+        }, req));
       } else {
-        // Handle specific error cases
-        if (data.status_code === 422 && data.message_code === 'verification_failed') {
-          if (data.data?.valid_aadhaar === false) {
-            return res.status(400).json({
-              success: false,
-              message: 'Please enter a valid Aadhaar number. Ensure all 12 digits are correct.'
-            });
-          }
-        }
-        
-        return res.status(400).json({
-          success: false,
-          message: data.message || 'Failed to send OTP. Please verify your Aadhaar number and try again.',
-          error: data
-        });
+        console.error('❌ Surepass OTP API Error:', data);
+        throw new ExternalServiceError('Surepass', data.message || 'Failed to send OTP', data);
       }
     } catch (error: any) {
-      console.error('Aadhaar OTP Send Error:', error);
+      clearTimeout(timeoutId);
       
-      // Handle timeout specifically
       if (error.name === 'AbortError') {
-        return res.status(408).json({
-          success: false,
-          message: 'Request timed out. Please check your internet connection and try again.'
-        });
+        throw new ExternalServiceError('Surepass', 'Request timeout - please try again');
       }
       
-      return res.status(500).json({
-        success: false,
-        message: 'Service temporarily unavailable. Please try again in a few moments.'
-      });
+      if (error instanceof ExternalServiceError) {
+        throw error;
+      }
+      
+      console.error('❌ Aadhaar OTP Send Error:', error);
+      throw new ExternalServiceError('Surepass', 'Unable to send OTP at this time', error.message);
     }
-  }
+  });
 
   /**
    * Verify Aadhaar OTP using Surepass eAadhaar API
