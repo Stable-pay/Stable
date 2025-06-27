@@ -94,11 +94,37 @@ validateEnvironment();
 
 const app = express();
 
-// Add CORS headers
+// Enhanced CORS configuration with environment-based origins
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const allowedOrigins = process.env.NODE_ENV === 'production' 
+    ? [
+        'https://stablepay.replit.app',
+        'https://stable-pay.github.io',
+        'https://stable.replit.dev'
+      ]
+    : [
+        'http://localhost:3000',
+        'http://localhost:5000', 
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:5000',
+        'https://stablepay.replit.app'
+      ];
+
+  const origin = req.get('Origin');
+  
+  // Log CORS requests for debugging 403 issues
+  console.log(`🌐 CORS request from origin: ${origin || 'no-origin'}`);
+  
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+  } else {
+    console.warn(`🚫 CORS blocked origin: ${origin}`);
+    res.header('Access-Control-Allow-Origin', 'null');
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
   
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
