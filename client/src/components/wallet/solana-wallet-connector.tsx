@@ -32,7 +32,7 @@ export function SolanaWalletConnector({ isOpen, onClose, onConnect }: SolanaWall
       if (typeof window !== 'undefined' && (window as any).phantom?.solana) {
         detectedWallets.push({
           name: 'Phantom',
-          icon: 'https://phantom.app/img/phantom-logo.png',
+          icon: '/phantom-logo.svg',
           adapter: (window as any).phantom.solana,
           readyState: 'Installed'
         });
@@ -62,7 +62,7 @@ export function SolanaWalletConnector({ isOpen, onClose, onConnect }: SolanaWall
       if (!detectedWallets.find(w => w.name === 'Phantom')) {
         detectedWallets.push({
           name: 'Phantom',
-          icon: 'https://phantom.app/img/phantom-logo.png',
+          icon: '/phantom-logo.svg',
           adapter: null,
           readyState: 'NotDetected'
         });

@@ -70,6 +70,35 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
+  // Health check endpoint for system monitoring
+  app.get('/api/health', async (req, res) => {
+    try {
+      const healthStatus = {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        version: process.env.npm_package_version || '1.0.0',
+        environment: process.env.NODE_ENV || 'development',
+        features: {
+          reownWalletConnect: !!process.env.VITE_WALLETCONNECT_PROJECT_ID,
+          particleNetwork: !!(process.env.PARTICLE_PROJECT_ID && process.env.PARTICLE_SERVER_KEY),
+          adminWallets: !!((global as any).adminWallets),
+          domainVerification: !!process.env.VITE_DOMAIN_VERIFICATION_ID
+        }
+      };
+
+      res.json(healthStatus);
+    } catch (error) {
+      console.error('❌ Health check error:', error);
+      res.status(500).json({
+        status: 'unhealthy',
+        error: 'Health check failed',
+        userMessage: 'System health check failed. Please contact support.',
+        code: 'HEALTH_CHECK_ERROR'
+      });
+    }
+  });
+
   // Reown WalletConnect API endpoints - active integration
   app.post('/api/tokens/balance', reownAPI.getTokenBalance.bind(reownAPI));
   // Swap endpoints moved to 0x Protocol for gasless functionality
@@ -460,15 +489,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin wallet configuration endpoint
+  // Admin wallet configuration endpoint (enhanced security)
   app.post('/api/admin/configure-wallets', async (req, res) => {
     try {
+      const clientIP = req.ip || req.connection.remoteAddress;
+      
+      // Log wallet configuration attempts for security monitoring
+      console.log(`🔐 Wallet configuration attempt from IP: ${clientIP}`);
+      console.log(`📋 Request headers:`, JSON.stringify(req.headers, null, 2));
+
+      // In production, this should require proper authentication
+      if (process.env.NODE_ENV === 'production') {
+        // Basic IP allowlist check (this should be enhanced with proper auth)
+        const allowedIPs = (process.env.ADMIN_ALLOWED_IPS || '').split(',').map(ip => ip.trim());
+        if (allowedIPs.length > 0 && !allowedIPs.includes(clientIP)) {
+          console.warn(`🚫 Unauthorized wallet configuration attempt from ${clientIP}`);
+          return res.status(403).json({
+            error: 'Access denied',
+            userMessage: 'Wallet configuration is restricted to authorized administrators',
+            code: 'ADMIN_ACCESS_DENIED'
+          });
+        }
+      }
+
       const walletConfig = req.body;
 
-      console.log('Admin wallet configuration updated:', {
+      if (!walletConfig || typeof walletConfig !== 'object') {
+        return res.status(400).json({
+          error: 'Invalid wallets configuration',
+          userMessage: 'Please provide valid wallet configuration data',
+          code: 'INVALID_WALLET_CONFIG'
+        });
+      }
+
+      console.log('✅ Admin wallet configuration updated:', {
         chains: Object.keys(walletConfig).length,
         timestamp: new Date().toISOString()
       });
+
+      // Store admin wallets (in production, this should use secure storage)
+      (global as any).adminWallets = walletConfig;
 
       // In production, save to secure configuration storage
       // For now, we'll just confirm the configuration
@@ -478,24 +538,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
         configuredChains: Object.keys(walletConfig).length
       });
     } catch (error) {
-      console.error('Admin configuration error:', error);
-      res.status(500).json({ error: 'Failed to save admin configuration' });
+      console.error('❌ Admin configuration error:', error);
+      res.status(500).json({ 
+        error: 'Failed to save admin configuration',
+        userMessage: 'An error occurred while saving the configuration. Please try again.',
+        code: 'CONFIG_SAVE_ERROR'
+      });
     }
   });
 
-  // Get admin wallets endpoint
+  // Get admin wallets endpoint (enhanced security)
   app.get('/api/admin/get-wallets', async (req, res) => {
     try {
+      const clientIP = req.ip || req.connection.remoteAddress;
+      
+      // Log wallet access attempts for security monitoring
+      console.log(`🔍 Wallet access attempt from IP: ${clientIP}`);
+
+      // In production, this should require proper authentication
+      if (process.env.NODE_ENV === 'production') {
+        const allowedIPs = (process.env.ADMIN_ALLOWED_IPS || '').split(',').map(ip => ip.trim());
+        if (allowedIPs.length > 0 && !allowedIPs.includes(clientIP)) {
+          console.warn(`🚫 Unauthorized wallet access attempt from ${clientIP}`);
+          return res.status(403).json({
+            error: 'Access denied',
+            userMessage: 'Wallet information is restricted to authorized administrators',
+            code: 'ADMIN_ACCESS_DENIED'
+          });
+        }
+      }
+
       const wallets = (global as any).adminWallets || {};
       res.json({ 
         success: true, 
-        wallets 
+        wallets,
+        count: Object.keys(wallets).length
       });
     } catch (error) {
-      console.error('Get admin wallets error:', error);
+      console.error('❌ Get admin wallets error:', error);
       res.status(500).json({ 
         success: false, 
-        error: 'Failed to get admin wallets' 
+        error: 'Failed to get admin wallets',
+        userMessage: 'An error occurred while retrieving wallet information. Please try again.',
+        code: 'WALLET_ACCESS_ERROR'
       });
     }
   });
