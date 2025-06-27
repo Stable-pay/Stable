@@ -35,7 +35,7 @@ const NETWORK_CONFIGS: NetworkConfig[] = [
   {
     chainId: 1,
     name: 'Ethereum',
-    rpcUrl: 'https://eth.drpc.org',
+    rpcUrl: 'https://eth.llamarpc.com',
     nativeToken: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
     tokens: [
       { symbol: 'USDC', name: 'USD Coin', address: '0xA0b86a33E6441e95e2c2b08ae91e8e6B0e5C3CB2', decimals: 6 },

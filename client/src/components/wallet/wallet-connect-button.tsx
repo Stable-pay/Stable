@@ -33,10 +33,16 @@ export function WalletConnectButton() {
         >
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            {selectedNetworkId === '1' ? 'Ethereum' : 
-             selectedNetworkId === '137' ? 'Polygon' : 
-             selectedNetworkId === '56' ? 'BSC' : 
-             selectedNetworkId === '42161' ? 'Arbitrum' : 'Network'}
+            {(() => {
+               const networkId = selectedNetworkId?.split(':')[1];
+               switch (networkId) {
+                 case '1': return 'Ethereum';
+                 case '137': return 'Polygon';
+                 case '56': return 'BSC';
+                 case '42161': return 'Arbitrum';
+                 default: return 'Network';
+               }
+             })()}
             <ChevronDown className="w-3 h-3" />
           </div>
         </Button>

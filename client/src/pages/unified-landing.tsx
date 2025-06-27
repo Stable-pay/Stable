@@ -41,6 +41,7 @@ import { useAppKit, useAppKitAccount, useAppKitNetwork, useAppKitState } from '@
 import { SocialWalletCreator } from '@/components/reown/social-wallet-creator';
 import { TravelRuleForm } from '@/components/compliance/travel-rule-form';
 import { WalletBalanceDisplay } from '@/components/wallet/wallet-balance-display';
+import { TokenToINRConverter } from '@/components/conversion/token-to-inr-converter';
 import { SolanaWalletConnector } from '@/components/wallet/solana-wallet-connector';
 import { DirectTokenTransfer } from '@/components/transfer/direct-token-transfer';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
@@ -781,7 +782,24 @@ export function UnifiedLanding() {
                   transition={{ delay: 0.1 }}
                   className="mb-8"
                 >
-                  <WalletBalanceDisplay />
+                  <TokenToINRConverter 
+                    onTokenSelect={(token, amount) => {
+                      setRemittanceState(prev => ({
+                        ...prev,
+                        fromToken: token.symbol,
+                        amount: amount,
+                        selectedTokenData: token
+                      }));
+                    }}
+                    onConversionUpdate={(tokenAmount, inrAmount, rate) => {
+                      setRemittanceState(prev => ({
+                        ...prev,
+                        amount: tokenAmount,
+                        toAmount: inrAmount,
+                        exchangeRate: rate
+                      }));
+                    }}
+                  />
                 </motion.div>
 
                 {/* Swap Interface */}
