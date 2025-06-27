@@ -48,6 +48,8 @@ import { ProductionKYCSystem } from '@/components/kyc/production-kyc-system';
 import { USDCApprovalInterface } from '@/components/withdrawal/usdc-approval-interface';
 import { useWalletBalances } from '@/hooks/use-wallet-balances';
 import { useReownTransfer } from '@/hooks/use-reown-transfer';
+import { ReownBalanceDisplay, ReownTokenSelector } from '@/components/wallet/reown-balance-display';
+import { useReownWalletBalances } from '@/hooks/use-reown-wallet-balances';
 import { useReownPay } from '@/hooks/use-reown-pay';
 import { getSupportedTokens, isTokenSupported, getTokenInfo, TOP_100_CRYPTO } from '@/../../shared/top-100-crypto';
 import { REOWN_SUPPORTED_CHAINS, REOWN_SUPPORTED_TOKENS, getTokensByChain, isTokenSupportedByReown, getAllSupportedTokenSymbols } from '@/../../shared/reown-supported-tokens';
@@ -776,11 +778,21 @@ export function UnifiedLanding() {
                   </div>
                 </motion.div>
 
-                {/* Wallet Balance Display */}
+                {/* Reown Wallet Balance Display */}
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
+                  className="mb-8"
+                >
+                  <ReownBalanceDisplay />
+                </motion.div>
+
+                {/* Token Conversion Interface */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
                   className="mb-8"
                 >
                   <TokenToINRConverter 
