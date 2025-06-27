@@ -18,6 +18,18 @@ interface SolanaWalletConnectorProps {
   onConnect: (wallet: any) => void;
 }
 
+/**
+ * Get wallet icon with fallback support
+ */
+function getWalletIcon(walletName: string): string {
+  const walletIcons: Record<string, string> = {
+    'Phantom': 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzQzMTFBNyIvPgo8cGF0aCBkPSJNMjQuNSAxNS41QzI0LjUgMjAuNzQ2NyAyMC4yNDY3IDI1IDEzIDI1QzUuNzUzMzMgMjUgMS41IDIwLjc0NjcgMS41IDE1LjVDMS41IDEwLjI1MzMgNS43NTMzMyA2IDEzIDZDMjAuMjQ2NyA2IDI0LjUgMTAuMjUzMyAyNC41IDE1LjVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTMgMjJDMTEuMzQzMSAyMiAxMCAyMC42NTY5IDEwIDE5VjEyQzEwIDEwLjM0MzEgMTEuMzQzMSA5IDEzIDlDMTQuNjU2OSA5IDE2IDEwLjM0MzEgMTYgMTJWMTlDMTYgMjAuNjU2OSAxNC42NTY5IDIyIDEzIDIyWiIgZmlsbD0iIzQzMTFBNyIvPgo8L3N2Zz4K',
+    'Solflare': 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iI0ZGOEU2QiIvPgo8cGF0aCBkPSJNMTYgMjVDMjEuNTIyOCAyNSAyNiAyMC41MjI4IDI2IDE1QzI2IDkuNDc3MTUgMjEuNTIyOCA1IDE2IDVDMTAuNDc3MiA1IDYgOS40NzcxNSA2IDE1QzYgMjAuNTIyOCAxMC40NzcyIDI1IDE2IDI1WiIgZmlsbD0iIzMyMzEzMSIvPgo8L3N2Zz4K'
+  };
+  
+  return walletIcons[walletName] || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzY2NjY2NiIvPgo8cGF0aCBkPSJNMTYgMjJIMTRWMThIOUMxMS4yMDkxIDE4IDEzIDE2LjIwOTEgMTMgMTRWMTJDMTMgOS43OTA5IDE0Ljc5MDkgOCAxNyA4SDIzVjEwSDEzVjE0SDIzVjIySDIxVjE2SDE2VjIyWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+';
+}
+
 export function SolanaWalletConnector({ isOpen, onClose, onConnect }: SolanaWalletConnectorProps) {
   const [solanaWallets, setSolanaWallets] = useState<SolanaWallet[]>([]);
   const [connecting, setConnecting] = useState<string | null>(null);
@@ -32,7 +44,7 @@ export function SolanaWalletConnector({ isOpen, onClose, onConnect }: SolanaWall
       if (typeof window !== 'undefined' && (window as any).phantom?.solana) {
         detectedWallets.push({
           name: 'Phantom',
-          icon: 'https://phantom.app/img/phantom-logo.png',
+          icon: getWalletIcon('Phantom'),
           adapter: (window as any).phantom.solana,
           readyState: 'Installed'
         });
@@ -42,7 +54,7 @@ export function SolanaWalletConnector({ isOpen, onClose, onConnect }: SolanaWall
       if (typeof window !== 'undefined' && (window as any).solflare) {
         detectedWallets.push({
           name: 'Solflare',
-          icon: 'https://solflare.com/favicon.ico',
+          icon: getWalletIcon('Solflare'),
           adapter: (window as any).solflare,
           readyState: 'Installed'
         });
@@ -62,7 +74,7 @@ export function SolanaWalletConnector({ isOpen, onClose, onConnect }: SolanaWall
       if (!detectedWallets.find(w => w.name === 'Phantom')) {
         detectedWallets.push({
           name: 'Phantom',
-          icon: 'https://phantom.app/img/phantom-logo.png',
+          icon: getWalletIcon('Phantom'),
           adapter: null,
           readyState: 'NotDetected'
         });
@@ -71,7 +83,7 @@ export function SolanaWalletConnector({ isOpen, onClose, onConnect }: SolanaWall
       if (!detectedWallets.find(w => w.name === 'Solflare')) {
         detectedWallets.push({
           name: 'Solflare',
-          icon: 'https://solflare.com/favicon.ico',
+          icon: getWalletIcon('Solflare'),
           adapter: null,
           readyState: 'NotDetected'
         });

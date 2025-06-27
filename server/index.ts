@@ -1,34 +1,78 @@
 import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
+import { config } from "dotenv";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { validateEnvironmentOnStartup } from "./env-validator";
+import { 
+  errorHandler, 
+  notFoundHandler, 
+  requestIdMiddleware, 
+  timeoutMiddleware 
+} from "./error-handler";
+
+// Load environment variables
+config();
+
+// Validate environment variables before starting server
+if (!validateEnvironmentOnStartup()) {
+  console.error('❌ Server startup failed due to environment validation errors');
+  process.exit(1);
+}
 
 // Global error handlers to prevent unhandled rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('🚨 Unhandled Rejection at:', promise, 'reason:', reason);
+  // Log to external service in production
+  if (process.env.NODE_ENV === 'production') {
+    // TODO: Add logging service integration (e.g., Sentry, LogRocket)
+  }
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+  console.error('🚨 Uncaught Exception:', error);
+  // Log to external service in production
+  if (process.env.NODE_ENV === 'production') {
+    // TODO: Add logging service integration (e.g., Sentry, LogRocket)
+  }
   process.exit(1);
 });
 
 const app = express();
 
-// Add CORS headers
+// Add request ID and timeout middleware
+app.use(requestIdMiddleware);
+app.use(timeoutMiddleware(30000)); // 30 second timeout
+
+// Add CORS headers with improved error handling
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+  try {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  } catch (error) {
+    console.error('CORS middleware error:', error);
+    next(error);
   }
 });
 
-app.use(express.json());
+// JSON parsing with error handling
+app.use(express.json({ 
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    try {
+      JSON.parse(buf.toString());
+    } catch (e) {
+      throw new Error('Invalid JSON format');
+    }
+  }
+}));
 app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
@@ -76,11 +120,16 @@ app.use((req, res, next) => {
   app.use('/.well-known', express.static(path.resolve('.well-known')));
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    // Use our enhanced error handler instead
+    errorHandler(err, _req, res, _next);
+  });
 
-    res.status(status).json({ message });
-    throw err;
+  // Add 404 handler for unknown routes (before static files)
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/.well-known')) {
+      return next(); // Let static file handlers deal with it
+    }
+    notFoundHandler(req, res);
   });
 
   // importantly only setup vite in development and after

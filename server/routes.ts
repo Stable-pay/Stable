@@ -5,6 +5,7 @@ import { reownAPI } from "./reown-api";
 import { insertUserSchema, insertKycDocumentSchema, insertBankAccountSchema, insertTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
+import { asyncHandler, ValidationError, successResponse } from './error-handler';
 
 import { smartContractAPI } from './smart-contract-api';
 import { travelRuleAPI } from './travel-rule';
@@ -70,79 +71,91 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
+  // Health check endpoint for monitoring
+  app.get('/api/health', (req, res) => {
+    res.json({
+      success: true,
+      data: {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0',
+        environment: process.env.NODE_ENV || 'development',
+        services: {
+          database: 'connected', // TODO: Add actual database health check
+          external_apis: 'available', // TODO: Add actual API health checks
+        }
+      },
+      timestamp: new Date().toISOString(),
+      requestId: req.headers['x-request-id']
+    });
+  });
+
   // Reown WalletConnect API endpoints - active integration
   app.post('/api/tokens/balance', reownAPI.getTokenBalance.bind(reownAPI));
   // Swap endpoints moved to 0x Protocol for gasless functionality
 
 
 
-  // Wallet balance endpoint
-  app.get("/api/wallet/balances", async (req, res) => {
-    try {
-      const { address, chainId } = req.query;
+  // Wallet balance endpoint  
+  app.get("/api/wallet/balances", asyncHandler(async (req: Request, res: Response) => {
+    const { address, chainId } = req.query;
 
-      if (!address) {
-        return res.status(400).json({ error: 'Wallet address is required' });
-      }
-
-      console.log(`Fetching balances for ${address} on chain ${chainId}`);
-
-      // Mock balances for demonstration
-      const mockBalances = [
-        {
-          symbol: 'ETH',
-          balance: '1500000000000000000',
-          formattedBalance: '1.5',
-          decimals: 18,
-          chainId: parseInt(chainId as string) || 1,
-          address: NATIVE_TOKEN_ADDRESS,
-          isNative: true
-        },
-        {
-          symbol: 'USDC',
-          balance: '5000000000',
-          formattedBalance: '5000.0',
-          decimals: 6,
-          chainId: parseInt(chainId as string) || 1,
-          address: USDC_ADDRESSES[chainId as string] || USDC_ADDRESSES['1'],
-          isNative: false
-        }
-      ];
-
-      res.json({ balances: mockBalances });
-
-    } catch (error) {
-      console.error('Balance fetch error:', error);
-      res.status(500).json({ error: 'Failed to fetch wallet balances' });
+    if (!address) {
+      throw new ValidationError('Wallet address is required');
     }
-  });
+
+    // Validate wallet address format
+    if (typeof address !== 'string' || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
+      throw new ValidationError('Invalid wallet address format');
+    }
+
+    console.log(`✅ Fetching balances for ${address} on chain ${chainId}`);
+
+    // Mock balances for demonstration
+    const mockBalances = [
+      {
+        symbol: 'ETH',
+        balance: '1500000000000000000',
+        formattedBalance: '1.5',
+        decimals: 18,
+        chainId: parseInt(chainId as string) || 1,
+        address: NATIVE_TOKEN_ADDRESS,
+        isNative: true
+      },
+      {
+        symbol: 'USDC',
+        balance: '5000000000',
+        formattedBalance: '5000.0',
+        decimals: 6,
+        chainId: parseInt(chainId as string) || 1,
+        address: USDC_ADDRESSES[chainId as string] || USDC_ADDRESSES['1'],
+        isNative: false
+      }
+    ];
+
+    res.json(successResponse({ balances: mockBalances }, req));
+  }));
 
   // Token balance endpoint
-  app.post("/api/wallet/token-balance", async (req, res) => {
-    try {
-      const { address, tokenAddress, chainId } = req.body;
+  app.post("/api/wallet/token-balance", asyncHandler(async (req: Request, res: Response) => {
+    const { address, tokenAddress, chainId } = req.body;
 
-      if (!address || !tokenAddress) {
-        return res.status(400).json({ error: 'Address and token address required' });
-      }
-
-      // Return mock balance
-      const balance = tokenAddress === NATIVE_TOKEN_ADDRESS ? '1500000000000000000' : '5000000000';
-      const decimals = tokenAddress === NATIVE_TOKEN_ADDRESS ? 18 : 6;
-      const symbol = tokenAddress === NATIVE_TOKEN_ADDRESS ? 'ETH' : 'USDC';
-
-      res.json({
-        balance,
-        decimals,
-        symbol,
-        formattedBalance: (parseFloat(balance) / Math.pow(10, decimals)).toFixed(6)
-      });
-
-    } catch (error) {
-      console.error('Token balance error:', error);
-      res.status(500).json({ error: 'Failed to fetch token balance' });
+    if (!address || !tokenAddress) {
+      throw new ValidationError('Address and token address required');
     }
-  });
+
+    // Return mock balance
+    const balance = tokenAddress === NATIVE_TOKEN_ADDRESS ? '1500000000000000000' : '5000000000';
+    const decimals = tokenAddress === NATIVE_TOKEN_ADDRESS ? 18 : 6;
+    const symbol = tokenAddress === NATIVE_TOKEN_ADDRESS ? 'ETH' : 'USDC';
+
+    res.json(successResponse({
+      balance,
+      decimals,
+      symbol,
+      formattedBalance: (parseFloat(balance) / Math.pow(10, decimals)).toFixed(6)
+    }, req));
+  }));
 
   // Real token balance endpoint for wallet integration
   app.post("/api/tokens/balance", async (req, res) => {
